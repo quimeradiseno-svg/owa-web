@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-owa-blue: #12129b;
+  --color-owa-sky: #5bc5f2;
+  --color-owa-dark: #07074b;
+  --color-owa-deep: #030325;
+  --color-owa-gold: #d4af37;
+  
+  --font-sans: "Outfit", sans-serif;
+  --font-display: "Outfit", sans-serif;
+}
+
+/* Custom scrollbar and premium utility classes */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #030325;
+}
+::-webkit-scrollbar-thumb {
+  background: #12129b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5bc5f2;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #030325;
+  color: #f3f4f6;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  margin: 0;
+}
+
+/* Glassmorphism custom classes if needed */
+.glassmorphism {
+  background: rgba(3, 3, 37, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(91, 197, 242, 0.1);
+}
+
+.glassmorphism-light {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Asymmetric background clip shapes for water vibes */
+.clip-path-wave-1 {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+}
+
+.clip-path-wave-2 {
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0% 100%);
+}
