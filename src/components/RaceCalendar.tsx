@@ -20,7 +20,7 @@ export default function RaceCalendar() {
       code: "LBC",
       name: "Cruce del Lago Nahuel Huapi",
       location: "San Carlos de Bariloche, Río Negro",
-      categories: ["Circuito", "Grand Prix"],
+      categories: ["Circuito"],
       status: "Abierta"
     },
     {
@@ -28,7 +28,7 @@ export default function RaceCalendar() {
       code: "VOB",
       name: "Vuelta de Obligado Histórica",
       location: "San Pedro, Buenos Aires",
-      categories: ["Circuito", "Grand Prix"],
+      categories: ["Circuito"],
       status: "Abierta"
     },
     {
@@ -40,14 +40,6 @@ export default function RaceCalendar() {
       status: "Abierta"
     },
     {
-      date: "22/12/2026",
-      code: "SNP70",
-      name: "Challenge San Nicolás - Vuelta de Obligado 70K",
-      location: "San Nicolás / San Pedro, Buenos Aires",
-      categories: ["Challenge"],
-      status: "Abierta"
-    },
-    {
       date: "17/01/2027",
       code: "PNR",
       name: "Cruce Río Paraná - Desafío Costanera",
@@ -56,51 +48,51 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "03-13/02/27 & 10-20/03/27",
-      code: "RDP40",
-      name: "Cruce del Río de la Plata 40K (Edición Histórica)",
-      location: "Colonia (ROU) a Punta Lara (ARG)",
+      date: "Por confirmar",
+      code: "GP1",
+      name: "Fecha 1 Grand Prix",
+      location: "Por confirmar",
+      categories: ["Grand Prix"],
+      status: "Próximamente"
+    },
+    {
+      date: "Por confirmar",
+      code: "GP2",
+      name: "Fecha 2 Grand Prix",
+      location: "Por confirmar",
+      categories: ["Grand Prix"],
+      status: "Próximamente"
+    },
+    {
+      date: "Por confirmar",
+      code: "GP3",
+      name: "Fecha 3 Grand Prix",
+      location: "Por confirmar",
+      categories: ["Grand Prix"],
+      status: "Próximamente"
+    },
+    {
+      date: "Por confirmar",
+      code: "GP4",
+      name: "Fecha 4 Grand Prix",
+      location: "Por confirmar",
+      categories: ["Grand Prix"],
+      status: "Próximamente"
+    },
+    {
+      date: "Por confirmar",
+      code: "CH1",
+      name: "Desafío 1 Challenge",
+      location: "Por confirmar",
       categories: ["Challenge"],
       status: "Próximamente"
     },
     {
-      date: "17/02/2027",
-      code: "NHL",
-      name: "Nahuel Huapi Lake GP (Copa Élite)",
-      location: "Villa La Angostura, Neuquén",
-      categories: ["Grand Prix"],
-      status: "Próximamente"
-    },
-    {
-      date: "21/02/2027",
-      code: "VHU",
-      name: "Cruce Villa Huapi",
-      location: "Lago Nahuel Huapi, Dina Huapi",
-      categories: ["Circuito"],
-      status: "Próximamente"
-    },
-    {
-      date: "21/03/2027",
-      code: "ISC",
-      name: "Glaciar Challenge Isla Solitaria",
-      location: "Lago Argentino, El Calafate, Santa Cruz",
-      categories: ["Grand Prix"],
-      status: "Próximamente"
-    },
-    {
-      date: "22/03/2027",
-      code: "CLN",
-      name: "Cruce de las Colonias",
-      location: "Colón, Entre Ríos",
-      categories: ["Circuito"],
-      status: "Próximamente"
-    },
-    {
-      date: "12/04/2027",
-      code: "PAD",
-      name: "Puerto Madryn Ocean Extreme",
-      location: "Golfo Nuevo, Puerto Madryn, Chubut",
-      categories: ["Circuito"],
+      date: "Por confirmar",
+      code: "CH2",
+      name: "Desafío 2 Challenge",
+      location: "Por confirmar",
+      categories: ["Challenge"],
       status: "Próximamente"
     }
   ];
