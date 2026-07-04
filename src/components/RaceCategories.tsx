@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Target, Trophy, Flame } from 'lucide-react';
 import { useIsMobile } from '../hooks/useIsMobile';
 
@@ -13,10 +14,11 @@ interface CategoryCardProps {
   icon: ReactNode;
   themeColor: string; // sky, blue, gold
   features: string[];
+  link?: string;
 }
 
 
-function CategoryCard({ title, tagline, description, image, badge, icon, themeColor, features }: CategoryCardProps) {
+function CategoryCard({ title, tagline, description, image, badge, icon, themeColor, features, link }: CategoryCardProps) {
   const isMobile = useIsMobile();
   // Styles based on themeColor
   const themeStyles = {
@@ -40,7 +42,7 @@ function CategoryCard({ title, tagline, description, image, badge, icon, themeCo
     }
   }[themeColor as 'sky' | 'blue' | 'gold'];
 
-  return (
+  const Card = (
     <motion.div
       initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -100,6 +102,8 @@ function CategoryCard({ title, tagline, description, image, badge, icon, themeCo
       </div>
     </motion.div>
   );
+
+  return link ? <Link to={link} className="block">{Card}</Link> : Card;
 }
 
 export default function RaceCategories() {
@@ -113,7 +117,8 @@ export default function RaceCategories() {
       image: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?q=80&w=800&auto=format&fit=crop",
       icon: <Flame size={20} />,
       themeColor: "sky",
-      features: ["1.5K / 3K / 4K", "Aguas Tranquilas", "Apto Principiantes", "Premiación General"]
+      features: ["1.5K / 3K / 4K", "Aguas Tranquilas", "Apto Principiantes", "Premiación General"],
+      link: "/circuito"
     },
     {
       title: "Grand Prix",

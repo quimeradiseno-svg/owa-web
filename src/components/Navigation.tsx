@@ -10,7 +10,7 @@ export default function Navigation() {
   const menuItems = [
     { name: 'Nosotros', href: '/nosotros' },
     { name: 'Grand Prix', href: '/#categories' },
-    { name: 'Circuito', href: '/#categories' },
+    { name: 'Circuito', href: '/circuito' },
     { name: 'Challenge', href: '/#categories' },
     { name: 'Resultados', href: '/#resultados' },
     { name: 'OWA Ecosystem', href: '/#ecosystem' },
