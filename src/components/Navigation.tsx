@@ -9,8 +9,8 @@ export default function Navigation() {
 
   const menuItems = [
     { name: 'Nosotros', href: '/nosotros' },
-    { name: 'Grand Prix', href: '/grand-prix' },
-    { name: 'Circuito', href: '/circuito' },
+    { name: 'Grand Prix OWA', href: '/grand-prix' },
+    { name: 'Circuito OWA', href: '/circuito' },
     { name: 'Challenge', href: '/challenge' },
     { name: 'Resultados', href: '/#resultados' },
     { name: 'OWA Ecosystem', href: '/#ecosystem' },
