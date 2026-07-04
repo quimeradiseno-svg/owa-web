@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Plane, ShoppingBag, Radio, Users, Compass, ExternalLink } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface EcosystemItem {
   title: string;
@@ -11,6 +12,7 @@ interface EcosystemItem {
 }
 
 export default function OwaEcosystem() {
+  const isMobile = useIsMobile();
   const ecosystemItems: EcosystemItem[] = [
     {
       title: "OWA TRAVEL",
@@ -81,7 +83,7 @@ export default function OwaEcosystem() {
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={isMobile ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "200px" }}
                 transition={{ duration: 0.5, delay: idx * 0.05 }}

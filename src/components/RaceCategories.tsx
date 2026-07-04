@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Trophy, Flame } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 
 interface CategoryCardProps {
@@ -16,6 +17,7 @@ interface CategoryCardProps {
 
 
 function CategoryCard({ title, tagline, description, image, badge, icon, themeColor, features }: CategoryCardProps) {
+  const isMobile = useIsMobile();
   // Styles based on themeColor
   const themeStyles = {
     sky: {
@@ -40,7 +42,7 @@ function CategoryCard({ title, tagline, description, image, badge, icon, themeCo
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
+      initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "200px" }}
       transition={{ duration: 0.6 }}
@@ -101,6 +103,7 @@ function CategoryCard({ title, tagline, description, image, badge, icon, themeCo
 }
 
 export default function RaceCategories() {
+  const isMobile = useIsMobile();
   const categories = [
     {
       title: "Circuito OWA",
@@ -144,7 +147,7 @@ export default function RaceCategories() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.span 
-            initial={{ opacity: 0 }}
+            initial={isMobile ? { opacity: 1 } : { opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-xs font-sans font-bold tracking-widest text-owa-sky uppercase bg-owa-sky/10 border border-owa-sky/20 px-3 py-1 rounded-full"
@@ -152,7 +155,7 @@ export default function RaceCategories() {
             Modalidades de Competencia
           </motion.span>
           <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1, duration: 0.5 }}
@@ -162,7 +165,7 @@ export default function RaceCategories() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-owa-sky to-owa-blue">CAMPO DE BATALLA</span>
           </motion.h2>
           <motion.p 
-            initial={{ opacity: 0 }}
+            initial={isMobile ? { opacity: 1 } : { opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
