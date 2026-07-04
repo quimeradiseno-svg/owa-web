@@ -1,4 +1,7 @@
 import { motion } from 'framer-motion';
+import imgDamian from '../../img/team/damianblaum.jpg';
+import imgFernando from '../../img/team/fernandociaramella.jpg';
+import imgLucas from '../../img/team/lucas3.jpeg';
 
 const Instagram = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -18,27 +21,30 @@ const Linkedin = ({ size = 24, className = "" }: { size?: number, className?: st
 
 const teamMembers = [
   {
-    name: 'Nombre Apellido',
-    role: 'Director General',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300&h=300',
+    name: 'Damián Blaum',
+    role: 'Cofundador Owa',
+    description: 'Nadador de Aguas Abiertas, Campeón Mundial Grand Prix Fina. Representante Olímpico en Beijing 2008. Record Cruce a Nado Rio de la Plata. Integrante del International Marathon Swimming Hall of Fame.',
+    image: imgDamian,
     socials: {
       instagram: '#',
       linkedin: '#',
     }
   },
   {
-    name: 'Nombre Apellido',
-    role: 'Coordinadora Deportiva',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=300&h=300',
+    name: 'Fernando Ciaramella',
+    role: 'Cofundador Owa',
+    description: 'Nadador de Aguas Abiertas, Representante Internacional Circuito Mundial FINA entre 2012 a 2017. Cruce a nado Rio de la Plata. Record Triple Cruce a nado del Lago Nahuel Huapí. Guardavidas, Abogado U.B.A.',
+    image: imgFernando,
     socials: {
       instagram: '#',
       linkedin: '#',
     }
   },
   {
-    name: 'Nombre Apellido',
-    role: 'Logística y Operaciones',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300',
+    name: 'Lucas Rivet',
+    role: 'Encargado OWA CHALLENGE',
+    description: 'Nadador de Aguas Abiertas, Cruce Rio de la Plata, Nadador de invierno, Triatleta y comunicador.',
+    image: imgLucas,
     socials: {
       instagram: '#',
       linkedin: '#',
@@ -116,7 +122,7 @@ export default function Nosotros() {
             >
               <div className="glassmorphism p-6 rounded-3xl text-center overflow-hidden h-full flex flex-col justify-between">
                 <div>
-                  <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-owa-sky/30 group-hover:border-owa-sky transition-colors duration-500">
+                  <div className="relative w-48 h-48 mx-auto mb-6 rounded-2xl overflow-hidden border-4 border-owa-sky/30 group-hover:border-owa-sky transition-colors duration-500">
                     <img 
                       src={member.image} 
                       alt={member.name} 
@@ -124,7 +130,8 @@ export default function Nosotros() {
                     />
                   </div>
                   <h3 className="font-display font-bold text-xl text-white uppercase tracking-wider">{member.name}</h3>
-                  <p className="text-owa-sky font-sans text-sm mb-6">{member.role}</p>
+                  <p className="text-owa-sky font-sans text-sm mb-4 font-semibold">{member.role}</p>
+                  <p className="text-gray-300 font-sans text-sm mb-6 leading-relaxed">{member.description}</p>
                 </div>
                 <div className="flex justify-center gap-4 mt-auto">
                   {member.socials.instagram && (
