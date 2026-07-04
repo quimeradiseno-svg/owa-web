@@ -13,7 +13,6 @@ export default function Navigation() {
     { name: 'Circuito OWA', href: '/circuito' },
     { name: 'Challenge', href: '/challenge' },
     { name: 'Resultados', href: '/#resultados' },
-    { name: 'OWA Ecosystem', href: '/#ecosystem' },
     { name: 'Contacto', href: '/contacto' },
   ];
 
