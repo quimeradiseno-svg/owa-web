@@ -38,9 +38,9 @@ export const racesData: Record<string, RaceDetailData> = {
         type: "PUNTO A PUNTO",
         distance: "4K",
         description: [
-          "La largada se realizará a orillas del río, a 4 km río arriba de la llegada. Desde allí, se nada con corriente a favor hasta alcanzar la boya que señaliza la proximidad del embudo de llegada, para luego ingresar y finalizar la prueba con el toque en la placa.",
-          "Una carrera rápida y estratégica, donde la concentración y una buena navegación serán claves para marcar la diferencia frente a tus rivales.",
-          "Suma puntos importantes para el circuito y también para tu equipo en el campeonato anual. ¡No te lo pierdas!"
+          "🏁 La largada se realizará a orillas del río, a 4 km río arriba de la llegada. Desde allí, se nada con corriente a favor hasta alcanzar la boya que señaliza la proximidad del embudo de llegada, para luego ingresar y finalizar la prueba con el toque en la placa 🏅.",
+          "⚡ Una carrera rápida y estratégica, donde la concentración y una buena navegación serán claves para marcar la diferencia frente a tus rivales 🧭💨.",
+          "🔥 Suma puntos importantes para el circuito y también para tu equipo en el campeonato anual. ¡No te la pierdas! 🏆👊"
         ],
         hasMap: true
       },
@@ -49,10 +49,10 @@ export const racesData: Record<string, RaceDetailData> = {
         type: "PUNTO A PUNTO",
         distance: "7K",
         description: [
-          "La largada se realizará a orillas del río, 7 km río arriba de la llegada. El recorrido será con corriente a favor, hasta alcanzar la boya que señaliza la proximidad del embudo de llegada. Desde allí, ingresarás al tramo final y completarás la prueba con el toque en la placa.",
-          "Una carrera que promete ser muy disputada, como cada año. Para alcanzar la llegada atrás el Buque Museo ARA Irigoyen... ¡te pasaste!",
-          "En los últimos 200 metros, el público y tus compañeros de equipo podrán seguirte desde la costa para darte aliento en el cierre.",
-          "Los puntos que consigas en esta primera fecha pueden ser decisivos al final del circuito y fundamentales para tu equipo en el campeonato anual."
+          "🏁 La largada se realizará a orillas del río, 7 km río arriba de la llegada. El recorrido será con corriente a favor, hasta alcanzar la boya que señaliza la proximidad del embudo de llegada. Desde allí, ingresarás al tramo final y completarás la prueba con el toque en la placa 🏅.",
+          "🔥 Una carrera que promete ser muy disputada, como cada año. Pero atención: si dejaste atrás el Buque Museo ARA Irigoyen... ¡te pasaste! 🚫⛴️",
+          "💥 En los últimos 200 metros, el público y tus compañeros de equipo podrán seguirte desde la costa para darte aliento en el cierre 🗣️👏.",
+          "📈 Los puntos que consigas en esta primera fecha pueden ser decisivos al final del circuito y fundamentales para tu equipo en el campeonato anual 🏆💪."
         ],
         hasMap: true
       },
@@ -61,10 +61,10 @@ export const racesData: Record<string, RaceDetailData> = {
         type: "SUPER SPRINT",
         distance: "1.5K",
         description: [
-          "Mientras esperamos la premiación de los 4 y 7k... se viene algo nuevo. Llega la primera edición del Super Sprint, un formato explosivo que pone a prueba velocidad, estrategia y orgullo de equipo.",
-          "Con cupo limitado por género y largadas separadas, esta carrera será solo por invitación. Si tu equipo trajo varios nadadores, tendrá derecho a postular a su representante más rápido para competir a todo o nada. No hay categorías. No hay excusas. Solo un ganador y una ganadora se alzarán con el trofeo y los premios de nuestros sponsors.",
-          "¿El circuito? Muy sencillo. Un sprint de 1.500 metros río abajo con corriente a favor, a fondo hasta el final. Una oportunidad única para sumar puntos clave y empujar a tu equipo hacia lo más alto del campeonato.",
-          "Si querés competir, decile a tu capitán o capitana que postule para recibir un wild card y asegura tu lugar en este nuevo formato que llegó para quedarse."
+          "🔥 Mientras esperamos la premiación de los 4 y 7K... se viene algo nuevo.\\nLlega la primera edición del Super Sprint, un formato explosivo que pone a prueba velocidad, estrategia y orgullo de equipo 🏁⚡",
+          "🚨 Con cupo limitado por género y largadas separadas, esta carrera será solo por invitación. Si tu equipo trajo varios nadadores, tendrá derecho a postular a su representante más rápido para competir a todo o nada. No hay categorías. No hay excusas. Solo un ganador y una ganadora se alzarán con el trofeo y los premios de nuestros sponsors 🏆🎁",
+          "💥 ¿Rápida? No, rapidísima. Un sprint de 1.500 metros río abajo que puede definirse por foto finish 📸.\\nUna oportunidad única para sumar puntos clave y empujar a tu equipo hacia la cima del campeonato 🧮🔝",
+          "🃏 Si creés que podés ser el o la número 1, postulate para recibir un wild card y asegurá tu lugar en este nuevo formato que llega para quedarse 💪"
         ],
         hasMap: true
       }

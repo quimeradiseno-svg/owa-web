@@ -145,8 +145,7 @@ export default function RaceDetail() {
               {/* Right Column: Text */}
               <div className="w-full md:w-2/3 flex flex-col gap-4 text-sm md:text-base font-sans font-medium leading-relaxed text-gray-300">
                 {dist.description.map((paragraph, pIdx) => (
-                  <p key={pIdx} className="flex items-start gap-3">
-                    <span className="text-owa-sky mt-1.5 text-[10px] shrink-0">◆</span>
+                  <p key={pIdx} className="flex items-start gap-3 whitespace-pre-line">
                     <span>{paragraph}</span>
                   </p>
                 ))}
