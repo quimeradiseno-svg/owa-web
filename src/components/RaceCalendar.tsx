@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Calendar, ArrowUpRight } from 'lucide-react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface RaceEvent {
   date: string;
@@ -13,6 +14,7 @@ interface RaceEvent {
 
 export default function RaceCalendar() {
   const [activeFilter, setActiveFilter] = useState<'Todos' | 'Circuito' | 'Grand Prix' | 'Challenge'>('Todos');
+  const isMobile = useIsMobile();
 
   const events: RaceEvent[] = [
     {
@@ -131,8 +133,8 @@ export default function RaceCalendar() {
 
   return (
     <section id="calendar" className="py-24 bg-owa-deep relative overflow-hidden">
-      {/* Background ambient water glow */}
-      <div className="absolute right-0 bottom-0 w-[600px] h-[600px] bg-owa-blue/10 rounded-full blur-[140px] pointer-events-none" />
+      {/* Background ambient water glow - Hidden on mobile for performance */}
+      <div className="hidden md:block absolute right-0 bottom-0 w-[600px] h-[600px] bg-owa-blue/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -172,7 +174,7 @@ export default function RaceCalendar() {
             {filteredEvents.map((event) => (
               <motion.div
                 key={event.code}
-                layout
+                layout={!isMobile}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.98 }}

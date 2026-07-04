@@ -41,7 +41,7 @@ body {
   margin: 0;
 }
 
-/* Glassmorphism custom classes if needed */
+/* Glassmorphism custom classes */
 .glassmorphism {
   background: rgba(3, 3, 37, 0.65);
   backdrop-filter: blur(12px);
@@ -54,6 +54,21 @@ body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Optimize for mobile: disable heavy blur filters */
+@media (max-width: 768px) {
+  .glassmorphism {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(3, 3, 37, 0.95);
+  }
+  
+  .glassmorphism-light {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(30, 30, 60, 0.95);
+  }
 }
 
 /* Asymmetric background clip shapes for water vibes */

@@ -146,8 +146,8 @@ export default function RaceCategories() {
 
   return (
     <section id="categories" className="py-24 relative overflow-hidden bg-gradient-to-b from-owa-deep to-owa-dark">
-      {/* Decorative Blur Bubble */}
-      <div className="absolute top-1/2 left-0 w-80 h-80 bg-owa-blue/15 rounded-full blur-[100px]" />
+      {/* Decorative Blur Bubble - Hidden on mobile for performance */}
+      <div className="hidden md:block absolute top-1/2 left-0 w-80 h-80 bg-owa-blue/15 rounded-full blur-[100px]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         

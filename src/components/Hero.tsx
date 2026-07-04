@@ -20,7 +20,7 @@ export default function Hero() {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.3,
+        delayChildren: isMobile ? 0 : 0.3,
       },
     },
   };
@@ -52,7 +52,7 @@ export default function Hero() {
       {/* Background Media: Image for mobile, Video for desktop */}
       {isMobile ? (
         <img
-          src="https://images.unsplash.com/photo-1519315901367-f34f815b6719?q=80&w=1200&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1519315901367-f34f815b6719?q=80&w=600&auto=format&fit=crop"
           alt="Nadadores en aguas abiertas"
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-transform duration-10000 hover:scale-105"
         />
@@ -71,9 +71,9 @@ export default function Hero() {
       {/* Dynamic Overlay with Gradient to simulate deep water */}
       <div className="absolute inset-0 bg-gradient-to-b from-owa-deep/90 via-owa-blue/50 to-owa-deep" />
 
-      {/* Decorative Wave-like lights */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-owa-sky/10 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-owa-blue/20 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '8s' }} />
+      {/* Decorative Wave-like lights - Hidden on mobile for performance */}
+      <div className="hidden md:block absolute top-1/4 left-1/4 w-96 h-96 bg-owa-sky/10 rounded-full blur-[120px] animate-pulse" />
+      <div className="hidden md:block absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-owa-blue/20 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '8s' }} />
 
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-20">
