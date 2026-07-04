@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Flame } from 'lucide-react';
 import { useIsMobile } from '../hooks/useIsMobile';
 
@@ -9,9 +10,10 @@ interface RaceCardProps {
   location: string;
   image: string;
   badge: string;
+  id: string;
 }
 
-function RaceCard({ title, tagline, date, location, image, badge }: RaceCardProps) {
+function RaceCard({ title, tagline, date, location, image, badge, id }: RaceCardProps) {
   const isMobile = useIsMobile();
 
   return (
@@ -63,6 +65,9 @@ function RaceCard({ title, tagline, date, location, image, badge }: RaceCardProp
               <MapPin size={14} className="text-owa-sky" />
               <span>{location}</span>
             </div>
+            <Link to={`/evento/${id}`} className="mt-3 w-full py-2.5 bg-white/10 hover:bg-owa-sky hover:text-owa-deep text-white text-center font-display font-bold uppercase text-xs tracking-widest rounded-xl transition-all border border-white/10 hover:border-owa-sky">
+              Detalles
+            </Link>
           </div>
         </div>
       </div>
@@ -73,6 +78,7 @@ function RaceCard({ title, tagline, date, location, image, badge }: RaceCardProp
 export default function Circuito() {
   const races = [
     {
+      id: "lbc",
       title: "Cruce del Lago Nahuel Huapi",
       tagline: "Circuito LBC",
       date: "13/12/2026",
@@ -81,6 +87,7 @@ export default function Circuito() {
       image: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?q=80&w=800&auto=format&fit=crop"
     },
     {
+      id: "vob",
       title: "Vuelta de Obligado Histórica",
       tagline: "Circuito VOB",
       date: "20/12/2026",
@@ -89,6 +96,7 @@ export default function Circuito() {
       image: "https://images.unsplash.com/photo-1508215885820-4585e56135c8?q=80&w=800&auto=format&fit=crop"
     },
     {
+      id: "spd",
       title: "San Pedro Sprint",
       tagline: "Circuito SPD",
       date: "21/12/2026",
@@ -97,6 +105,7 @@ export default function Circuito() {
       image: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?q=80&w=800&auto=format&fit=crop"
     },
     {
+      id: "pnr",
       title: "Cruce Río Paraná",
       tagline: "Circuito PNR",
       date: "17/01/2027",

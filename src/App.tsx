@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Contact from './pages/Contact';
 import Nosotros from './pages/Nosotros';
 import Circuito from './pages/Circuito';
+import RaceDetail from './pages/RaceDetail';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/contacto" element={<Contact />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/circuito" element={<Circuito />} />
+          <Route path="/evento/:id" element={<RaceDetail />} />
         </Routes>
         <Footer />
       </div>
