@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import logo from '../assets/Logo_web_3.png';
-
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { name: 'Nosotros', href: '#nosotros' },
-    { name: 'Grand Prix', href: '#categories' },
-    { name: 'Circuito', href: '#categories' },
-    { name: 'Challenge', href: '#categories' },
-    { name: 'Resultados', href: '#resultados' },
-    { name: 'OWA Ecosystem', href: '#ecosystem' },
-    { name: 'Contacto', href: '#contacto' },
+    { name: 'Nosotros', href: '/#nosotros' },
+    { name: 'Grand Prix', href: '/#categories' },
+    { name: 'Circuito', href: '/#categories' },
+    { name: 'Challenge', href: '/#categories' },
+    { name: 'Resultados', href: '/#resultados' },
+    { name: 'OWA Ecosystem', href: '/#ecosystem' },
+    { name: 'Contacto', href: '/contacto' },
   ];
 
   return (
@@ -22,31 +22,31 @@ export default function Navigation() {
       {/* Navbar Container */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
         <div className="glassmorphism rounded-2xl px-6 py-4 flex items-center justify-between shadow-2xl backdrop-blur-md relative z-50">
-          <a href="#" className="flex items-center group">
+          <Link to="/" className="flex items-center group">
             <img 
               src={logo} 
               alt="OWA Logo" 
               className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
             />
-          </a>
+          </Link>
 
 
           {/* Desktop Nav Links */}
           <div className="hidden lg:flex items-center gap-8">
             {menuItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 className="font-sans font-medium text-sm text-gray-300 hover:text-owa-sky transition-colors duration-300 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-owa-sky after:transition-all after:duration-300 hover:after:w-full"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
 
           {/* CTA & Mobile Toggle */}
           <div className="flex items-center gap-4">
-            <a href="#calendar" className="hidden sm:inline-block">
+            <Link to="/#calendar" className="hidden sm:inline-block">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(91, 197, 242, 0.4)' }}
                 whileTap={{ scale: 0.95 }}
@@ -55,7 +55,7 @@ export default function Navigation() {
                 Próximas Carreras
                 <ArrowRight size={16} />
               </motion.button>
-            </a>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -81,17 +81,17 @@ export default function Navigation() {
           >
             <div className="glassmorphism rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
               {menuItems.map((item) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
                   onClick={() => setIsOpen(false)}
                   className="font-sans font-semibold text-base text-gray-200 hover:text-owa-sky transition-colors py-2 border-b border-white/5"
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
-              <a 
-                href="#calendar" 
+              <Link 
+                to="/#calendar" 
                 onClick={() => setIsOpen(false)}
                 className="w-full mt-2"
               >
@@ -99,7 +99,7 @@ export default function Navigation() {
                   Próximas Carreras
                   <ArrowRight size={16} />
                 </button>
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}
