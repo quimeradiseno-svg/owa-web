@@ -1,7 +1,18 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ChevronDown, Award } from 'lucide-react';
 
 export default function Hero() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Animation variables
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -38,15 +49,23 @@ export default function Hero() {
 
   return (
     <div id="nosotros" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Video with Dark Blue Overlay */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-transform duration-10000 hover:scale-105"
-        src="https://vjs.zencdn.net/v/oceans.mp4"
-      />
+      {/* Background Media: Image for mobile, Video for desktop */}
+      {isMobile ? (
+        <img
+          src="https://images.unsplash.com/photo-1519315901367-f34f815b6719?q=80&w=1200&auto=format&fit=crop"
+          alt="Nadadores en aguas abiertas"
+          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-transform duration-10000 hover:scale-105"
+        />
+      ) : (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-transform duration-10000 hover:scale-105"
+          src="https://vjs.zencdn.net/v/oceans.mp4"
+        />
+      )}
 
       
       {/* Dynamic Overlay with Gradient to simulate deep water */}
