@@ -120,7 +120,7 @@ export default function GrandPrix() {
           Alto Rendimiento
         </span>
         <h1 className="font-display font-black text-4xl md:text-6xl text-white uppercase tracking-wider mb-6">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-owa-blue to-owa-sky">GRAND PRIX</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-owa-blue to-owa-sky">GRAND PRIX</span> OWA
         </h1>
         <p className="text-gray-300 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
           El máximo nivel de competencia nacional. Un formato diseñado para nadadores de élite y master competitivos que buscan liderar el ranking y consagrarse campeones.
