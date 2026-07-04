@@ -83,7 +83,7 @@ export default function OwaEcosystem() {
                 key={idx}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, margin: "0px", amount: 0.1 }}
                 transition={{ duration: 0.5, delay: idx * 0.05 }}
                 className={`group relative rounded-3xl p-8 bg-white/[0.02] border border-white/5 hover:bg-owa-sky hover:border-owa-sky transition-all duration-500 flex flex-col justify-between h-[300px] overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-owa-sky/10 ${
                   isWide ? "lg:col-span-2" : "lg:col-span-1"

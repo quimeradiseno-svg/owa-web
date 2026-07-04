@@ -60,9 +60,10 @@ export default function Navigation() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              className="lg:hidden p-3 -mr-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-all cursor-pointer active:scale-95 flex items-center justify-center min-w-[48px] min-h-[48px]"
+              aria-label="Abrir menú"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
