@@ -25,7 +25,7 @@ export default function Navigation() {
             <img 
               src={logo} 
               alt="OWA Logo" 
-              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
+              className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
             />
           </Link>
 
