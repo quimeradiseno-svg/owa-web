@@ -42,7 +42,7 @@ function CategoryCard({ title, tagline, description, image, badge, icon, themeCo
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px", amount: 0.1 }}
+      viewport={{ once: true, margin: "200px" }}
       transition={{ duration: 0.6 }}
       whileHover={{ y: -8 }}
       className={`relative group h-[520px] rounded-3xl overflow-hidden glassmorphism flex flex-col justify-end p-8 border transition-all duration-500 shadow-2xl ${themeStyles.border} ${themeStyles.glow}`}
