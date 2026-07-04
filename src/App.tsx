@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import Nosotros from './pages/Nosotros';
@@ -9,6 +10,7 @@ import Circuito from './pages/Circuito';
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="bg-owa-deep text-white min-h-screen selection:bg-owa-sky/30 selection:text-white">
         <Navigation />
         <Routes>
