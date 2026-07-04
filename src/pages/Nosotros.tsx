@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Target, Eye, Sparkles, Trophy } from 'lucide-react';
 import imgDamian from '../../img/team/damianblaum.jpg';
 import imgFernando from '../../img/team/fernandociaramella.jpg';
 import imgLucas from '../../img/team/lucas3.jpeg';
@@ -75,10 +76,10 @@ export default function Nosotros() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { title: 'Misión', desc: 'Inspirar a todas las personas, a que, con esfuerzo y sacrificio, será posible superarse.', icon: '🎯' },
-            { title: 'Visión', desc: 'Difundir un nuevo concepto de competencias de aguas abiertas, en donde el compañerismo, el cuidado de nuestros atletas y del medio ambiente prime por sobre todo lo demás.', icon: '👁️' },
-            { title: 'Espíritu', desc: '"Que nunca nadie te diga que no puedes cumplir tus sueños"', icon: '✨' },
-            { title: 'Objetivo', desc: 'Brindarles a nuestros nadadores, eventos profesionales en escenarios únicos, cuidando cada detalle para que cada experiencia resulte inolvidable.', icon: '🏆' },
+            { title: 'Misión', desc: 'Inspirar a todas las personas, a que, con esfuerzo y sacrificio, será posible superarse.', icon: <Target size={24} /> },
+            { title: 'Visión', desc: 'Difundir un nuevo concepto de competencias de aguas abiertas, en donde el compañerismo, el cuidado de nuestros atletas y del medio ambiente prime por sobre todo lo demás.', icon: <Eye size={24} /> },
+            { title: 'Espíritu', desc: '"Que nunca nadie te diga que no puedes cumplir tus sueños"', icon: <Sparkles size={24} /> },
+            { title: 'Objetivo', desc: 'Brindarles a nuestros nadadores, eventos profesionales en escenarios únicos, cuidando cada detalle para que cada experiencia resulte inolvidable.', icon: <Trophy size={24} /> },
           ].map((item, i) => (
             <motion.div 
               key={item.title}
@@ -86,11 +87,13 @@ export default function Nosotros() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="glassmorphism p-8 rounded-3xl hover:bg-white/5 transition-colors"
+              className="glassmorphism p-8 rounded-3xl border border-white/10 shadow-2xl hover:border-owa-sky/40 hover:shadow-owa-sky/10 transition-all duration-300 group flex flex-col"
             >
-              <div className="text-4xl mb-4">{item.icon}</div>
+              <div className="inline-flex p-3 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-owa-sky mb-6 group-hover:scale-110 group-hover:bg-owa-sky/10 transition-all duration-300 self-start">
+                {item.icon}
+              </div>
               <h3 className="font-display font-bold text-2xl text-white mb-4 uppercase tracking-wider">{item.title}</h3>
-              <p className="text-gray-300 font-sans">{item.desc}</p>
+              <p className="text-gray-300 font-sans leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </div>
