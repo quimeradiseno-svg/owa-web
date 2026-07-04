@@ -139,5 +139,125 @@ export const racesData: Record<string, RaceDetailData> = {
       }
     ],
     hashtag: "#CircuitoOwa",
+  },
+  "gp-1": {
+    id: "gp-1",
+    title: "FECHA 1 GRAND PRIX",
+    subtitleDistances: "Próximamente",
+    badge: "Grand Prix",
+    image: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?q=80&w=1200&auto=format&fit=crop",
+    code: "GP1",
+    date: "TBD",
+    location: "Por confirmar",
+    distances: [
+      {
+        id: "tbd",
+        type: "DISTANCIAS",
+        distance: "TBD",
+        description: ["Información detallada se publicará próximamente."],
+        hasMap: false
+      }
+    ],
+    hashtag: "#OwaGrandPrix",
+  },
+  "gp-2": {
+    id: "gp-2",
+    title: "FECHA 2 GRAND PRIX",
+    subtitleDistances: "Próximamente",
+    badge: "Grand Prix",
+    image: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?q=80&w=1200&auto=format&fit=crop",
+    code: "GP2",
+    date: "TBD",
+    location: "Por confirmar",
+    distances: [
+      {
+        id: "tbd",
+        type: "DISTANCIAS",
+        distance: "TBD",
+        description: ["Información detallada se publicará próximamente."],
+        hasMap: false
+      }
+    ],
+    hashtag: "#OwaGrandPrix",
+  },
+  "gp-3": {
+    id: "gp-3",
+    title: "FECHA 3 GRAND PRIX",
+    subtitleDistances: "Próximamente",
+    badge: "Grand Prix",
+    image: "https://images.unsplash.com/photo-1508215885820-4585e56135c8?q=80&w=1200&auto=format&fit=crop",
+    code: "GP3",
+    date: "TBD",
+    location: "Por confirmar",
+    distances: [
+      {
+        id: "tbd",
+        type: "DISTANCIAS",
+        distance: "TBD",
+        description: ["Información detallada se publicará próximamente."],
+        hasMap: false
+      }
+    ],
+    hashtag: "#OwaGrandPrix",
+  },
+  "gp-4": {
+    id: "gp-4",
+    title: "FECHA 4 GRAND PRIX",
+    subtitleDistances: "Próximamente",
+    badge: "Grand Prix",
+    image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=1200&auto=format&fit=crop",
+    code: "GP4",
+    date: "TBD",
+    location: "Por confirmar",
+    distances: [
+      {
+        id: "tbd",
+        type: "DISTANCIAS",
+        distance: "TBD",
+        description: ["Información detallada se publicará próximamente."],
+        hasMap: false
+      }
+    ],
+    hashtag: "#OwaGrandPrix",
+  },
+  "ch-1": {
+    id: "ch-1",
+    title: "DESAFÍO 1 CHALLENGE",
+    subtitleDistances: "Próximamente",
+    badge: "Challenge",
+    image: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?q=80&w=1200&auto=format&fit=crop",
+    code: "CH1",
+    date: "TBD",
+    location: "Por confirmar",
+    distances: [
+      {
+        id: "tbd",
+        type: "DISTANCIAS",
+        distance: "TBD",
+        description: ["Información detallada sobre esta travesía extrema se publicará próximamente."],
+        hasMap: false
+      }
+    ],
+    hashtag: "#OwaChallenge",
+  },
+  "ch-2": {
+    id: "ch-2",
+    title: "DESAFÍO 2 CHALLENGE",
+    subtitleDistances: "Próximamente",
+    badge: "Challenge",
+    image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=1200&auto=format&fit=crop",
+    code: "CH2",
+    date: "TBD",
+    location: "Por confirmar",
+    distances: [
+      {
+        id: "tbd",
+        type: "DISTANCIAS",
+        distance: "TBD",
+        description: ["Información detallada sobre esta travesía extrema se publicará próximamente."],
+        hasMap: false
+      }
+    ],
+    hashtag: "#OwaChallenge",
   }
 };

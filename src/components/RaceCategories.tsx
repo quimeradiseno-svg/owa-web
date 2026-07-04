@@ -128,7 +128,8 @@ export default function RaceCategories() {
       image: "https://images.unsplash.com/photo-1508215885820-4585e56135c8?q=80&w=800&auto=format&fit=crop",
       icon: <Trophy size={20} />,
       themeColor: "blue",
-      features: ["5K / 10K Olímpica", "Boyado Técnico", "Puntaje Doble", "Categorías por Edad"]
+      features: ["5K / 10K Olímpica", "Boyado Técnico", "Puntaje Doble", "Categorías por Edad"],
+      link: "/grand-prix"
     },
     {
       title: "OWA Challenge",
@@ -138,7 +139,8 @@ export default function RaceCategories() {
       image: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?q=80&w=800&auto=format&fit=crop",
       icon: <Target size={20} />,
       themeColor: "gold",
-      features: ["21K a 70K Ultratravesía", "Clima Extremo", "Seguimiento Satelital", "Finisher Medal Premium"]
+      features: ["21K a 70K Ultratravesía", "Clima Extremo", "Seguimiento Satelital", "Finisher Medal Premium"],
+      link: "/challenge"
     }
   ];
 

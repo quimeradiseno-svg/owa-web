@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Contact from './pages/Contact';
 import Nosotros from './pages/Nosotros';
 import Circuito from './pages/Circuito';
+import GrandPrix from './pages/GrandPrix';
+import Challenge from './pages/Challenge';
 import RaceDetail from './pages/RaceDetail';
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
           <Route path="/contacto" element={<Contact />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/circuito" element={<Circuito />} />
+          <Route path="/grand-prix" element={<GrandPrix />} />
+          <Route path="/challenge" element={<Challenge />} />
           <Route path="/evento/:id" element={<RaceDetail />} />
         </Routes>
         <Footer />
