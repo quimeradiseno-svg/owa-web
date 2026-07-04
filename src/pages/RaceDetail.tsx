@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, MapPin, Clock, FileText } from 'lucide-react';
+import { ChevronLeft, MapPin, Clock, FileText, Compass, ExternalLink } from 'lucide-react';
 import { racesData } from '../data/racesData';
 import { useEffect } from 'react';
 
@@ -24,178 +24,205 @@ export default function RaceDetail() {
   }
 
   return (
-    <div className="bg-[#0b1021] min-h-screen font-sans">
+    <div className="bg-owa-deep min-h-screen font-sans relative overflow-hidden pb-24">
       
+      {/* Background ambient water glow */}
+      <div className="absolute top-1/4 -left-64 w-[800px] h-[800px] bg-owa-sky/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-64 w-[800px] h-[800px] bg-owa-blue/10 rounded-full blur-[140px] pointer-events-none" />
+
       {/* 1. Hero Section */}
-      <section className="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center filter brightness-[0.5]"
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] ease-linear hover:scale-110 filter brightness-[0.4]"
           style={{ backgroundImage: `url('${race.image}')` }}
         />
         {/* Overlay Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0b1021]/60 via-transparent to-[#0b1021]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-owa-deep/80 via-transparent to-owa-deep" />
         
         {/* Top left return button */}
-        <Link to="/circuito" className="absolute top-28 left-6 md:left-12 flex items-center gap-2 text-white/70 hover:text-white transition-colors z-20">
-          <ChevronLeft size={20} />
+        <Link to="/circuito" className="absolute top-28 left-6 md:left-12 flex items-center gap-2 text-white/70 hover:text-white transition-colors z-20 group">
+          <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-semibold tracking-wider uppercase">Volver</span>
         </Link>
 
         {/* Content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 lg:px-8 pt-20">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 pt-20 text-center">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl"
+            className="flex flex-col items-center"
           >
+            <div className="px-4 py-1.5 rounded-full border text-[10px] sm:text-xs font-display font-black tracking-widest uppercase bg-owa-sky/10 text-owa-sky border-owa-sky/20 mb-6">
+              {race.badge}
+            </div>
+
             <h1 className="font-display font-black text-5xl md:text-7xl lg:text-8xl text-white uppercase tracking-tighter mb-4 leading-none">
-              {race.title}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">{race.title}</span>
             </h1>
-            <div className="flex items-center gap-4 text-xl md:text-2xl text-white/90 font-light mb-2">
+            
+            <div className="flex items-center gap-4 text-xl md:text-2xl text-owa-sky font-light mb-8">
               <span>{race.subtitleDistances}</span>
             </div>
-            
-            <div className="flex items-center gap-3 mb-8">
-              {/* Fake logo placeholder or arena text */}
-              <div className="px-2 py-1 bg-white/10 rounded border border-white/20 text-white font-bold text-sm flex items-center gap-1">
-                <div className="w-4 h-4 bg-white mask-hexagon" /> 
-                {race.badge}
-              </div>
-            </div>
 
-            <button className="px-8 py-3 bg-[#4ab4e1] hover:bg-[#399bc5] text-owa-deep font-display font-black text-sm tracking-widest uppercase rounded-full transition-transform hover:scale-105 shadow-xl shadow-owa-sky/20">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-owa-sky hover:bg-[#4ab4e1] text-owa-deep font-display font-black text-sm tracking-widest uppercase rounded-xl transition-colors shadow-xl shadow-owa-sky/20"
+            >
               STARTING LIST
-            </button>
+            </motion.button>
           </motion.div>
-        </div>
-
-        {/* Wave separator at the bottom (CSS clip-path or SVG) */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
-          <svg className="relative block w-full h-[50px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.11,130.83,120.22,192,105.46,238.13,94.34,281.9,78.23,321.39,56.44Z" fill="#090e1f"></path>
-          </svg>
         </div>
       </section>
 
-      {/* 2. Info Bar (Dark Section) */}
-      <section className="bg-[#090e1f] py-12 border-b-2 border-owa-sky/20">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-          {/* Left: Code Circle */}
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-20 h-20 rounded-full border-2 border-owa-sky flex items-center justify-center bg-owa-blue/10 shadow-[0_0_15px_rgba(74,180,225,0.3)]">
-              {/* Icon resembling a wave */}
-              <svg className="w-10 h-10 text-owa-sky" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 12h4l3-9 5 18 3-9h5" />
-              </svg>
+      {/* Main Content Container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20">
+        
+        {/* 2. Info Bar (Floating Glass Card) */}
+        <motion.section 
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="glassmorphism rounded-3xl p-6 sm:p-10 border border-white/10 shadow-2xl mb-16 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4"
+        >
+          {/* Left: Code */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-2xl border border-owa-sky/30 flex items-center justify-center bg-owa-sky/5 text-owa-sky">
+              <Compass size={32} />
             </div>
-            <span className="font-display font-black text-2xl text-white tracking-widest">{race.code}</span>
+            <span className="font-display font-black text-xl text-white tracking-widest">{race.code}</span>
           </div>
 
           {/* Center: Date & Location */}
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center text-center">
             <h2 className="font-display font-black text-3xl md:text-4xl text-white mb-2">{race.date}</h2>
-            <p className="font-sans text-lg text-gray-300">{race.location}</p>
+            <div className="flex items-center gap-2 text-owa-sky">
+              <MapPin size={18} />
+              <p className="font-sans text-lg text-gray-300">{race.location}</p>
+            </div>
           </div>
 
-          {/* Right: Logos */}
+          {/* Right: Logos/Brand */}
           <div className="flex flex-col items-center gap-3">
-            <div className="w-20 h-20 rounded-full border-2 border-owa-sky flex items-center justify-center bg-owa-blue/10">
-              <svg className="w-10 h-10 text-owa-sky" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="w-16 h-16 rounded-2xl border border-white/10 flex items-center justify-center bg-white/5 text-white">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M8 14s1.5 2 4 2 4-2 4-2" />
                 <line x1="9" y1="9" x2="9.01" y2="9" />
                 <line x1="15" y1="9" x2="15.01" y2="9" />
               </svg>
             </div>
-            <span className="font-display font-black text-sm text-white tracking-widest">OWA CIRCUITO</span>
+            <span className="font-display font-black text-xs text-gray-400 tracking-widest">CIRCUITO OWA</span>
           </div>
-        </div>
-      </section>
+        </motion.section>
 
-      {/* 3. Distances Blocks */}
-      <div>
-        {race.distances.map((dist, idx) => {
-          const isDark = idx % 2 !== 0;
-          return (
-            <section 
+        {/* 3. Distances Blocks */}
+        <div className="flex flex-col gap-6 mb-16">
+          <h3 className="font-display font-black text-3xl text-white uppercase tracking-widest text-center mb-6">
+            Distancias y Recorridos
+          </h3>
+          
+          {race.distances.map((dist, idx) => (
+            <motion.div 
               key={dist.id}
-              className={`py-16 px-6 ${isDark ? 'bg-[#181d31] text-white' : 'bg-[#f8f9fa] text-owa-deep'}`}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: idx * 0.1 }}
+              className="glassmorphism rounded-3xl p-8 border border-white/5 hover:border-owa-sky/30 transition-colors flex flex-col md:flex-row items-start gap-8 md:gap-12 group"
             >
-              <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-16">
-                
-                {/* Distance Title block */}
-                <div className="w-full md:w-1/3 text-center md:text-left flex flex-col justify-center">
-                  <h3 className="font-display font-black text-xl tracking-widest uppercase mb-1">
-                    {dist.type}
-                  </h3>
-                  <div className="font-display font-black text-6xl md:text-8xl leading-none">
-                    {dist.distance}
-                  </div>
-                </div>
-
-                {/* Description text */}
-                <div className="w-full md:w-2/3 flex flex-col gap-4 text-sm md:text-base font-medium leading-relaxed">
-                  {dist.description.map((paragraph, pIdx) => (
-                    <p key={pIdx} className="flex items-start gap-2">
-                      <span className="text-owa-sky mt-1 text-xs">◆</span>
-                      <span>{paragraph}</span>
-                    </p>
-                  ))}
-                  
-                  {dist.hasMap && (
-                    <div className="mt-4">
-                      <a href="#" className={`font-bold hover:underline ${isDark ? 'text-owa-sky' : 'text-owa-blue'}`}>
-                        Ver mapa {dist.distance}
-                      </a>
-                    </div>
-                  )}
+              {/* Left Column: Distance */}
+              <div className="w-full md:w-1/3 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/10 pb-6 md:pb-0 md:pr-8">
+                <h4 className="font-display font-bold text-sm tracking-widest uppercase text-owa-sky mb-2">
+                  {dist.type}
+                </h4>
+                <div className="font-display font-black text-6xl md:text-8xl text-white leading-none group-hover:text-owa-sky transition-colors">
+                  {dist.distance}
                 </div>
               </div>
-            </section>
-          );
-        })}
+
+              {/* Right Column: Text */}
+              <div className="w-full md:w-2/3 flex flex-col gap-4 text-sm md:text-base font-sans font-medium leading-relaxed text-gray-300">
+                {dist.description.map((paragraph, pIdx) => (
+                  <p key={pIdx} className="flex items-start gap-3">
+                    <span className="text-owa-sky mt-1.5 text-[10px] shrink-0">◆</span>
+                    <span>{paragraph}</span>
+                  </p>
+                ))}
+                
+                {dist.hasMap && (
+                  <div className="mt-4 pt-4 border-t border-white/5">
+                    <a href="#" className="inline-flex items-center gap-2 text-owa-sky font-bold hover:text-white transition-colors">
+                      <ExternalLink size={16} />
+                      Ver mapa del recorrido
+                    </a>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* 4. Bottom Info Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+          
+          {/* Cronograma Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glassmorphism rounded-3xl p-8 border border-white/5 flex flex-col items-center justify-center text-center gap-4 group hover:border-owa-blue/40 transition-colors"
+          >
+            <div className="w-16 h-16 rounded-full bg-owa-blue/10 flex items-center justify-center text-owa-blue group-hover:scale-110 transition-transform">
+              <Clock size={32} />
+            </div>
+            <h4 className="font-display font-black text-2xl text-white tracking-widest uppercase">Cronograma</h4>
+            <p className="text-gray-400 text-sm mb-2">Revisa los horarios de acreditación, charlas técnicas y largadas.</p>
+            <a href={race.scheduleLink} className="px-6 py-2.5 rounded-xl border border-white/10 hover:border-white/30 text-white text-xs font-bold tracking-widest uppercase transition-colors">
+              Ver Cronograma
+            </a>
+          </motion.div>
+
+          {/* Info Turistica Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="glassmorphism rounded-3xl p-8 border border-white/5 flex flex-col items-center justify-center text-center gap-4 group hover:border-owa-sky/40 transition-colors"
+          >
+            <div className="w-16 h-16 rounded-full bg-owa-sky/10 flex items-center justify-center text-owa-sky group-hover:scale-110 transition-transform">
+              <MapPin size={32} />
+            </div>
+            <h4 className="font-display font-black text-2xl text-white tracking-widest uppercase">Info Turística</h4>
+            <p className="text-gray-400 text-sm mb-2">
+              {race.tourismInfo || "Descubre alojamientos y atractivos locales."}
+            </p>
+            <a href="#" className="px-6 py-2.5 rounded-xl border border-white/10 hover:border-white/30 text-white text-xs font-bold tracking-widest uppercase transition-colors">
+              Ver Más
+            </a>
+          </motion.div>
+        </div>
+
+        {/* 5. Footer Actions */}
+        <div className="flex flex-col items-center gap-6">
+          <div className="text-center px-8 py-4 rounded-2xl bg-white/5 border border-white/10">
+            <p className="font-display font-bold text-lg text-white">
+              Sube tus fotos a instagram con <span className="text-owa-sky">{race.hashtag}</span>
+            </p>
+          </div>
+          
+          <a 
+            href={race.rulesLink}
+            className="flex items-center gap-2 px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-display font-bold text-sm tracking-widest uppercase rounded-full transition-colors border border-white/20"
+          >
+            <FileText size={18} />
+            Reglamento
+          </a>
+        </div>
+
       </div>
-
-      {/* 4. Cronograma (Light blue) */}
-      <section className="bg-[#bce6ec] py-16 text-center border-t-4 border-owa-sky/30">
-        <div className="flex flex-col items-center justify-center gap-3">
-          <Clock size={40} className="text-[#090e1f]" />
-          <h2 className="font-display font-black text-3xl text-[#090e1f] tracking-widest uppercase">CRONOGRAMA</h2>
-          <a href={race.scheduleLink} className="text-[#090e1f] font-bold text-sm hover:underline">Ver cronograma</a>
-        </div>
-      </section>
-
-      {/* 5. Info Turística (Purple/Darker Blue) */}
-      <section className="bg-[#3e4370] py-16 text-center text-white relative">
-        <div className="max-w-3xl mx-auto px-6 flex flex-col items-center justify-center gap-4">
-          <MapPin size={32} className="text-white/80" />
-          <h2 className="font-display font-black text-2xl tracking-widest uppercase">INFORMACIÓN TURÍSTICA</h2>
-          <p className="font-sans text-sm md:text-base text-white/90">
-            {race.tourismInfo || "Descubre los atractivos turísticos, alojamientos y gastronomía que la ciudad tiene para ofrecer a los nadadores y sus familias."}
-          </p>
-          <a href="#" className="font-bold text-sm hover:underline mt-2">Ver Más</a>
-        </div>
-      </section>
-
-      {/* 6. Hashtag Banner */}
-      <section className="bg-[#060913] py-6 text-center">
-        <h3 className="font-display font-bold text-lg text-white">
-          Publica en instagram con el <span className="text-owa-sky">{race.hashtag}</span>
-        </h3>
-      </section>
-
-      {/* 7. Reglamento Button */}
-      <section className="bg-[#0b1021] py-12 flex justify-center border-t border-white/5">
-        <a 
-          href={race.rulesLink}
-          className="px-8 py-3 bg-white text-owa-deep font-display font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gray-200 transition-colors flex items-center gap-2"
-        >
-          <FileText size={16} />
-          Reglamento
-        </a>
-      </section>
-
     </div>
   );
 }
