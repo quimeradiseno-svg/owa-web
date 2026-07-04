@@ -95,27 +95,35 @@ export default function Hero() {
           {/* Letter by Letter Title */}
           <h1 className="font-display font-black text-4xl sm:text-6xl md:text-8xl tracking-tighter text-white uppercase select-none leading-[0.9] mb-4">
             <span className="block mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-400">
-              {line1.split("").map((char, index) => (
-                <motion.span
-                  key={index}
-                  variants={letterVariants}
-                  className="inline-block"
-                  style={{ marginRight: char === " " ? "15px" : "2px" }}
-                >
-                  {char}
-                </motion.span>
+              {line1.split(" ").map((word, wIdx) => (
+                <span key={wIdx} className="inline-block whitespace-nowrap" style={{ marginRight: wIdx !== line1.split(" ").length - 1 ? "15px" : "0" }}>
+                  {word.split("").map((char, index) => (
+                    <motion.span
+                      key={index}
+                      variants={letterVariants}
+                      className="inline-block"
+                      style={{ marginRight: "2px" }}
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                </span>
               ))}
             </span>
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-owa-sky via-[#7ad3fb] to-owa-blue drop-shadow-md">
-              {line2.split("").map((char, index) => (
-                <motion.span
-                  key={index}
-                  variants={letterVariants}
-                  className="inline-block"
-                  style={{ marginRight: char === " " ? "15px" : "2px" }}
-                >
-                  {char}
-                </motion.span>
+              {line2.split(" ").map((word, wIdx) => (
+                <span key={wIdx} className="inline-block whitespace-nowrap" style={{ marginRight: wIdx !== line2.split(" ").length - 1 ? "15px" : "0" }}>
+                  {word.split("").map((char, index) => (
+                    <motion.span
+                      key={index}
+                      variants={letterVariants}
+                      className="inline-block"
+                      style={{ marginRight: "2px" }}
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                </span>
               ))}
             </span>
           </h1>
