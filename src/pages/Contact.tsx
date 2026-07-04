@@ -43,7 +43,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400 font-sans">Instagram</p>
-                    <p className="text-white font-medium">@openwaterargentina</p>
+                    <a href="https://www.instagram.com/owargentina/" target="_blank" rel="noopener noreferrer" className="text-white font-medium hover:text-owa-sky transition-colors">@owargentina</a>
                   </div>
                 </div>
               </div>
