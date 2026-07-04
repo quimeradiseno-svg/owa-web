@@ -77,7 +77,7 @@ export default function DashboardPreview() {
                     <Award size={20} />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-lg text-white uppercase tracking-tight">Ranking GP 25/26</h3>
+                    <h3 className="font-display font-bold text-lg text-white uppercase tracking-tight">Ranking GP 26/27</h3>
                     <p className="text-[11px] font-sans text-gray-400">Actualizado hace unos instantes</p>
                   </div>
                 </div>

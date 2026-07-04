@@ -16,7 +16,7 @@ export default function RaceCalendar() {
 
   const events: RaceEvent[] = [
     {
-      date: "13/12/2025",
+      date: "13/12/2026",
       code: "LBC",
       name: "Cruce del Lago Nahuel Huapi",
       location: "San Carlos de Bariloche, Río Negro",
@@ -24,7 +24,7 @@ export default function RaceCalendar() {
       status: "Abierta"
     },
     {
-      date: "20/12/2025",
+      date: "20/12/2026",
       code: "VOB",
       name: "Vuelta de Obligado Histórica",
       location: "San Pedro, Buenos Aires",
@@ -32,7 +32,7 @@ export default function RaceCalendar() {
       status: "Abierta"
     },
     {
-      date: "21/12/2025",
+      date: "21/12/2026",
       code: "SPD",
       name: "San Pedro Sprint Aguas Abiertas",
       location: "San Pedro, Buenos Aires",
@@ -40,7 +40,7 @@ export default function RaceCalendar() {
       status: "Abierta"
     },
     {
-      date: "22/12/2025",
+      date: "22/12/2026",
       code: "SNP70",
       name: "Challenge San Nicolás - Vuelta de Obligado 70K",
       location: "San Nicolás / San Pedro, Buenos Aires",
@@ -48,7 +48,7 @@ export default function RaceCalendar() {
       status: "Abierta"
     },
     {
-      date: "17/01/2026",
+      date: "17/01/2027",
       code: "PNR",
       name: "Cruce Río Paraná - Desafío Costanera",
       location: "Paraná, Entre Ríos",
@@ -56,7 +56,7 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "03-13/02/26 & 10-20/03/26",
+      date: "03-13/02/27 & 10-20/03/27",
       code: "RDP40",
       name: "Cruce del Río de la Plata 40K (Edición Histórica)",
       location: "Colonia (ROU) a Punta Lara (ARG)",
@@ -64,7 +64,7 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "17/02/2026",
+      date: "17/02/2027",
       code: "NHL",
       name: "Nahuel Huapi Lake GP (Copa Élite)",
       location: "Villa La Angostura, Neuquén",
@@ -72,7 +72,7 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "21/02/2026",
+      date: "21/02/2027",
       code: "VHU",
       name: "Cruce Villa Huapi",
       location: "Lago Nahuel Huapi, Dina Huapi",
@@ -80,7 +80,7 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "21/03/2026",
+      date: "21/03/2027",
       code: "ISC",
       name: "Glaciar Challenge Isla Solitaria",
       location: "Lago Argentino, El Calafate, Santa Cruz",
@@ -88,7 +88,7 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "22/03/2026",
+      date: "22/03/2027",
       code: "CLN",
       name: "Cruce de las Colonias",
       location: "Colón, Entre Ríos",
@@ -96,7 +96,7 @@ export default function RaceCalendar() {
       status: "Próximamente"
     },
     {
-      date: "12/04/2026",
+      date: "12/04/2027",
       code: "PAD",
       name: "Puerto Madryn Ocean Extreme",
       location: "Golfo Nuevo, Puerto Madryn, Chubut",
@@ -147,7 +147,7 @@ export default function RaceCalendar() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="text-xs font-sans font-bold tracking-widest text-owa-sky uppercase bg-owa-sky/10 border border-owa-sky/20 px-3 py-1 rounded-full">
-            Calendario Oficial 25/26
+            Calendario Oficial 26/27
           </span>
           <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl tracking-tight text-white uppercase mt-4 mb-6 leading-none">
             PRÓXIMAS <span className="text-transparent bg-clip-text bg-gradient-to-r from-owa-sky to-white">COMPETENCIAS</span>

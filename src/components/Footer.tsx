@@ -55,7 +55,7 @@ export default function Footer() {
           {/* Quick Links (2 Cols) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <h4 className="font-display font-bold text-xs tracking-widest text-white uppercase mb-2">Compite</h4>
-            <a href="#calendar" className="text-gray-400 hover:text-owa-sky text-sm transition-colors">Calendario 25/26</a>
+            <a href="#calendar" className="text-gray-400 hover:text-owa-sky text-sm transition-colors">Calendario 26/27</a>
             <a href="#categories" className="text-gray-400 hover:text-owa-sky text-sm transition-colors">Categorías</a>
             <a href="#resultados" className="text-gray-400 hover:text-owa-sky text-sm transition-colors">Resultados & Ranking</a>
             <a href="#store" className="text-gray-400 hover:text-owa-sky text-sm transition-colors">OWA Store</a>

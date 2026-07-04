@@ -89,7 +89,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-owa-sky/30 bg-owa-blue/30 backdrop-blur-md mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-owa-sky animate-ping" />
-            <span className="font-sans text-xs font-semibold tracking-widest text-owa-sky uppercase">Inscripciones Abiertas Temporada 25/26</span>
+            <span className="font-sans text-xs font-semibold tracking-widest text-owa-sky uppercase">Inscripciones Abiertas Temporada 26/27</span>
           </motion.div>
 
           {/* Letter by Letter Title */}
@@ -140,7 +140,7 @@ export default function Hero() {
                 className="w-full sm:w-auto px-8 py-4 bg-owa-sky hover:bg-[#4ab4e1] text-owa-deep font-display font-black text-sm tracking-widest uppercase rounded-xl transition-all duration-300 shadow-xl shadow-owa-sky/20 flex items-center justify-center gap-3 cursor-pointer"
               >
                 <Calendar size={18} />
-                Calendario 25/26
+                Calendario 26/27
               </motion.button>
             </a>
             <a href="#categories" className="w-full sm:w-auto">
