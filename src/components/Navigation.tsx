@@ -11,7 +11,7 @@ export default function Navigation() {
     { name: 'Nosotros', href: '/nosotros' },
     { name: 'Grand Prix OWA', href: '/grand-prix' },
     { name: 'Circuito OWA', href: '/circuito' },
-    { name: 'Challenge', href: '/challenge' },
+    { name: 'OWA Challenge', href: '/challenge' },
     { name: 'Resultados', href: '/#resultados' },
     { name: 'Contacto', href: '/contacto' },
   ];
