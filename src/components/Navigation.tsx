@@ -8,7 +8,7 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { name: 'Nosotros', href: '/#nosotros' },
+    { name: 'Nosotros', href: '/nosotros' },
     { name: 'Grand Prix', href: '/#categories' },
     { name: 'Circuito', href: '/#categories' },
     { name: 'Challenge', href: '/#categories' },
