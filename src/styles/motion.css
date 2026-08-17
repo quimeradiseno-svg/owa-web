@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Movimiento
+   Un solo gesto autoral: el contenido se destapa desde abajo, como el agua
+   dejando ver algo. Todo lo demás es feedback funcional (press, hover, foco).
+   Reglas: sólo transform / opacity / clip-path / filter. Nada supera 300ms
+   salvo lo decorativo del hero. Reduced-motion y hover gating vienen incluidos.
+   ========================================================================== */
+
+/* ---------------------------------------------------------- scroll reveal
+   El elemento arranca visible en el DOM y sin JS (progressive enhancement):
+   sólo se oculta si main lleva [data-reveal-ready].
+   --reveal-y (no `transform` directo) es lo que cambia entre oculto/visible:
+   así .u-lift/.u-lift-sm pueden sumar su propio offset por encima sin pisarse
+   con esta regla, y un .reveal SIN lift (paneles de ranking, filas del
+   calendario) no tiene ninguna regla de :hover compitiendo — se queda quieto,
+   que es lo esperado salvo que la tarjeta declare explícitamente un lift.    */
+[data-reveal-ready] .reveal {
+  --reveal-y: 14px;
+  opacity: 0;
+  transform: translateY(var(--reveal-y));
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 520ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal-ready] .reveal[data-visible] {
+  --reveal-y: 0px;
+  opacity: 1;
+}
+
+/* Variante para bloques con foto: se destapa de abajo hacia arriba. */
+[data-reveal-ready] .reveal-clip {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 700ms var(--ease-in-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal-ready] .reveal-clip[data-visible] {
+  clip-path: inset(0 0 0 0);
+}
+
+/* --------------------------------------------------------------- stagger
+   50ms entre hermanos: se lee como cascada sin volver lenta la página.
+   Nunca bloquea la interacción — los elementos ya son clickeables.          */
+[data-stagger] > * {
+  --reveal-delay: calc(var(--i, 0) * 50ms);
+}
+
+/* ------------------------------------------------------------ press feedback
+   :active es un press real también en touch, así que no se gatea.           */
+.u-press {
+  transition: transform 160ms var(--ease-out);
+}
+.u-press:active {
+  transform: scale(0.97);
+}
+
+/* ----------------------------------------------------------- hover gating
+   En touch, el tap dispara :hover y deja la tarjeta trabada en el estado.   */
+@media (hover: hover) and (pointer: fine) {
+  .u-lift {
+    transition:
+      transform 260ms var(--ease-out),
+      box-shadow 260ms var(--ease-out);
+  }
+  .u-lift:hover {
+    /* Suma el lift al offset de reveal ya asentado (0px), en vez de pisarlo:
+       misma cuenta que dejaría .reveal solo, más los -9px del hover. */
+    transform: translateY(calc(var(--reveal-y, 0px) - 9px));
+    box-shadow: var(--shadow-lifted);
+  }
+
+  .u-lift-sm {
+    transition: transform 220ms var(--ease-out);
+  }
+  .u-lift-sm:hover {
+    transform: translateY(calc(var(--reveal-y, 0px) - 4px));
+  }
+
+  .u-nudge > .u-nudge-arrow {
+    transition: transform 200ms var(--ease-out);
+  }
+  .u-nudge:hover > .u-nudge-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* ------------------------------------------------- indicador de navegación
+   Un solo elemento que se desliza: el color y la posición cambian juntos,
+   que es lo que nunca logra transicionar cada link por separado.            */
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 1px;
+  background: var(--color-owa-cyan);
+  transform: translateX(var(--nav-x, 0)) scaleX(var(--nav-w, 0));
+  transform-origin: left center;
+  transition:
+    transform 280ms var(--ease-in-out),
+    opacity 200ms var(--ease-out);
+}
+.nav-indicator[data-hidden] {
+  opacity: 0;
+}
+
+/* --------------------------------------------------------- hero decorativo
+   Deriva lentísima sobre la foto: da sensación de corriente sin llamar la
+   atención. Marketing puro, por eso puede durar mucho más que 300ms.        */
+.hero-drift {
+  animation: owa-drift 28s var(--ease-in-out) infinite alternate;
+  will-change: transform;
+}
+@keyframes owa-drift {
+  from {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+/* Entrada del hero: escalonada a mano, no reutiliza el reveal genérico. */
+.hero-in {
+  animation: owa-hero-in 700ms var(--ease-out) both;
+  animation-delay: var(--hero-delay, 0ms);
+}
+@keyframes owa-hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------- cambio de ruta (SPA)
+   Salida rápida, entrada un poco más larga: el sistema responde ya, y lo que
+   llega tiene tiempo de leerse.                                             */
+::view-transition-old(root) {
+  animation: owa-vt-out 130ms ease both;
+}
+::view-transition-new(root) {
+  animation: owa-vt-in 240ms var(--ease-out) both;
+}
+@keyframes owa-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes owa-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* -------------------------------------------------------- volver arriba
+   Fijo, fuera del flujo del router: no se re-renderiza al cambiar de ruta.
+   Mismo trato que un popover — transform+opacity, ease-out, bajo 200ms —
+   arrancando un poco más chico y abajo, nunca desde escala 0.               */
+.volver-arriba {
+  opacity: 0;
+  transform: translateY(10px) scale(0.94);
+  pointer-events: none;
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+.volver-arriba[data-visible] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ----------------------------------------------------------- estado en vivo */
+.live-dot {
+  animation: owa-pulse 1.6s var(--ease-in-out) infinite;
+}
+@keyframes owa-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* --------------------------------------------------------------- blur-up
+   El LQIP va como background de la propia imagen; la foto real aparece encima
+   con un fundido corto, así el salto de borroso a nítido no se ve como corte. */
+.img-fade {
+  opacity: 0;
+  transition: opacity 480ms var(--ease-out);
+}
+.img-fade[data-loaded] {
+  opacity: 1;
+}
+
+/* El video del hero entra encima del poster con el mismo fundido — recién
+   cuando puede reproducir sin cortes, nunca antes (frame negro) ni con salto. */
+.video-fade {
+  opacity: 0;
+  transition: opacity 480ms var(--ease-out);
+}
+.video-fade[data-ready] {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------- ficha de nadador
+   Se abre bajo la fila que la disparó, así que crece desde arriba.          */
+.ficha-in {
+  animation: owa-ficha 260ms var(--ease-out) both;
+  transform-origin: top center;
+}
+@keyframes owa-ficha {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ============================================================ reduced motion
+   Menos y más suave, no cero: se conservan las opacidades que explican un
+   cambio de estado y se elimina todo desplazamiento.                        */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-ready] .reveal,
+  [data-reveal-ready] .reveal-clip {
+    transform: none;
+    clip-path: none;
+    transition: opacity 260ms ease;
+    transition-delay: 0ms;
+  }
+  [data-reveal-ready] .reveal-clip {
+    opacity: 0;
+  }
+  [data-reveal-ready] .reveal-clip[data-visible] {
+    opacity: 1;
+  }
+
+  .hero-drift {
+    animation: none;
+    transform: scale(1.06);
+  }
+  .hero-in,
+  .ficha-in {
+    animation: owa-fade 240ms ease both;
+    animation-delay: 0ms;
+  }
+  @keyframes owa-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .u-lift:hover,
+  .u-lift-sm:hover,
+  .u-nudge:hover > .u-nudge-arrow,
+  .u-press:active {
+    transform: none;
+  }
+  .volver-arriba {
+    transform: none;
+    transition: opacity 200ms ease;
+  }
+  .img-fade {
+    transition-duration: 200ms;
+  }
+  .live-dot {
+    animation: none;
+    opacity: 0.75;
+  }
+  .nav-indicator {
+    transition: opacity 160ms ease;
+  }
+  ::view-transition-new(root) {
+    animation: owa-fade 200ms ease both;
+  }
+}

@@ -1,0 +1,78 @@
+// Turns the ~1250px master JPEGs in Fotos/ into responsive AVIF + WebP sets in
+// public/img/, plus a blur-up placeholder baked into src/data/media-lqip.js.
+//
+// Only the photos listed in PHOTOS ship — the rest of Fotos/ stays as archive.
+import { readdir, mkdir, writeFile } from 'node:fs/promises';
+import sharp from 'sharp';
+
+const WIDTHS = [480, 960, 1250];
+const OUT = 'public/img';
+
+// slug -> source file, matched by prefix so the MLE-#### suffix can change.
+const PHOTOS = {
+  // home
+  'travel-barco': 'VOB/06_LARGADA_RIO_BARCO',
+  'pad-infantil': 'SPD/19_INFANTIL_NENE_BOYA',
+  // torneos
+  'gp-contraluz': 'SPD/14_CARRERA_CONTRALUZ',
+  'circuito-grupo': 'VOB/07_NADO_GRUPO',
+  'especiales-panoramica': 'SPD/06_RIO_SUP_PANORAMICA',
+  // solitario, boya de seguridad, montañas nevadas: la postal de ultradistancia.
+  'challenge-lago': 'Fotos/CHALLENGE/@juancruzrabaglia-2077.jpg',
+  // eventos
+  'ev-pilar': 'VOB/07_LARGADA_ENTRADA_AL_AGUA',
+  'ev-san-pedro': 'SPD/08_CARRERA_CAMPO_BOYAS',
+  'ev-ramallo': 'SPD/09_CARRERA_BRAZADA_COLORES',
+  'ev-pinamar': 'VOB/03_PREVIA_PANORAMICA_PLAYA',
+  'ev-nahuel': 'VOB/09_NADO_COSTA_VERDE',
+  'ev-huemul': 'SPD/12_NATURALEZA_GANSOS',
+  'ev-colon': 'VOB/16_LLEGADA_ARCO_OWA',
+  'ev-maraton': 'SPD/22_SALIDA_AGUA_DINAMICA',
+  'ev-rdp40': 'VOB/13_NADO_ACCION_SPLASH',
+  'ev-snp70': 'SPD/13_KAYAK_ESCOLTA',
+  'ev-bvt21': 'VOB/12_KAYAK_GUIA',
+  // secciones
+  'sede-comunidad': 'VOB/08_ESCALA_COMUNIDAD',
+  'travel-playa': 'VOB/04_PREVIA_GRUPO_ABRAZADO',
+  // Apaisada: la vertical sólo daba el corte de 480px y se veía blanda a 1216.
+  'pad-familia': 'SPD/23_FAMILIA_ORILLA',
+  'podio-trofeo': 'SPD/29_PODIO_TROFEO_ALTO',
+  // poster del video del hero — vive fuera de SPD/VOB, así que se referencia
+  // con la ruta completa en vez de una clave del índice.
+  'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',
+};
+
+const index = {};
+for (const dir of ['SPD', 'VOB']) {
+  for (const f of await readdir(`Fotos/${dir}`)) index[`${dir}/${f.replace(/_MLE-\d+\.jpg$/i, '')}`] = `Fotos/${dir}/${f}`;
+}
+
+await mkdir(OUT, { recursive: true });
+const lqip = {};
+
+for (const [slug, key] of Object.entries(PHOTOS)) {
+  const src = index[key] || (key.startsWith('Fotos/') ? key : null);
+  if (!src) throw new Error(`No encontré la foto ${key}`);
+
+  const img = sharp(src);
+  const { width: sw, height: sh } = await img.metadata();
+
+  for (const w of WIDTHS) {
+    if (w > sw) continue;
+    await sharp(src).resize({ width: w }).avif({ quality: 58, effort: 6 }).toFile(`${OUT}/${slug}-${w}.avif`);
+    await sharp(src).resize({ width: w }).webp({ quality: 76 }).toFile(`${OUT}/${slug}-${w}.webp`);
+  }
+  // widest webp doubles as the <img src> fallback
+  await sharp(src).resize({ width: Math.min(1250, sw) }).jpeg({ quality: 78, mozjpeg: true }).toFile(`${OUT}/${slug}.jpg`);
+
+  const blur = await sharp(src).resize({ width: 20 }).blur(1).webp({ quality: 30 }).toBuffer();
+  lqip[slug] = { d: `data:image/webp;base64,${blur.toString('base64')}`, r: +(sw / sh).toFixed(4) };
+
+  console.log(`${slug.padEnd(22)} ${sw}x${sh}  ${WIDTHS.filter((w) => w <= sw).join('/')}`);
+}
+
+await writeFile(
+  'src/data/media-lqip.js',
+  `// Generado por scripts/images.mjs — no editar a mano.\nexport const LQIP = ${JSON.stringify(lqip, null, 0)};\n`
+);
+console.log(`\n${Object.keys(PHOTOS).length} fotos → ${OUT}`);

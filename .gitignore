@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.qa/
+
+# Material fuente en crudo (drone 4K, fotos originales, fuentes .ttf): pesa
+# más de 1GB y no hace falta para correr el sitio — lo que se sirve son los
+# derivados ya procesados en public/ (imágenes responsive, video comprimido,
+# fuentes en woff2). Si hace falta reprocesar algo, scripts/images.mjs y
+# scripts/fonts.mjs regeneran todo a partir de estas carpetas.
+Fotos/
+Fonts/
+
+# Adobe MCP / otros scripts locales
+.env
+.env.local
+
+# SO / editor
+.DS_Store
+Thumbs.db
+
+# Tooling de Claude Code / skills instaladas — no es parte del sitio
+.agents/
+.claude/
+skills-lock.json

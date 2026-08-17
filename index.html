@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es-AR" data-theme="owa">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Open Water Argentina · Temporada 2026/27</title>
+    <meta
+      name="description"
+      content="Ocho fechas en río, lago y mar. Grand Prix, Circuito OWA, eventos especiales y los cruces de ultradistancia del OWA Challenge. El agua nos une."
+    />
+    <meta name="theme-color" content="#211e5f" />
+    <link rel="icon" href="/brand/owa-iso-cyan.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/vito-wide-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/lato-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Open Water Argentina · Temporada 2026/27" />
+    <meta property="og:description" content="Elegí tu próximo desafío. Ocho fechas, dos torneos puntuables y una comunidad que vuelve carrera tras carrera." />
+    <meta property="og:image" content="/img/hero-drone-1250.webp" />
+    <meta property="og:locale" content="es_AR" />
+
+    <link rel="stylesheet" href="/src/styles/app.css" />
+  </head>
+  <body>
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100 focus:rounded-full focus:bg-owa-cyan focus:px-5 focus:py-3 focus:font-display focus:text-xs focus:font-black focus:tracking-widest focus:text-owa-deep"
+      >Ir al contenido</a
+    >
+
+    <!-- El pico de ola del branding, usado como máscara de las fotos de tarjeta -->
+    <svg width="0" height="0" aria-hidden="true" class="absolute">
+      <defs>
+        <clipPath id="owa-pico-ola" clipPathUnits="objectBoundingBox">
+          <path
+            d="M0,0 L1,0 L1,0.9764 L0.40,0.9764 C0.34,0.9764 0.305,0.9623 0.27,0.934 C0.26,0.9245 0.255,0.9198 0.25,0.9198 C0.245,0.9198 0.24,0.9245 0.23,0.934 C0.195,0.9623 0.16,0.9764 0.10,0.9764 L0,0.9764 Z"
+          />
+        </clipPath>
+      </defs>
+    </svg>
+
+    <div id="shell"></div>
+    <main id="contenido" class="bg-white text-owa-navy"></main>
+    <div id="pie"></div>
+    <div id="volver"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

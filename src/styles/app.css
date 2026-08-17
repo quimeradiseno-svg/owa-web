@@ -1,0 +1,252 @@
+@import 'tailwindcss';
+@import './motion.css';
+
+@plugin 'daisyui' {
+  themes: false;
+}
+
+/* ---------------------------------------------------------------- fuentes */
+@font-face {
+  font-family: 'Vito Wide';
+  src: url('/fonts/vito-wide-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Vito Wide';
+  src: url('/fonts/vito-wide-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lato';
+  src: url('/fonts/lato-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lato';
+  src: url('/fonts/lato-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -------------------------------------------------- tokens de marca (DS)
+   Espejo de _ds/owa-design-system/tokens/*.css, expuesto como utilidades
+   Tailwind: bg-owa-navy, text-owa-cyan, rounded-owa-lg, ease-out, …        */
+@theme {
+  --color-owa-navy: #211e5f; /* blue-1  · surface-page-dark, text-body     */
+  --color-owa-blue: #12129b; /* blue-2  · brand-primary                    */
+  --color-owa-electric: #1d0fff; /* blue-3  · link                             */
+  --color-owa-cyan: #00ace9; /* blue-4  · brand-accent                     */
+  --color-owa-sky: #5bc5f2; /* blue-5  · accent suave sobre oscuro        */
+  --color-owa-mist: #e3f3f7; /* blue-6  · superficie celeste               */
+  --color-owa-abyss: #0d1030; /* navy profundo de los heros y el footer     */
+  --color-owa-deep: #08324a; /* texto sobre cian (5.2:1)                   */
+
+  --color-owa-ink: #090a0a; /* gray-1                                     */
+  --color-owa-slate: #454647; /* gray-2  · texto secundario sobre claro     */
+  --color-owa-gray: #9e9fa9; /* gray-3  · texto secundario SOLO sobre oscuro */
+  --color-owa-line: #e4e6e3; /* gray-4  · border-subtle                    */
+  --color-owa-sand: #f1f7ed; /* gray-5  · surface-sunken                   */
+
+  --color-owa-gold: #f7ce00; /* podio 1º                                   */
+  --color-owa-bronze: #e0b848; /* podio 3º                                   */
+  --color-owa-live: #c42228; /* red-1   · estado en vivo                   */
+
+  --font-display: 'Vito Wide', Calibri, Arial, sans-serif;
+  --font-body: 'Lato', Calibri, Arial, sans-serif;
+  --font-sans: 'Lato', Calibri, Arial, sans-serif;
+
+  --radius-owa-lg: 28px; /* --radius-lg  · tarjetas grandes            */
+  --radius-owa-md: 16px; /* --radius-md  · tarjetas chicas, chips      */
+
+  --shadow-card: 0 4px 20px rgb(18 18 155 / 0.1);
+  --shadow-elevated: 0 12px 40px rgb(18 18 155 / 0.16);
+  --shadow-lifted: 0 26px 60px rgb(33 30 95 / 0.32);
+
+  /* Curvas fuertes: las built-in de CSS son demasiado suaves.
+     Sobrescribir --ease-out hace que TODO `ease-out` del proyecto sea el bueno. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ------------------------------------------------------------ tema daisyUI */
+@plugin 'daisyui/theme' {
+  name: 'owa';
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #f1f7ed;
+  --color-base-300: #e4e6e3;
+  --color-base-content: #211e5f;
+
+  --color-primary: #12129b;
+  --color-primary-content: #ffffff;
+  --color-secondary: #211e5f;
+  --color-secondary-content: #ffffff;
+  --color-accent: #00ace9;
+  --color-accent-content: #08324a;
+  --color-neutral: #211e5f;
+  --color-neutral-content: #ffffff;
+
+  --color-info: #5bc5f2;
+  --color-info-content: #08324a;
+  --color-success: #87c80a;
+  --color-success-content: #0d1030;
+  --color-warning: #ffdd00;
+  --color-warning-content: #211e5f;
+  --color-error: #c42228;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 2rem;
+  --radius-field: 2rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* --------------------------------------------------------------- base */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--color-owa-abyss);
+    color: var(--color-base-content);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    /* Vito Wide ya es ancha; el -0.02em aprieta el conjunto sin cerrar letras.
+       El word-spacing compensa: sin él "NOS UNE" se lee "NOSUNE" en display. */
+    letter-spacing: -0.02em;
+    word-spacing: 0.08em;
+    line-height: 0.94;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Superficies del navegador que no dibujamos pero igual son parte del diseño */
+  ::selection {
+    background: var(--color-owa-cyan);
+    color: #fff;
+  }
+  :root {
+    caret-color: var(--color-owa-cyan);
+    accent-color: var(--color-owa-cyan);
+    scrollbar-color: var(--color-owa-cyan) var(--color-owa-abyss);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-owa-cyan);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: from-font;
+  }
+  /* Cifras de ranking, tiempos y puntajes: siempre tabulares */
+  table,
+  [data-nums] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* --------------------------------------------------------- utilidades */
+@utility u-shell {
+  margin-inline: auto;
+  width: 100%;
+  /* 1280px (80rem) es el ancho del CONTENIDO, no el borde exterior de la caja.
+     Por debajo de ese viewport el padding sigue siendo aire de borde normal
+     (mobile/tablet). A partir de 1280px de viewport el padding deja de
+     robarle ancho al contenido: crece de 0 a 32px recién entre 1280 y 1344px
+     de viewport, así el contenido da 1280px reales en todo ese rango y de
+     ahí en más queda centrado con 32px fijos. Sin este quiebre, a exactamente
+     1280px de ventana el contenido caía a 1216px. */
+  max-width: 84rem;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: clamp(0px, calc((100vw - 80rem) / 2), 2rem);
+  }
+}
+
+/* Volanta: Vito 700, tracking abierto, cian. Firma tipográfica de OWA. */
+@utility u-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Titular de sección: escala fluida idéntica al prototipo aprobado. */
+@utility u-h2 {
+  font-size: clamp(2rem, 4.2vw, 3.375rem);
+}
+@utility u-h1 {
+  font-size: clamp(2.5rem, 6.4vw, 5.75rem);
+  line-height: 0.9;
+}
+
+/* La ola recortada del branding, como máscara de las fotos de tarjeta. */
+@utility u-pico-ola {
+  clip-path: url(#owa-pico-ola);
+}
+
+/* Velo del hero: deja el medio limpio para que se vea la foto y cierra abajo
+   casi opaco, que es donde caen el titular, la bajada y los botones.
+   Sin el tramo del 72% el párrafo queda sobre nadadores y no llega a 4.5:1. */
+@utility u-hero-scrim {
+  background: linear-gradient(
+    180deg,
+    rgb(13 16 48 / 0.62) 0%,
+    rgb(13 16 48 / 0.12) 32%,
+    rgb(13 16 48 / 0.55) 62%,
+    rgb(13 16 48 / 0.88) 84%,
+    rgb(13 16 48 / 0.97) 100%
+  );
+}
+
+/* Igual pero más corto, para los heros de ficha y de sección. */
+@utility u-hero-scrim-sm {
+  background: linear-gradient(
+    180deg,
+    rgb(13 16 48 / 0.5) 0%,
+    rgb(13 16 48 / 0.3) 30%,
+    rgb(13 16 48 / 0.78) 72%,
+    rgb(13 16 48 / 0.96) 100%
+  );
+}
