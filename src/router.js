@@ -36,7 +36,8 @@ const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)')
 let primerPintado = true;
 
 async function pintar(path, { scroll = true } = {}) {
-  const hallada = resolver(path) || resolver('/404');
+  const pathname = path.split('?')[0];
+  const hallada = resolver(pathname) || resolver('/404');
   if (!hallada) return;
 
   const vista = await hallada.cargar();
