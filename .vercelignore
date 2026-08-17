@@ -1,0 +1,15 @@
+node_modules
+dist
+.qa
+.git
+
+# Con barra inicial: sólo la carpeta raíz, no public/fonts/ (que sí hace falta).
+# Material fuente en crudo — no hace falta para servir el sitio, sólo los
+# derivados ya procesados que viven en public/.
+/Fotos
+/Fonts
+
+# Tooling de Claude Code / skills instaladas
+.agents
+.claude
+skills-lock.json

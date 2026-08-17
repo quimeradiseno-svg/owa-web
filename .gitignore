@@ -7,8 +7,11 @@ dist/
 # derivados ya procesados en public/ (imágenes responsive, video comprimido,
 # fuentes en woff2). Si hace falta reprocesar algo, scripts/images.mjs y
 # scripts/fonts.mjs regeneran todo a partir de estas carpetas.
-Fotos/
-Fonts/
+# Con barra inicial: sólo la carpeta raíz, no cualquier carpeta "fotos"/"fonts"
+# en el árbol — sin el "/" esto también se comía public/fonts/ (case-insensitive
+# en Windows), que es justo lo que el sitio necesita para funcionar.
+/Fotos/
+/Fonts/
 
 # Adobe MCP / otros scripts locales
 .env
@@ -22,3 +25,5 @@ Thumbs.db
 .agents/
 .claude/
 skills-lock.json
+
+.vercel
