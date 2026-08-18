@@ -31,7 +31,6 @@ export function foto({ slug, alt, sizes = '100vw', className = '', imgClass = ''
         ${raw(priority ? 'fetchpriority="high" decoding="sync"' : 'loading="lazy" decoding="async"')}
         class="img-fade ${imgClass}"
         style="background-image:url('${meta.d}');background-size:cover;background-position:${position}"
-        onload="this.dataset.loaded=''"
       />
     </picture>
   `;
@@ -109,3 +108,28 @@ export function montarFondoVideo(root) {
 }
 
 export { WIDTHS, setFor };
+
+/* El blur-up marca cada <img> con data-loaded cuando termina de cargar, y el
+   CSS la funde de opacity 0 a 1. Antes iba como onload= inline, pero la CSP
+   (script-src 'self') bloquea los handlers inline y las fotos quedaban
+   invisibles en produccion. Se resuelve con un listener en captura: el evento
+   'load' no burbujea, pero si se puede capturar desde document. */
+let listenerFotos = false;
+
+export function montarFotos(root = document) {
+  if (!listenerFotos) {
+    listenerFotos = true;
+    const marcar = (e) => {
+      const el = e.target;
+      if (el instanceof HTMLImageElement && el.classList.contains('img-fade')) el.dataset.loaded = '';
+    };
+    document.addEventListener('load', marcar, true);
+    // Una foto rota tampoco puede quedar en opacity 0: no se veria ni el alt.
+    document.addEventListener('error', marcar, true);
+  }
+
+  // Las que salen de cache pueden haber cargado antes de entrar al DOM.
+  root.querySelectorAll('img.img-fade').forEach((img) => {
+    if (img.complete) img.dataset.loaded = '';
+  });
+}

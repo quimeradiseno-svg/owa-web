@@ -3,6 +3,7 @@ import { navbar, montarNavbar } from './components/navbar.js';
 import { footer } from './components/footer.js';
 import { volverArriba, montarVolverArriba } from './components/volver-arriba.js';
 import { activarReveal, observarReveals, revelarVisibles } from './lib/reveal.js';
+import { montarFotos } from './lib/img.js';
 
 const shell = document.getElementById('shell');
 const main = document.getElementById('contenido');
@@ -32,8 +33,13 @@ definir('/404', () => import('./views/no-encontrada.js'));
 
 activarReveal(main);
 
+// El fundido de las fotos se activa por JS (la CSP no permite onload= inline),
+// asi que hay que re-barrer en cada cambio de ruta.
+montarFotos();
+
 arrancar(main, (_patron, ctx) => {
   colocarIndicador(ctx.path);
+  montarFotos(main);
   revelarVisibles(main);
   observarReveals(main);
 });
