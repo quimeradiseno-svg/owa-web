@@ -58,7 +58,7 @@ function fila(e) {
     <li>
       <a
         href="/carrera/${e.slug}"
-        class="group grid items-center gap-x-5 gap-y-4 border-b border-owa-sand p-4 transition-colors duration-200 ease-out hover:bg-owa-mist/50 md:grid-cols-[15rem_8rem_minmax(0,1fr)_auto]"
+        class="group grid items-center gap-x-5 gap-y-4 border-b border-owa-sand p-4 transition-colors duration-200 ease-out hover:bg-owa-mist/50 md:grid-cols-[15rem_9rem_minmax(0,1fr)_auto]"
       >
         <div class="relative h-30 overflow-hidden rounded-owa-md bg-owa-abyss md:h-29.5">
           ${foto({
@@ -71,7 +71,7 @@ function fila(e) {
         </div>
 
         <div class="min-w-0">
-          <p class="font-display text-[clamp(1rem,1.5vw,1.375rem)] leading-tight text-owa-slate uppercase">
+          <p class="font-display text-[clamp(1rem,1.5vw,1.375rem)] leading-tight break-words text-owa-slate uppercase">
             ${e.fechaCorta}${e.anio ? html` <span class="text-owa-slate">${e.anio}</span>` : ''}
           </p>
           ${e.nota ? html`<p class="mt-2 text-[11px] text-owa-slate">${e.nota}</p>` : ''}

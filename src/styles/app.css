@@ -212,6 +212,16 @@
   line-height: 1;
 }
 
+/* Siglas de marca (OWA, PDA) dentro de texto corrido: van en Vito Black para
+   que se lean como marca y no como una palabra más. Vito Wide es más ancha y
+   más alta de x que Lato, así que se compensa un poco el tamaño. */
+@utility u-sigla {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.92em;
+  letter-spacing: 0.01em;
+}
+
 /* Titular de sección: escala fluida idéntica al prototipo aprobado. */
 @utility u-h2 {
   font-size: clamp(2rem, 4.2vw, 3.375rem);

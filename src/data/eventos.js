@@ -3,28 +3,30 @@
 
 export const EVENTOS = [
   {
-    slug: 'pilar',
-    sigla: 'PIL',
-    nombre: 'Open Water Pilar',
-    corto: 'PILAR',
-    sede: 'Pilar · Buenos Aires',
-    sedeCorta: 'PILAR',
+    slug: 'lujan',
+    sigla: 'LJN',
+    nombre: 'Open Water Luján',
+    corto: 'LUJÁN',
+    sede: 'Luján · Buenos Aires',
+    sedeCorta: 'LUJÁN',
     tipo: 'core',
     fechaCorta: '31 OCT',
     anio: '2026',
     fechaLarga: 'Sábado 31 de octubre de 2026',
     nota: '',
     estado: 'abierta',
-    img: 'ev-pilar',
+    img: 'ev-lujan',
     jornadas: [
       {
         torneo: 'GRAND PRIX',
+        sigla: 'LJN',
         fecha: '31/10/2026',
         dia: 'Jornada Grand Prix',
         desc: 'Élite y máster competitivo. Puntúa para el ranking Grand Prix.',
       },
       {
         torneo: 'CIRCUITO OWA',
+        sigla: 'LJN',
         fecha: '31/10/2026',
         dia: 'Jornada Circuito · mismo día',
         desc: 'Única fecha del calendario donde ambas competencias se corren el mismo día.',
@@ -33,7 +35,9 @@ export const EVENTOS = [
   },
   {
     slug: 'san-pedro',
-    sigla: 'SNP',
+    // Dos jornadas con nombre propio: la Vuelta de Obligado abre el fin de
+    // semana y la de San Pedro lo cierra (ver `jornadas`).
+    sigla: 'VOB · SNP',
     nombre: 'Open Water San Pedro',
     corto: 'SAN PEDRO',
     sede: 'San Pedro · Buenos Aires',
@@ -49,12 +53,14 @@ export const EVENTOS = [
     jornadas: [
       {
         torneo: 'GRAND PRIX',
+        sigla: 'VOB',
         fecha: '14/11/2026',
         dia: 'Día 1 · Grand Prix',
         desc: 'Sobre el Paraná, con largada desde la costanera de San Pedro.',
       },
       {
         torneo: 'CIRCUITO OWA',
+        sigla: 'SNP',
         fecha: '15/11/2026',
         dia: 'Día 2 · Circuito OWA',
         desc: 'Distancias accesibles y clasificación por categoría de edad.',
@@ -76,8 +82,8 @@ export const EVENTOS = [
     estado: 'proximamente',
     img: 'ev-ramallo',
     jornadas: [
-      { torneo: 'GRAND PRIX', fecha: '12/12/2026', dia: 'Día 1 · Grand Prix', desc: 'Tercera fecha puntuable del Grand Prix.' },
-      { torneo: 'CIRCUITO OWA', fecha: '13/12/2026', dia: 'Día 2 · Circuito OWA', desc: 'Tercera fecha puntuable del Circuito.' },
+      { torneo: 'GRAND PRIX', sigla: 'RML', fecha: '12/12/2026', dia: 'Día 1 · Grand Prix', desc: 'Tercera fecha puntuable del Grand Prix.' },
+      { torneo: 'CIRCUITO OWA', sigla: 'RML', fecha: '13/12/2026', dia: 'Día 2 · Circuito OWA', desc: 'Tercera fecha puntuable del Circuito.' },
     ],
   },
   {
@@ -97,7 +103,7 @@ export const EVENTOS = [
   },
   {
     slug: 'cruce-del-nahuel',
-    sigla: 'NDA',
+    sigla: 'NHL',
     nombre: 'Cruce del Nahuel',
     corto: 'CRUCE DEL NAHUEL',
     sede: 'Lago Nahuel Huapi · Río Negro',
@@ -127,7 +133,7 @@ export const EVENTOS = [
   },
   {
     slug: 'colon',
-    sigla: 'CLN',
+    sigla: 'LBC · CLN',
     nombre: 'Open Water Colón',
     corto: 'COLÓN',
     sede: 'Colón · Entre Ríos',
@@ -140,13 +146,13 @@ export const EVENTOS = [
     estado: 'proximamente',
     img: 'ev-colon',
     jornadas: [
-      { torneo: 'GRAND PRIX', fecha: '20/03/2027', dia: 'Día 1 · Grand Prix', desc: 'Última fecha puntuable del Grand Prix 26/27.' },
-      { torneo: 'CIRCUITO OWA', fecha: '21/03/2027', dia: 'Día 2 · Circuito OWA', desc: 'Última fecha puntuable del Circuito 26/27.' },
+      { torneo: 'GRAND PRIX', sigla: 'LBC', fecha: '20/03/2027', dia: 'Día 1 · Grand Prix', desc: 'Última fecha puntuable del Grand Prix 26/27.' },
+      { torneo: 'CIRCUITO OWA', sigla: 'CLN', fecha: '21/03/2027', dia: 'Día 2 · Circuito OWA', desc: 'Última fecha puntuable del Circuito 26/27.' },
     ],
   },
   {
     slug: 'maraton-acuatica-san-pedro',
-    sigla: 'SNP',
+    sigla: 'SPD',
     nombre: 'Maratón Acuática San Pedro',
     corto: 'MARATÓN SAN PEDRO',
     sede: 'San Pedro · Buenos Aires',
@@ -161,18 +167,21 @@ export const EVENTOS = [
   },
 ];
 
+// `ventana` es la línea que se muestra en las tarjetas: los Challenge no tienen
+// una fecha cerrada sino un período (o una condición de cupo, como SNP).
 export const CHALLENGES = [
   {
     slug: 'rdp40',
-    sigla: 'RDP40',
-    nombre: 'RDP40 · Cruce Río de la Plata',
-    corto: 'RDP40',
+    sigla: 'RDP',
+    nombre: 'RDP · Cruce Río de la Plata',
+    corto: 'RDP',
     sede: 'Colonia a Punta Lara',
     sedeCorta: 'PUNTA LARA',
     tipo: 'challenge',
-    fechaCorta: 'A CONFIRMAR',
+    fechaCorta: 'DIC 2026 – MAR 2027',
     anio: '',
-    fechaLarga: 'Fecha por edición · a confirmar',
+    ventana: 'Diciembre 2026 – Marzo 2027',
+    fechaLarga: 'Ventana de cruce: diciembre 2026 a marzo 2027',
     nota: '',
     estado: 'proximamente',
     km: '40 km',
@@ -180,15 +189,16 @@ export const CHALLENGES = [
   },
   {
     slug: 'snp70',
-    sigla: 'SNP70',
-    nombre: 'SNP70 · San Nicolás a San Pedro',
-    corto: 'SNP70',
+    sigla: 'SNP',
+    nombre: 'SNP · San Nicolás a San Pedro',
+    corto: 'SNP',
     sede: 'San Nicolás a San Pedro',
     sedeCorta: 'SAN PEDRO',
     tipo: 'challenge',
     fechaCorta: 'A CONFIRMAR',
     anio: '',
-    fechaLarga: 'Fecha por edición · a confirmar',
+    ventana: 'Se activa con 5 nadadores confirmados',
+    fechaLarga: 'El Challenge se activa con 5 nadadores confirmados',
     nota: '',
     estado: 'proximamente',
     km: '70 km',
@@ -196,21 +206,29 @@ export const CHALLENGES = [
   },
   {
     slug: 'bvt21',
-    sigla: 'BVT21',
-    nombre: 'BVT21 · Blest a Villa Tacul',
-    corto: 'BVT21',
+    sigla: 'BVT',
+    nombre: 'BVT · Blest a Villa Tacul',
+    corto: 'BVT',
     sede: 'Blest a Villa Tacul · Lago Nahuel Huapi',
     sedeCorta: 'BARILOCHE',
     tipo: 'challenge',
-    fechaCorta: 'A CONFIRMAR',
+    fechaCorta: 'FEB 2027',
+    // El año ya va en fechaCorta: repetirlo en `anio` lo imprime dos veces.
     anio: '',
-    fechaLarga: 'Fecha por edición · a confirmar',
+    ventana: 'Febrero 2027',
+    fechaLarga: 'Febrero de 2027',
     nota: '',
     estado: 'proximamente',
     km: '21 km',
     img: 'ev-bvt21',
   },
 ];
+
+/** Las cuatro fechas que suman puntos a los rankings. */
+export const PUNTUABLES = EVENTOS.filter((e) => e.tipo === 'core');
+
+/** Fuera del torneo regular: no suman puntos. */
+export const ESPECIALES = EVENTOS.filter((e) => e.tipo === 'especial');
 
 export const ALL = [...EVENTOS, ...CHALLENGES];
 

@@ -6,57 +6,69 @@ export const MADRES = {
     kicker: 'TORNEO PUNTUABLE',
     titulo: 'GRAND PRIX OWA',
     intro:
-      'El torneo de mayor exigencia del calendario. Cuatro fechas, una tabla y un campeón por categoría al cierre de la temporada.',
+      'Maratones acuáticas de entre 8 y 18 km, en escenarios que exigen estrategia, resistencia y adaptación.',
     img: 'gp-contraluz',
     alt: 'Nadador a contraluz encarando una brazada en aguas abiertas',
     bloque1Kicker: 'QUÉ ES',
-    bloque1Titulo: 'ÉLITE Y MÁSTER COMPETITIVO',
+    bloque1Titulo: 'COMPETITIVO LARGA DISTANCIA',
     bloque1Texto:
-      'El Grand Prix reúne a quienes compiten por tiempo y posición. Se corre el primer día de cada evento core, sobre las distancias largas del fin de semana, y cada resultado suma al ranking general y al de categoría.',
+      'El torneo de mayor exigencia del calendario. Cuatro fechas para definir a los campeones absolutos, los campeones de cada categoría y al equipo campeón de la temporada.',
     cajaTitulo: 'SISTEMA DE PUNTAJE',
     cajaItems: [
-      'Puntaje por posición dentro de cada categoría.',
-      'Suman las mejores fechas de la temporada (cantidad a confirmar por OWA).',
-      'Campeonato por equipos con los puntos de los nadadores de cada club.',
+      'Cada etapa otorga puntos según el rendimiento de cada nadador en relación con el mejor tiempo general de su sexo.',
+      'Las pruebas XL y XXL tienen distintos coeficientes de puntuación.',
+      'Al cierre de la temporada se descarta automáticamente el menor puntaje obtenido por cada nadador.',
+      'El campeonato por equipos suma los puntos obtenidos por todos los integrantes de cada equipo.',
     ],
     cajaCta: 'VER RANKING GRAND PRIX',
+    reglamento: 'https://drive.google.com/open?id=1EIbzGs8ObKESwSOEv-dfO1Y83-TT_3We&usp=drive_fs',
     listaKicker: 'FECHAS 26/27',
   },
   circuito: {
     kicker: 'TORNEO PUNTUABLE',
     titulo: 'CIRCUITO OWA',
     intro:
-      'La puerta de entrada a las aguas abiertas. Mismas sedes que el Grand Prix, al día siguiente, con distancias para empezar.',
+      'Tu lugar para vivir las aguas abiertas. Distancias para distintos niveles, diferentes desafíos y una experiencia pensada para nadar, superarte y compartir el día con tu equipo, amigos y familia.',
     img: 'circuito-grupo',
     alt: 'Grupo de nadadores avanzando juntos en el río',
     bloque1Kicker: 'QUÉ ES',
-    bloque1Titulo: 'ACCESIBLE, APTO PRINCIPIANTES',
-    bloque1Texto:
-      'El Circuito se corre el segundo día de cada evento core sobre distancias cortas, con el mismo despliegue de seguridad y cronometraje que el Grand Prix. Es el torneo pensado para la primera carrera y para quienes compiten por su categoría, no por el podio general.',
+    bloque1Titulo: 'PARA ANIMARSE, COMPARTIR Y SUPERARSE',
+    bloque1Texto: [
+      'El Circuito OWA está pensado para quienes quieren vivir una experiencia de aguas abiertas, tanto si están dando sus primeros pasos como si ya compiten habitualmente.',
+      'Cada fecha ofrece distancias de menos de 8 km, clasificadas como S, M y L, dentro de un entorno organizado y seguro. Podés participar por un objetivo personal, buscar tu lugar en la categoría o sumar puntos junto a tu equipo.',
+      'No hace falta ser un nadador de elite. Hace falta estar preparado para la distancia y tener ganas de ser parte.',
+    ],
     cajaTitulo: 'SISTEMA DE PUNTAJE',
     cajaItems: [
-      'Puntaje por posición dentro de cada categoría de edad.',
-      'Suman las mejores fechas de la temporada (cantidad a confirmar por OWA).',
-      'Campeonato por equipos propio, separado del Grand Prix.',
+      'Cada distancia suma puntos según el rendimiento de cada nadador.',
+      'Las distancias S, M y L tienen distintos coeficientes de puntuación.',
+      'Se descarta automáticamente el menor puntaje obtenido durante la temporada.',
+      'Cada nadador también suma para el campeonato anual de su equipo.',
+      'Los eventos especiales pueden otorgar puntos adicionales para la clasificación por equipos.',
     ],
     cajaCta: 'VER RANKING CIRCUITO',
+    reglamento: 'https://drive.google.com/open?id=1V3ZYQ69vP2PzOh0dbLN5sB2HkAaZAsZ7&usp=drive_fs',
     listaKicker: 'FECHAS 26/27',
   },
   especiales: {
-    kicker: 'FUERA DEL TORNEO',
+    kicker: 'FUERA DE LOS TORNEOS',
     titulo: 'EVENTOS ESPECIALES',
-    intro: 'Carreras que no forman parte del torneo regular: no suman puntos, pero son las que más se cuentan después.',
+    intro:
+      'Experiencias fuera de los calendarios puntuables, elegidas por la singularidad de sus escenarios y por el desafío que propone cada recorrido.',
     img: 'especiales-panoramica',
     alt: 'Vista panorámica del río con nadadores y tablas de SUP',
     bloque1Kicker: 'QUÉ SON',
-    bloque1Titulo: 'NO PUNTÚAN, IMPORTAN IGUAL',
-    bloque1Texto:
-      'Mar, lago y río en escenarios que se corren una vez al año. Quedan fuera de los rankings de Grand Prix y Circuito, con inscripción y logística propias de cada sede.',
+    bloque1Titulo: 'ESCENARIOS ÚNICOS. DESAFÍOS DIFERENTES.',
+    bloque1Texto: [
+      'Mar, lago y río en locaciones seleccionadas por su espectacularidad, sus condiciones naturales o la exigencia particular de cada una. No forman parte de los rankings de Grand Prix ni Circuito: cada evento tiene identidad, recorrido y dinámica propios.',
+      'Aunque no suman puntos para la temporada, cada carrera tiene su propia competencia, con ganador y ganadora absolutos, ganadores por categoría y clasificación por equipos.',
+    ],
     cajaTitulo: 'CÓMO FUNCIONAN',
     cajaItems: [
       'No suman puntos a los rankings de temporada.',
-      'Cada evento tiene sus distancias, cupos y requisitos.',
-      'Algunas fechas dependen de las condiciones del agua.',
+      'Cada evento define sus propias distancias, cupos y requisitos.',
+      'Cada carrera reconoce a sus ganadores absolutos, por categoría y por equipos.',
+      'Las condiciones naturales forman parte del desafío y pueden determinar recorridos, horarios o modalidad de la prueba.',
     ],
     cajaCta: 'VER CALENDARIO COMPLETO',
     listaKicker: 'EVENTOS DISPONIBLES',
@@ -64,7 +76,8 @@ export const MADRES = {
   challenge: {
     kicker: 'ULTRADISTANCIA',
     titulo: 'OWA CHALLENGE',
-    intro: 'De 21 a 70 kilómetros. Cupo limitado, admisión por postulación y una organización pensada para cruces largos.',
+    intro:
+      'De 21 a 70 kilómetros. Cupo limitado, admisión por postulación y una organización pensada para travesías de ultradistancia.',
     img: 'challenge-lago',
     // El nadador queda a la izquierda del encuadre original; el panel enmascara
     // justo ese lado, así que se espeja para que caiga del lado visible.
@@ -74,14 +87,14 @@ export const MADRES = {
     imgPos: 'bottom',
     alt: 'Nadador en aguas abiertas con boya de seguridad, montañas nevadas de fondo',
     bloque1Kicker: 'QUÉ ES',
-    bloque1Titulo: 'CRUCES DE 21K A 70K',
+    bloque1Titulo: 'TRAVESÍAS DE 21K A 70K',
     bloque1Texto:
-      'Los Challenge son travesías de ultradistancia con embarcación de apoyo y equipo propio por nadador. No se inscribe en una plataforma: se postula por mail y la organización evalúa antecedentes antes de confirmar el cupo.',
+      'Los Challenge son travesías de ultradistancia para nadadores individuales o equipos de relay, con embarcación de apoyo y equipo propio. No se inscribe en una plataforma: se postula por mail y la organización evalúa antecedentes antes de confirmar el cupo.',
     cajaTitulo: 'ADMISIÓN',
     cajaItems: [
       'Postulación por mail, con antecedentes en aguas abiertas.',
+      'Participación individual o por equipos de relay.',
       'Cupo limitado por edición y por desafío.',
-      'La sigla es el nombre del desafío y va siempre con el recorrido.',
     ],
     cajaCta: 'ESCRIBIR A LA ORGANIZACIÓN',
     listaKicker: 'DESAFÍOS DISPONIBLES',
@@ -117,6 +130,13 @@ export const MODALIDADES = [
     cta: 'VER CHALLENGE',
     href: '/challenge',
   },
+  {
+    titulo: 'OWA TRAVEL',
+    desc: 'Viajes grupales de nado: islas, snorkel y travesías fuera del calendario local.',
+    meta: '2 EXPERIENCIAS',
+    cta: 'VER OWA TRAVEL',
+    href: '/travel',
+  },
 ];
 
 export const TRAVEL_INCLUYE = [
@@ -124,24 +144,6 @@ export const TRAVEL_INCLUYE = [
   'Hospedaje del grupo',
   'Acompañamiento de la organización',
   'Inscripción a la competencia gestionada',
-];
-
-export const PAD_BLOQUES = [
-  {
-    k: 'QUÉ ES',
-    t: 'Formación en aguas abiertas',
-    d: 'Un programa de OWA para llevar nadadores de pileta al río, el lago y el mar con preparación real.',
-  },
-  {
-    k: 'A QUIÉN',
-    t: 'Debutantes y clubes',
-    d: 'Nadadores que quieren su primera carrera y clubes o escuelas que buscan sumar aguas abiertas a su calendario.',
-  },
-  {
-    k: 'CÓMO FUNCIONA',
-    t: 'Prácticas y primera carrera',
-    d: 'Prácticas en aguas abiertas, seguridad, técnica de largada y una primera competencia acompañada.',
-  },
 ];
 
 // Contenido fijo de la ficha de evento, común a todas las carreras.

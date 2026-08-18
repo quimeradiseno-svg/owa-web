@@ -24,7 +24,10 @@ definir('/challenge', () => import('./views/madre.js'));
 definir('/carrera/:slug', () => import('./views/evento.js'));
 definir('/resultados', () => import('./views/resultados.js'));
 definir('/travel', () => import('./views/travel.js'));
-definir('/pad', () => import('./views/pad.js'));
+definir('/pda', () => import('./views/pda.js'));
+// El programa se llamaba PAD: la ruta vieja sigue resolviendo para no romper
+// links ya compartidos.
+definir('/pad', () => import('./views/pda.js'));
 definir('/404', () => import('./views/no-encontrada.js'));
 
 activarReveal(main);

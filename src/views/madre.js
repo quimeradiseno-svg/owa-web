@@ -29,7 +29,7 @@ function fechasDe(key) {
       e,
       orden: e.km,
       linea: e.sede,
-      sublinea: 'Fecha por edición · a confirmar',
+      sublinea: e.ventana,
     }));
 
   const torneo = key === 'grand-prix' ? 'GRAND PRIX' : 'CIRCUITO OWA';
@@ -85,7 +85,10 @@ export function render(ctx) {
       <div>
         ${eyebrow(m.bloque1Kicker)}
         <h2 class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.5rem)] leading-[0.98]">${m.bloque1Titulo}</h2>
-        <p class="mt-4.5 max-w-[62ch] text-base leading-[1.75] text-owa-slate">${m.bloque1Texto}</p>
+        <!-- bloque1Texto puede ser un string o varios párrafos. -->
+        <div class="mt-4.5 grid max-w-[62ch] gap-3.5 text-base leading-[1.75] text-owa-slate">
+          ${[].concat(m.bloque1Texto).map((t) => html`<p>${t}</p>`)}
+        </div>
       </div>
 
       <div class="rounded-owa-lg bg-owa-mist p-7.5">
@@ -100,7 +103,18 @@ export function render(ctx) {
             `
           )}
         </ul>
-        <div class="mt-5">${btnPrimario(m.cajaCta, CTA_DESTINO[key])}</div>
+        <div class="mt-5 flex flex-wrap gap-2.5">
+          ${btnPrimario(m.cajaCta, CTA_DESTINO[key])}
+          ${m.reglamento
+            ? html`<a
+                href="${m.reglamento}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn u-press u-nudge h-auto min-h-0 gap-2.5 border-2 border-owa-navy bg-transparent px-6 py-3.5 font-display text-[13px] font-black tracking-[0.06em] text-owa-navy hover:bg-owa-navy hover:text-white"
+                >Reglamento <span class="u-nudge-arrow" aria-hidden="true">↗</span></a
+              >`
+            : ''}
+        </div>
       </div>
     </div>
 
@@ -110,7 +124,9 @@ export function render(ctx) {
            lg:grid-cols-4 quedaba un cuarto lugar vacío como si faltara algo.
            Pinneado a esta categoría a propósito, no a "cuando hay 3 items". -->
       <div class="mt-6 grid gap-4 sm:grid-cols-2 ${key === 'challenge' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'}" data-stagger>
-        ${fechas.map((f) => tarjetaFecha(f.e, { orden: f.orden, linea: f.linea, sublinea: f.sublinea }))}
+        ${fechas.map((f) =>
+          tarjetaFecha(f.e, { orden: f.orden, linea: f.linea, sublinea: f.sublinea, estado: key !== 'challenge' })
+        )}
       </div>
     </section>
   `);

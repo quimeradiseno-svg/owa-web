@@ -1,9 +1,10 @@
 import { html, toHTML, stagger } from '../lib/html.js';
 import { foto, fondo, fondoVideo, montarFondoVideo } from '../lib/img.js';
-import { EVENTOS } from '../data/eventos.js';
+import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
+import { TRAVEL } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
 import { GP, CIRC, CLUBES_GP, CLUBES_CIRC, CATS } from '../data/rankings.js';
-import { tarjetaEvento } from '../components/tarjeta-evento.js';
+import { tarjetaEvento, tarjetaFecha, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
 import {
   eyebrow,
   tituloSeccion,
@@ -137,7 +138,7 @@ export function render() {
       })}
       <div class="u-hero-scrim absolute inset-0"></div>
 
-      <div class="u-shell relative pt-32 pb-26">
+      <div class="u-shell relative pt-32 pb-36">
         <p class="hero-in flex items-center gap-3.5" style="--hero-delay:60ms">
           <span class="h-0.5 w-11 bg-owa-cyan"></span>
           <span class="u-eyebrow text-owa-sky">Temporada 2026/27</span>
@@ -147,44 +148,120 @@ export function render() {
           El agua<br />nos une.
         </h1>
 
-        <p class="hero-in mt-6.5 max-w-[520px] text-lg leading-relaxed text-owa-line" style="--hero-delay:220ms">
-          Elegí tu próximo desafío. Ocho fechas en río, lago y mar, dos torneos puntuables y una comunidad que vuelve
-          carrera tras carrera.
+        <!-- En desktop el párrafo termina justo donde termina "NOS UNE.": el
+             titular escala con 9.5vw y su segunda línea mide 5.53 veces el
+             font-size, de ahí el clamp. Debajo de lg se queda en 560px, que es
+             la medida de lectura cómoda.
+             Los espacios duros del final evitan que a 1440 quede "agua." sola
+             en la segunda línea; text-wrap:pretty no alcanza a resolverlo. -->
+        <p
+          class="hero-in mt-6.5 max-w-[560px] text-lg leading-relaxed text-pretty text-owa-line lg:max-w-[clamp(287px,52.5vw,818px)]"
+          style="--hero-delay:220ms"
+        >
+          Elegí tu próximo desafío. Una temporada para disfrutar, competir y vivir nuevas experiencias
+          en&nbsp;el&nbsp;agua.
         </p>
 
-        <div class="hero-in mt-9 flex flex-wrap items-center gap-x-7 gap-y-4" style="--hero-delay:300ms">
-          ${btnBlanco('Ver calendario 26/27', '/calendario')}
-          <p class="flex items-center gap-5 font-display text-white/85">
-            <span class="flex items-baseline gap-2">
-              <span data-nums class="text-[1.75rem] leading-none font-black text-owa-cyan">8</span>
-              <span class="text-[13px] font-bold tracking-[0.1em]">EVENTOS</span>
-            </span>
-            <span class="h-4 w-px bg-white/25" aria-hidden="true"></span>
-            <span class="flex items-baseline gap-2">
-              <span data-nums class="text-[1.75rem] leading-none font-black text-owa-cyan">3</span>
-              <span class="text-[13px] font-bold tracking-[0.1em]">CHALLENGE</span>
-            </span>
-          </p>
+        <div class="hero-in mt-9 flex flex-wrap items-center gap-x-8 gap-y-6" style="--hero-delay:300ms">
+          ${btnBlanco('VER CALENDARIO 26/27', '/calendario')}
+          <!-- Los cuatro rótulos van a dos líneas para que queden del mismo alto
+               y el bloque lea como una grilla, no como una lista despareja. -->
+          <!-- Todos los ítems llevan separador; la lista se corre 21px a la
+               izquierda (borde + padding) y el contenedor recorta esa columna.
+               Así el borde desaparece solo en el primero de CADA fila, que en
+               mobile son dos, y el "4" sigue alineado con el párrafo. -->
+          <div class="overflow-hidden">
+            <ul class="ms-[-21px] flex flex-wrap gap-y-3.5 font-display text-white/85">
+              ${[
+                ['4', 'Eventos', 'puntuables'],
+                ['4', 'Eventos', 'especiales'],
+                ['3', 'OWA', 'Challenge'],
+                ['2', 'OWA', 'Travel'],
+              ].map(
+                ([n, l1, l2]) => html`
+                  <li class="flex items-center gap-2 border-s border-white/25 px-5">
+                    <span data-nums class="text-[1.5rem] leading-none font-black text-owa-cyan">${n}</span>
+                    <span class="text-[11px] leading-[1.3] font-bold tracking-[0.12em] uppercase">${l1}<br />${l2}</span>
+                  </li>
+                `
+              )}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
     <div class="relative z-2 -mt-13">${olaCentrada('#fff')}</div>
 
-    <!-- --------------------------------------------------- próximas carreras -->
-    <section class="bg-white px-0 pt-8 pb-23" aria-labelledby="h-proximas">
+    <!-- ------------------------------------------------- eventos puntuables -->
+    <section class="bg-white px-0 pt-8 pb-23" aria-labelledby="h-puntuables">
       <div class="u-shell">
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
-            ${eyebrow('Próximas carreras')}
-            <h2 id="h-proximas" class="u-h2 mt-3.5">Lo que viene</h2>
+            ${eyebrow('Suman al ranking')}
+            <h2 id="h-puntuables" class="u-h2 mt-3.5">Eventos puntuables</h2>
           </div>
           ${linkFuerte('Calendario completo', '/calendario')}
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
-          ${EVENTOS.slice(0, 4).map((e) => tarjetaEvento(e))}
+          ${PUNTUABLES.map((e) => tarjetaEvento(e))}
         </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------- eventos especiales -->
+    <section class="bg-owa-sand px-0 py-22" aria-labelledby="h-especiales">
+      <div class="u-shell">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            ${eyebrow('Fuera del torneo')}
+            <h2 id="h-especiales" class="u-h2 mt-3.5">Eventos especiales</h2>
+          </div>
+          ${linkFuerte('Ver todos', '/especiales')}
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
+          ${ESPECIALES.map((e) =>
+            tarjetaFecha(e, {
+              orden: e.sigla,
+              linea: `${e.fechaCorta} ${e.anio}`,
+              sublinea: e.nota || e.sede,
+            })
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------- challenge -->
+    <section class="bg-white px-0 py-22" aria-labelledby="h-challenge">
+      <div class="u-shell">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            ${eyebrow('Ultradistancia')}
+            <h2 id="h-challenge" class="u-h2 mt-3.5">OWA Challenge</h2>
+          </div>
+          ${linkFuerte('Conocer el Challenge', '/challenge')}
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+          ${CHALLENGES.map((e) => tarjetaChallenge(e))}
+        </div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------- owa travel -->
+    <section class="bg-owa-mist px-0 py-22" aria-labelledby="h-travel">
+      <div class="u-shell">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            ${eyebrow('Viajes de nado', 'blue')}
+            <h2 id="h-travel" class="u-h2 mt-3.5">OWA Travel</h2>
+          </div>
+          ${linkFuerte('Conocer OWA Travel', '/travel')}
+        </div>
+
+        <div class="grid gap-4.5 lg:grid-cols-2" data-stagger>${TRAVEL.map((t) => tarjetaTravel(t))}</div>
       </div>
     </section>
 
@@ -193,10 +270,10 @@ export function render() {
       <div class="u-shell">
         <div>
           ${eyebrow('Modalidades', 'sky')}
-          <h2 id="h-modalidades" class="u-h2 mt-3.5">Cuatro formas<br />de entrar al agua</h2>
+          <h2 id="h-modalidades" class="u-h2 mt-3.5">Cinco formas<br />de entrar al agua</h2>
         </div>
 
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-stagger>
           ${MODALIDADES.map(
             (m) => html`
               <a
@@ -227,7 +304,9 @@ export function render() {
         <div class="mb-9 flex flex-wrap items-end justify-between gap-5">
           <div>
             ${eyebrow('Rankings en vivo')}
-            <h2 id="h-rankings" class="u-h2 mt-3.5">Cómo va la<br />temporada</h2>
+            <h2 id="h-rankings" class="u-h2 mt-3.5">
+              In aqua veritas<br />aqua autem nos unit
+            </h2>
           </div>
           ${btnBorde('Ver rankings completos', '/resultados')}
         </div>
@@ -246,41 +325,19 @@ export function render() {
       </div>
     </section>
 
-    <!-- ---------------------------------------------------------- owa travel -->
-    <section class="relative flex min-h-120 items-center overflow-hidden bg-owa-abyss" aria-labelledby="h-travel">
-      ${fondo({
-        slug: 'travel-barco',
-        alt: '',
-        opacity: 0.55,
-        sizes: '100vw',
-      })}
-      <div class="absolute inset-0 bg-linear-to-r from-owa-abyss/94 from-24% to-owa-abyss/35"></div>
-      <div class="u-shell relative py-20 text-white">
-        <div>
-          ${eyebrow('OWA Travel', 'sky')}
-          <h2 id="h-travel" class="mt-4 text-[clamp(2.125rem,5vw,4.25rem)] leading-[0.92]">Nadar lejos,<br />en grupo</h2>
-          <p class="mt-5 max-w-[46ch] text-[17px] leading-relaxed text-owa-line">
-            Viajes grupales con traslados, hospedaje y acompañamiento durante toda la competencia. Próximo destino:
-            Búzios, mayo 2027.
-          </p>
-          <div class="mt-7.5">${btnAccent('Conocer OWA Travel', '/travel')}</div>
-        </div>
-      </div>
-    </section>
-
     <!-- ----------------------------------------------------------------- pad -->
-    <section class="bg-owa-mist px-0 py-22" aria-labelledby="h-pad">
+    <section class="bg-owa-mist px-0 py-22" aria-labelledby="h-pda">
       <div class="u-shell grid items-center gap-13 lg:grid-cols-2">
         <div>
-          ${eyebrow('PAD', 'blue')}
-          <h2 id="h-pad" class="mt-4 text-[clamp(1.875rem,4vw,3.25rem)] leading-[0.95] text-owa-navy">
-            Programa de<br />desarrollo de<br />aguas abiertas
+          ${eyebrow('PDA', 'blue')}
+          <h2 id="h-pda" class="mt-4 text-[clamp(1.875rem,4vw,3.25rem)] leading-[0.95] text-owa-navy">
+            Programa<br />Desarrollo<br />Aguas Abiertas
           </h2>
           <p class="mt-4.5 max-w-[46ch] text-[17px] leading-relaxed text-owa-slate">
-            Formación y acompañamiento para quienes dan sus primeras brazadas fuera de la pileta, y para clubes que
-            quieren sumar nadadores a las aguas abiertas.
+            Más oportunidades para que nadadores, entrenadores, clubes y escuelas puedan crecer dentro de las aguas
+            abiertas.
           </p>
-          <div class="mt-7">${btnBorde('Conocer el PAD', '/pad')}</div>
+          <div class="mt-7">${btnBorde('Conocer el PDA', '/pda')}</div>
         </div>
 
         <div class="reveal-clip h-85 overflow-hidden rounded-owa-lg">

@@ -8,7 +8,7 @@ const LINKS = [
   ['CHALLENGE', '/challenge'],
   ['RESULTADOS', '/resultados'],
   ['TRAVEL', '/travel'],
-  ['PAD', '/pad'],
+  ['PDA', '/pda'],
 ];
 
 const item = (label, href, extra = '') => html`

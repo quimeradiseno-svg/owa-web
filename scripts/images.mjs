@@ -20,7 +20,7 @@ const PHOTOS = {
   // solitario, boya de seguridad, montañas nevadas: la postal de ultradistancia.
   'challenge-lago': 'Fotos/CHALLENGE/@juancruzrabaglia-2077.jpg',
   // eventos
-  'ev-pilar': 'VOB/07_LARGADA_ENTRADA_AL_AGUA',
+  'ev-lujan': 'VOB/07_LARGADA_ENTRADA_AL_AGUA',
   'ev-san-pedro': 'SPD/08_CARRERA_CAMPO_BOYAS',
   'ev-ramallo': 'SPD/09_CARRERA_BRAZADA_COLORES',
   'ev-pinamar': 'VOB/03_PREVIA_PANORAMICA_PLAYA',

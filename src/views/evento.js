@@ -86,7 +86,7 @@ const bandaVivo = () => html`
   <a
     href="https://cronometrajeinstantaneo.com"
     target="_blank"
-    rel="noopener"
+    rel="noopener noreferrer"
     class="u-press block bg-owa-live px-0 py-10 text-white transition-colors hover:bg-[#a91b21]"
   >
     <div class="u-shell flex flex-wrap items-center justify-between gap-5.5">

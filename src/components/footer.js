@@ -8,15 +8,22 @@ const COLUMNAS = [
       ['Grand Prix', '/grand-prix'],
       ['Circuito OWA', '/circuito'],
       ['Eventos Especiales', '/especiales'],
-      ['Challenge', '/challenge'],
+    ],
+  },
+  {
+    // Challenge sale de CARRERAS: no se inscribe como una fecha más, se postula.
+    // OWA Travel lo acompaña porque tampoco es competencia del calendario.
+    t: 'TRAVESÍAS',
+    items: [
+      ['OWA Challenge', '/challenge'],
+      ['OWA Travel', '/travel'],
     ],
   },
   {
     t: 'INFO',
     items: [
       ['Resultados & Rankings', '/resultados'],
-      ['OWA Travel', '/travel'],
-      ['PAD', '/pad'],
+      ['PDA', '/pda'],
     ],
   },
 ];
@@ -46,7 +53,7 @@ const REDES = [
 export const footer = () => html`
   <footer class="bg-owa-abyss px-0 pt-18 pb-8 text-white">
     <div class="u-shell">
-      <div class="grid gap-10 border-b border-white/12 pb-11 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1.2fr]">
+      <div class="grid gap-10 border-b border-white/12 pb-11 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1.2fr]">
         <div>
           <img
             src="/brand/owa-claim-white.svg"
@@ -78,7 +85,11 @@ export const footer = () => html`
           <h2 class="mb-4 font-body text-[10px] font-normal tracking-[0.16em] text-owa-gray normal-case">CONTACTO</h2>
           <ul class="grid gap-2.5 text-sm text-owa-line">
             <li><a href="mailto:info@owa.com.ar" class="transition-colors hover:text-owa-cyan">info@owa.com.ar</a></li>
-            <li class="text-owa-gray">WhatsApp · a confirmar</li>
+            <li>
+              <a href="https://wa.me/5491125543112" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-owa-cyan"
+                >WhatsApp +54 9 11 2554 3112</a
+              >
+            </li>
           </ul>
           <ul class="mt-5 flex flex-wrap gap-2.5">
             ${REDES.map(
@@ -87,7 +98,7 @@ export const footer = () => html`
                   <a
                     href="${href}"
                     target="_blank"
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     aria-label="${label} de Open Water Argentina"
                     class="u-press grid size-10 place-items-center rounded-full border border-white/25 text-owa-line transition-colors hover:border-owa-cyan hover:text-owa-cyan"
                   >
