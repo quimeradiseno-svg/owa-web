@@ -30,13 +30,18 @@
 }
 
 /* Variante para bloques con foto: se destapa de abajo hacia arriba. */
-[data-reveal-ready] .reveal-clip {
+/* El recorte va en el hijo, nunca en el elemento observado. Un elemento con
+   clip-path a área cero no intersecta con nada: el IntersectionObserver que
+   tiene que revelarlo no llega a disparar ni una vez, así que jamás recibe
+   [data-visible] y queda invisible para siempre. Recortando el hijo, el
+   contenedor conserva su caja y el observer funciona. */
+[data-reveal-ready] .reveal-clip > * {
   clip-path: inset(0 0 100% 0);
   transition: clip-path 700ms var(--ease-in-out);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-[data-reveal-ready] .reveal-clip[data-visible] {
+[data-reveal-ready] .reveal-clip[data-visible] > * {
   clip-path: inset(0 0 0 0);
 }
 
@@ -234,12 +239,15 @@
    cambio de estado y se elimina todo desplazamiento.                        */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal-ready] .reveal,
-  [data-reveal-ready] .reveal-clip {
+  [data-reveal-ready] .reveal-clip,
+  [data-reveal-ready] .reveal-clip > * {
     transform: none;
     clip-path: none;
     transition: opacity 260ms ease;
     transition-delay: 0ms;
   }
+  /* Acá el velo es opacidad, que no afecta el área: el observer sigue viendo
+     el elemento y puede revelarlo. */
   [data-reveal-ready] .reveal-clip {
     opacity: 0;
   }

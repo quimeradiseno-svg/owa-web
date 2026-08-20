@@ -37,9 +37,23 @@ const PHOTOS = {
   // Apaisada: la vertical sólo daba el corte de 480px y se veía blanda a 1216.
   'pad-familia': 'SPD/23_FAMILIA_ORILLA',
   'podio-trofeo': 'SPD/29_PODIO_TROFEO_ALTO',
+  // --- OWA Travel · Buzios -------------------------------------------------
+  // Curadas de Fotos/TRAVEL. La tortuga es la unica que documenta lo que el
+  // itinerario promete ("nado con tortugas en Ilha de Ancora"): va de ancla.
+  'tv-tortuga': 'Fotos/TRAVEL/GOPR4523.JPG',
+  'tv-isla-drone': 'Fotos/TRAVEL/DJI_0154.JPG',
+  'tv-caps': 'Fotos/TRAVEL/IMG_0286.jpg',
+  'tv-turquesa': 'Fotos/TRAVEL/349519a9-3e2b-4258-a51d-ebb2ff6412d6.JPG',
+  'tv-buceo': 'Fotos/TRAVEL/6b5a9a2a-d7a5-48ac-99fb-5492d5d5e1e2.JPG',
+  'tv-kayak': 'Fotos/TRAVEL/IMG_0473.jpg',
+  'tv-lancha': 'Fotos/TRAVEL/2446dc7a-520a-4715-8892-08c4a5493d7a.JPG',
+  'tv-trilha': 'Fotos/TRAVEL/d695cdbd-3543-4150-93b4-52a168785111.JPG',
+  'tv-playa-grupo': 'Fotos/TRAVEL/b6053075-10cb-4915-8df0-d1c8e45ec4af.JPG',
+  'tv-costa': 'Fotos/TRAVEL/IMG_0381.jpg',
   // poster del video del hero — vive fuera de SPD/VOB, así que se referencia
   // con la ruta completa en vez de una clave del índice.
   'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',
+  'tv-hero': 'Fotos/banner-poster/travel-poster.jpg',
 };
 
 const index = {};

@@ -1,11 +1,23 @@
-import { html, toHTML, stagger } from '../lib/html.js';
+import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
-import { EVENTOS, CHALLENGES } from '../data/eventos.js';
+import { EVENTOS, CHALLENGES, km } from '../data/eventos.js';
 import { MADRES } from '../data/madres.js';
 import { tarjetaFecha } from '../components/tarjeta-evento.js';
 import { eyebrow, btnPrimario, olaSuperior } from '../components/ui.js';
+import { icono } from '../components/iconos.js';
+import { bannerCTA } from '../components/banner-cta.js';
 
 export const titulo = (ctx) => MADRES[ctx.path.replace(/^\//, '')]?.titulo ?? 'Torneo';
+
+// Nombre del torneo tal como figura en cada jornada. Sólo los dos puntuables
+// tienen la grilla de cuatro fechas con distancias.
+const TORNEO = { 'grand-prix': 'GRAND PRIX', circuito: 'CIRCUITO OWA' };
+
+// El Grand Prix corre una sola distancia por fecha; el Circuito ofrece dos.
+const DIST = {
+  'grand-prix': (e) => km(e.distancias.gp),
+  circuito: (e) => e.distancias.circuito.map(km).join(' · '),
+};
 
 const CTA_DESTINO = {
   'grand-prix': '/resultados?tab=gp',
@@ -32,14 +44,98 @@ function fechasDe(key) {
       sublinea: e.ventana,
     }));
 
-  const torneo = key === 'grand-prix' ? 'GRAND PRIX' : 'CIRCUITO OWA';
   return EVENTOS.filter((e) => e.tipo === 'core').map((e, i) => ({
     e,
     orden: `FECHA ${String(i + 1).padStart(2, '0')}`,
-    linea: e.jornadas.find((j) => j.torneo === torneo).fecha,
+    linea: e.jornadas.find((j) => j.torneo === TORNEO[key]).fecha,
     sublinea: e.sede,
   }));
 }
+
+/** Desglose de distancias por fecha. Cierra el dato que el intro promete
+    ("entre 8 y 18 km") y nunca detallaba, y de paso empareja la altura de la
+    columna izquierda con la caja de puntaje. */
+const bloqueDistancias = (key) => html`
+  <div class="mt-9">
+    <h3 class="u-eyebrow text-owa-blue">Las distancias</h3>
+    <ul class="mt-4">
+      ${EVENTOS.filter((e) => e.tipo === 'core').map((e) => {
+        // La sigla es la de la jornada que se está mirando: San Pedro es VOB
+        // en Grand Prix y SNP en Circuito; Colón, LBC y CLN.
+        const j = e.jornadas.find((x) => x.torneo === TORNEO[key]);
+        return html`
+          <li class="flex items-baseline justify-between gap-4 border-t border-owa-navy/12 py-3">
+            <span class="flex min-w-0 items-center gap-2.5">
+              <span class="font-display text-[13px] font-black tracking-[0.1em] text-owa-blue">${j.sigla}</span>
+              <!-- El separador va como borde, no como carácter "|": un glifo
+                   decorativo tan tenue no llega al contraste mínimo de texto,
+                   y además ensucia el árbol de accesibilidad. -->
+              <span
+                class="truncate border-l border-owa-navy/20 pl-2.5 font-display text-[15px] font-bold text-owa-navy uppercase"
+                >${e.corto}</span
+              >
+            </span>
+            <span data-nums class="font-display text-[17px] font-black whitespace-nowrap text-owa-blue">
+              ${DIST[key](e)}
+            </span>
+          </li>
+        `;
+      })}
+    </ul>
+  </div>
+`;
+
+/** Las tres travesías con su logo. El logo ya dice la sigla y los kilómetros
+    (BVT21, RDP40, SNP70), así que al lado sólo va el recorrido — repetir el
+    nombre sería decir dos veces lo mismo. */
+const bloqueTravesias = () => html`
+  <div class="mt-9">
+    <h3 class="u-eyebrow text-owa-blue">Los desafíos</h3>
+    <ul class="mt-4">
+      ${CHALLENGES.map(
+        (c) => html`
+          <li class="flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-owa-navy/12 py-4">
+            <img
+              src="/brand/travesias/${c.slug.toUpperCase()}.svg"
+              alt="${c.sigla} ${c.km}"
+              width="120"
+              height="21"
+              class="h-[21px] w-auto shrink-0"
+            />
+            <span class="text-sm text-owa-slate">${c.sede}</span>
+          </li>
+        `
+      )}
+    </ul>
+  </div>
+`;
+
+/** Los cuatro especiales con su escenario. Es el dato que el intro promete
+    ("mar, lago y río") y que las tarjetas de abajo no muestran: ahí ya van la
+    fecha y la sede. */
+const bloqueEscenarios = () => html`
+  <div class="mt-9">
+    <h3 class="u-eyebrow text-owa-blue">Dónde se corren</h3>
+    <ul class="mt-4">
+      ${EVENTOS.filter((e) => e.tipo === 'especial').map(
+        (e) => html`
+          <li class="flex items-baseline justify-between gap-4 border-t border-owa-navy/12 py-3">
+            <span class="flex min-w-0 items-center gap-2.5">
+              <span class="font-display text-[13px] font-black tracking-[0.1em] text-owa-blue">${e.sigla}</span>
+              <span
+                class="truncate border-l border-owa-navy/20 pl-2.5 font-display text-[15px] font-bold text-owa-navy uppercase"
+                >${e.corto}</span
+              >
+            </span>
+            <span class="font-display text-[13px] font-black tracking-[0.12em] whitespace-nowrap text-owa-slate">
+              ${e.escenario}
+            </span>
+          </li>
+        `
+      )}
+    </ul>
+  </div>
+`;
 
 export function render(ctx) {
   const key = ctx.path.replace(/^\//, '');
@@ -89,18 +185,35 @@ export function render(ctx) {
         <div class="mt-4.5 grid max-w-[62ch] gap-3.5 text-base leading-[1.75] text-owa-slate">
           ${[].concat(m.bloque1Texto).map((t) => html`<p>${t}</p>`)}
         </div>
+        <!-- Cada madre llena la columna con el dato que le falta a sus tarjetas. -->
+        ${DIST[key] ? bloqueDistancias(key) : ''} ${key === 'challenge' ? bloqueTravesias() : ''}
+        ${key === 'especiales' ? bloqueEscenarios() : ''}
       </div>
 
-      <div class="rounded-owa-lg bg-owa-mist p-7.5">
+      <div class="rounded-owa-lg bg-owa-mist p-7.5 px-9 pt-12">
         <h3 class="font-display text-[17px] font-black text-owa-navy">${m.cajaTitulo}</h3>
         <ul class="mt-4">
-          ${m.cajaItems.map(
-            (i) => html`
-              <li class="flex gap-3 border-t border-owa-navy/10 py-2.75">
-                <span class="font-display font-black text-owa-blue" aria-hidden="true">·</span>
-                <span class="text-sm leading-relaxed text-owa-slate">${i}</span>
-              </li>
-            `
+          ${m.cajaItems.map((i) =>
+            // Un ítem con nombre propio no necesita bullet: el título en Vito
+            // Black hace de ancla y deja la regla escaneable de un vistazo.
+            typeof i === 'string'
+              ? html`
+                  <li class="flex gap-3 border-t border-owa-navy/10 py-2.75">
+                    <span class="font-display font-black text-owa-blue" aria-hidden="true">·</span>
+                    <span class="text-sm leading-relaxed text-owa-slate">${i}</span>
+                  </li>
+                `
+              : html`
+                  <li class="flex gap-4 border-t border-owa-navy/12 py-3.5">
+                    ${i.i ? html`<span class="mt-0.5 shrink-0 text-owa-blue">${icono(i.i)}</span>` : ''}
+                    <span class="min-w-0">
+                      <span class="block font-display text-[13px] font-black tracking-[0.05em] text-owa-navy uppercase"
+                        >${i.t}</span
+                      >
+                      <span class="mt-1.5 block text-sm leading-relaxed text-owa-slate">${raw(i.d)}</span>
+                    </span>
+                  </li>
+                `
           )}
         </ul>
         <div class="mt-5 flex flex-wrap gap-2.5">
@@ -110,8 +223,8 @@ export function render(ctx) {
                 href="${m.reglamento}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn u-press u-nudge h-auto min-h-0 gap-2.5 border-2 border-owa-navy bg-transparent px-6 py-3.5 font-display text-[13px] font-black tracking-[0.06em] text-owa-navy hover:bg-owa-navy hover:text-white"
-                >Reglamento <span class="u-nudge-arrow" aria-hidden="true">↗</span></a
+                class="btn u-press u-nudge h-auto min-h-0 gap-2.5 border-2 border-owa-navy bg-transparent px-7 py-3.5 font-display text-[13px] font-black tracking-[0.06em] text-owa-navy hover:bg-owa-navy hover:text-white"
+                >REGLAMENTO <span class="u-nudge-arrow" aria-hidden="true">↗</span></a
               >`
             : ''}
         </div>
@@ -129,6 +242,8 @@ export function render(ctx) {
         )}
       </div>
     </section>
+
+    ${m.banner ? bannerCTA(m.banner) : ''}
   `);
 }
 

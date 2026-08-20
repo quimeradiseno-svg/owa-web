@@ -1,6 +1,6 @@
 import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto, fondo } from '../lib/img.js';
-import { porSlug, ESTADOS } from '../data/eventos.js';
+import { porSlug, ESTADOS, linkInscripcion } from '../data/eventos.js';
 import { EVENTO_FICHA } from '../data/madres.js';
 import { RESULTADOS } from '../data/rankings.js';
 import {
@@ -76,7 +76,7 @@ const barraDatos = (e, esChallenge) => html`
       <div class="col-span-2 md:ml-auto">
         ${esChallenge
           ? btnPrimario('Postularme', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla, 'w-full md:w-auto')
-          : btnPrimario('Inscribite', 'https://inscripciones.owa.com.ar', 'w-full md:w-auto')}
+          : btnPrimario('Inscribite', linkInscripcion(e), 'w-full md:w-auto')}
       </div>
     </div>
   </div>
@@ -147,7 +147,7 @@ const jornadas = (e) => html`
               </dl>
               <p class="mt-4.5">
                 <a
-                  href="https://inscripciones.owa.com.ar"
+                  href="${linkInscripcion(e)}"
                   class="u-press block rounded-full bg-owa-cyan py-3.5 text-center font-display text-xs font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
                   >INSCRIBITE A ${j.torneo} →</a
                 >
@@ -449,7 +449,7 @@ export function render(ctx) {
         </div>
         ${esChallenge
           ? btnAccent('Postularme', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla)
-          : btnAccent('Inscribite', 'https://inscripciones.owa.com.ar')}
+          : btnAccent('Inscribite', linkInscripcion(e))}
       </div>
     </section>
 

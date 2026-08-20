@@ -3,9 +3,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import puppeteer from 'puppeteer-core';
 
 const CHROME = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe';
-// Vite queda escuchando sólo en [::1]; Chrome resuelve "localhost" primero a
-// 127.0.0.1 y se come un ERR_CONNECTION_REFUSED, así que apuntamos al literal.
-const BASE = process.env.BASE || 'http://[::1]:5180';
+// El dev server queda atado a la loopback IPv4 (ver vite.config.js).
+const BASE = process.env.BASE || 'http://127.0.0.1:5180';
 const OUT = '.qa';
 
 const args = process.argv.slice(2);

@@ -4,6 +4,7 @@
 export const EVENTOS = [
   {
     slug: 'lujan',
+    distancias: { gp: 8, circuito: [2, 4] },
     sigla: 'LJN',
     nombre: 'Open Water Luján',
     corto: 'LUJÁN',
@@ -35,6 +36,7 @@ export const EVENTOS = [
   },
   {
     slug: 'san-pedro',
+    distancias: { gp: 18, circuito: [4, 7] },
     // Dos jornadas con nombre propio: la Vuelta de Obligado abre el fin de
     // semana y la de San Pedro lo cierra (ver `jornadas`).
     sigla: 'VOB · SNP',
@@ -69,6 +71,7 @@ export const EVENTOS = [
   },
   {
     slug: 'ramallo',
+    distancias: { gp: 12, circuito: [3, 7] },
     sigla: 'RML',
     nombre: 'Open Water Ramallo',
     corto: 'RAMALLO',
@@ -88,6 +91,7 @@ export const EVENTOS = [
   },
   {
     slug: 'pinamar',
+    escenario: 'MAR',
     sigla: 'PNR',
     nombre: 'Open Water Pinamar',
     corto: 'PINAMAR',
@@ -103,6 +107,7 @@ export const EVENTOS = [
   },
   {
     slug: 'cruce-del-nahuel',
+    escenario: 'LAGO',
     sigla: 'NHL',
     nombre: 'Cruce del Nahuel',
     corto: 'CRUCE DEL NAHUEL',
@@ -118,6 +123,7 @@ export const EVENTOS = [
   },
   {
     slug: 'vuelta-a-la-huemul',
+    escenario: 'LAGO',
     sigla: 'VHU',
     nombre: 'Vuelta a la Huemul',
     corto: 'VUELTA A LA HUEMUL',
@@ -133,6 +139,7 @@ export const EVENTOS = [
   },
   {
     slug: 'colon',
+    distancias: { gp: 10, circuito: [2.5, 5] },
     sigla: 'LBC · CLN',
     nombre: 'Open Water Colón',
     corto: 'COLÓN',
@@ -152,6 +159,7 @@ export const EVENTOS = [
   },
   {
     slug: 'maraton-acuatica-san-pedro',
+    escenario: 'RÍO',
     sigla: 'SPD',
     nombre: 'Maratón Acuática San Pedro',
     corto: 'MARATÓN SAN PEDRO',
@@ -230,6 +238,9 @@ export const PUNTUABLES = EVENTOS.filter((e) => e.tipo === 'core');
 /** Fuera del torneo regular: no suman puntos. */
 export const ESPECIALES = EVENTOS.filter((e) => e.tipo === 'especial');
 
+/** 2.5 -> "2,5 km": coma decimal, que es como se escribe en Argentina. */
+export const km = (n) => `${String(n).replace('.', ',')} km`;
+
 export const ALL = [...EVENTOS, ...CHALLENGES];
 
 export const porSlug = (slug) => ALL.find((e) => e.slug === slug) || null;
@@ -254,3 +265,8 @@ export const ESTADOS = {
   proximamente: 'PRÓXIMAMENTE',
   cerrada: 'CERRADA',
 };
+
+/** A dónde manda "Inscribite". Hasta que OWA pase el link real de cada carrera,
+    todo va al calendario, que es donde van a vivir esos links. Cuando lleguen,
+    se agrega `inscripcion: 'https://…'` al evento y esta función lo toma sola. */
+export const linkInscripcion = (e) => e?.inscripcion || '/calendario';

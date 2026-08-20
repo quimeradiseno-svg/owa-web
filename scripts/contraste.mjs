@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 
 const CHROME = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe';
-const BASE = process.env.BASE || 'http://[::1]:5180';
+const BASE = process.env.BASE || 'http://127.0.0.1:5180';
 const RUTAS = ['/', '/calendario', '/grand-prix', '/challenge', '/carrera/san-pedro', '/carrera/rdp40', '/resultados', '/travel', '/pad'];
 
 const AUDIT = () => {

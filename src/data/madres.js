@@ -14,15 +14,40 @@ export const MADRES = {
     bloque1Texto:
       'El torneo de mayor exigencia del calendario. Cuatro fechas para definir a los campeones absolutos, los campeones de cada categoría y al equipo campeón de la temporada.',
     cajaTitulo: 'SISTEMA DE PUNTAJE',
+    // Mismos iconos que Circuito en las reglas que comparten: los dos torneos
+    // puntuan igual y cambia solo el coeficiente por distancia.
     cajaItems: [
-      'Cada etapa otorga puntos según el rendimiento de cada nadador en relación con el mejor tiempo general de su sexo.',
-      'Las pruebas XL y XXL tienen distintos coeficientes de puntuación.',
-      'Al cierre de la temporada se descarta automáticamente el menor puntaje obtenido por cada nadador.',
-      'El campeonato por equipos suma los puntos obtenidos por todos los integrantes de cada equipo.',
+      {
+        i: 'trofeo',
+        t: 'Puntaje por rendimiento',
+        d: 'Cada etapa otorga puntos según el rendimiento de cada nadador en relación con el mejor tiempo general de su sexo.',
+      },
+      { i: 'ondas', t: 'Coeficientes por distancia', d: 'Las pruebas XL y XXL tienen distintos coeficientes de puntuación.' },
+      {
+        i: 'grafico',
+        t: 'Descarte del peor puntaje',
+        d: 'Al cierre de la temporada se descarta automáticamente el menor puntaje obtenido por cada nadador.',
+      },
+      {
+        i: 'equipo',
+        t: 'Campeonato por equipos',
+        d: 'Suma los puntos obtenidos por todos los integrantes de cada equipo.',
+      },
     ],
+    // Franja de cierre despues de las fechas. Texto propuesto: el tono es mas
+    // competitivo que el de Circuito, y la foto (podio) no se repite con el
+    // hero ni con las cuatro tarjetas de arriba.
+    banner: {
+      logo: '/brand/owa-grandprix-blanco.svg',
+      kicker: '¿Vas por el título?',
+      titulo: 'Cuatro fechas puntuables<br />para coronar la temporada.',
+      cta: 'INSCRIBITE AL GRAND PRIX',
+      href: '/calendario',
+      img: 'podio-trofeo',
+    },
     cajaCta: 'VER RANKING GRAND PRIX',
     reglamento: 'https://drive.google.com/open?id=1EIbzGs8ObKESwSOEv-dfO1Y83-TT_3We&usp=drive_fs',
-    listaKicker: 'FECHAS 26/27',
+    listaKicker: 'TEMPORADA 26/27',
   },
   circuito: {
     kicker: 'TORNEO PUNTUABLE',
@@ -34,21 +59,42 @@ export const MADRES = {
     bloque1Kicker: 'QUÉ ES',
     bloque1Titulo: 'PARA ANIMARSE, COMPARTIR Y SUPERARSE',
     bloque1Texto: [
-      'El Circuito OWA está pensado para quienes quieren vivir una experiencia de aguas abiertas, tanto si están dando sus primeros pasos como si ya compiten habitualmente.',
-      'Cada fecha ofrece distancias de menos de 8 km, clasificadas como S, M y L, dentro de un entorno organizado y seguro. Podés participar por un objetivo personal, buscar tu lugar en la categoría o sumar puntos junto a tu equipo.',
-      'No hace falta ser un nadador de elite. Hace falta estar preparado para la distancia y tener ganas de ser parte.',
+      'El Circuito OWA es para quienes quieren disfrutar las aguas abiertas, desde sus primeros pasos hasta la competencia.',
+      'Cada fecha ofrece distancias S, M y L de menos de 8 km, en un entorno seguro y organizado. Podés nadar por un objetivo personal, competir por tu categoría o sumar puntos con tu equipo.',
+      'No hace falta ser elite. Solo estar preparado y tener ganas de ser parte.',
     ],
     cajaTitulo: 'SISTEMA DE PUNTAJE',
+    // Mismos títulos que Grand Prix en las cuatro reglas que comparten: los dos
+    // torneos puntúan igual y cambian sólo los coeficientes. La quinta es
+    // propia del Circuito.
     cajaItems: [
-      'Cada distancia suma puntos según el rendimiento de cada nadador.',
-      'Las distancias S, M y L tienen distintos coeficientes de puntuación.',
-      'Se descarta automáticamente el menor puntaje obtenido durante la temporada.',
-      'Cada nadador también suma para el campeonato anual de su equipo.',
-      'Los eventos especiales pueden otorgar puntos adicionales para la clasificación por equipos.',
+      { i: 'trofeo', t: 'Puntaje por rendimiento', d: 'Cada distancia suma puntos según el rendimiento de cada nadador.' },
+      { i: 'ondas', t: 'Coeficientes por distancia', d: 'Las distancias S, M y L tienen distintos coeficientes de puntuación.' },
+      {
+        i: 'grafico',
+        t: 'Descarte del peor puntaje',
+        d: 'Se descarta automáticamente el menor puntaje obtenido durante la temporada.',
+      },
+      { i: 'equipo', t: 'Campeonato por equipos', d: 'Cada nadador también suma para el campeonato anual de su equipo.' },
+      {
+        i: 'estrella',
+        t: 'Puntos extra por especiales',
+        d: 'Los eventos especiales pueden otorgar puntos adicionales para la clasificación por equipos.',
+      },
     ],
+    // Franja de cierre despues de las fechas. La foto no se repite con
+    // ninguna de las cuatro tarjetas de arriba.
+    banner: {
+      logo: '/brand/owa-circuito-blanco.svg',
+      kicker: '¿Listo para tu próximo desafío?',
+      titulo: 'Nadá, sumá puntos<br />y seguí creciendo.',
+      cta: 'INSCRIBITE AL CIRCUITO',
+      href: '/calendario',
+      img: 'sede-comunidad',
+    },
     cajaCta: 'VER RANKING CIRCUITO',
     reglamento: 'https://drive.google.com/open?id=1V3ZYQ69vP2PzOh0dbLN5sB2HkAaZAsZ7&usp=drive_fs',
-    listaKicker: 'FECHAS 26/27',
+    listaKicker: 'TEMPORADA 26/27',
   },
   especiales: {
     kicker: 'FUERA DE LOS TORNEOS',
@@ -65,10 +111,18 @@ export const MADRES = {
     ],
     cajaTitulo: 'CÓMO FUNCIONAN',
     cajaItems: [
-      'No suman puntos a los rankings de temporada.',
-      'Cada evento define sus propias distancias, cupos y requisitos.',
-      'Cada carrera reconoce a sus ganadores absolutos, por categoría y por equipos.',
-      'Las condiciones naturales forman parte del desafío y pueden determinar recorridos, horarios o modalidad de la prueba.',
+      { i: 'sinPuntaje', t: 'Sin puntaje', d: 'No suman puntos a los rankings de temporada.' },
+      { i: 'documento', t: 'Reglas propias', d: 'Cada evento define sus propias distancias, cupos y requisitos.' },
+      {
+        i: 'podio',
+        t: 'Premiación',
+        d: 'Cada carrera reconoce a sus ganadores absolutos, por categoría y por equipos.',
+      },
+      {
+        i: 'ola',
+        t: 'El agua manda',
+        d: 'Las condiciones naturales forman parte del desafío y pueden determinar recorridos, horarios o modalidad de la prueba.',
+      },
     ],
     cajaCta: 'VER CALENDARIO COMPLETO',
     listaKicker: 'EVENTOS DISPONIBLES',
@@ -92,9 +146,9 @@ export const MADRES = {
       'Los Challenge son travesías de ultradistancia para nadadores individuales o equipos de relay, con embarcación de apoyo y equipo propio. No se inscribe en una plataforma: se postula por mail y la organización evalúa antecedentes antes de confirmar el cupo.',
     cajaTitulo: 'ADMISIÓN',
     cajaItems: [
-      'Postulación por mail, con antecedentes en aguas abiertas.',
-      'Participación individual o por equipos de relay.',
-      'Cupo limitado por edición y por desafío.',
+      { i: 'sobre', t: 'Cómo se postula', d: 'Postulación por mail, con antecedentes en aguas abiertas.' },
+      { i: 'relevo', t: 'Individual o relay', d: 'Participación individual o por equipos de relay.' },
+      { i: 'cupo', t: 'Cupo limitado', d: 'Por edición y por desafío.' },
     ],
     cajaCta: 'ESCRIBIR A LA ORGANIZACIÓN',
     listaKicker: 'DESAFÍOS DISPONIBLES',

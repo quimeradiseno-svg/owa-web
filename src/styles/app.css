@@ -251,6 +251,18 @@
 }
 
 /* Igual pero más corto, para los heros de ficha y de sección. */
+/* Para heroes con video: casi sin velo arriba (el navbar ya tapa esa franja)
+   y oscuro solo abajo, donde apoya el titulo. */
+@utility u-hero-scrim-video {
+  background: linear-gradient(
+    180deg,
+    rgb(13 16 48 / 0.12) 0%,
+    rgb(13 16 48 / 0.08) 38%,
+    rgb(13 16 48 / 0.6) 76%,
+    rgb(13 16 48 / 0.95) 100%
+  );
+}
+
 @utility u-hero-scrim-sm {
   background: linear-gradient(
     180deg,

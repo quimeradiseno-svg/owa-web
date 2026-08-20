@@ -1,8 +1,8 @@
 // OWA Travel — viajes grupales de nado. Los datos de Búzios salen de la
 // propuesta "Buzios Propuesta Octubre 2026" pasada por OWA.
 //
-// OJO: el destino de mayo 2027 todavía no está definido; queda como placeholder
-// explícito para que no se lea como contenido real.
+// Las dos salidas son a Búzios. La de octubre 2026 tiene itinerario y valores
+// cerrados (vienen del PDF); la de mayo 2027 todavía no.
 
 export const TRAVEL = [
   {
@@ -14,7 +14,7 @@ export const TRAVEL = [
     fechaLarga: 'Del 22 al 27 de octubre de 2026',
     anio: '2026',
     estado: 'abierta',
-    img: 'travel-playa',
+    img: 'tv-hero',
     resumen:
       'Seis días nadando entre islas: Ilha Branca, Ilha Feia y una caverna natural a la que se entra nadando. Snorkel sobre corales, trilhas hasta la cima de las islas y un nado nocturno con luna llena.',
     supervisa: 'Damián Blaum',
@@ -54,15 +54,16 @@ export const TRAVEL = [
   },
   {
     slug: 'travel-mayo-2027',
-    destino: 'Destino a confirmar',
-    pais: '',
-    titulo: 'Segunda salida de la temporada',
+    destino: 'Búzios',
+    pais: 'Brasil',
+    titulo: 'Swim & Adventure',
     fechaCorta: 'MAY 2027',
     fechaLarga: 'Mayo de 2027',
     anio: '2027',
     estado: 'proximamente',
-    img: 'travel-barco',
-    resumen: 'La segunda experiencia OWA Travel de la temporada. Destino, itinerario y valores a confirmar por la organización.',
+    // Buzios tambien: travel-barco era una carrera en Argentina.
+    img: 'tv-costa',
+    resumen: 'La segunda salida del año a Búzios, con la misma propuesta Swim & Adventure. Itinerario y valores a confirmar por la organización.',
     supervisa: '',
     itinerario: [],
     incluye: [],
@@ -83,38 +84,58 @@ export const MODALIDADES_TRAVEL = [
     slug: 'swim-adventure',
     nombre: 'Swim & Adventure',
     tagline: 'Viajar para nadar, descubrir y disfrutar.',
-    img: 'travel-playa',
-    alt: 'Grupo de nadadores abrazados en la playa antes de entrar al agua',
+    // La del hero anterior: el grupo entero en el agua turquesa de Buzios.
+    img: 'tv-turquesa',
+    alt: 'El grupo de OWA Travel flotando junto en el mar turquesa de Búzios',
     parrafos: [
       'Experiencias grupales en destinos elegidos por sus paisajes, su entorno y las posibilidades que ofrecen para disfrutar del agua de una manera diferente.',
-      'Swim & Adventure no tiene a la competencia como objetivo. La propuesta es viajar, nadar, conocer nuevos lugares y compartir la experiencia con otros nadadores, amigos y acompañantes.',
-      'OWA diseña cada viaje y acompaña al grupo durante toda la estadía, combinando natación, turismo y momentos para disfrutar el destino dentro y fuera del agua.',
+      'Swim &amp; Adventure no tiene a la competencia como objetivo. La propuesta es viajar, nadar, conocer nuevos lugares y compartir la experiencia con otros nadadores, amigos y acompañantes.',
+      '<span class="u-sigla">OWA</span> diseña cada viaje y acompaña al grupo durante toda la estadía, combinando natación, turismo y momentos para disfrutar el destino dentro y fuera del agua.',
     ],
     experiencia: [
-      'Destinos seleccionados por su entorno y atractivo natural.',
-      'Travesías y actividades de natación sin enfoque competitivo.',
-      'Traslados, hospedaje y logística coordinados.',
-      'Acompañamiento de OWA durante toda la experiencia.',
-      'Tiempo para conocer, compartir y disfrutar el destino.',
+      { t: 'Destinos elegidos', d: 'Seleccionados por su entorno y su atractivo natural.' },
+      { t: 'Sin competencia', d: 'Travesías y actividades de natación sin enfoque competitivo.' },
+      { t: 'Logística resuelta', d: 'Traslados, hospedaje y coordinación de todo el viaje.' },
+      { t: 'Acompañamiento', d: 'El equipo de <span class="u-sigla">OWA</span> con el grupo durante toda la experiencia.' },
+      { t: 'Tiempo para disfrutar', d: 'Espacio para conocer, compartir y vivir el destino.' },
     ],
   },
   {
     slug: 'race-travel',
     nombre: 'Race Travel',
     tagline: 'Viajar para competir.',
-    img: 'travel-barco',
-    alt: 'Largada de una carrera de aguas abiertas con embarcación de apoyo',
+    // Drone sobre la isla, con zoom sobre el grupo (ver imgPos en la vista).
+    img: 'tv-isla-drone',
+    alt: 'Grupo de nadadores reunido en la cima de una isla frente al mar',
+    zoom: true,
     parrafos: [
       'Viajes grupales para participar en competencias de aguas abiertas en distintos destinos del mundo.',
-      'OWA reúne al grupo y coordina la experiencia alrededor de cada carrera: viaje, hospedaje, inscripción y acompañamiento durante la estadía. Vos elegís el desafío y te concentrás en llegar preparado para competir.',
+      '<span class="u-sigla">OWA</span> reúne al grupo y coordina la experiencia alrededor de cada carrera: viaje, hospedaje, inscripción y acompañamiento durante la estadía. Vos elegís el desafío y te concentrás en llegar preparado para competir.',
       'Una forma de conocer nuevas carreras, representar a tu equipo y compartir la experiencia de competir lejos de casa junto a otros nadadores.',
     ],
     experiencia: [
-      'Viajes grupales a competencias seleccionadas.',
-      'Inscripción y coordinación con el evento.',
-      'Traslados y hospedaje organizados.',
-      'Acompañamiento de OWA durante toda la estadía.',
-      'Una experiencia compartida antes, durante y después de la carrera.',
+      { t: 'Carreras seleccionadas', d: 'Viajes grupales a competencias elegidas del calendario internacional.' },
+      { t: 'Inscripción gestionada', d: '<span class="u-sigla">OWA</span> coordina tu cupo con la organización del evento.' },
+      { t: 'Traslados y hospedaje', d: 'Organizados para todo el grupo.' },
+      { t: 'Acompañamiento', d: 'El equipo de <span class="u-sigla">OWA</span> con vos durante toda la estadía.' },
+      { t: 'En grupo', d: 'Una experiencia compartida antes, durante y después de la carrera.' },
     ],
   },
+];
+
+/** Galería de Búzios. Curada de Fotos/TRAVEL: se dejaron afuera las tomas
+    movidas o de baja resolución. El orden alterna agua / tierra / grupo para
+    que la grilla no quede toda del mismo azul. */
+export const GALERIA_TRAVEL = [
+  // Destacada: el grupo nadando. Es la que cuenta de que se trata el viaje;
+  // la tortuga entra igual pero en tamano normal.
+  { slug: 'tv-caps', alt: 'El grupo nadando junto con gorras de colores y boyas naranjas en agua turquesa', destacada: true },
+  { slug: 'tv-isla-drone', alt: 'Vista aérea del grupo en la cima de una isla frente al mar' },
+  { slug: 'tv-tortuga', alt: 'Tortuga marina nadando bajo el agua en Ilha de Âncora' },
+  { slug: 'tv-buceo', alt: 'Buzo con equipo completo bajo el agua turquesa' },
+  { slug: 'tv-trilha', alt: 'Grupo de nadadores en una caminata por la isla' },
+  { slug: 'tv-kayak', alt: 'Kayak de apoyo acompañando a los nadadores frente a la costa' },
+  { slug: 'tv-costa', alt: 'Nadador cruzando frente a la costa de Búzios' },
+  { slug: 'tv-playa-grupo', alt: 'El grupo posando en la playa después de nadar' },
+  { slug: 'tv-lancha', alt: 'El grupo a bordo de la embarcación rumbo al punto de largada' },
 ];
