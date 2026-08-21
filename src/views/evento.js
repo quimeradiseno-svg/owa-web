@@ -145,48 +145,66 @@ const bandaVivo = () => html`
 `;
 
 const jornadas = (e, f) => html`
-  <section class="bg-owa-navy px-0 py-19 text-white" aria-labelledby="h-jornadas">
+  <section class="bg-owa-navy px-0 py-20 text-white" aria-labelledby="h-jornadas">
     <div class="u-shell">
-      <div>
-        ${eyebrow('Dos jornadas, un fin de semana', 'sky')}
-        <h2 id="h-jornadas" class="mt-3.5 text-[clamp(1.75rem,3.6vw,2.875rem)] leading-[0.96]">
-          Día 1 Grand Prix · Día 2 Circuito
-        </h2>
-      </div>
-      <div class="mt-8.5 grid gap-4.5 md:grid-cols-2" data-stagger>
-        ${e.jornadas.map((j) => {
+      <h2 id="h-jornadas" class="u-h2">Días del evento</h2>
+      <p class="mt-3.5 text-[17px] text-owa-line">Dos jornadas, un fin de semana.</p>
+
+      <!-- Dos tarjetas altas, mitad y mitad del ancho. La jerarquía va
+           torneo → fecha → distancia (lo más grande) → datos técnicos, que
+           quedan chicos a propósito para no competir con los dos primeros. -->
+      <div class="mt-9 grid gap-5 lg:grid-cols-2" data-stagger>
+        ${e.jornadas.map((j, i) => {
           const gp = j.torneo === 'GRAND PRIX';
           const r = resumenJornada(f, j.torneo);
+          // Cada distancia por separado: "7 km · 4 km" en un solo bloque de
+          // 4,5rem no entraba en la mitad del ancho.
+          const distancias = r.distancias.split(' · ');
+
           return html`
             <article
-              class="reveal rounded-owa-lg border p-7 ${gp ? 'border-white/22 bg-white/10' : 'border-white/13 bg-white/5'}"
+              class="reveal flex min-h-[30rem] flex-col rounded-owa-lg border p-8 sm:p-10 ${gp
+                ? 'border-white/22 bg-white/10'
+                : 'border-white/13 bg-white/5'}"
             >
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                ${chipModalidad(j.torneo, { oscuro: true })}
-                <span class="font-display text-[13px] font-bold tracking-[0.06em] text-owa-line">${j.fecha}</span>
-              </div>
-              <h3 class="mt-4.5 text-[clamp(1.375rem,2.4vw,1.875rem)] leading-[1.05]">${j.dia}</h3>
+              <p class="font-display text-[13px] font-black tracking-[0.2em] text-owa-sky">DÍA ${i + 1}</p>
 
-              <!-- Las distancias del día, grandes: es lo que se viene a saber
-                   acá, y antes competían en tamaño con el resto del texto. -->
-              <p
-                data-nums
-                class="mt-4 font-display text-[clamp(2rem,4.5vw,2.75rem)] leading-[0.9] font-black text-owa-cyan"
-              >
-                ${r.distancias}
-              </p>
-              <p class="mt-2 font-display text-[13px] font-bold tracking-[0.06em] text-owa-line">
-                Largada <span data-nums class="text-white">${r.largada}</span>
+              <h3 class="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-[0.95] font-black uppercase">
+                ${j.torneo}
+              </h3>
+              <p data-nums class="mt-3 font-display text-[clamp(0.9375rem,1.7vw,1.25rem)] font-bold text-owa-line">
+                ${j.fecha}
               </p>
 
-              <p class="mt-4 text-sm leading-relaxed text-owa-line">${j.desc}</p>
-              <p class="mt-4.5">
+              <p class="mt-9 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                ${distancias.map(
+                  (d, n) => html`
+                    ${n > 0
+                      ? html`<span
+                          class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-black text-owa-cyan/70"
+                          aria-hidden="true"
+                          >·</span
+                        >`
+                      : ''}
+                    <span
+                      data-nums
+                      class="font-display text-[clamp(3rem,6vw,4.5rem)] leading-[0.85] font-black text-owa-cyan uppercase"
+                      >${d}</span
+                    >
+                  `
+                )}
+              </p>
+
+              <div class="mt-auto pt-9">
+                <p class="text-[13px] leading-relaxed text-owa-line/75">
+                  Largada <span data-nums class="text-owa-line">${r.largada}</span> · ${j.desc}
+                </p>
                 <a
                   href="${inscripcionDe(e, f, j.torneo)}"
-                  class="u-press block rounded-full bg-owa-cyan py-3.5 text-center font-display text-xs font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
+                  class="u-press mt-5 block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
                   >INSCRIBITE A ${j.torneo} →</a
                 >
-              </p>
+              </div>
             </article>
           `;
         })}
