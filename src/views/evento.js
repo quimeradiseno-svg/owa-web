@@ -69,30 +69,48 @@ const resumenJornada = (f, torneo) => {
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
 
-const barraDatos = (e, esChallenge, f) => html`
-  <div class="sticky top-(--nav-h) z-40 border-b border-owa-line bg-white shadow-[0_8px_24px_rgb(33_30_95/0.06)]">
-    <div class="u-shell grid grid-cols-2 gap-x-7.5 gap-y-3 py-3.5 md:flex md:flex-wrap md:items-center">
-      ${[
-        ['FECHA', `${e.fechaCorta}${e.anio ? ' ' + e.anio : ''}`],
-        ['SEDE', f?.sedeBarra || e.sede],
-        ['MODALIDAD', e.tipo === 'core' ? 'GP + CIRCUITO' : esChallenge ? 'CHALLENGE' : 'ESPECIAL'],
-        ['ESTADO', raceState === 'vivo' ? 'EN VIVO' : raceState === 'finalizada' ? 'FINALIZADA' : ESTADOS[e.estado]],
-      ].map(
-        ([k, v]) => html`
-          <div>
-            <p class="mb-1 text-[10px] tracking-[0.16em] text-owa-slate">${k}</p>
-            <p class="font-display text-[15px] font-bold text-owa-navy">${v}</p>
-          </div>
-        `
-      )}
-      <div class="col-span-2 md:ml-auto">
-        ${esChallenge
-          ? btnPrimario('POSTULARME', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla, 'w-full md:w-auto')
-          : btnPrimario('INSCRIBITE', linkInscripcion(e), 'w-full md:w-auto')}
+const barraDatos = (e, esChallenge, f) => {
+  const boton = (extra) =>
+    esChallenge
+      ? btnPrimario('POSTULARME', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla, extra)
+      : btnPrimario('INSCRIBITE', linkInscripcion(e), extra);
+
+  return html`
+    <!-- Compacta y fija, sólo en mobile: la banda completa de abajo no sigue
+         el scroll (pedido explícito, tapaba media pantalla), pero perder de
+         vista el botón de inscripción mientras se lee toda la ficha tampoco
+         sirve. Esta es la versión mínima — fecha + CTA — para no repetir el
+         problema con menos datos. -->
+    <div
+      class="sticky top-(--nav-h) z-40 flex items-center justify-between gap-3 border-b border-owa-line bg-white px-4 py-2.5 shadow-[0_8px_24px_rgb(33_30_95/0.06)] md:hidden"
+    >
+      <p class="min-w-0 truncate font-display text-[13px] font-bold text-owa-navy">
+        ${e.fechaCorta}${e.anio ? ' ' + e.anio : ''}
+      </p>
+      ${boton('shrink-0')}
+    </div>
+
+    <!-- Bloque normal, no fijo: a pedido explícito, no debe seguir el scroll. -->
+    <div class="z-40 border-b border-owa-line bg-white shadow-[0_8px_24px_rgb(33_30_95/0.06)]">
+      <div class="u-shell grid grid-cols-2 gap-x-7.5 gap-y-3 py-3.5 md:flex md:flex-wrap md:items-center">
+        ${[
+          ['FECHA', `${e.fechaCorta}${e.anio ? ' ' + e.anio : ''}`],
+          ['SEDE', f?.sedeBarra || e.sede],
+          ['MODALIDAD', e.tipo === 'core' ? 'GP + CIRCUITO' : esChallenge ? 'CHALLENGE' : 'ESPECIAL'],
+          ['ESTADO', raceState === 'vivo' ? 'EN VIVO' : raceState === 'finalizada' ? 'FINALIZADA' : ESTADOS[e.estado]],
+        ].map(
+          ([k, v]) => html`
+            <div>
+              <p class="mb-1 text-[10px] tracking-[0.16em] text-owa-slate">${k}</p>
+              <p class="font-display text-[15px] font-bold text-owa-navy">${v}</p>
+            </div>
+          `
+        )}
+        <div class="col-span-2 md:ml-auto">${boton('w-full md:w-auto')}</div>
       </div>
     </div>
-  </div>
-`;
+  `;
+};
 
 const bandaVivo = () => html`
   <a
