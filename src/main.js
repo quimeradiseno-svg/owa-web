@@ -29,6 +29,7 @@ definir('/pda', () => import('./views/pda.js'));
 // El programa se llamaba PAD: la ruta vieja sigue resolviendo para no romper
 // links ya compartidos.
 definir('/pad', () => import('./views/pda.js'));
+definir('/reglamentos', () => import('./views/reglamentos.js'));
 definir('/404', () => import('./views/no-encontrada.js'));
 
 activarReveal(main);

@@ -50,6 +50,14 @@ const PHOTOS = {
   'tv-trilha': 'Fotos/TRAVEL/d695cdbd-3543-4150-93b4-52a168785111.JPG',
   'tv-playa-grupo': 'Fotos/TRAVEL/b6053075-10cb-4915-8df0-d1c8e45ec4af.JPG',
   'tv-costa': 'Fotos/TRAVEL/IMG_0381.jpg',
+  // --- Mapas de recorrido · San Pedro --------------------------------------
+  // El Grand Prix va en dos laminas (tramo 2 y llegada); el Circuito, una por
+  // distancia. Son capturas satelitales con trazado: mucho detalle fino, asi
+  // que se sirven mas grandes que una foto normal.
+  'mapa-vob-tramo2': 'Fotos/SPD/mapas/tramo_2_VOB.jpg',
+  'mapa-vob-llegada': 'Fotos/SPD/mapas/Llegada_VOB.jpg',
+  'mapa-spd-7k': 'Fotos/SPD/mapas/SPD7.jpg',
+  'mapa-spd-4k': 'Fotos/SPD/mapas/SPD4.jpg',
   // poster del video del hero — vive fuera de SPD/VOB, así que se referencia
   // con la ruta completa en vez de una clave del índice.
   'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',
