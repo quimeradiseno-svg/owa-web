@@ -54,6 +54,7 @@ const PHOTOS = {
   // El Grand Prix va en dos laminas (tramo 2 y llegada); el Circuito, una por
   // distancia. Son capturas satelitales con trazado: mucho detalle fino, asi
   // que se sirven mas grandes que una foto normal.
+  'mapa-vob-tramo1': 'Fotos/SPD/mapas/VOB1.jpg',
   'mapa-vob-tramo2': 'Fotos/SPD/mapas/tramo_2_VOB.jpg',
   'mapa-vob-llegada': 'Fotos/SPD/mapas/Llegada_VOB.jpg',
   'mapa-spd-7k': 'Fotos/SPD/mapas/SPD7.jpg',

@@ -255,6 +255,12 @@
     opacity: 1;
   }
 
+  /* El carrusel navega por scrollIntoView: sin esto, cada clic en flecha o
+     punto desliza suave igual, aunque el usuario haya pedido menos movimiento. */
+  [data-carrusel] [data-track] {
+    scroll-behavior: auto;
+  }
+
   .hero-drift {
     animation: none;
     transform: scale(1.06);

@@ -60,6 +60,7 @@ export const FICHAS = {
         torneo: 'GRAND PRIX',
         titulo: '18 km',
         mapas: [
+          { slug: 'mapa-vob-tramo1', alt: 'Mapa del tramo 1 de la Vuelta de Obligado, desde la largada hasta el km 5,5' },
           { slug: 'mapa-vob-tramo2', alt: 'Mapa del tramo 2 de la Vuelta de Obligado, con los puestos de hidratación y los km 12 y 14,5' },
           { slug: 'mapa-vob-llegada', alt: 'Mapa del tramo final de la Vuelta de Obligado hasta la llegada' },
         ],

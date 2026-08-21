@@ -2,6 +2,7 @@ import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto, fondo } from '../lib/img.js';
 import { porSlug, ESTADOS, linkInscripcion } from '../data/eventos.js';
 import { fichaDe } from '../data/fichas.js';
+import { carrusel, montarCarruseles } from '../components/carrusel.js';
 import { EVENTO_FICHA } from '../data/madres.js';
 import { RESULTADOS } from '../data/rankings.js';
 import {
@@ -387,27 +388,8 @@ export function render(ctx) {
                       </h3>
                     </div>
 
-                    <!-- Las láminas van una debajo de otra, en el orden del recorrido. -->
-                    <ol class="grid gap-2 bg-owa-sand p-2">
-                      ${r.mapas.map(
-                        (m, i) => html`
-                          <li class="reveal-clip overflow-hidden rounded-owa-md bg-owa-mist">
-                            ${foto({
-                              slug: m.slug,
-                              alt: m.alt,
-                              sizes: '(min-width: 1280px) 1216px, 100vw',
-                              className: 'block w-full',
-                              imgClass: 'w-full',
-                            })}
-                            ${r.mapas.length > 1
-                              ? html`<p class="px-4 py-2.5 text-[11px] tracking-[0.14em] text-owa-slate uppercase">
-                                  Lámina ${i + 1} de ${r.mapas.length}
-                                </p>`
-                              : ''}
-                          </li>
-                        `
-                      )}
-                    </ol>
+                    <!-- Más de una lámina: carrusel deslizable, no apiladas. -->
+                    <div class="reveal-clip overflow-hidden bg-owa-mist">${carrusel(r.id, r.mapas)}</div>
 
                     <dl class="grid gap-x-9 px-7 py-6 md:grid-cols-2">
                       ${r.ficha.map(
@@ -633,6 +615,7 @@ export function render(ctx) {
 
 export function mount(root, ctx) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
+  montarCarruseles(root);
 
   root.querySelector('[data-demo]')?.addEventListener('toggle', (e) => {
     demoAbierto = e.target.open;
