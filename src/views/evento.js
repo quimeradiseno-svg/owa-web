@@ -66,6 +66,10 @@ const resumenJornada = (f, torneo) => {
   };
 };
 
+/** Datos de la ficha que se muestran arriba, junto a la distancia, en vez de
+    en la lista de detalles técnicos. */
+const CABECERA_RECORRIDO = ['Fecha', 'Horario de largada'];
+
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
 
@@ -162,20 +166,20 @@ const jornadas = (e, f) => html`
                 <span class="font-display text-[13px] font-bold tracking-[0.06em] text-owa-line">${j.fecha}</span>
               </div>
               <h3 class="mt-4.5 text-[clamp(1.375rem,2.4vw,1.875rem)] leading-[1.05]">${j.dia}</h3>
-              <p class="mt-3 text-sm leading-relaxed text-owa-line">${j.desc}</p>
-              <dl class="mt-5.5 grid grid-cols-2 gap-3">
-                ${[
-                  ['DISTANCIAS', r.distancias],
-                  ['LARGADA', r.largada],
-                ].map(
-                  ([k, v]) => html`
-                    <div class="rounded-owa-md bg-white/7 p-4">
-                      <dt class="mb-1.5 text-[10px] tracking-[0.14em] text-owa-line/85">${k}</dt>
-                      <dd class="font-display text-[15px] font-bold">${v}</dd>
-                    </div>
-                  `
-                )}
-              </dl>
+
+              <!-- Las distancias del día, grandes: es lo que se viene a saber
+                   acá, y antes competían en tamaño con el resto del texto. -->
+              <p
+                data-nums
+                class="mt-4 font-display text-[clamp(2rem,4.5vw,2.75rem)] leading-[0.9] font-black text-owa-cyan"
+              >
+                ${r.distancias}
+              </p>
+              <p class="mt-2 font-display text-[13px] font-bold tracking-[0.06em] text-owa-line">
+                Largada <span data-nums class="text-white">${r.largada}</span>
+              </p>
+
+              <p class="mt-4 text-sm leading-relaxed text-owa-line">${j.desc}</p>
               <p class="mt-4.5">
                 <a
                   href="${inscripcionDe(e, f, j.torneo)}"
@@ -267,7 +271,7 @@ const resultadosBloque = (e) => {
           `
         )}
       </div>
-      <div class="mt-7">${btnBorde('Ver tabla completa', '/resultados')}</div>
+      <div class="mt-6">${btnBorde('Ver tabla completa', '/resultados')}</div>
       ${e.historial
         ? html`
             <div class="mt-6.5 rounded-owa-lg bg-owa-sand p-7.5">
@@ -333,27 +337,37 @@ export function render(ctx) {
             <ul class="mt-5.5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               ${f.distancias.map(
                 (d) => html`
+                  <!-- El número manda: es el dato que se busca primero. Debajo,
+                       en orden, torneo → puntaje → categorías, sin que ninguna
+                       línea chica compita con la distancia. -->
                   <li
-                    class="reveal u-lift-sm flex flex-col rounded-owa-lg border border-owa-line p-6.5 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+                    class="reveal u-lift-sm flex flex-col rounded-owa-lg border border-owa-line p-6 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
                   >
-                    <p class="font-display text-[13px] font-black tracking-[0.12em] text-owa-slate uppercase">
+                    <p class="font-display text-[12px] font-black tracking-[0.14em] text-owa-slate uppercase">
                       ${d.rotulo}
                     </p>
-                    <p data-nums class="mt-2 font-display text-[2.5rem] leading-[0.9] font-black text-owa-navy">
+                    <p
+                      data-nums
+                      class="mt-1.5 font-display text-[clamp(3rem,6vw,4rem)] leading-[0.85] font-black text-owa-navy"
+                    >
                       ${d.km}
                     </p>
-                    ${d.torneo ? html`<p class="mt-2.5 text-xs tracking-[0.1em] text-owa-blue">${d.torneo}</p>` : ''}
+                    ${d.torneo
+                      ? html`<p class="mt-2.5 font-display text-[12px] font-black tracking-[0.1em] text-owa-blue">
+                          ${d.torneo}
+                        </p>`
+                      : ''}
                     ${d.nota ? html`<p class="mt-2.5 text-[13px] leading-relaxed text-owa-slate">${d.nota}</p>` : ''}
-                    <div class="mt-auto pt-5.5">
+                    <div class="mt-auto space-y-1.5 pt-5">
                       ${d.puntaje
-                        ? html`<p class="flex justify-between border-t border-owa-sand py-2.5 text-[13px]">
+                        ? html`<p class="flex flex-wrap justify-between gap-x-4 border-t border-owa-sand pt-2.5 text-[13px]">
                             <span class="text-owa-slate">Puntaje</span>
                             <span class="font-display font-bold text-owa-navy">${d.puntaje}</span>
                           </p>`
                         : ''}
-                      <p class="border-t border-owa-sand pt-2.5 text-[13px]">
-                        <span class="block text-owa-slate">Categorías</span>
-                        <span class="mt-1 block font-display font-bold text-owa-navy">${d.cats}</span>
+                      <p class="flex flex-wrap justify-between gap-x-4 border-t border-owa-sand pt-2.5 text-[13px]">
+                        <span class="text-owa-slate">Categorías</span>
+                        <span class="font-display font-bold text-owa-navy">${d.cats}</span>
                       </p>
                     </div>
                   </li>
@@ -388,36 +402,52 @@ export function render(ctx) {
       ? html`
           <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
             <h2 id="h-recorridos" class="u-eyebrow text-owa-blue">Recorridos y fichas técnicas</h2>
-            <div class="mt-6 grid gap-6">
-              ${f.recorridos.map(
-                (r) => html`
+            <div class="mt-6 grid gap-5">
+              ${f.recorridos.map((r) => {
+                const dato = (k) => (r.ficha.find(([kk]) => kk === k) || [])[1];
+                // Fecha y hora suben al encabezado: son el segundo dato que se
+                // busca después de la distancia. El resto queda en la ficha.
+                const resto = r.ficha.filter(([k]) => !CABECERA_RECORRIDO.includes(k));
+
+                return html`
                   <article class="overflow-hidden rounded-owa-lg border border-owa-line">
-                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-owa-line px-7 py-5">
-                      ${chipModalidad(r.torneo)}
-                      <h3
-                        data-nums
-                        class="font-display text-[clamp(1.5rem,3vw,2rem)] leading-none font-black text-owa-navy"
-                      >
-                        ${r.titulo}
-                      </h3>
+                    <div
+                      class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-owa-line px-6 py-4"
+                    >
+                      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+                        ${chipModalidad(r.torneo)}
+                        <h3
+                          data-nums
+                          class="font-display text-[clamp(1.875rem,4vw,2.75rem)] leading-none font-black text-owa-navy"
+                        >
+                          ${r.titulo}
+                        </h3>
+                      </div>
+                      <p data-nums class="font-display text-[13px] font-bold text-owa-slate">
+                        ${dato('Fecha')} · <span class="text-owa-blue">${dato('Horario de largada')}</span>
+                      </p>
                     </div>
 
-                    <!-- Más de una lámina: carrusel deslizable, no apiladas. -->
-                    <div class="reveal-clip overflow-hidden bg-owa-mist">${carrusel(r.id, r.mapas)}</div>
-
-                    <dl class="grid gap-x-9 px-7 py-6 md:grid-cols-2">
-                      ${r.ficha.map(
-                        ([k, v]) => html`
-                          <div class="flex flex-wrap justify-between gap-x-5 gap-y-0.5 border-b border-owa-sand py-2.5">
-                            <dt class="text-[13px] text-owa-slate">${k}</dt>
-                            <dd class="font-display text-[13px] font-bold text-owa-navy">${v}</dd>
-                          </div>
-                        `
-                      )}
-                    </dl>
+                    <!-- Mapa y datos en paralelo: apilados, cada recorrido se
+                         comía una pantalla entera y eran tres seguidos. -->
+                    <div class="grid lg:grid-cols-[1.4fr_1fr]">
+                      <div class="reveal-clip flex items-center overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line">
+                        ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 700px, 100vw' })}
+                      </div>
+                      <dl class="px-6 py-3">
+                        ${resto.map(
+                          ([k, v]) => html`
+                            <div class="flex flex-wrap justify-between gap-x-5 gap-y-0.5 border-b border-owa-sand py-2 last:border-b-0">
+                              <dt class="text-[13px] text-owa-slate">${k}</dt>
+                              <dd class="font-display text-[13px] font-bold text-owa-navy">${v}</dd>
+                            </div>
+                          `
+                        )}
+                      </dl>
+                    </div>
                   </article>
-                `
-              )}
+                `;
+              })}
             </div>
           </section>
         `
@@ -443,7 +473,7 @@ export function render(ctx) {
         <h2 id="h-cronograma" class="u-eyebrow text-owa-sky">Cronograma del evento</h2>
         ${f?.cronogramas
           ? html`
-              <div class="mt-6.5 grid gap-11 lg:grid-cols-2">
+              <div class="mt-6.5 grid gap-x-10 gap-y-8 lg:grid-cols-2">
                 ${f.cronogramas.map(
                   (c) => html`
                     <div>
@@ -459,7 +489,7 @@ export function render(ctx) {
                             <ol class="mt-4">
                               ${dia.items.map(
                                 (i) => html`
-                                  <li class="flex gap-4 border-t border-white/12 py-3">
+                                  <li class="flex gap-4 border-t border-white/12 py-2.5">
                                     <span
                                       data-nums
                                       class="w-22 shrink-0 font-display text-[13px] font-black ${i.destacado
