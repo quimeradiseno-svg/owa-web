@@ -70,11 +70,7 @@ const resumenJornada = (f, torneo) => {
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
 
 const barraDatos = (e, esChallenge, f) => html`
-  <!-- En móvil son cuatro filas apiladas: pegada arriba se comería media
-       pantalla, así que sólo queda sticky cuando entra en una sola línea. -->
-  <div
-    class="z-40 border-b border-owa-line bg-white shadow-[0_8px_24px_rgb(33_30_95/0.06)] md:sticky md:top-(--nav-h)"
-  >
+  <div class="sticky top-(--nav-h) z-40 border-b border-owa-line bg-white shadow-[0_8px_24px_rgb(33_30_95/0.06)]">
     <div class="u-shell grid grid-cols-2 gap-x-7.5 gap-y-3 py-3.5 md:flex md:flex-wrap md:items-center">
       ${[
         ['FECHA', `${e.fechaCorta}${e.anio ? ' ' + e.anio : ''}`],
