@@ -228,7 +228,4 @@ export const EVENTO_FICHA = {
     { t: 'Recomendaciones', d: 'Temperatura del agua, neoprene y qué llevar el día de carrera.', cta: 'VER GUÍA' },
     { t: 'Seguridad', d: 'Kayaks, lanchas y guardavidas por tramo.', cta: 'VER PROTOCOLO' },
   ],
-  turismo:
-    'Alojamiento, gastronomía y qué hacer el fin de semana de la carrera. Convenios y promociones para nadadores inscriptos, a confirmar con la sede.',
-  promos: ['Hoteles con convenio · a confirmar', 'Descuentos gastronómicos · a confirmar', 'Actividades para acompañantes'],
 };

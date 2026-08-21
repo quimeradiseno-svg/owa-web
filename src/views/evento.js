@@ -582,33 +582,6 @@ export function render(ctx) {
       </div>
     </section>
 
-    <!-- la sede -->
-    <section class="bg-owa-mist px-0 py-19" aria-labelledby="h-sede">
-      <div class="u-shell grid items-center gap-12 lg:grid-cols-2">
-        <div>
-          ${eyebrow('La sede', 'blue')}
-          <h2 id="h-sede" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.5rem)] leading-[0.96] text-owa-navy">
-            Qué hacer en ${e.sedeCorta}
-          </h2>
-          <p class="mt-4 max-w-[58ch] text-base leading-[1.75] text-owa-slate">${EVENTO_FICHA.turismo}</p>
-          <ul class="mt-5.5 flex flex-wrap gap-2.5">
-            ${EVENTO_FICHA.promos.map(
-              (p) => html`<li class="rounded-full bg-white px-5 py-2.75 text-[13px] text-owa-navy">${p}</li>`
-            )}
-          </ul>
-        </div>
-        <div class="reveal-clip h-75 overflow-hidden rounded-owa-lg">
-          ${foto({
-            slug: 'sede-comunidad',
-            alt: 'Nadadores y público en la orilla durante una fecha de OWA',
-            sizes: '(min-width: 1024px) 50vw, 100vw',
-            className: 'block h-full w-full',
-            imgClass: 'h-full w-full object-cover',
-          })}
-        </div>
-      </div>
-    </section>
-
     <!-- resultados -->
     <section class="u-shell py-20" aria-labelledby="h-resultados">
       <h2 id="h-resultados" class="u-eyebrow mb-5.5 text-owa-blue">Resultados</h2>
