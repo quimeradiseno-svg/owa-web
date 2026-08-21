@@ -78,7 +78,7 @@ const barraDatos = (e, esChallenge, f) => html`
     <div class="u-shell grid grid-cols-2 gap-x-7.5 gap-y-3 py-3.5 md:flex md:flex-wrap md:items-center">
       ${[
         ['FECHA', `${e.fechaCorta}${e.anio ? ' ' + e.anio : ''}`],
-        ['SEDE', f?.sedeCompleta || e.sede],
+        ['SEDE', f?.sedeBarra || e.sede],
         ['MODALIDAD', e.tipo === 'core' ? 'GP + CIRCUITO' : esChallenge ? 'CHALLENGE' : 'ESPECIAL'],
         ['ESTADO', raceState === 'vivo' ? 'EN VIVO' : raceState === 'finalizada' ? 'FINALIZADA' : ESTADOS[e.estado]],
       ].map(
@@ -91,8 +91,8 @@ const barraDatos = (e, esChallenge, f) => html`
       )}
       <div class="col-span-2 md:ml-auto">
         ${esChallenge
-          ? btnPrimario('Postularme', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla, 'w-full md:w-auto')
-          : btnPrimario('Inscribite', linkInscripcion(e), 'w-full md:w-auto')}
+          ? btnPrimario('POSTULARME', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla, 'w-full md:w-auto')
+          : btnPrimario('INSCRIBITE', linkInscripcion(e), 'w-full md:w-auto')}
       </div>
     </div>
   </div>
@@ -303,7 +303,7 @@ export function render(ctx) {
 
         <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">${e.nombre}</h1>
         <p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
-          ${e.fechaLarga} · ${f?.sedeCompleta || e.sede}
+          ${e.fechaLarga} · ${f?.sedeCiudad || e.sede}
         </p>
       </div>
     </section>

@@ -13,7 +13,11 @@ const AGUA = 'Entre 23 y 26 °C, sin visibilidad, con corriente a favor';
 
 export const FICHAS = {
   'san-pedro': {
-    sedeCompleta: 'Camping Club América, San Pedro, Buenos Aires, Argentina',
+    // Dos versiones de la sede: la barra de datos necesita el predio (es el
+    // punto de encuentro), el subtítulo del hero ya lo dice el propio título
+    // "Open Water San Pedro" y ahí alcanza con ubicar la ciudad.
+    sedeBarra: 'Camping Club América, San Pedro',
+    sedeCiudad: 'San Pedro, Buenos Aires, Argentina',
 
     // Un link por jornada: cada torneo abre su propio formulario.
     inscripcion: {
