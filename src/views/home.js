@@ -3,126 +3,137 @@ import { foto, fondo, fondoVideo, montarFondoVideo } from '../lib/img.js';
 import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
 import { TRAVEL } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
-import { GP, CIRC, CLUBES_GP, CLUBES_CIRC, CATS } from '../data/rankings.js';
+import { GP, CIRC, CLUBES_GP } from '../data/rankings.js';
 import { tarjetaEvento, tarjetaFecha, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
-import {
-  eyebrow,
-  tituloSeccion,
-  posicion,
-  btnAccent,
-  btnBlanco,
-  btnBorde,
-  linkFuerte,
-  pastillaChica,
-  olaCentrada,
-} from '../components/ui.js';
+import { icono } from '../components/iconos.js';
+import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, olaCentrada } from '../components/ui.js';
 
 export const titulo = 'El agua nos une';
 
 /* --------------------------------------------------------------- rankings */
 
-const estado = {
-  gp: { sexo: 'M', cat: 'TODAS' },
-  circ: { sexo: 'M', cat: 'TODAS' },
-};
+const estadoHome = { tab: 'gp' };
 
 const PANELES = [
-  { id: 'gp', titulo: 'Ranking Grand Prix', corto: 'GP', data: GP, ruta: 'gp' },
-  { id: 'circ', titulo: 'Ranking Circuito OWA', corto: 'CIRCUITO', data: CIRC, ruta: 'circ' },
+  { id: 'gp', label: 'GRAND PRIX', data: GP, ruta: 'gp' },
+  { id: 'circ', label: 'CIRCUITO OWA', data: CIRC, ruta: 'circ' },
 ];
 
-function filas(panel) {
-  const { sexo, cat } = estado[panel.id];
-  return panel.data.filter((r) => r.sexo === sexo && (cat === 'TODAS' || r.cat === cat)).slice(0, 3);
-}
+// Avatar placeholder hasta que OWA mande la foto real de cada nadador: mismo
+// círculo en toda la sección, para que no se lea como "roto" ni finjan ser
+// una foto real de alguien que no es. `oscuro` lo adapta a la tarjeta navy de
+// clubes (mismo criterio que el resto de la marca sobre fondo oscuro).
+const avatar = (clase, oscuro = false) =>
+  html`<span class="grid ${clase} shrink-0 place-items-center rounded-full ${oscuro ? 'bg-white/10 text-owa-sky' : 'bg-owa-mist text-owa-blue'}"
+    >${icono('persona', 'size-1/2')}</span
+  >`;
 
-function cuerpoPanel(panel) {
-  const rows = filas(panel);
-  if (!rows.length)
-    return html`<p class="py-6 text-sm text-owa-slate">Todavía no hay nadadores cargados en esta categoría.</p>`;
+// Número de posición "suelto", sin chapita: más grande y en el color de cada
+// metal, tal como lo pidió el mockup de referencia.
+// El dorado/bronce de marca (pensados para chapita rellena) no llegan a 3:1
+// como texto suelto sobre blanco: acá van oscurecidos sólo para esa tarjeta;
+// sobre navy el tono de marca ya contrasta bien y queda como está.
+const numeroPos = (p, oscuro = false) => {
+  const color =
+    p === 1
+      ? oscuro
+        ? 'text-owa-gold'
+        : 'text-[#a18600]'
+      : p === 3
+        ? oscuro
+          ? 'text-owa-bronze'
+          : 'text-[#9d8132]'
+        : oscuro
+          ? 'text-owa-gray'
+          : 'text-owa-slate';
+  return html`<span data-nums class="w-7 shrink-0 font-display text-2xl leading-none font-black ${color}">${p}</span>`;
+};
 
+const columnaGenero = (panel, sexo) => {
+  const rows = panel.data.filter((r) => r.sexo === sexo).slice(0, 3);
   return html`
-    <ol class="grid">
-      ${rows.map(
-        (r, i) => html`
-          <li class="flex items-center gap-3.5 border-b border-owa-sand py-3 last:border-0">
-            ${posicion(i + 1)}
-            <span class="grid size-13 shrink-0 place-items-center rounded-full bg-owa-mist font-display text-sm font-black text-owa-blue">
-              ${r.nombre
-                .split(' ')
-                .map((p) => p[0])
-                .slice(0, 2)
-                .join('')}
-            </span>
-            <span class="min-w-0 flex-1">
-              <span class="block truncate font-display text-[15px] font-bold text-owa-navy">${r.nombre}</span>
-              <span class="mt-0.5 block text-xs text-owa-slate">${r.cat} · ${r.club}</span>
-            </span>
-            <span data-nums class="font-display text-lg font-black text-owa-blue">${r.puntos}</span>
-          </li>
-        `
-      )}
-    </ol>
+    <div>
+      <p class="flex items-center gap-2 font-display text-xs font-black tracking-[0.12em] text-owa-navy">
+        ${avatar('size-6')}
+        ${sexo === 'M' ? 'HOMBRES' : 'MUJERES'}
+      </p>
+      ${rows.length
+        ? html`
+            <ol class="mt-3.5 grid">
+              ${rows.map(
+                (r, i) => html`
+                  <li class="flex items-center gap-3 border-b border-owa-sand py-3 last:border-0">
+                    ${numeroPos(i + 1)} ${avatar('size-11')}
+                    <span class="min-w-0 flex-1">
+                      <span class="block truncate font-display text-[15px] font-bold text-owa-navy">${r.nombre}</span>
+                      <span data-nums class="mt-0.5 block font-display text-sm font-black text-owa-blue">${r.puntos} pts</span>
+                    </span>
+                  </li>
+                `
+              )}
+            </ol>
+          `
+        : html`<p class="py-6 text-sm text-owa-slate">Todavía no hay nadadores cargados.</p>`}
+    </div>
   `;
-}
+};
 
-function panelRanking(panel) {
-  const { sexo, cat } = estado[panel.id];
+function panelRanking() {
+  const panel = PANELES.find((p) => p.id === estadoHome.tab);
   return html`
-    <article class="reveal rounded-owa-lg bg-white p-7 shadow-[var(--shadow-card)]" data-panel="${panel.id}">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <h3 class="font-display text-[19px] font-black text-owa-navy">${panel.titulo}</h3>
-        <div class="flex gap-1.5 rounded-full bg-owa-sand p-1.5" role="group" aria-label="Género — ${panel.titulo}">
-          ${pastillaChica('MASCULINO', sexo === 'M', `data-sexo="M" data-p="${panel.id}"`)}
-          ${pastillaChica('FEMENINO', sexo === 'F', `data-sexo="F" data-p="${panel.id}"`)}
-        </div>
+    <article class="reveal rounded-owa-lg bg-white p-7 shadow-[var(--shadow-card)]" data-panel-ranking>
+      <div class="flex gap-6 border-b border-owa-sand" role="tablist" aria-label="Torneo">
+        ${PANELES.map(
+          (p) => html`
+            <button
+              type="button"
+              role="tab"
+              data-tab="${p.id}"
+              aria-selected="${p.id === panel.id ? 'true' : 'false'}"
+              class="u-press border-b-2 pb-3.5 font-display text-[13px] font-black tracking-[0.06em] transition-colors duration-200 ease-out ${p.id === panel.id
+                ? 'border-owa-blue text-owa-navy'
+                : 'border-transparent text-owa-slate hover:text-owa-navy'}"
+            >
+              ${p.label}
+            </button>
+          `
+        )}
       </div>
 
-      <div class="mt-4.5 flex items-center gap-2.5">
-        <label class="text-[10px] tracking-[0.16em] text-owa-slate" for="cat-${panel.id}">CATEGORÍA</label>
-        <select
-          id="cat-${panel.id}"
-          data-cat="${panel.id}"
-          class="select h-auto min-h-0 flex-1 rounded-full border-owa-line bg-white px-4 py-2.5 text-[13px] text-owa-navy"
-        >
-          ${CATS.map((c) => html`<option value="${c}" ${c === cat ? 'selected' : ''}>${c}</option>`)}
-        </select>
-      </div>
-
-      <div class="mt-2" data-rows>${cuerpoPanel(panel)}</div>
-
-      ${linkFuerte(`VER RANKING ${panel.corto} COMPLETO`, `/resultados?tab=${panel.ruta}`, 'mt-4 border-0 pb-0')}
+      <div class="mt-6 grid gap-6 sm:grid-cols-2">${columnaGenero(panel, 'M')} ${columnaGenero(panel, 'F')}</div>
     </article>
   `;
 }
 
-const panelClubes = (titulo, rows) => html`
-  <div>
-    <h4 class="mb-3.5 font-display text-[11px] font-bold tracking-[0.18em] text-owa-sky">${titulo}</h4>
-    <ol>
-      ${rows.map(
-        (c, i) => html`
-          <li class="flex items-center gap-3.5 border-t border-white/12 py-3">
-            ${posicion(i + 1, { oscuro: true })}
-            <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 font-display text-[11px] font-black text-owa-sky">
-              ${c.nombre
-                .split(' ')
-                .filter((w) => w[0] === w[0].toUpperCase())
-                .map((w) => w[0])
-                .slice(0, 3)
-                .join('')}
-            </span>
-            <span class="min-w-0 flex-1">
-              <span class="block truncate font-display text-[15px] font-bold">${c.nombre}</span>
-              <span class="mt-0.5 block text-xs text-owa-gray">${c.nadadores} nadadores puntuando</span>
-            </span>
-            <span data-nums class="font-display text-lg font-black text-owa-cyan">${c.puntos}</span>
-          </li>
-        `
-      )}
-    </ol>
-  </div>
-`;
+// Los 3 clubes que van acá son el campeonato por equipos general: no dependen
+// de la pestaña Grand Prix/Circuito que arma el bloque de nadadores de al lado.
+function panelClubes() {
+  return html`
+    <article class="reveal rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
+      <h3 class="font-display text-[13px] font-black tracking-[0.14em] text-owa-sky">CLUBES</h3>
+      <ol class="mt-4.5">
+        ${CLUBES_GP.map(
+          (c, i) => html`
+            <li class="flex items-center gap-3.5 border-t border-white/12 py-3.5 first:border-0 first:pt-0">
+              ${numeroPos(i + 1, true)} ${avatar('size-12', true)}
+              <span class="min-w-0 flex-1">
+                <span class="block font-display text-[15px] leading-tight font-bold">${c.nombre}</span>
+                <span data-nums class="mt-1 block font-display text-sm font-black text-owa-sky">${c.puntos} pts</span>
+              </span>
+            </li>
+          `
+        )}
+      </ol>
+      <a
+        href="/resultados?vista=equipos"
+        class="u-nudge mt-5 inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:text-owa-sky"
+      >
+        Ver todos los clubes
+        <span class="u-nudge-arrow" aria-hidden="true">→</span>
+      </a>
+    </article>
+  `;
+}
 
 /* ------------------------------------------------------------------ vista */
 
@@ -275,16 +286,28 @@ export function render() {
 
         <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-stagger>
           ${MODALIDADES.map(
-            (m) => html`
+            (m, i) => html`
               <a
                 href="${m.href}"
-                class="reveal u-lift-sm group flex min-h-62 flex-col justify-between rounded-owa-lg border border-white/13 bg-white/6 p-7.5 transition-colors duration-250 ease-out hover:bg-white/12"
+                class="reveal u-lift-sm group relative flex min-h-62 flex-col justify-between overflow-hidden rounded-owa-lg border border-white/13 bg-white/6 p-7.5 transition-colors duration-250 ease-out hover:border-owa-cyan/50"
               >
-                <div>
-                  <h3 class="text-[clamp(1.25rem,2vw,1.625rem)] leading-[1.02] text-white">${m.titulo}</h3>
+                <div class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
+                  ${fondo({ slug: m.img, opacity: 0.5 })}
+                </div>
+
+                <div class="relative">
+                  <div class="flex items-start justify-between">
+                    <span data-nums class="font-display text-sm font-black tracking-[0.08em] text-owa-sky"
+                      >${String(i + 1).padStart(2, '0')}</span
+                    >
+                    ${m.iconoImg
+                      ? html`<img src="${m.iconoImg}" alt="" class="size-7" aria-hidden="true" />`
+                      : html`<span class="text-owa-sky">${icono(m.icono, 'size-6')}</span>`}
+                  </div>
+                  <h3 class="mt-5 text-[clamp(1.25rem,2vw,1.625rem)] leading-[1.02] text-white">${m.titulo}</h3>
                   <p class="mt-3.5 text-sm leading-relaxed text-owa-line">${m.desc}</p>
                 </div>
-                <div>
+                <div class="relative">
                   <p class="mt-6 font-display text-xs font-bold tracking-[0.1em] text-owa-sky">${m.meta}</p>
                   <p class="mt-3 flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan">
                     ${m.cta}
@@ -311,17 +334,7 @@ export function render() {
           ${btnBorde('Ver rankings completos', '/resultados')}
         </div>
 
-        <div class="grid gap-4.5 lg:grid-cols-2" data-stagger data-paneles>${PANELES.map(panelRanking)}</div>
-
-        <div class="mt-4.5 rounded-owa-lg bg-owa-navy p-8 text-white">
-          <div class="mb-6 flex flex-wrap items-baseline justify-between gap-3">
-            <h3 class="font-display text-[19px] font-black">Campeonato por equipos</h3>
-            <p class="text-[13px] text-owa-line">Clubes con más puntos en cada torneo</p>
-          </div>
-          <div class="grid gap-8.5 md:grid-cols-2">
-            ${panelClubes('GRAND PRIX', CLUBES_GP)} ${panelClubes('CIRCUITO OWA', CLUBES_CIRC)}
-          </div>
-        </div>
+        <div class="grid gap-4.5 lg:grid-cols-[1.7fr_1fr]" data-stagger>${panelRanking()} ${panelClubes()}</div>
       </div>
     </section>
 
@@ -358,28 +371,17 @@ export function mount(root) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarFondoVideo(root);
 
-  const repintar = (id) => {
-    const viejo = root.querySelector(`[data-panel="${id}"]`);
-    const panel = PANELES.find((p) => p.id === id);
+  root.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-tab]');
+    if (!btn || btn.getAttribute('aria-selected') === 'true') return;
+    estadoHome.tab = btn.dataset.tab;
+
+    const viejo = root.querySelector('[data-panel-ranking]');
     const tmp = document.createElement('div');
-    tmp.innerHTML = toHTML(panelRanking(panel));
+    tmp.innerHTML = toHTML(panelRanking());
     const nuevo = tmp.firstElementChild;
     nuevo.setAttribute('data-visible', '');
     nuevo.style.setProperty('--i', viejo.style.getPropertyValue('--i'));
     viejo.replaceWith(nuevo);
-  };
-
-  root.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-sexo]');
-    if (!btn) return;
-    estado[btn.dataset.p].sexo = btn.dataset.sexo;
-    repintar(btn.dataset.p);
-  });
-
-  root.addEventListener('change', (e) => {
-    const sel = e.target.closest('[data-cat]');
-    if (!sel) return;
-    estado[sel.dataset.cat].cat = sel.value;
-    repintar(sel.dataset.cat);
   });
 }

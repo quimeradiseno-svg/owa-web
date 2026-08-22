@@ -162,6 +162,8 @@ export const MODALIDADES = [
     meta: '4 FECHAS · PUNTUABLE',
     cta: 'VER GRAND PRIX',
     href: '/grand-prix',
+    img: 'gp-contraluz',
+    icono: 'ola',
   },
   {
     titulo: 'CIRCUITO OWA',
@@ -169,6 +171,8 @@ export const MODALIDADES = [
     meta: '4 FECHAS · PUNTUABLE',
     cta: 'VER CIRCUITO',
     href: '/circuito',
+    img: 'circuito-grupo',
+    icono: 'grafico',
   },
   {
     titulo: 'EVENTOS ESPECIALES',
@@ -176,6 +180,8 @@ export const MODALIDADES = [
     meta: '4 EVENTOS',
     cta: 'VER EVENTOS',
     href: '/especiales',
+    img: 'especiales-panoramica',
+    icono: 'estrella',
   },
   {
     titulo: 'OWA CHALLENGE',
@@ -183,6 +189,8 @@ export const MODALIDADES = [
     meta: '3 DESAFÍOS',
     cta: 'VER CHALLENGE',
     href: '/challenge',
+    img: 'challenge-lago',
+    icono: 'ondas',
   },
   {
     titulo: 'OWA TRAVEL',
@@ -190,6 +198,10 @@ export const MODALIDADES = [
     meta: '2 EXPERIENCIAS',
     cta: 'VER OWA TRAVEL',
     href: '/travel',
+    img: 'tv-isla-drone',
+    // El único ícono que es imagen de marca, no trazo del set: el isotipo
+    // de OWA Travel ya trae el avión adentro.
+    iconoImg: '/brand/owa-travel-iso.svg',
   },
 ];
 

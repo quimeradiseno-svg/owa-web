@@ -29,6 +29,8 @@ const TRAZOS = {
   cupo: '<rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/><path d="M12 14.5v2"/>',
   // Extra: estrella.
   estrella: '<path d="m12 3 2.9 5.9 6.5 1-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.9l6.5-1z"/>',
+  // Avatar genérico: usado hasta que haya foto real de cada nadador o club.
+  persona: '<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>

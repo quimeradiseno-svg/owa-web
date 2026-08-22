@@ -36,6 +36,22 @@
             d="M0,0 L1,0 L1,0.9764 L0.40,0.9764 C0.34,0.9764 0.305,0.9623 0.27,0.934 C0.26,0.9245 0.255,0.9198 0.25,0.9198 C0.245,0.9198 0.24,0.9245 0.23,0.934 C0.195,0.9623 0.16,0.9764 0.10,0.9764 L0,0.9764 Z"
           />
         </clipPath>
+        <!-- Misma ola, espejada: el pico queda del lado derecho de la tarjeta. -->
+        <clipPath id="owa-pico-ola-derecha" clipPathUnits="objectBoundingBox">
+          <path
+            d="M1,0 L0,0 L0,0.9764 L0.60,0.9764 C0.66,0.9764 0.695,0.9623 0.73,0.934 C0.74,0.9245 0.745,0.9198 0.75,0.9198 C0.755,0.9198 0.76,0.9245 0.77,0.934 C0.805,0.9623 0.84,0.9764 0.90,0.9764 L1,0.9764 Z"
+          />
+        </clipPath>
+        <!-- Misma ola, girada 90° e invertida: la foto invade el blanco del texto
+             en vez de que el blanco entre en la foto. El borde real vive en 0.96
+             (recorta el ancho de más que suma el margen negativo del lado);
+             sólo en el pico central llega al borde entero (1.0), que es lo que
+             asoma sobre el panel de texto. -->
+        <clipPath id="owa-horizonte" clipPathUnits="objectBoundingBox">
+          <path
+            d="M0,0 L0.96,0 L0.96,0.42 C0.96,0.452 0.9700,0.4707 0.9900,0.4893 C0.9967,0.4947 1,0.4973 1,0.50 C1,0.5027 0.9967,0.5053 0.9900,0.5107 C0.9700,0.5293 0.96,0.548 0.96,0.58 L0.96,1 L0,1 Z"
+          />
+        </clipPath>
       </defs>
     </svg>
 

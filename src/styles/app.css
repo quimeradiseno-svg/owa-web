@@ -260,6 +260,16 @@
   clip-path: url(#owa-pico-ola);
 }
 
+/* Misma ola, espejada a la derecha (Challenge). */
+@utility u-pico-ola-derecha {
+  clip-path: url(#owa-pico-ola-derecha);
+}
+
+/* La misma ola, girada 90°: divide foto y texto en tarjetas lado a lado. */
+@utility u-horizonte {
+  clip-path: url(#owa-horizonte);
+}
+
 /* Velo del hero: deja el medio limpio para que se vea la foto y cierra abajo
    casi opaco, que es donde caen el titular, la bajada y los botones.
    Sin el tramo del 72% el párrafo queda sobre nadadores y no llega a 4.5:1. */

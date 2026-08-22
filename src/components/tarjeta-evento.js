@@ -76,7 +76,7 @@ export function tarjetaChallenge(e) {
       href="/carrera/${e.slug}"
       class="reveal u-lift group flex flex-col overflow-hidden rounded-owa-lg bg-linear-to-b from-owa-navy to-owa-abyss text-white"
     >
-      <div class="relative h-40 shrink-0 overflow-hidden">
+      <div class="relative h-44 shrink-0 overflow-hidden u-pico-ola-derecha">
         ${foto({
           slug: e.img,
           alt: ALT.challenge(e),
@@ -84,18 +84,17 @@ export function tarjetaChallenge(e) {
           className: 'block h-full w-full',
           imgClass: 'h-full w-full object-cover',
         })}
-        <div class="absolute inset-0 bg-linear-to-b from-owa-abyss/20 to-owa-abyss/85"></div>
-        <p class="absolute bottom-4 left-5.5 flex items-baseline gap-2.5">
-          <span data-nums class="font-display text-[2.5rem] leading-none font-black text-owa-cyan">${e.km.replace(' km', '')}</span>
-          <span class="font-display text-sm font-bold tracking-[0.14em] text-owa-sky">KM</span>
-        </p>
+        <div class="absolute inset-0 bg-linear-to-b from-owa-abyss/0 to-owa-abyss/58"></div>
+        <h3 class="absolute bottom-4 left-5.5 text-[clamp(2.25rem,4.2vw,3rem)] leading-[0.9]">${e.corto}</h3>
       </div>
 
       <div class="flex flex-1 flex-col p-5.5">
-        <p class="font-display text-[11px] font-bold tracking-[0.2em] text-owa-sky">${e.sigla}</p>
-        <h3 class="mt-2 text-[clamp(1.375rem,2.2vw,1.75rem)] leading-[0.98]">${e.corto}</h3>
-        <p class="mt-2.5 text-[13px] text-owa-line">${e.sede}</p>
-        <p class="mt-4 text-[13px] leading-relaxed text-owa-sky">${e.ventana}</p>
+        <p class="flex items-baseline gap-1.5">
+          <span data-nums class="font-display text-2xl leading-none font-black text-owa-cyan">${e.km.replace(' km', '')}</span>
+          <span class="font-display text-[11px] font-bold tracking-[0.14em] text-owa-sky">KM</span>
+        </p>
+        <p class="mt-2.5 text-[15px] font-bold text-white">${e.sede}</p>
+        <p class="mt-1 font-display text-sm font-black tracking-[0.02em] text-owa-sky">${e.ventana}</p>
 
         <span class="mt-6 flex items-center justify-between gap-2.5 border-t border-white/18 pt-5">
           <span class="font-display text-xs font-black tracking-[0.08em]">VER DETALLES</span>
@@ -118,7 +117,7 @@ export function tarjetaTravel(t) {
       href="/travel"
       class="reveal u-lift-sm group grid overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] sm:grid-cols-2"
     >
-      <div class="relative h-52 sm:h-full sm:min-h-58">
+      <div class="relative h-52 sm:h-full sm:min-h-58 sm:-mr-4 sm:u-horizonte">
         ${foto({
           slug: t.img,
           alt: porConfirmar ? '' : `Nadadores en ${t.destino}`,

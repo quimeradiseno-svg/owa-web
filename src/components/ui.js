@@ -122,7 +122,7 @@ export const btnBordeClaro = (label, href, extra = '') =>
 export const linkFuerte = (label, href, extra = '') =>
   html`<a
     href="${href}"
-    class="u-nudge inline-flex items-center gap-2 border-b-2 border-owa-blue pb-1 font-display text-[13px] font-black tracking-[0.08em] text-owa-blue transition-colors hover:border-owa-electric hover:text-owa-electric ${extra}"
+    class="u-nudge inline-flex items-center gap-2 border-b-2 border-owa-blue pb-1 font-display text-[13px] font-black tracking-[0.08em] text-owa-blue uppercase transition-colors hover:border-owa-electric hover:text-owa-electric ${extra}"
     >${label} ${FLECHA}</a
   >`;
 

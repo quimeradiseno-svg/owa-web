@@ -28,9 +28,10 @@ const PHOTOS = {
   'ev-huemul': 'SPD/12_NATURALEZA_GANSOS',
   'ev-colon': 'VOB/16_LLEGADA_ARCO_OWA',
   'ev-maraton': 'SPD/22_SALIDA_AGUA_DINAMICA',
-  'ev-rdp40': 'VOB/13_NADO_ACCION_SPLASH',
-  'ev-snp70': 'SPD/13_KAYAK_ESCOLTA',
-  'ev-bvt21': 'VOB/12_KAYAK_GUIA',
+  // Challenge: fotos reales de cada travesía (antes eran genéricas de SPD/VOB).
+  'ev-rdp40': 'Fotos/RDP/MLE-30012.jpg',
+  'ev-snp70': 'Fotos/SNP/MLE-57584.jpg',
+  'ev-bvt21': 'Fotos/BVT/@juancruzrabaglia-1991.jpg',
   // secciones
   'sede-comunidad': 'VOB/08_ESCALA_COMUNIDAD',
   'travel-playa': 'VOB/04_PREVIA_GRUPO_ABRAZADO',
