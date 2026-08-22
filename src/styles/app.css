@@ -134,7 +134,31 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* overflow-x en <body> rompía el `sticky` del header: cualquier valor de
+     overflow distinto de "visible" en un solo eje hace que el otro eje
+     compute a "auto" (regla de la spec), y eso convierte a <body> en un
+     contenedor de scroll — el sticky pasa a anclarse ahí, no al viewport,
+     y el navbar quedaba scrolleando con el resto. #contenido es donde viven
+     los heroes y fondos decorativos que se desbordan; el header vive en
+     #shell, su hermano, así que acá no le rompe nada. */
+  #contenido {
     overflow-x: clip;
+  }
+
+  /* El header vive dentro de #shell (un div sin estilos propios, sólo un
+     punto de montaje para innerHTML). Sin dueño, #shell se achica a la
+     altura exacta del header — y esa altura es, a la vez, hasta dónde
+     "sticky" puede quedarse pegado: el elemento no puede stickear más allá
+     del borde de su propio contenedor. Con el contenedor tan bajo, el
+     margen se agotaba a los 69px de scroll y el header quedaba scrolleando
+     con el resto el resto del camino — se veía igual que si no tuviera
+     sticky. display:contents saca a #shell de la caja de layout (sigue
+     existiendo para el innerHTML de main.js) y el contenedor real pasa a
+     ser <body>, que sí es alto. */
+  #shell {
+    display: contents;
   }
 
   h1,
