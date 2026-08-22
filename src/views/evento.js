@@ -70,6 +70,15 @@ const resumenJornada = (f, torneo) => {
     en la lista de detalles técnicos. */
 const CABECERA_RECORRIDO = ['Fecha', 'Horario de largada'];
 
+const MES_CORTO = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+
+/** 14/11/2026 → 14 NOV 26. Los datos vienen en formato numérico; en la tarjeta
+    el mes escrito se lee de un vistazo y no se confunde con el día. */
+const fechaCorta = (f) => {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(f).trim());
+  return m ? `${+m[1]} ${MES_CORTO[+m[2] - 1]} ${m[3].slice(2)}` : f;
+};
+
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
 
@@ -80,21 +89,10 @@ const barraDatos = (e, esChallenge, f) => {
       : btnPrimario('INSCRIBITE', linkInscripcion(e), extra);
 
   return html`
-    <!-- Compacta y fija, sólo en mobile: la banda completa de abajo no sigue
-         el scroll (pedido explícito, tapaba media pantalla), pero perder de
-         vista el botón de inscripción mientras se lee toda la ficha tampoco
-         sirve. Esta es la versión mínima — fecha + CTA — para no repetir el
-         problema con menos datos. -->
-    <div
-      class="sticky top-(--nav-h) z-40 flex items-center justify-between gap-3 border-b border-owa-line bg-white px-4 py-2.5 shadow-[0_8px_24px_rgb(33_30_95/0.06)] md:hidden"
-    >
-      <p class="min-w-0 truncate font-display text-[13px] font-bold text-owa-navy">
-        ${e.fechaCorta}${e.anio ? ' ' + e.anio : ''}
-      </p>
-      ${boton('shrink-0')}
-    </div>
-
-    <!-- Bloque normal, no fijo: a pedido explícito, no debe seguir el scroll. -->
+    <!-- Bloque normal, no fijo en ningún ancho: a pedido explícito, no debe
+         seguir el scroll. Hubo una versión compacta sticky sólo para mobile,
+         pero al descartarse el sticky en general quedaba como un duplicado
+         de esta misma info sin ningún propósito — se saca directamente. -->
     <div class="z-40 border-b border-owa-line bg-white shadow-[0_8px_24px_rgb(33_30_95/0.06)]">
       <div class="u-shell grid grid-cols-2 gap-x-7.5 gap-y-3 py-3.5 md:flex md:flex-wrap md:items-center">
         ${[
@@ -147,8 +145,8 @@ const bandaVivo = () => html`
 const jornadas = (e, f) => html`
   <section class="bg-owa-navy px-0 py-20 text-white" aria-labelledby="h-jornadas">
     <div class="u-shell">
-      <h2 id="h-jornadas" class="u-h2">Días del evento</h2>
-      <p class="mt-3.5 text-[17px] text-owa-line">Dos jornadas, un fin de semana.</p>
+      ${eyebrow('Dos jornadas, un fin de semana', 'sky')}
+      <h2 id="h-jornadas" class="mt-3.5 u-h2">Días del evento</h2>
 
       <!-- Dos tarjetas altas, mitad y mitad del ancho. La jerarquía va
            torneo → fecha → distancia (lo más grande) → datos técnicos, que
@@ -173,7 +171,7 @@ const jornadas = (e, f) => html`
                 ${j.torneo}
               </h3>
               <p data-nums class="mt-3 font-display text-[clamp(0.9375rem,1.7vw,1.25rem)] font-bold text-owa-line">
-                ${j.fecha}
+                ${fechaCorta(j.fecha)}
               </p>
 
               <p class="mt-9 flex flex-wrap items-baseline gap-x-5 gap-y-1">
@@ -195,13 +193,22 @@ const jornadas = (e, f) => html`
                 )}
               </p>
 
-              <div class="mt-auto pt-9">
-                <p class="text-[13px] leading-relaxed text-owa-line/75">
-                  Largada <span data-nums class="text-owa-line">${r.largada}</span> · ${j.desc}
-                </p>
+              <!-- Largada como chip (destaca el dato duro) y la descripción
+                   aparte, ambos justo debajo de la distancia — antes iban
+                   fundidos en una sola línea chica al fondo de la card. -->
+              <div class="mt-6">
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full border border-white/25 px-3.5 py-1.5 font-display text-[11px] font-black tracking-[0.08em] text-owa-line"
+                >
+                  LARGADA <span data-nums class="text-white">${r.largada}</span>
+                </span>
+                <p class="mt-4 max-w-[38ch] text-[13px] leading-relaxed text-owa-line/75">${j.desc}</p>
+              </div>
+
+              <div class="mt-auto pt-7">
                 <a
                   href="${inscripcionDe(e, f, j.torneo)}"
-                  class="u-press mt-5 block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
+                  class="u-press block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
                   >INSCRIBITE A ${j.torneo} →</a
                 >
               </div>
