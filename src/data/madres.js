@@ -155,53 +155,48 @@ export const MADRES = {
   },
 };
 
+// `distancia` es el dato que manda debajo del título. Especiales y Travel no
+// tienen un rango fijo (cambia por evento / por viaje), así que van sin él.
 export const MODALIDADES = [
   {
     titulo: 'GRAND PRIX',
+    distancia: '8–18 KM',
     desc: 'Élite y máster competitivo. Cuatro fechas puntuables por el título de la temporada.',
-    meta: '4 FECHAS · PUNTUABLE',
     cta: 'VER GRAND PRIX',
     href: '/grand-prix',
     img: 'gp-contraluz',
-    icono: 'ola',
   },
   {
     titulo: 'CIRCUITO OWA',
+    distancia: '2–7 KM',
     desc: 'Accesible y apto principiantes. Mismas sedes, distancias para empezar.',
-    meta: '4 FECHAS · PUNTUABLE',
     cta: 'VER CIRCUITO',
     href: '/circuito',
-    img: 'circuito-grupo',
-    icono: 'grafico',
+    img: 'modalidad-circuito',
   },
   {
     titulo: 'EVENTOS ESPECIALES',
     desc: 'Mar, lago y río fuera del torneo regular. No suman puntos al ranking.',
-    meta: '4 EVENTOS',
     cta: 'VER EVENTOS',
     href: '/especiales',
     img: 'especiales-panoramica',
-    icono: 'estrella',
   },
   {
     titulo: 'OWA CHALLENGE',
+    distancia: '21–70 KM',
     desc: 'Ultradistancia de 21K a 70K, con admisión por postulación.',
-    meta: '3 DESAFÍOS',
     cta: 'VER CHALLENGE',
     href: '/challenge',
     img: 'challenge-lago',
-    icono: 'ondas',
   },
   {
     titulo: 'OWA TRAVEL',
     desc: 'Viajes grupales de nado: islas, snorkel y travesías fuera del calendario local.',
-    meta: '2 EXPERIENCIAS',
     cta: 'VER OWA TRAVEL',
     href: '/travel',
     img: 'tv-isla-drone',
-    // El único ícono que es imagen de marca, no trazo del set: el isotipo
-    // de OWA Travel ya trae el avión adentro.
-    iconoImg: '/brand/owa-travel-iso.svg',
+    // El isotipo propio de Travel: mismo círculo de marca pero con el avión.
+    iso: '/brand/owa-travel-iso.svg',
   },
 ];
 

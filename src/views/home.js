@@ -6,16 +6,7 @@ import { MODALIDADES } from '../data/madres.js';
 import { GP, CIRC, CLUBES_GP } from '../data/rankings.js';
 import { tarjetaEvento, tarjetaFecha, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
-import {
-  eyebrow,
-  tituloSeccion,
-  btnAccent,
-  btnBlanco,
-  btnBorde,
-  linkFuerte,
-  olaCentrada,
-  pastillaChica,
-} from '../components/ui.js';
+import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, olaCentrada } from '../components/ui.js';
 
 export const titulo = 'El agua nos une';
 
@@ -24,7 +15,7 @@ export const titulo = 'El agua nos une';
 const estadoHome = { tab: 'gp' };
 
 const PANELES = [
-  { id: 'gp', label: 'GRAND PRIX', data: GP, ruta: 'gp' },
+  { id: 'gp', label: 'GRAND PRIX OWA', data: GP, ruta: 'gp' },
   { id: 'circ', label: 'CIRCUITO OWA', data: CIRC, ruta: 'circ' },
 ];
 
@@ -65,8 +56,10 @@ const columnaGenero = (panel, sexo) => {
   const rows = panel.data.filter((r) => r.sexo === sexo).slice(0, 3);
   return html`
     <div>
-      <p class="flex items-center gap-2 font-display text-xs font-black tracking-[0.12em] text-owa-navy">
-        ${avatar('size-6')}
+      <p class="flex items-center gap-2.5 font-display text-sm font-black tracking-[0.12em] text-owa-navy">
+        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-owa-navy text-white">
+          ${icono('persona', 'size-4.5')}
+        </span>
         ${sexo === 'M' ? 'HOMBRES' : 'MUJERES'}
       </p>
       ${rows.length
@@ -78,7 +71,7 @@ const columnaGenero = (panel, sexo) => {
                     ${numeroPos(i + 1)} ${avatar('size-15')}
                     <span class="min-w-0 flex-1">
                       <span class="block truncate font-display text-lg font-bold text-owa-navy">${r.nombre}</span>
-                      <span data-nums class="mt-0.5 block font-display text-sm font-black text-owa-blue">${r.puntos} pts</span>
+                      <span data-nums class="mt-0.5 block text-sm font-bold text-owa-blue">${r.puntos} pts</span>
                     </span>
                   </li>
                 `
@@ -95,10 +88,25 @@ function panelRanking() {
   return html`
     <article class="reveal rounded-owa-lg bg-white p-7 shadow-[var(--shadow-card)]" data-panel-ranking>
       <div class="flex gap-1.5 rounded-full bg-owa-sand p-1.5" role="group" aria-label="Torneo">
-        ${PANELES.map((p) => pastillaChica(p.label, p.id === panel.id, `data-tab="${p.id}"`))}
+        ${PANELES.map(
+          (p) => html`
+            <button
+              type="button"
+              data-tab="${p.id}"
+              aria-pressed="${p.id === panel.id ? 'true' : 'false'}"
+              class="u-press cursor-pointer rounded-full px-5 py-2.5 font-display text-sm font-black tracking-[0.06em] transition-colors duration-200 ${p.id === panel.id
+                ? 'bg-owa-navy text-white'
+                : 'text-owa-slate hover:text-owa-navy'}"
+            >
+              <span class="hidden sm:inline">RANKING </span>${p.label}
+            </button>
+          `
+        )}
       </div>
 
-      <div class="mt-6 grid gap-6 sm:grid-cols-2">${columnaGenero(panel, 'M')} ${columnaGenero(panel, 'F')}</div>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 sm:gap-8 sm:divide-x sm:divide-owa-line">
+        ${columnaGenero(panel, 'M')} ${columnaGenero(panel, 'F')}
+      </div>
     </article>
   `;
 }
@@ -108,23 +116,23 @@ function panelRanking() {
 function panelClubes() {
   return html`
     <article class="reveal relative overflow-hidden rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
-      <div
-        class="pointer-events-none absolute -right-8 -bottom-8 h-52 w-60 opacity-40 [mask-image:linear-gradient(135deg,transparent_8%,black_62%)]"
-        aria-hidden="true"
-      >
+      <!-- Foto a sangre de toda la tarjeta: sin recorte visible, se apaga hacia
+           arriba con un degradado para que el listado siga siendo lo que se lee. -->
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         ${foto({ slug: 'podio-trofeo', alt: '', className: 'block h-full w-full', imgClass: 'h-full w-full object-cover' })}
+        <div class="absolute inset-0 bg-linear-to-t from-owa-navy/45 via-owa-navy/85 to-owa-navy"></div>
       </div>
 
       <div class="relative">
-        <h3 class="font-display text-[13px] font-black tracking-[0.14em] text-owa-sky">CLUBES</h3>
-        <ol class="mt-4.5">
+        <h3 class="font-display text-xl font-black tracking-[0.1em] text-owa-sky">CLUBES</h3>
+        <ol class="mt-9">
           ${CLUBES_GP.map(
             (c, i) => html`
               <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
                 ${numeroPos(i + 1, true)} ${avatar('size-15', true)}
                 <span class="min-w-0 flex-1">
                   <span class="block font-display text-lg leading-tight font-bold">${c.nombre}</span>
-                  <span data-nums class="mt-1 block font-display text-sm font-black text-owa-sky">${c.puntos} pts</span>
+                  <span data-nums class="mt-1 block text-sm font-bold text-owa-sky">${c.puntos} pts</span>
                 </span>
               </li>
             `
@@ -132,7 +140,7 @@ function panelClubes() {
         </ol>
         <a
           href="/resultados?vista=equipos"
-          class="u-nudge mt-5 inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:text-owa-sky"
+          class="u-nudge mt-6 inline-flex items-center gap-2 rounded-full border border-owa-cyan/60 px-4.5 py-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:border-owa-sky hover:text-owa-sky"
         >
           Ver todos los clubes
           <span class="u-nudge-arrow" aria-hidden="true">→</span>
@@ -304,19 +312,21 @@ export function render() {
 
                 <div class="relative">
                   <div class="flex items-start justify-between">
-                    <span data-nums class="font-display text-sm font-black tracking-[0.08em] text-owa-sky"
+                    <span data-nums class="font-display text-[2rem] leading-none font-black tracking-[0.02em] text-owa-sky"
                       >${String(i + 1).padStart(2, '0')}</span
                     >
-                    ${m.iconoImg
-                      ? html`<img src="${m.iconoImg}" alt="" class="size-7" aria-hidden="true" />`
-                      : html`<span class="text-owa-sky">${icono(m.icono, 'size-6')}</span>`}
+                    <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white/10">
+                      <img src="${m.iso || '/brand/owa-iso-cyan.svg'}" alt="" class="size-5" aria-hidden="true" />
+                    </span>
                   </div>
                   <h3 class="mt-5 text-[clamp(1.25rem,2vw,1.625rem)] leading-[1.02] text-white">${m.titulo}</h3>
+                  ${m.distancia
+                    ? html`<p data-nums class="mt-2.5 font-display text-lg font-black tracking-[0.04em] text-owa-sky">${m.distancia}</p>`
+                    : ''}
                   <p class="mt-3.5 text-sm leading-relaxed text-owa-line">${m.desc}</p>
                 </div>
                 <div class="relative">
-                  <p class="mt-6 font-display text-xs font-bold tracking-[0.1em] text-owa-sky">${m.meta}</p>
-                  <p class="mt-3 flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan">
+                  <p class="mt-6 flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan">
                     ${m.cta}
                     <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
                   </p>
@@ -342,6 +352,20 @@ export function render() {
         </div>
 
         <div class="grid gap-4.5 lg:grid-cols-[1.7fr_1fr]" data-stagger>${panelRanking()} ${panelClubes()}</div>
+
+        <div class="reveal relative mt-4.5 overflow-hidden rounded-owa-lg bg-owa-navy">
+          ${fondo({ slug: 'circuito-grupo', alt: '', opacity: 0.35 })}
+          <div class="relative flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+            <div class="flex items-center gap-5">
+              <img src="/brand/owa-iso-cyan.svg" alt="" class="size-14 shrink-0" aria-hidden="true" />
+              <div>
+                <h3 class="text-[clamp(1.375rem,2.6vw,1.875rem)] leading-[0.98] text-white">Cada brazada suma</h3>
+                <p class="mt-1.5 text-sm text-owa-line">Viví cada fecha. Sumá puntos. Dejá tu huella.</p>
+              </div>
+            </div>
+            ${btnAccent('CÓMO FUNCIONA EL RANKING', '/resultados?tab=gp#h-calculo')}
+          </div>
+        </div>
       </div>
     </section>
 

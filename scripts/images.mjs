@@ -16,6 +16,9 @@ const PHOTOS = {
   // torneos
   'gp-contraluz': 'SPD/14_CARRERA_CONTRALUZ',
   'circuito-grupo': 'VOB/07_NADO_GRUPO',
+  // Primer plano sin marca de agua visible: la de VOB/07 la muestra entera al
+  // ocupar toda la tarjeta en el hover de "Cinco formas de entrar al agua".
+  'modalidad-circuito': 'SPD/10_CARRERA_CRAWL_PRIMER_PLANO',
   'especiales-panoramica': 'SPD/06_RIO_SUP_PANORAMICA',
   // solitario, boya de seguridad, montañas nevadas: la postal de ultradistancia.
   'challenge-lago': 'Fotos/CHALLENGE/@juancruzrabaglia-2077.jpg',
