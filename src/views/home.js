@@ -6,7 +6,16 @@ import { MODALIDADES } from '../data/madres.js';
 import { GP, CIRC, CLUBES_GP } from '../data/rankings.js';
 import { tarjetaEvento, tarjetaFecha, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
-import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, olaCentrada } from '../components/ui.js';
+import {
+  eyebrow,
+  tituloSeccion,
+  btnAccent,
+  btnBlanco,
+  btnBorde,
+  linkFuerte,
+  olaCentrada,
+  pastillaChica,
+} from '../components/ui.js';
 
 export const titulo = 'El agua nos une';
 
@@ -62,10 +71,10 @@ const columnaGenero = (panel, sexo) => {
             <ol class="mt-3.5 grid">
               ${rows.map(
                 (r, i) => html`
-                  <li class="flex items-center gap-3 border-b border-owa-sand py-3 last:border-0">
-                    ${numeroPos(i + 1)} ${avatar('size-11')}
+                  <li class="flex items-center gap-3.5 border-b border-owa-sand py-3.5 last:border-0">
+                    ${numeroPos(i + 1)} ${avatar('size-15')}
                     <span class="min-w-0 flex-1">
-                      <span class="block truncate font-display text-[15px] font-bold text-owa-navy">${r.nombre}</span>
+                      <span class="block truncate font-display text-lg font-bold text-owa-navy">${r.nombre}</span>
                       <span data-nums class="mt-0.5 block font-display text-sm font-black text-owa-blue">${r.puntos} pts</span>
                     </span>
                   </li>
@@ -82,22 +91,8 @@ function panelRanking() {
   const panel = PANELES.find((p) => p.id === estadoHome.tab);
   return html`
     <article class="reveal rounded-owa-lg bg-white p-7 shadow-[var(--shadow-card)]" data-panel-ranking>
-      <div class="flex gap-6 border-b border-owa-sand" role="tablist" aria-label="Torneo">
-        ${PANELES.map(
-          (p) => html`
-            <button
-              type="button"
-              role="tab"
-              data-tab="${p.id}"
-              aria-selected="${p.id === panel.id ? 'true' : 'false'}"
-              class="u-press border-b-2 pb-3.5 font-display text-[13px] font-black tracking-[0.06em] transition-colors duration-200 ease-out ${p.id === panel.id
-                ? 'border-owa-blue text-owa-navy'
-                : 'border-transparent text-owa-slate hover:text-owa-navy'}"
-            >
-              ${p.label}
-            </button>
-          `
-        )}
+      <div class="flex gap-1.5 rounded-full bg-owa-sand p-1.5" role="group" aria-label="Torneo">
+        ${PANELES.map((p) => pastillaChica(p.label, p.id === panel.id, `data-tab="${p.id}"`))}
       </div>
 
       <div class="mt-6 grid gap-6 sm:grid-cols-2">${columnaGenero(panel, 'M')} ${columnaGenero(panel, 'F')}</div>
@@ -114,10 +109,10 @@ function panelClubes() {
       <ol class="mt-4.5">
         ${CLUBES_GP.map(
           (c, i) => html`
-            <li class="flex items-center gap-3.5 border-t border-white/12 py-3.5 first:border-0 first:pt-0">
-              ${numeroPos(i + 1, true)} ${avatar('size-12', true)}
+            <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
+              ${numeroPos(i + 1, true)} ${avatar('size-15', true)}
               <span class="min-w-0 flex-1">
-                <span class="block font-display text-[15px] leading-tight font-bold">${c.nombre}</span>
+                <span class="block font-display text-lg leading-tight font-bold">${c.nombre}</span>
                 <span data-nums class="mt-1 block font-display text-sm font-black text-owa-sky">${c.puntos} pts</span>
               </span>
             </li>
@@ -373,7 +368,7 @@ export function mount(root) {
 
   root.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-tab]');
-    if (!btn || btn.getAttribute('aria-selected') === 'true') return;
+    if (!btn || btn.getAttribute('aria-pressed') === 'true') return;
     estadoHome.tab = btn.dataset.tab;
 
     const viejo = root.querySelector('[data-panel-ranking]');
