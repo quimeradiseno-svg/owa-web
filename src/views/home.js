@@ -37,25 +37,28 @@ const avatar = (clase, oscuro = false) =>
     >${icono('persona', 'size-1/2')}</span
   >`;
 
-// Número de posición "suelto", sin chapita: más grande y en el color de cada
-// metal, tal como lo pidió el mockup de referencia.
-// El dorado/bronce de marca (pensados para chapita rellena) no llegan a 3:1
-// como texto suelto sobre blanco: acá van oscurecidos sólo para esa tarjeta;
-// sobre navy el tono de marca ya contrasta bien y queda como está.
+// Número de posición "suelto", sin chapita: grande y en degradé del color de
+// cada metal, tal como lo pidió el mockup de referencia.
+// Los extremos del degradé están elegidos a mano para que incluso el tramo
+// más claro llegue a 3:1 sobre blanco — el propio degradé usa `color:
+// transparent`, así que el script de contraste no puede leerlo (ve un color
+// vacío y lo deja pasar sin chequear), hay que sostenerlo verificado a mano.
+const CLASE_METAL = {
+  '1-claro': 'from-[#8a6d00] to-[#a88c00]',
+  '1-oscuro': 'from-[#c9a227] to-[#f7ce00]',
+  '2-claro': 'from-[#3a3b3c] to-[#6b6c6e]',
+  '2-oscuro': 'from-[#9e9fa9] to-[#c7c8cf]',
+  '3-claro': 'from-[#7c6428] to-[#a68835]',
+  '3-oscuro': 'from-[#b89040] to-[#e0b848]',
+};
+
 const numeroPos = (p, oscuro = false) => {
-  const color =
-    p === 1
-      ? oscuro
-        ? 'text-owa-gold'
-        : 'text-[#a18600]'
-      : p === 3
-        ? oscuro
-          ? 'text-owa-bronze'
-          : 'text-[#9d8132]'
-        : oscuro
-          ? 'text-owa-gray'
-          : 'text-owa-slate';
-  return html`<span data-nums class="w-7 shrink-0 font-display text-2xl leading-none font-black ${color}">${p}</span>`;
+  const clase = CLASE_METAL[`${p}-${oscuro ? 'oscuro' : 'claro'}`] || CLASE_METAL[`2-${oscuro ? 'oscuro' : 'claro'}`];
+  return html`<span
+    data-nums
+    class="w-7 shrink-0 bg-linear-to-b ${clase} bg-clip-text font-display text-2xl leading-none font-black text-transparent"
+    >${p}</span
+  >`;
 };
 
 const columnaGenero = (panel, sexo) => {
@@ -104,28 +107,37 @@ function panelRanking() {
 // de la pestaña Grand Prix/Circuito que arma el bloque de nadadores de al lado.
 function panelClubes() {
   return html`
-    <article class="reveal rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
-      <h3 class="font-display text-[13px] font-black tracking-[0.14em] text-owa-sky">CLUBES</h3>
-      <ol class="mt-4.5">
-        ${CLUBES_GP.map(
-          (c, i) => html`
-            <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
-              ${numeroPos(i + 1, true)} ${avatar('size-15', true)}
-              <span class="min-w-0 flex-1">
-                <span class="block font-display text-lg leading-tight font-bold">${c.nombre}</span>
-                <span data-nums class="mt-1 block font-display text-sm font-black text-owa-sky">${c.puntos} pts</span>
-              </span>
-            </li>
-          `
-        )}
-      </ol>
-      <a
-        href="/resultados?vista=equipos"
-        class="u-nudge mt-5 inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:text-owa-sky"
+    <article class="reveal relative overflow-hidden rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
+      <div
+        class="pointer-events-none absolute -right-8 -bottom-8 h-52 w-60 opacity-40 [mask-image:linear-gradient(135deg,transparent_8%,black_62%)]"
+        aria-hidden="true"
       >
-        Ver todos los clubes
-        <span class="u-nudge-arrow" aria-hidden="true">→</span>
-      </a>
+        ${foto({ slug: 'podio-trofeo', alt: '', className: 'block h-full w-full', imgClass: 'h-full w-full object-cover' })}
+      </div>
+
+      <div class="relative">
+        <h3 class="font-display text-[13px] font-black tracking-[0.14em] text-owa-sky">CLUBES</h3>
+        <ol class="mt-4.5">
+          ${CLUBES_GP.map(
+            (c, i) => html`
+              <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
+                ${numeroPos(i + 1, true)} ${avatar('size-15', true)}
+                <span class="min-w-0 flex-1">
+                  <span class="block font-display text-lg leading-tight font-bold">${c.nombre}</span>
+                  <span data-nums class="mt-1 block font-display text-sm font-black text-owa-sky">${c.puntos} pts</span>
+                </span>
+              </li>
+            `
+          )}
+        </ol>
+        <a
+          href="/resultados?vista=equipos"
+          class="u-nudge mt-5 inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:text-owa-sky"
+        >
+          Ver todos los clubes
+          <span class="u-nudge-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
     </article>
   `;
 }
@@ -326,7 +338,7 @@ export function render() {
               In aqua veritas<br />aqua autem nos unit
             </h2>
           </div>
-          ${btnBorde('Ver rankings completos', '/resultados')}
+          ${btnBorde('VER RANKINGS COMPLETOS', '/resultados')}
         </div>
 
         <div class="grid gap-4.5 lg:grid-cols-[1.7fr_1fr]" data-stagger>${panelRanking()} ${panelClubes()}</div>
