@@ -664,7 +664,8 @@ export function render(ctx) {
     <!-- cronograma -->
     <section class="bg-owa-mist px-0 py-20" aria-labelledby="h-cronograma">
       <div class="u-shell">
-        <h2 id="h-cronograma" class="u-eyebrow text-owa-blue">Cronograma del evento</h2>
+        ${eyebrow('Minuto a minuto')}
+        <h2 id="h-cronograma" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)] text-owa-navy">Cronograma del evento</h2>
         ${f?.cronogramas
           ? (() => {
               const dias = diasDeCronograma(f.cronogramas);
@@ -714,51 +715,70 @@ export function render(ctx) {
                           : b.aviso
                             ? html`<p class="px-6.5 pt-6 text-[13px] text-owa-slate">${b.aviso}</p>`
                             : ''}
-                        <ol class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-2'} pb-3">
-                          ${b.items.map(
-                            (it, idx) => html`
-                              <li class="flex gap-4 px-6.5 ${it.destacado ? 'py-4' : 'py-3'}">
-                                <!-- Línea vertical armada en dos mitades por fila (arriba/abajo del
-                                     punto): así queda continua entre filas sin medir alturas a mano,
-                                     y se corta sola en el primer y último ítem. -->
-                                <div class="relative flex w-3 shrink-0 justify-center">
-                                  ${idx > 0
-                                    ? html`<span class="absolute top-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
-                                    : ''}
-                                  ${idx < b.items.length - 1
-                                    ? html`<span class="absolute bottom-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
-                                    : ''}
-                                  <span
-                                    class="relative z-10 mt-1.5 shrink-0 rounded-full ${it.destacado
-                                      ? 'size-3.5 bg-owa-cyan ring-4 ring-owa-cyan/20'
-                                      : 'size-2.5 border-2 border-white bg-owa-slate/40'}"
-                                  ></span>
-                                </div>
+                        ${(() => {
+                          const filaCron = (it, idx, total) => html`
+                            <li class="flex gap-4 px-6.5 ${it.destacado ? 'py-4' : 'py-3'}">
+                              <!-- Línea vertical armada en dos mitades por fila (arriba/abajo del
+                                   punto): así queda continua entre filas sin medir alturas a mano,
+                                   y se corta sola en el primer y último ítem de su columna. -->
+                              <div class="relative flex w-3 shrink-0 justify-center">
+                                ${idx > 0
+                                  ? html`<span class="absolute top-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
+                                  : ''}
+                                ${idx < total - 1
+                                  ? html`<span class="absolute bottom-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
+                                  : ''}
                                 <span
-                                  data-nums
-                                  class="shrink-0 pt-0.5 font-display font-black ${it.destacado
-                                    ? 'w-16 text-base text-owa-blue'
-                                    : 'w-14 text-[13px] text-owa-slate'}"
-                                  >${it.hora}</span
+                                  class="relative z-10 mt-1.5 shrink-0 rounded-full ${it.destacado
+                                    ? 'size-3.5 bg-owa-cyan ring-4 ring-owa-cyan/20'
+                                    : 'size-2.5 border-2 border-white bg-owa-slate/40'}"
+                                ></span>
+                              </div>
+                              <span
+                                data-nums
+                                class="shrink-0 pt-0.5 font-display font-black ${it.destacado
+                                  ? 'w-16 text-base text-owa-blue'
+                                  : 'w-14 text-[13px] text-owa-slate'}"
+                                >${it.hora}</span
+                              >
+                              <span class="min-w-0 flex-1 pb-0.5">
+                                ${it.zona && !it.destacado
+                                  ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
+                                  : ''}
+                                <span
+                                  class="block font-display ${it.destacado
+                                    ? 'text-base font-black text-owa-navy'
+                                    : `text-sm font-bold text-owa-navy ${it.zona ? 'mt-0.5' : ''}`}"
+                                  >${it.t}</span
                                 >
-                                <span class="min-w-0 flex-1 pb-0.5">
-                                  ${it.zona && !it.destacado
-                                    ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
-                                    : ''}
-                                  <span
-                                    class="block font-display ${it.destacado
-                                      ? 'text-base font-black text-owa-navy'
-                                      : `text-sm font-bold text-owa-navy ${it.zona ? 'mt-0.5' : ''}`}"
-                                    >${it.t}</span
-                                  >
-                                  ${it.d && !it.destacado
-                                    ? html`<span class="mt-0.5 block text-[13px] text-owa-slate">${it.d}</span>`
-                                    : ''}
-                                </span>
-                              </li>
-                            `
-                          )}
-                        </ol>
+                                ${it.d && !it.destacado
+                                  ? html`<span class="mt-0.5 block text-[13px] text-owa-slate">${it.d}</span>`
+                                  : ''}
+                              </span>
+                            </li>
+                          `;
+
+                          // Un cronograma largo (12 ítems del Circuito, por ejemplo) se vuelve
+                          // interminable en desktop en una sola columna. A partir de 7 ítems se
+                          // reparte en dos — en mobile los <ol> igual quedan uno debajo del otro,
+                          // así que ahí se sigue leyendo como una lista corrida.
+                          if (b.items.length > 6) {
+                            const mitad = Math.ceil(b.items.length / 2);
+                            const col1 = b.items.slice(0, mitad);
+                            const col2 = b.items.slice(mitad);
+                            return html`
+                              <div class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-2'} grid pb-3 lg:grid-cols-2">
+                                <ol>${col1.map((it, idx) => filaCron(it, idx, col1.length))}</ol>
+                                <ol class="lg:border-l lg:border-owa-sand">${col2.map((it, idx) => filaCron(it, idx, col2.length))}</ol>
+                              </div>
+                            `;
+                          }
+                          return html`
+                            <ol class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-2'} pb-3">
+                              ${b.items.map((it, idx) => filaCron(it, idx, b.items.length))}
+                            </ol>
+                          `;
+                        })()}
                       </div>
                     `
                   )}
