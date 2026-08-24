@@ -26,7 +26,7 @@ const PHOTOS = {
   'ev-lujan': 'VOB/07_LARGADA_ENTRADA_AL_AGUA',
   'ev-san-pedro': 'SPD/08_CARRERA_CAMPO_BOYAS',
   'ev-ramallo': 'SPD/09_CARRERA_BRAZADA_COLORES',
-  'ev-pinamar': 'VOB/03_PREVIA_PANORAMICA_PLAYA',
+  'ev-pinamar': 'Fotos/PNR/DSC_0207.jpg',
   // Eventos especiales de Bariloche/San Pedro: fotos reales de cada uno
   // (antes eran genéricas de SPD/VOB).
   'ev-nahuel': 'Fotos/NHL/DJI_20260221110433_0039_D.JPG',
