@@ -30,6 +30,9 @@ let demoAbierto = false;
 // carrera — el render cae al primer recorrido si el id no existe acá.
 let recorridoActivo = null;
 
+// Tab del cronograma: qué día está activo (índice sobre diasDeCronograma()).
+let cronogramaActivo = 0;
+
 // "Entre 23 y 26 °C, sin visibilidad, corriente a favor" -> "A favor". Es el
 // único dato de corriente que hay: no vale la pena duplicarlo como campo
 // aparte en fichas.js cuando ya vive adentro de "Condiciones del agua".
@@ -113,6 +116,30 @@ const fechaCortaDesdeLarga = (f) => {
   const mes = MESES_LARGO.indexOf(m[2].toLowerCase());
   return mes === -1 ? f : `${+m[1]} ${MES_CORTO[mes]} ${m[3].slice(2)}`;
 };
+
+/** "Viernes 13 de noviembre" → "VIERNES 13 NOV". Para la pestaña del día. */
+const diaCorto = (f) => {
+  const m = /^(\p{L}+) (\d{1,2}) de (\p{L}+)/iu.exec(String(f));
+  if (!m) return f;
+  const mes = MESES_LARGO.indexOf(m[3].toLowerCase());
+  return mes === -1 ? f : `${m[1]} ${m[2]} ${MES_CORTO[mes]}`;
+};
+
+/** El cronograma real llega partido por torneo (Grand Prix / Circuito), pero
+    el sábado ambos comparten la fecha: la entrega de kits del Circuito cae
+    el mismo día que la carrera del Grand Prix. Acá se reagrupa por fecha real
+    — cada pestaña es "un día en San Pedro", con un bloque por torneo que
+    tenga algo ese día, en vez de dos columnas fijas por torneo. */
+function diasDeCronograma(cronogramas) {
+  const porFecha = new Map();
+  for (const c of cronogramas) {
+    for (const dia of c.dias) {
+      if (!porFecha.has(dia.fecha)) porFecha.set(dia.fecha, { fecha: dia.fecha, bloques: [] });
+      porFecha.get(dia.fecha).bloques.push({ torneo: c.torneo, lugar: dia.lugar, aviso: c.aviso, items: dia.items });
+    }
+  }
+  return [...porFecha.values()];
+}
 
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
@@ -590,57 +617,96 @@ export function render(ctx) {
       <div class="u-shell">
         <h2 id="h-cronograma" class="u-eyebrow text-owa-sky">Cronograma del evento</h2>
         ${f?.cronogramas
-          ? html`
-              <div class="mt-6.5 grid gap-x-10 gap-y-8 lg:grid-cols-2">
-                ${f.cronogramas.map(
-                  (c) => html`
-                    <div>
-                      <div class="flex flex-wrap items-center gap-3">
-                        ${chipModalidad(c.torneo, { oscuro: true })}
-                        ${c.aviso ? html`<p class="text-[13px] text-owa-line">${c.aviso}</p>` : ''}
+          ? (() => {
+              const dias = diasDeCronograma(f.cronogramas);
+              const activo = dias[cronogramaActivo] || dias[0];
+              const nombreTorneo = (t) => (t === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito');
+              const subtitulo = (d) =>
+                d.bloques.length > 1 ? d.bloques.map((b) => nombreTorneo(b.torneo)).join(' + ') : d.bloques[0].lugar;
+
+              return html`
+                <div class="mt-6.5 flex flex-wrap gap-2.5" role="tablist" aria-label="Día del cronograma">
+                  ${dias.map(
+                    (d, i) => html`
+                      <button
+                        type="button"
+                        data-cron-tab="${i}"
+                        aria-pressed="${d === activo ? 'true' : 'false'}"
+                        class="u-press flex items-center gap-3 rounded-owa-md px-5 py-3.5 text-left transition-colors duration-200 ease-out ${d ===
+                        activo
+                          ? 'bg-owa-cyan text-owa-deep'
+                          : 'bg-white/8 text-white hover:bg-white/14'}"
+                      >
+                        ${icono('calendario', 'size-5.5 shrink-0')}
+                        <span>
+                          <span class="block font-display text-[13px] leading-tight font-black tracking-[0.03em] uppercase"
+                            >${diaCorto(d.fecha)}</span
+                          >
+                          <span class="mt-0.5 block text-[11px] leading-tight ${d === activo ? 'text-owa-deep' : 'text-owa-line'}"
+                            >${subtitulo(d)}</span
+                          >
+                        </span>
+                      </button>
+                    `
+                  )}
+                </div>
+
+                <div class="reveal mt-5 overflow-hidden rounded-owa-lg bg-white text-owa-navy" data-visible>
+                  ${activo.bloques.map(
+                    (b, i) => html`
+                      <div class="${i > 0 ? 'border-t border-owa-sand' : ''}">
+                        ${activo.bloques.length > 1
+                          ? html`
+                              <div class="flex flex-wrap items-center gap-3 px-6.5 pt-6">
+                                ${chipModalidad(b.torneo, { oscuro: false })}
+                                <p class="text-[13px] text-owa-slate">${b.lugar}</p>
+                              </div>
+                            `
+                          : b.aviso
+                            ? html`<p class="px-6.5 pt-6 text-[13px] text-owa-slate">${b.aviso}</p>`
+                            : ''}
+                        <ol class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-1'} pb-2">
+                          ${b.items.map(
+                            (it) => html`
+                              <li
+                                class="flex items-center gap-4 border-t border-owa-sand px-6.5 first:border-0 ${it.destacado
+                                  ? 'bg-owa-mist/70 py-4.5'
+                                  : 'py-3'}"
+                              >
+                                <span
+                                  data-nums
+                                  class="shrink-0 font-display font-black ${it.destacado
+                                    ? 'w-19 text-lg text-owa-blue'
+                                    : 'w-16 text-[13px] text-owa-slate'}"
+                                  >${it.hora}</span
+                                >
+                                <span class="min-w-0 flex-1">
+                                  ${it.zona && !it.destacado
+                                    ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
+                                    : ''}
+                                  <span
+                                    class="block font-display ${it.destacado
+                                      ? 'text-base font-black text-owa-navy'
+                                      : `text-sm font-bold text-owa-navy ${it.zona ? 'mt-0.5' : ''}`}"
+                                    >${it.t}</span
+                                  >
+                                  ${it.d && !it.destacado
+                                    ? html`<span class="mt-0.5 block text-[13px] text-owa-slate">${it.d}</span>`
+                                    : ''}
+                                </span>
+                                ${it.destacado
+                                  ? html`<span class="size-2.5 shrink-0 rounded-full bg-owa-cyan" aria-hidden="true"></span>`
+                                  : ''}
+                              </li>
+                            `
+                          )}
+                        </ol>
                       </div>
-                      ${c.dias.map(
-                        (dia) => html`
-                          <div class="mt-7">
-                            <p class="font-display text-[15px] font-black text-white uppercase">${dia.fecha}</p>
-                            <p class="mt-1 text-[13px] text-owa-line/80">${dia.lugar}</p>
-                            <ol class="mt-4">
-                              ${dia.items.map(
-                                (i) => html`
-                                  <li class="flex gap-4 border-t border-white/12 py-2.5">
-                                    <span
-                                      data-nums
-                                      class="w-22 shrink-0 font-display text-[13px] font-black ${i.destacado
-                                        ? 'text-owa-cyan'
-                                        : 'text-owa-sky'}"
-                                      >${i.hora}</span
-                                    >
-                                    <span class="min-w-0">
-                                      ${i.zona
-                                        ? html`<span
-                                            class="block text-[10px] tracking-[0.14em] text-owa-line/70 uppercase"
-                                            >${i.zona}</span
-                                          >`
-                                        : ''}
-                                      <span class="block font-display text-sm font-bold ${i.zona ? 'mt-1' : ''}"
-                                        >${i.t}</span
-                                      >
-                                      ${i.d
-                                        ? html`<span class="mt-1 block text-[13px] text-owa-line/85">${i.d}</span>`
-                                        : ''}
-                                    </span>
-                                  </li>
-                                `
-                              )}
-                            </ol>
-                          </div>
-                        `
-                      )}
-                    </div>
-                  `
-                )}
-              </div>
-            `
+                    `
+                  )}
+                </div>
+              `;
+            })()
           : html`
               <ol class="mt-6.5 grid gap-y-9 sm:grid-cols-2 lg:grid-cols-5" data-stagger>
                 ${EVENTO_FICHA.cronograma.map(
@@ -803,6 +869,12 @@ export function mount(root, ctx) {
     const tabBtn = e.target.closest('[data-recorrido-tab]');
     if (tabBtn && tabBtn.dataset.recorridoTab !== recorridoActivo) {
       recorridoActivo = tabBtn.dataset.recorridoTab;
+      return repintar();
+    }
+
+    const cronTabBtn = e.target.closest('[data-cron-tab]');
+    if (cronTabBtn && +cronTabBtn.dataset.cronTab !== cronogramaActivo) {
+      cronogramaActivo = +cronTabBtn.dataset.cronTab;
       return repintar();
     }
   });

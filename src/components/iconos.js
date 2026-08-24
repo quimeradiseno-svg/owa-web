@@ -39,6 +39,9 @@ const TRAZOS = {
   pin: '<path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 0 0 5.5 10c0 4.9 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.2"/>',
   // Llegada: bandera de cuadros.
   bandera: '<path d="M5.5 21V4"/><path d="M5.5 4.5h13l-3 3.75 3 3.75h-13"/>',
+  // Día del cronograma: calendario con una fecha marcada.
+  calendario:
+    '<rect x="3.5" y="4.5" width="17" height="16" rx="2.2"/><path d="M3.5 9.5h17"/><path d="M8 3v3"/><path d="M16 3v3"/><circle cx="12" cy="14.5" r="1.6" fill="currentColor" stroke="none"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>
