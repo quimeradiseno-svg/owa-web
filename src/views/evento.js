@@ -90,6 +90,30 @@ const fechaCorta = (f) => {
   return m ? `${+m[1]} ${MES_CORTO[+m[2] - 1]} ${m[3].slice(2)}` : f;
 };
 
+const MESES_LARGO = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre',
+];
+
+/** "Sábado 14 de noviembre de 2026" → "14 NOV 26". Misma idea que fechaCorta
+    pero para el campo "Fecha" de la ficha, que viene en texto largo. */
+const fechaCortaDesdeLarga = (f) => {
+  const m = /(\d{1,2}) de (\p{L}+) de (\d{4})/iu.exec(String(f));
+  if (!m) return f;
+  const mes = MESES_LARGO.indexOf(m[2].toLowerCase());
+  return mes === -1 ? f : `${+m[1]} ${MES_CORTO[mes]} ${m[3].slice(2)}`;
+};
+
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
 
@@ -507,8 +531,13 @@ export function render(ctx) {
                     ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 60vw, 100vw' })}
                   </div>
                   <div class="flex flex-col p-6.5">
-                    <p class="font-display text-[13px] font-black tracking-[0.08em] text-owa-blue">${r.titulo}</p>
-                    <h3 class="mt-1 font-display text-2xl font-black text-owa-navy">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                      <p class="font-display text-[13px] font-black tracking-[0.08em] text-owa-blue">${r.titulo}</p>
+                      <p data-nums class="rounded-full bg-owa-blue px-3.5 py-1.5 font-display text-[13px] font-black tracking-[0.04em] text-white">
+                        ${fechaCortaDesdeLarga(dato('Fecha'))}
+                      </p>
+                    </div>
+                    <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">
                       ${r.torneo === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito OWA'}
                     </h3>
                     <p class="mt-1 text-sm font-bold text-owa-slate">Punto a punto</p>
