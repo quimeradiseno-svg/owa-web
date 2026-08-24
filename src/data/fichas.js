@@ -51,6 +51,7 @@ export const FICHAS = {
       },
       {
         rotulo: 'arena Super Sprint',
+        torneo: 'CIRCUITO OWA',
         km: '1,5 km',
         nota: 'Prueba por invitación. Un cupo por cada 5 inscriptos',
         cats: 'Por género',
