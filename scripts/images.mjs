@@ -27,10 +27,12 @@ const PHOTOS = {
   'ev-san-pedro': 'SPD/08_CARRERA_CAMPO_BOYAS',
   'ev-ramallo': 'SPD/09_CARRERA_BRAZADA_COLORES',
   'ev-pinamar': 'VOB/03_PREVIA_PANORAMICA_PLAYA',
-  'ev-nahuel': 'VOB/09_NADO_COSTA_VERDE',
-  'ev-huemul': 'SPD/12_NATURALEZA_GANSOS',
+  // Eventos especiales de Bariloche/San Pedro: fotos reales de cada uno
+  // (antes eran genéricas de SPD/VOB).
+  'ev-nahuel': 'Fotos/NHL/DJI_20260221110433_0039_D.JPG',
+  'ev-huemul': 'Fotos/VHU/DSC_5614.JPG',
   'ev-colon': 'VOB/16_LLEGADA_ARCO_OWA',
-  'ev-maraton': 'SPD/22_SALIDA_AGUA_DINAMICA',
+  'ev-maraton': 'Fotos/SPD/10_CARRERA_CRAWL_PRIMER_PLANO_MLE-128141.jpg',
   // Challenge: fotos reales de cada travesía (antes eran genéricas de SPD/VOB).
   'ev-rdp40': 'Fotos/RDP/MLE-30012.jpg',
   'ev-snp70': 'Fotos/SNP/MLE-57584.jpg',
