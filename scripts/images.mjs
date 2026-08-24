@@ -12,7 +12,7 @@ const OUT = 'public/img';
 const PHOTOS = {
   // home
   'travel-barco': 'VOB/06_LARGADA_RIO_BARCO',
-  'pad-infantil': 'SPD/19_INFANTIL_NENE_BOYA',
+  'pad-infantil': 'Fotos/PDA/DSC_9296.jpg',
   // torneos
   'gp-contraluz': 'SPD/14_CARRERA_CONTRALUZ',
   'circuito-grupo': 'VOB/07_NADO_GRUPO',

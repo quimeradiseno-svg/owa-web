@@ -390,7 +390,7 @@ export function render() {
         <div class="reveal-clip h-85 overflow-hidden rounded-owa-lg">
           ${foto({
             slug: 'pad-infantil',
-            alt: 'Chico con gorra de natación entrando al agua con su boya naranja',
+            alt: 'Grupo de jóvenes nadadores del PDA con boyas, listos para entrar al agua',
             sizes: '(min-width: 1024px) 50vw, 100vw',
             className: 'block h-full w-full',
             imgClass: 'h-full w-full object-cover',
