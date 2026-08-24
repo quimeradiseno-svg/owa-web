@@ -3,10 +3,10 @@ import { foto, fondo, fondoVideo, montarFondoVideo } from '../lib/img.js';
 import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
 import { TRAVEL } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
-import { GP, CIRC, CLUBES_GP } from '../data/rankings.js';
+import { GP, CIRC, CLUBES_GP, CLUBES_CIRC } from '../data/rankings.js';
 import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
-import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, olaCentrada } from '../components/ui.js';
+import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, pastillaChica, olaCentrada } from '../components/ui.js';
 
 export const titulo = 'El agua nos une';
 
@@ -111,9 +111,14 @@ function panelRanking() {
   `;
 }
 
-// Los 3 clubes que van acá son el campeonato por equipos general: no dependen
-// de la pestaña Grand Prix/Circuito que arma el bloque de nadadores de al lado.
+// Clubes tiene su propio ranking por torneo (Grand Prix y Circuito son
+// campeonatos por equipos distintos) — pastilla propia, independiente de la
+// que elige el torneo de nadadores al lado.
+const CLUBES_POR_TAB = { gp: CLUBES_GP, circ: CLUBES_CIRC };
+const estadoClubes = { tab: 'gp' };
+
 function panelClubes() {
+  const clubes = CLUBES_POR_TAB[estadoClubes.tab];
   return html`
     <article class="reveal relative overflow-hidden rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
       <!-- Foto a sangre de toda la tarjeta: sin recorte visible, se apaga hacia
@@ -124,9 +129,15 @@ function panelClubes() {
       </div>
 
       <div class="relative">
-        <h3 class="font-display text-xl font-black tracking-[0.1em] text-owa-sky">CLUBES</h3>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h3 class="font-display text-xl font-black tracking-[0.1em] text-owa-sky">CLUBES</h3>
+          <div class="flex gap-1.5 rounded-full bg-white/8 p-1.5" role="group" aria-label="Torneo — Clubes">
+            ${pastillaChica('GP', estadoClubes.tab === 'gp', 'data-club-tab="gp"', { oscuro: true })}
+            ${pastillaChica('CIRC', estadoClubes.tab === 'circ', 'data-club-tab="circ"', { oscuro: true })}
+          </div>
+        </div>
         <ol class="mt-9">
-          ${CLUBES_GP.map(
+          ${clubes.map(
             (c, i) => html`
               <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
                 ${numeroPos(i + 1, true)} ${avatar('size-15', true)}
@@ -394,17 +405,23 @@ export function mount(root) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarFondoVideo(root);
 
-  root.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-tab]');
-    if (!btn || btn.getAttribute('aria-pressed') === 'true') return;
-    estadoHome.tab = btn.dataset.tab;
-
-    const viejo = root.querySelector('[data-panel-ranking]');
+  const repintar = (selector, render, estado, clave, valor) => {
+    if (estado[clave] === valor) return;
+    estado[clave] = valor;
+    const viejo = root.querySelector(selector);
     const tmp = document.createElement('div');
-    tmp.innerHTML = toHTML(panelRanking());
+    tmp.innerHTML = toHTML(render());
     const nuevo = tmp.firstElementChild;
     nuevo.setAttribute('data-visible', '');
     nuevo.style.setProperty('--i', viejo.style.getPropertyValue('--i'));
     viejo.replaceWith(nuevo);
+  };
+
+  root.addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-tab]');
+    if (tab) return repintar('[data-panel-ranking]', panelRanking, estadoHome, 'tab', tab.dataset.tab);
+
+    const clubTab = e.target.closest('[data-club-tab]');
+    if (clubTab) return repintar('[data-panel-clubes]', panelClubes, estadoClubes, 'tab', clubTab.dataset.clubTab);
   });
 }
