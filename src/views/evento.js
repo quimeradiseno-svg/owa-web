@@ -26,11 +26,9 @@ export const titulo = (ctx) => porSlug(ctx.params.slug)?.nombre ?? 'Carrera no e
 let raceState = 'proxima';
 let demoAbierto = false;
 
-// Tabs de "Elegí tu distancia": qué recorrido está activo y si su detalle
-// técnico completo (requisitos, premiación…) está desplegado. No se resetea
-// por carrera — `recorridoDe` cae al primer recorrido si el id no existe acá.
+// Tab de "Elegí tu distancia": qué recorrido está activo. No se resetea por
+// carrera — el render cae al primer recorrido si el id no existe acá.
 let recorridoActivo = null;
-let detalleAbierto = false;
 
 // "Entre 23 y 26 °C, sin visibilidad, corriente a favor" -> "A favor". Es el
 // único dato de corriente que hay: no vale la pena duplicarlo como campo
@@ -442,18 +440,6 @@ export function render(ctx) {
           const r = f.recorridos.find((x) => x.id === activoId);
           const dato = (k) => (r.ficha.find(([kk]) => kk === k) || [])[1];
           const puntaje = r.ficha.find(([k]) => k.startsWith('Puntaje'));
-          // Lo que no entra en el resumen de arriba (fecha/hora ya están en la
-          // barra de datos) queda atrás del botón "ver detalle".
-          const OCULTOS_DEL_RESUMEN = [
-            'Fecha',
-            'Horario de largada',
-            'Distancia',
-            'Condiciones del agua',
-            'Tiempo estimado',
-            'Uso de neopreno',
-            'Cupos disponibles',
-          ];
-          const resto = r.ficha.filter(([k]) => !OCULTOS_DEL_RESUMEN.includes(k) && !k.startsWith('Puntaje'));
 
           const filaResumen = (nombreIcono, etiqueta, valor) =>
             valor
@@ -463,6 +449,20 @@ export function render(ctx) {
                       ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
                     </dt>
                     <dd data-nums class="font-display text-[13px] font-bold text-owa-navy">${valor}</dd>
+                  </div>
+                `
+              : '';
+
+          // Requisitos y premiación son párrafos, no un dato corto: van apilados
+          // en vez de en la misma fila con el rótulo.
+          const filaLarga = (nombreIcono, etiqueta, valor) =>
+            valor
+              ? html`
+                  <div class="border-b border-owa-sand py-2.5 last:border-b-0">
+                    <dt class="flex items-center gap-2 text-[13px] text-owa-slate">
+                      ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
+                    </dt>
+                    <dd class="mt-1.5 text-[13px] leading-relaxed font-bold text-owa-navy">${valor}</dd>
                   </div>
                 `
               : '';
@@ -516,40 +516,20 @@ export function render(ctx) {
                       Recorrido punto a punto sobre el río Paraná, desde ${r.largada} hasta ${r.llegada}.
                     </p>
 
+                    <!-- Sin repetir lo que ya está en la franja de abajo (largada,
+                         llegada, distancia, tiempo estimado, corriente): acá va
+                         el resto de la ficha técnica. -->
                     <dl class="mt-5 border-t border-owa-sand">
-                      ${filaResumen('reloj', 'Tiempo estimado', dato('Tiempo estimado'))}
-                      ${filaResumen('ola', 'Corriente', corrienteDe(r))}
                       ${filaResumen('gota', 'Neopreno', dato('Uso de neopreno'))}
                       ${filaResumen('equipo', 'Cupo', dato('Cupos disponibles'))}
+                      ${filaResumen('reloj', 'Tiempo límite', dato('Tiempo límite'))}
                       ${filaResumen('trofeo', 'Puntaje OWA', puntaje?.[1])}
+                      ${filaLarga('documento', 'Requisitos', dato('Requisitos'))}
+                      ${filaLarga('podio', 'Premiación', dato('Premiación'))}
+                      ${filaLarga('podio', 'Premiación con neopreno', dato('Premiación con neopreno'))}
                     </dl>
-
-                    <button
-                      type="button"
-                      data-detalle-recorrido
-                      aria-expanded="${detalleAbierto ? 'true' : 'false'}"
-                      class="u-press mt-5 flex items-center justify-center gap-2 rounded-full bg-owa-blue py-3 font-display text-[13px] font-black tracking-[0.06em] text-white uppercase transition-colors hover:bg-owa-electric"
-                    >
-                      ${detalleAbierto ? 'Ocultar detalle del recorrido' : 'Ver detalle del recorrido'}
-                      <span class="transition-transform duration-200 ${detalleAbierto ? '-rotate-90' : ''}" aria-hidden="true">→</span>
-                    </button>
                   </div>
                 </div>
-
-                ${detalleAbierto
-                  ? html`
-                      <dl class="grid gap-x-8 gap-y-0.5 border-t border-owa-line px-6.5 py-5 sm:grid-cols-2">
-                        ${resto.map(
-                          ([k, v]) => html`
-                            <div class="flex flex-wrap justify-between gap-x-5 gap-y-0.5 border-b border-owa-sand py-2 last:border-b-0">
-                              <dt class="text-[13px] text-owa-slate">${k}</dt>
-                              <dd class="font-display text-[13px] font-bold text-owa-navy">${v}</dd>
-                            </div>
-                          `
-                        )}
-                      </dl>
-                    `
-                  : ''}
 
                 <div class="grid grid-cols-2 divide-x divide-y divide-owa-sand border-t border-owa-line bg-owa-sand/40 sm:grid-cols-5 sm:divide-y-0">
                   ${dato_('pin', 'Largada', r.largada)} ${dato_('bandera', 'Llegada', r.llegada)}
@@ -794,13 +774,6 @@ export function mount(root, ctx) {
     const tabBtn = e.target.closest('[data-recorrido-tab]');
     if (tabBtn && tabBtn.dataset.recorridoTab !== recorridoActivo) {
       recorridoActivo = tabBtn.dataset.recorridoTab;
-      detalleAbierto = false;
-      return repintar();
-    }
-
-    const detalleBtn = e.target.closest('[data-detalle-recorrido]');
-    if (detalleBtn) {
-      detalleAbierto = !detalleAbierto;
       return repintar();
     }
   });
