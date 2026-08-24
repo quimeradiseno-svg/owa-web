@@ -23,7 +23,7 @@ const PHOTOS = {
   // solitario, boya de seguridad, montañas nevadas: la postal de ultradistancia.
   'challenge-lago': 'Fotos/CHALLENGE/@juancruzrabaglia-2077.jpg',
   // eventos
-  'ev-lujan': 'VOB/07_LARGADA_ENTRADA_AL_AGUA',
+  'ev-lujan': 'Fotos/LJN/DSC_8815.jpg',
   'ev-san-pedro': 'SPD/08_CARRERA_CAMPO_BOYAS',
   'ev-ramallo': 'SPD/09_CARRERA_BRAZADA_COLORES',
   'ev-pinamar': 'Fotos/PNR/DSC_0207.jpg',
@@ -31,7 +31,7 @@ const PHOTOS = {
   // (antes eran genéricas de SPD/VOB).
   'ev-nahuel': 'Fotos/NHL/DJI_20260221110433_0039_D.JPG',
   'ev-huemul': 'Fotos/VHU/DSC_5614.JPG',
-  'ev-colon': 'VOB/16_LLEGADA_ARCO_OWA',
+  'ev-colon': 'Fotos/CLN/DSC_ (80).jpg',
   'ev-maraton': 'Fotos/SPD/10_CARRERA_CRAWL_PRIMER_PLANO_MLE-128141.jpg',
   // Challenge: fotos reales de cada travesía (antes eran genéricas de SPD/VOB).
   'ev-rdp40': 'Fotos/RDP/MLE-30012.jpg',
