@@ -15,6 +15,7 @@ import {
   btnAccent,
   btnBorde,
   btnPrimario,
+  btnBlanco,
   pastillaChica,
   pendiente,
 } from '../components/ui.js';
@@ -612,10 +613,58 @@ export function render(ctx) {
           </section>
         `}
 
+    <!-- reglamento + kit -->
+    <section class="bg-owa-navy px-0 py-19 text-white" aria-labelledby="h-reglamento">
+      <div class="u-shell grid gap-4.5 lg:grid-cols-2">
+        <div class="reveal rounded-owa-lg border border-white/13 bg-white/6 p-8" data-visible>
+          ${eyebrow('Reglamento', 'sky')}
+          <h2 id="h-reglamento" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-white">
+            Lo que hay que saber antes de largar
+          </h2>
+          <p class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-owa-line">
+            Neoprene, categorías, cortes de tiempo, causales de descalificación y protocolo de seguridad en el agua.
+          </p>
+          <!-- Todos los reglamentos viven en un solo lugar, no un PDF suelto por
+               carrera: el general, el deportivo de cada torneo y los anexos. -->
+          <div class="mt-6">${btnBlanco('Ver reglamentos', '/reglamentos')}</div>
+        </div>
+
+        <div class="reveal rounded-owa-lg border border-white/13 bg-white/6 p-8" data-visible>
+          ${eyebrow('Kit del nadador', 'sky')}
+          <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-white">Qué te llevás</h2>
+          ${f?.kit
+            ? html`
+                <ul class="mt-4.5">
+                  ${f.kit.map(
+                    (k) => html`
+                      <li class="border-t border-white/12 py-3 text-sm text-white">
+                        ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-line">*</span>` : ''}
+                      </li>
+                    `
+                  )}
+                </ul>
+                ${f.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-line">* ${f.kitNota}</p>` : ''}
+              `
+            : html`
+                <dl class="mt-4.5">
+                  ${EVENTO_FICHA.kit.map(
+                    (k) => html`
+                      <div class="flex justify-between gap-3.5 border-t border-white/12 py-3">
+                        <dt class="text-sm text-owa-line">${k.t}</dt>
+                        <dd class="text-right font-display text-[13px] font-bold text-white">${k.d}</dd>
+                      </div>
+                    `
+                  )}
+                </dl>
+              `}
+        </div>
+      </div>
+    </section>
+
     <!-- cronograma -->
-    <section class="bg-owa-navy px-0 py-19 text-white" aria-labelledby="h-cronograma">
+    <section class="bg-owa-mist px-0 py-20" aria-labelledby="h-cronograma">
       <div class="u-shell">
-        <h2 id="h-cronograma" class="u-eyebrow text-owa-sky">Cronograma del evento</h2>
+        <h2 id="h-cronograma" class="u-eyebrow text-owa-blue">Cronograma del evento</h2>
         ${f?.cronogramas
           ? (() => {
               const dias = diasDeCronograma(f.cronogramas);
@@ -632,17 +681,17 @@ export function render(ctx) {
                         type="button"
                         data-cron-tab="${i}"
                         aria-pressed="${d === activo ? 'true' : 'false'}"
-                        class="u-press flex items-center gap-3 rounded-owa-md px-5 py-3.5 text-left transition-colors duration-200 ease-out ${d ===
+                        class="u-press flex items-center gap-3 rounded-owa-md border px-5 py-3.5 text-left transition-colors duration-200 ease-out ${d ===
                         activo
-                          ? 'bg-owa-cyan text-owa-deep'
-                          : 'bg-white/8 text-white hover:bg-white/14'}"
+                          ? 'border-owa-cyan bg-owa-cyan text-owa-deep'
+                          : 'border-owa-line bg-white text-owa-navy hover:bg-owa-sand'}"
                       >
                         ${icono('calendario', 'size-5.5 shrink-0')}
                         <span>
                           <span class="block font-display text-[13px] leading-tight font-black tracking-[0.03em] uppercase"
                             >${diaCorto(d.fecha)}</span
                           >
-                          <span class="mt-0.5 block text-[11px] leading-tight ${d === activo ? 'text-owa-deep' : 'text-owa-line'}"
+                          <span class="mt-0.5 block text-[11px] leading-tight ${d === activo ? 'text-owa-deep' : 'text-owa-slate'}"
                             >${subtitulo(d)}</span
                           >
                         </span>
@@ -651,7 +700,7 @@ export function render(ctx) {
                   )}
                 </div>
 
-                <div class="reveal mt-5 overflow-hidden rounded-owa-lg bg-white text-owa-navy" data-visible>
+                <div class="reveal mt-5 overflow-hidden rounded-owa-lg bg-white text-owa-navy shadow-[var(--shadow-card)]" data-visible>
                   ${activo.bloques.map(
                     (b, i) => html`
                       <div class="${i > 0 ? 'border-t border-owa-sand' : ''}">
@@ -665,22 +714,34 @@ export function render(ctx) {
                           : b.aviso
                             ? html`<p class="px-6.5 pt-6 text-[13px] text-owa-slate">${b.aviso}</p>`
                             : ''}
-                        <ol class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-1'} pb-2">
+                        <ol class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-2'} pb-3">
                           ${b.items.map(
-                            (it) => html`
-                              <li
-                                class="flex items-center gap-4 border-t border-owa-sand px-6.5 first:border-0 ${it.destacado
-                                  ? 'bg-owa-mist/70 py-4.5'
-                                  : 'py-3'}"
-                              >
+                            (it, idx) => html`
+                              <li class="flex gap-4 px-6.5 ${it.destacado ? 'py-4' : 'py-3'}">
+                                <!-- Línea vertical armada en dos mitades por fila (arriba/abajo del
+                                     punto): así queda continua entre filas sin medir alturas a mano,
+                                     y se corta sola en el primer y último ítem. -->
+                                <div class="relative flex w-3 shrink-0 justify-center">
+                                  ${idx > 0
+                                    ? html`<span class="absolute top-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
+                                    : ''}
+                                  ${idx < b.items.length - 1
+                                    ? html`<span class="absolute bottom-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
+                                    : ''}
+                                  <span
+                                    class="relative z-10 mt-1.5 shrink-0 rounded-full ${it.destacado
+                                      ? 'size-3.5 bg-owa-cyan ring-4 ring-owa-cyan/20'
+                                      : 'size-2.5 border-2 border-white bg-owa-slate/40'}"
+                                  ></span>
+                                </div>
                                 <span
                                   data-nums
-                                  class="shrink-0 font-display font-black ${it.destacado
-                                    ? 'w-19 text-lg text-owa-blue'
-                                    : 'w-16 text-[13px] text-owa-slate'}"
+                                  class="shrink-0 pt-0.5 font-display font-black ${it.destacado
+                                    ? 'w-16 text-base text-owa-blue'
+                                    : 'w-14 text-[13px] text-owa-slate'}"
                                   >${it.hora}</span
                                 >
-                                <span class="min-w-0 flex-1">
+                                <span class="min-w-0 flex-1 pb-0.5">
                                   ${it.zona && !it.destacado
                                     ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
                                     : ''}
@@ -694,9 +755,6 @@ export function render(ctx) {
                                     ? html`<span class="mt-0.5 block text-[13px] text-owa-slate">${it.d}</span>`
                                     : ''}
                                 </span>
-                                ${it.destacado
-                                  ? html`<span class="size-2.5 shrink-0 rounded-full bg-owa-cyan" aria-hidden="true"></span>`
-                                  : ''}
                               </li>
                             `
                           )}
@@ -712,16 +770,16 @@ export function render(ctx) {
                 ${EVENTO_FICHA.cronograma.map(
                   (c) => html`
                     <li class="reveal relative pr-4.5">
-                      <div class="relative mb-5.5 h-0.5 bg-white/18">
+                      <div class="relative mb-5.5 h-0.5 bg-owa-line">
                         <span
                           class="absolute left-0 rounded-full ${c.destacado
                             ? '-top-2.25 size-5 border-4 border-owa-cyan bg-white'
                             : '-top-1.75 size-4 bg-owa-cyan'}"
                         ></span>
                       </div>
-                      <p data-nums class="font-display text-[1.5625rem] font-black text-owa-cyan">${c.hora}</p>
-                      <p class="mt-2 font-display text-[15px] font-bold uppercase">${c.titulo}</p>
-                      <p class="mt-1.5 text-[13px] leading-normal text-owa-line/80">${c.detalle}</p>
+                      <p data-nums class="font-display text-[1.5625rem] font-black text-owa-blue">${c.hora}</p>
+                      <p class="mt-2 font-display text-[15px] font-bold text-owa-navy uppercase">${c.titulo}</p>
+                      <p class="mt-1.5 text-[13px] leading-normal text-owa-slate">${c.detalle}</p>
                     </li>
                   `
                 )}
@@ -729,52 +787,6 @@ export function render(ctx) {
             `}
       </div>
     </section>
-
-    <!-- reglamento + kit -->
-    <div class="u-shell grid gap-4.5 pt-20 lg:grid-cols-2">
-      <section class="rounded-owa-lg bg-owa-mist p-8" aria-labelledby="h-reglamento">
-        ${eyebrow('Reglamento', 'blue')}
-        <h2 id="h-reglamento" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">
-          Lo que hay que saber antes de largar
-        </h2>
-        <p class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-owa-slate">
-          Neoprene, categorías, cortes de tiempo, causales de descalificación y protocolo de seguridad en el agua.
-        </p>
-        <!-- Todos los reglamentos viven en un solo lugar, no un PDF suelto por
-             carrera: el general, el deportivo de cada torneo y los anexos. -->
-        <div class="mt-6">${btnPrimario('Ver reglamentos', '/reglamentos')}</div>
-      </section>
-
-      <section class="rounded-owa-lg border border-owa-line p-8" aria-labelledby="h-kit">
-        ${eyebrow('Kit del nadador')}
-        <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Qué te llevás</h2>
-        ${f?.kit
-          ? html`
-              <ul class="mt-4.5">
-                ${f.kit.map(
-                  (k) => html`
-                    <li class="border-t border-owa-sand py-3 text-sm text-owa-navy">
-                      ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-slate">*</span>` : ''}
-                    </li>
-                  `
-                )}
-              </ul>
-              ${f.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-slate">* ${f.kitNota}</p>` : ''}
-            `
-          : html`
-              <dl class="mt-4.5">
-                ${EVENTO_FICHA.kit.map(
-                  (k) => html`
-                    <div class="flex justify-between gap-3.5 border-t border-owa-sand py-3">
-                      <dt class="text-sm text-owa-slate">${k.t}</dt>
-                      <dd class="text-right font-display text-[13px] font-bold text-owa-navy">${k.d}</dd>
-                    </div>
-                  `
-                )}
-              </dl>
-            `}
-      </section>
-    </div>
 
     <!-- logística -->
     <section class="u-shell pt-15 pb-20" aria-labelledby="h-logistica">
