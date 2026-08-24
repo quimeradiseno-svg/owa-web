@@ -104,6 +104,7 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-pinamar',
+    tagline: 'Nado en aguas abiertas',
   },
   {
     slug: 'cruce-del-nahuel',
@@ -120,6 +121,7 @@ export const EVENTOS = [
     nota: 'Fecha a confirmar según condiciones',
     estado: 'proximamente',
     img: 'ev-nahuel',
+    tagline: 'Desafío patagónico',
   },
   {
     slug: 'vuelta-a-la-huemul',
@@ -136,6 +138,7 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-huemul',
+    tagline: 'Naturaleza y resistencia',
   },
   {
     slug: 'colon',
@@ -172,6 +175,7 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-maraton',
+    tagline: 'Tradición y pasión',
   },
 ];
 

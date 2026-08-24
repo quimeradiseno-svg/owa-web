@@ -186,3 +186,35 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true }) {
     </a>
   `;
 }
+
+/** Tarjeta grande a toda foto para Eventos Especiales: sin panel de texto
+    aparte, el título y la bajada se leen directo sobre la imagen. */
+export function tarjetaEspecial(e) {
+  return html`
+    <a
+      href="/carrera/${e.slug}"
+      data-sobre-foto
+      class="reveal u-lift-sm group relative block aspect-[2/1] overflow-hidden rounded-owa-lg"
+    >
+      ${foto({
+        slug: e.img,
+        alt: ALT.especial(e),
+        sizes: '(min-width: 640px) 50vw, 100vw',
+        className: 'block h-full w-full',
+        imgClass: 'h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105',
+      })}
+      <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/90 via-owa-abyss/5 to-transparent"></div>
+      <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6.5 sm:p-7.5">
+        <div>
+          <h3 class="text-[clamp(1.625rem,3vw,2.5rem)] leading-[0.95] text-white">${e.corto}</h3>
+          <p class="mt-2 font-display text-xs font-bold tracking-[0.14em] text-owa-line uppercase">${e.tagline}</p>
+        </div>
+        <span
+          class="grid size-11 shrink-0 place-items-center rounded-full border border-white/40 text-white transition-colors duration-200 ease-out group-hover:border-owa-cyan group-hover:bg-owa-cyan group-hover:text-owa-deep"
+          aria-hidden="true"
+          >→</span
+        >
+      </div>
+    </a>
+  `;
+}

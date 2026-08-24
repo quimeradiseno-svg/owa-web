@@ -4,7 +4,7 @@ import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
 import { TRAVEL } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
 import { GP, CIRC, CLUBES_GP } from '../data/rankings.js';
-import { tarjetaEvento, tarjetaFecha, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
+import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
 import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, olaCentrada } from '../components/ui.js';
 
@@ -247,15 +247,7 @@ export function render() {
           ${linkFuerte('Ver todos', '/especiales')}
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
-          ${ESPECIALES.map((e) =>
-            tarjetaFecha(e, {
-              orden: e.sigla,
-              linea: `${e.fechaCorta} ${e.anio}`,
-              sublinea: e.nota || e.sede,
-            })
-          )}
-        </div>
+        <div class="grid gap-4 sm:grid-cols-2" data-stagger>${ESPECIALES.map((e) => tarjetaEspecial(e))}</div>
       </div>
     </section>
 
