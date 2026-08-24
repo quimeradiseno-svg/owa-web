@@ -206,8 +206,9 @@ export function tarjetaEspecial(e) {
       <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/90 via-owa-abyss/5 to-transparent"></div>
       <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6.5 sm:p-7.5">
         <div>
-          <h3 class="text-[clamp(1.625rem,3vw,2.5rem)] leading-[0.95] text-white">${e.corto}</h3>
-          <p class="mt-2 font-display text-xs font-bold tracking-[0.14em] text-owa-line uppercase">${e.tagline}</p>
+          <p class="font-display text-xs font-bold tracking-[0.14em] text-owa-sky">${e.sigla}</p>
+          <h3 class="mt-1.5 text-[clamp(1.625rem,3vw,2.5rem)] leading-[0.95] text-white">${e.corto}</h3>
+          <p class="mt-2 font-display text-xs font-bold tracking-[0.14em] text-owa-line uppercase">${e.fechaCorta} ${e.anio}</p>
         </div>
         <span
           class="grid size-11 shrink-0 place-items-center rounded-full border border-white/40 text-white transition-colors duration-200 ease-out group-hover:border-owa-cyan group-hover:bg-owa-cyan group-hover:text-owa-deep"
