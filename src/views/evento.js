@@ -316,23 +316,9 @@ const requisitos = () => html`
   </section>
 `;
 
+// Sólo se llama con raceState === 'finalizada' (ver render): antes de
+// correrse la carrera esta sección no se muestra.
 const resultadosBloque = (e) => {
-  if (raceState !== 'finalizada')
-    return html`
-      <div
-        class="flex flex-wrap items-center justify-between gap-5 rounded-owa-lg border border-dashed border-owa-line p-8.5"
-      >
-        <div class="max-w-[52ch]">
-          <h3 class="text-[clamp(1.25rem,2.4vw,1.75rem)] text-owa-navy">Todavía no se corrió</h3>
-          <p class="mt-2 text-[15px] text-owa-slate">
-            Al cierre de la carrera se publican acá los podios por distancia y género, y la tabla completa en
-            Resultados.
-          </p>
-        </div>
-        ${btnBorde('Ir a resultados', '/resultados')}
-      </div>
-    `;
-
   return html`
     <div>
       <h3 class="mb-6.5 text-[clamp(1.625rem,3.2vw,2.625rem)] text-owa-navy">Podios de esta edición</h3>
@@ -824,11 +810,16 @@ export function render(ctx) {
       </div>
     </section>
 
-    <!-- resultados -->
-    <section class="u-shell py-20" aria-labelledby="h-resultados">
-      <h2 id="h-resultados" class="u-eyebrow mb-5.5 text-owa-blue">Resultados</h2>
-      ${resultadosBloque(e)}
-    </section>
+    <!-- resultados: sólo una vez que hay podio real que mostrar. Antes de
+         correrse no suma nada acá — ya está el link a Resultados en el nav. -->
+    ${raceState === 'finalizada'
+      ? html`
+          <section class="u-shell py-20" aria-labelledby="h-resultados">
+            <h2 id="h-resultados" class="u-eyebrow mb-5.5 text-owa-blue">Resultados</h2>
+            ${resultadosBloque(e)}
+          </section>
+        `
+      : ''}
 
     <!-- cta final -->
     <section class="bg-owa-blue px-0 py-18 text-white">
