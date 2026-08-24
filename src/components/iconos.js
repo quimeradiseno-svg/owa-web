@@ -31,6 +31,14 @@ const TRAZOS = {
   estrella: '<path d="m12 3 2.9 5.9 6.5 1-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.9l6.5-1z"/>',
   // Avatar genérico: usado hasta que haya foto real de cada nadador o club.
   persona: '<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>',
+  // Tiempo estimado: reloj.
+  reloj: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/>',
+  // Neopreno: gota de agua.
+  gota: '<path d="M12 3.5c3 4 5.5 7.6 5.5 10.8a5.5 5.5 0 0 1-11 0C6.5 11.1 9 7.5 12 3.5z"/>',
+  // Largada: pin de ubicación.
+  pin: '<path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 0 0 5.5 10c0 4.9 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.2"/>',
+  // Llegada: bandera de cuadros.
+  bandera: '<path d="M5.5 21V4"/><path d="M5.5 4.5h13l-3 3.75 3 3.75h-13"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>

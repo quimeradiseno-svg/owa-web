@@ -63,6 +63,8 @@ export const FICHAS = {
         id: 'gp-18k',
         torneo: 'GRAND PRIX',
         titulo: '18 km',
+        largada: 'Vuelta de Obligado',
+        llegada: 'San Pedro',
         mapas: [
           { slug: 'mapa-vob-tramo1', alt: 'Mapa del tramo 1 de la Vuelta de Obligado, desde la largada hasta el km 5,5' },
           { slug: 'mapa-vob-tramo2', alt: 'Mapa del tramo 2 de la Vuelta de Obligado, con los puestos de hidratación y los km 12 y 14,5' },
@@ -87,6 +89,8 @@ export const FICHAS = {
         id: 'circ-7k',
         torneo: 'CIRCUITO OWA',
         titulo: '7 km',
+        largada: 'Apart',
+        llegada: 'San Pedro',
         mapas: [{ slug: 'mapa-spd-7k', alt: 'Mapa del recorrido de 7 km, desde el apart hasta la llegada' }],
         ficha: [
           ['Fecha', 'Domingo 15 de noviembre de 2026'],
@@ -106,6 +110,8 @@ export const FICHAS = {
         id: 'circ-4k',
         torneo: 'CIRCUITO OWA',
         titulo: '4 km',
+        largada: 'Cantando',
+        llegada: 'San Pedro',
         mapas: [{ slug: 'mapa-spd-4k', alt: 'Mapa del recorrido de 4 km, desde Cantando hasta la llegada' }],
         ficha: [
           ['Fecha', 'Domingo 15 de noviembre de 2026'],

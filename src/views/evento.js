@@ -18,12 +18,29 @@ import {
   pastillaChica,
   pendiente,
 } from '../components/ui.js';
+import { icono } from '../components/iconos.js';
 
 export const titulo = (ctx) => porSlug(ctx.params.slug)?.nombre ?? 'Carrera no encontrada';
 
 // Estado de demo: deja ver las tres caras de la misma página.
 let raceState = 'proxima';
 let demoAbierto = false;
+
+// Tabs de "Elegí tu distancia": qué recorrido está activo y si su detalle
+// técnico completo (requisitos, premiación…) está desplegado. No se resetea
+// por carrera — `recorridoDe` cae al primer recorrido si el id no existe acá.
+let recorridoActivo = null;
+let detalleAbierto = false;
+
+// "Entre 23 y 26 °C, sin visibilidad, corriente a favor" -> "A favor". Es el
+// único dato de corriente que hay: no vale la pena duplicarlo como campo
+// aparte en fichas.js cuando ya vive adentro de "Condiciones del agua".
+const corrienteDe = (r) => {
+  const agua = (r.ficha.find(([k]) => k === 'Condiciones del agua') || [])[1] || '';
+  if (/en contra/i.test(agua)) return 'En contra';
+  if (/a favor/i.test(agua)) return 'A favor';
+  return 'Variable';
+};
 
 const VUELVE_A = {
   core: ['/grand-prix', 'GRAND PRIX'],
@@ -65,10 +82,6 @@ const resumenJornada = (f, torneo) => {
     largada: rs.map(hora).filter(Boolean).join(' · ') || 'A confirmar',
   };
 };
-
-/** Datos de la ficha que se muestran arriba, junto a la distancia, en vez de
-    en la lista de detalles técnicos. */
-const CABECERA_RECORRIDO = ['Fecha', 'Horario de largada'];
 
 const MES_CORTO = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
@@ -422,44 +435,110 @@ export function render(ctx) {
           `}
     </section>
 
-    <!-- recorridos: un bloque por distancia, con sus láminas y su ficha -->
+    <!-- recorridos: pestaña por distancia, un mapa grande y su ficha al lado -->
     ${f?.recorridos
-      ? html`
-          <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
-            <h2 id="h-recorridos" class="u-eyebrow text-owa-blue">Recorridos y fichas técnicas</h2>
-            <div class="mt-6 grid gap-5">
-              ${f.recorridos.map((r) => {
-                const dato = (k) => (r.ficha.find(([kk]) => kk === k) || [])[1];
-                // Fecha y hora suben al encabezado: son el segundo dato que se
-                // busca después de la distancia. El resto queda en la ficha.
-                const resto = r.ficha.filter(([k]) => !CABECERA_RECORRIDO.includes(k));
+      ? (() => {
+          const activoId = f.recorridos.find((r) => r.id === recorridoActivo)?.id || f.recorridos[0].id;
+          const r = f.recorridos.find((x) => x.id === activoId);
+          const dato = (k) => (r.ficha.find(([kk]) => kk === k) || [])[1];
+          const puntaje = r.ficha.find(([k]) => k.startsWith('Puntaje'));
+          // Lo que no entra en el resumen de arriba (fecha/hora ya están en la
+          // barra de datos) queda atrás del botón "ver detalle".
+          const OCULTOS_DEL_RESUMEN = [
+            'Fecha',
+            'Horario de largada',
+            'Distancia',
+            'Condiciones del agua',
+            'Tiempo estimado',
+            'Uso de neopreno',
+            'Cupos disponibles',
+          ];
+          const resto = r.ficha.filter(([k]) => !OCULTOS_DEL_RESUMEN.includes(k) && !k.startsWith('Puntaje'));
 
-                return html`
-                  <article class="overflow-hidden rounded-owa-lg border border-owa-line">
-                    <div
-                      class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-owa-line px-6 py-4"
+          const filaResumen = (nombreIcono, etiqueta, valor) =>
+            valor
+              ? html`
+                  <div class="flex items-center justify-between gap-3 border-b border-owa-sand py-2.5 last:border-b-0">
+                    <dt class="flex items-center gap-2 text-[13px] text-owa-slate">
+                      ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
+                    </dt>
+                    <dd data-nums class="font-display text-[13px] font-bold text-owa-navy">${valor}</dd>
+                  </div>
+                `
+              : '';
+
+          const dato_ = (nombreIcono, etiqueta, valor) => html`
+            <div class="flex items-center gap-2.5 px-4 py-3.5">
+              ${icono(nombreIcono, 'size-4.5 shrink-0 text-owa-blue')}
+              <span class="min-w-0">
+                <span class="block font-display text-[10px] font-bold tracking-[0.1em] text-owa-slate uppercase">${etiqueta}</span>
+                <span class="block truncate text-[13px] font-bold text-owa-navy">${valor}</span>
+              </span>
+            </div>
+          `;
+
+          return html`
+            <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
+              ${eyebrow('Recorridos')}
+              <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Elegí tu distancia</h2>
+
+              <div class="mt-6 flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia">
+                ${f.recorridos.map(
+                  (x) => html`
+                    <button
+                      type="button"
+                      role="tab"
+                      data-recorrido-tab="${x.id}"
+                      aria-selected="${x.id === activoId ? 'true' : 'false'}"
+                      class="u-press flex items-center gap-2 rounded-full border px-4.5 py-2.5 font-display text-sm font-black transition-colors duration-200 ${x.id ===
+                      activoId
+                        ? 'border-owa-blue bg-owa-blue text-white'
+                        : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
                     >
-                      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-                        ${chipModalidad(r.torneo)}
-                        <h3
-                          data-nums
-                          class="font-display text-[clamp(1.875rem,4vw,2.75rem)] leading-none font-black text-owa-navy"
-                        >
-                          ${r.titulo}
-                        </h3>
-                      </div>
-                      <p data-nums class="font-display text-[13px] font-bold text-owa-slate">
-                        ${dato('Fecha')} · <span class="text-owa-blue">${dato('Horario de largada')}</span>
-                      </p>
-                    </div>
+                      ${icono('ola', 'size-4.5')} ${x.titulo}
+                    </button>
+                  `
+                )}
+              </div>
 
-                    <!-- Mapa y datos en paralelo: apilados, cada recorrido se
-                         comía una pantalla entera y eran tres seguidos. -->
-                    <div class="grid lg:grid-cols-[1.4fr_1fr]">
-                      <div class="reveal-clip flex items-center overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line">
-                        ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 700px, 100vw' })}
-                      </div>
-                      <dl class="px-6 py-3">
+              <div class="reveal mt-6 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
+                <div class="grid lg:grid-cols-[1.5fr_1fr]">
+                  <div class="reveal-clip flex items-center overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line" data-visible>
+                    ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 60vw, 100vw' })}
+                  </div>
+                  <div class="flex flex-col p-6.5">
+                    <p class="font-display text-[13px] font-black tracking-[0.08em] text-owa-blue">${r.titulo}</p>
+                    <h3 class="mt-1 font-display text-2xl font-black text-owa-navy">
+                      ${r.torneo === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito OWA'}
+                    </h3>
+                    <p class="mt-1 text-sm font-bold text-owa-slate">Punto a punto</p>
+                    <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">
+                      Recorrido punto a punto sobre el río Paraná, desde ${r.largada} hasta ${r.llegada}.
+                    </p>
+
+                    <dl class="mt-5 border-t border-owa-sand">
+                      ${filaResumen('reloj', 'Tiempo estimado', dato('Tiempo estimado'))}
+                      ${filaResumen('ola', 'Corriente', corrienteDe(r))}
+                      ${filaResumen('gota', 'Neopreno', dato('Uso de neopreno'))}
+                      ${filaResumen('equipo', 'Cupo', dato('Cupos disponibles'))}
+                      ${filaResumen('trofeo', 'Puntaje OWA', puntaje?.[1])}
+                    </dl>
+
+                    <button
+                      type="button"
+                      data-detalle-recorrido
+                      aria-expanded="${detalleAbierto ? 'true' : 'false'}"
+                      class="u-press mt-5 flex items-center justify-center gap-2 rounded-full bg-owa-blue py-3 font-display text-[13px] font-black tracking-[0.06em] text-white uppercase transition-colors hover:bg-owa-electric"
+                    >
+                      ${detalleAbierto ? 'Ocultar detalle del recorrido' : 'Ver detalle del recorrido'}
+                      <span class="transition-transform duration-200 ${detalleAbierto ? '-rotate-90' : ''}" aria-hidden="true">→</span>
+                    </button>
+                  </div>
+                </div>
+
+                ${detalleAbierto
+                  ? html`
+                      <dl class="grid gap-x-8 gap-y-0.5 border-t border-owa-line px-6.5 py-5 sm:grid-cols-2">
                         ${resto.map(
                           ([k, v]) => html`
                             <div class="flex flex-wrap justify-between gap-x-5 gap-y-0.5 border-b border-owa-sand py-2 last:border-b-0">
@@ -469,13 +548,18 @@ export function render(ctx) {
                           `
                         )}
                       </dl>
-                    </div>
-                  </article>
-                `;
-              })}
-            </div>
-          </section>
-        `
+                    `
+                  : ''}
+
+                <div class="grid grid-cols-2 divide-x divide-y divide-owa-sand border-t border-owa-line bg-owa-sand/40 sm:grid-cols-5 sm:divide-y-0">
+                  ${dato_('pin', 'Largada', r.largada)} ${dato_('bandera', 'Llegada', r.llegada)}
+                  ${dato_('ondas', 'Distancia', r.titulo)} ${dato_('reloj', 'Tiempo estimado', dato('Tiempo estimado'))}
+                  ${dato_('ola', 'Corriente', corrienteDe(r))}
+                </div>
+              </div>
+            </section>
+          `;
+        })()
       : html`
           <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorrido">
             ${eyebrow('Recorrido')}
@@ -690,10 +774,7 @@ export function mount(root, ctx) {
     demoAbierto = e.target.open;
   });
 
-  root.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-estado]');
-    if (!btn || btn.dataset.estado === raceState) return;
-    raceState = btn.dataset.estado;
+  const repintar = () => {
     const y = window.scrollY;
     const nuevo = document.createElement('div');
     nuevo.innerHTML = render(ctx);
@@ -701,5 +782,26 @@ export function mount(root, ctx) {
     root.replaceWith(nuevo);
     mount(nuevo, ctx);
     window.scrollTo(0, y);
+  };
+
+  root.addEventListener('click', (e) => {
+    const estadoBtn = e.target.closest('[data-estado]');
+    if (estadoBtn && estadoBtn.dataset.estado !== raceState) {
+      raceState = estadoBtn.dataset.estado;
+      return repintar();
+    }
+
+    const tabBtn = e.target.closest('[data-recorrido-tab]');
+    if (tabBtn && tabBtn.dataset.recorridoTab !== recorridoActivo) {
+      recorridoActivo = tabBtn.dataset.recorridoTab;
+      detalleAbierto = false;
+      return repintar();
+    }
+
+    const detalleBtn = e.target.closest('[data-detalle-recorrido]');
+    if (detalleBtn) {
+      detalleAbierto = !detalleAbierto;
+      return repintar();
+    }
   });
 }
