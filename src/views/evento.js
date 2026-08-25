@@ -15,7 +15,6 @@ import {
   btnAccent,
   btnBorde,
   btnPrimario,
-  btnBlanco,
   pastillaChica,
   pendiente,
 } from '../components/ui.js';
@@ -467,7 +466,12 @@ export function render(ctx) {
                       ? 'border-owa-line p-6'
                       : 'border-dashed border-owa-line bg-owa-sand/50 p-4.5'}"
                   >
-                    <p class="font-display text-[10px] font-bold tracking-[0.16em] text-owa-slate/75 uppercase">${d.rotulo}</p>
+                    <div class="flex items-start justify-between gap-2">
+                      <p class="font-display text-[10px] font-bold tracking-[0.16em] text-owa-slate/75 uppercase">${d.rotulo}</p>
+                      ${d.rotulo === 'arena Super Sprint'
+                        ? html`<img src="/brand/arena-logo.webp" alt="arena" class="h-5 w-auto shrink-0" />`
+                        : ''}
+                    </div>
                     <p
                       data-nums
                       class="mt-1.5 font-display font-black text-owa-navy ${principal
@@ -707,54 +711,6 @@ export function render(ctx) {
           </section>
         `}
 
-    <!-- reglamento + kit -->
-    <section class="bg-owa-navy px-0 py-19 text-white" aria-labelledby="h-reglamento">
-      <div class="u-shell grid gap-4.5 lg:grid-cols-2">
-        <div class="reveal rounded-owa-lg border border-white/13 bg-white/6 p-8" data-visible>
-          ${eyebrow('Reglamento', 'sky')}
-          <h2 id="h-reglamento" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-white">
-            Lo que hay que saber antes de largar
-          </h2>
-          <p class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-owa-line">
-            Neoprene, categorías, cortes de tiempo, causales de descalificación y protocolo de seguridad en el agua.
-          </p>
-          <!-- Todos los reglamentos viven en un solo lugar, no un PDF suelto por
-               carrera: el general, el deportivo de cada torneo y los anexos. -->
-          <div class="mt-6">${btnBlanco('Ver reglamentos', '/reglamentos')}</div>
-        </div>
-
-        <div class="reveal rounded-owa-lg border border-white/13 bg-white/6 p-8" data-visible>
-          ${eyebrow('Kit del nadador', 'sky')}
-          <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-white">Qué te llevás</h2>
-          ${f?.kit
-            ? html`
-                <ul class="mt-4.5">
-                  ${f.kit.map(
-                    (k) => html`
-                      <li class="border-t border-white/12 py-3 text-sm text-white">
-                        ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-line">*</span>` : ''}
-                      </li>
-                    `
-                  )}
-                </ul>
-                ${f.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-line">* ${f.kitNota}</p>` : ''}
-              `
-            : html`
-                <dl class="mt-4.5">
-                  ${EVENTO_FICHA.kit.map(
-                    (k) => html`
-                      <div class="flex justify-between gap-3.5 border-t border-white/12 py-3">
-                        <dt class="text-sm text-owa-line">${k.t}</dt>
-                        <dd class="text-right font-display text-[13px] font-bold text-white">${k.d}</dd>
-                      </div>
-                    `
-                  )}
-                </dl>
-              `}
-        </div>
-      </div>
-    </section>
-
     <!-- cronograma -->
     <section class="bg-owa-mist px-0 py-20" aria-labelledby="h-cronograma">
       <div class="u-shell">
@@ -905,6 +861,54 @@ export function render(ctx) {
                 )}
               </ol>
             `}
+      </div>
+    </section>
+
+    <!-- reglamento + kit -->
+    <section class="u-shell pt-4 pb-20" aria-labelledby="h-reglamento">
+      <div class="grid gap-4.5 lg:grid-cols-2">
+        <div class="reveal rounded-owa-lg bg-owa-mist p-8" data-visible>
+          ${eyebrow('Reglamento')}
+          <h2 id="h-reglamento" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">
+            Lo que hay que saber antes de largar
+          </h2>
+          <p class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-owa-slate">
+            Neoprene, categorías, cortes de tiempo, causales de descalificación y protocolo de seguridad en el agua.
+          </p>
+          <!-- Todos los reglamentos viven en un solo lugar, no un PDF suelto por
+               carrera: el general, el deportivo de cada torneo y los anexos. -->
+          <div class="mt-6">${btnPrimario('Ver reglamentos', '/reglamentos')}</div>
+        </div>
+
+        <div class="reveal rounded-owa-lg border border-owa-line p-8" data-visible>
+          ${eyebrow('Kit del nadador')}
+          <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Qué te llevás</h2>
+          ${f?.kit
+            ? html`
+                <ul class="mt-4.5">
+                  ${f.kit.map(
+                    (k) => html`
+                      <li class="border-t border-owa-sand py-3 text-sm text-owa-navy">
+                        ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-slate">*</span>` : ''}
+                      </li>
+                    `
+                  )}
+                </ul>
+                ${f.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-slate">* ${f.kitNota}</p>` : ''}
+              `
+            : html`
+                <dl class="mt-4.5">
+                  ${EVENTO_FICHA.kit.map(
+                    (k) => html`
+                      <div class="flex justify-between gap-3.5 border-t border-owa-sand py-3">
+                        <dt class="text-sm text-owa-slate">${k.t}</dt>
+                        <dd class="text-right font-display text-[13px] font-bold text-owa-navy">${k.d}</dd>
+                      </div>
+                    `
+                  )}
+                </dl>
+              `}
+        </div>
       </div>
     </section>
 

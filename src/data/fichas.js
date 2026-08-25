@@ -44,17 +44,17 @@ export const FICHAS = {
         cats: CATS_COMPLETAS,
       },
       {
-        rotulo: 'Kid',
-        km: '500 m',
-        nota: 'Prueba gratuita para nadadores de hasta 13 años',
-        cats: 'Participativo · No competitivo',
-      },
-      {
         rotulo: 'arena Super Sprint',
         torneo: 'CIRCUITO OWA',
         km: '1,5 km',
         nota: 'Prueba por invitación. Un cupo por cada 5 inscriptos',
         cats: 'Por género',
+      },
+      {
+        rotulo: 'Kid',
+        km: '500 m',
+        nota: 'Prueba gratuita para nadadores de hasta 13 años',
+        cats: 'Participativo · No competitivo',
       },
     ],
 
