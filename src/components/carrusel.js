@@ -7,32 +7,38 @@ import { foto } from '../lib/img.js';
     IntersectionObserver, así queda sincronizado pase lo que pase (flecha,
     punto, arrastre a mano o teclado). */
 export function carrusel(id, slides, { sizes = '(min-width: 1280px) 1216px, 100vw' } = {}) {
+  // aspect-[3/2] mantiene una altura prolija en mobile (sin columna al lado
+  // que la marque); en lg+ el mapa vive junto a la ficha técnica dentro de un
+  // grid que sí estira la columna, así que ahí conviene ocupar esa altura
+  // entera en vez de dejarla en el aspect ratio — si no, la ficha (que cambia
+  // de largo según la distancia) deja una franja vacía color mist debajo del
+  // mapa cada vez que es más alta que la imagen a ese ancho.
   if (slides.length === 1) {
     return foto({
       slug: slides[0].slug,
       alt: slides[0].alt,
       sizes,
-      className: 'block w-full',
-      imgClass: 'w-full',
+      className: 'block aspect-[3/2] w-full lg:h-full',
+      imgClass: 'aspect-[3/2] w-full object-cover lg:aspect-auto lg:h-full',
     });
   }
 
   return html`
-    <div class="relative" data-carrusel="${id}">
+    <div class="relative aspect-[3/2] lg:aspect-auto lg:h-full" data-carrusel="${id}">
       <div
-        class="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        class="flex h-full snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         data-track
       >
         ${slides.map(
           (s, i) => html`
             <div
-              class="w-full shrink-0 snap-start snap-always"
+              class="h-full w-full shrink-0 snap-start snap-always"
               data-slide
               role="group"
               aria-roledescription="lámina"
               aria-label="${i + 1} de ${slides.length}"
             >
-              ${foto({ slug: s.slug, alt: s.alt, sizes, className: 'block w-full', imgClass: 'w-full' })}
+              ${foto({ slug: s.slug, alt: s.alt, sizes, className: 'block h-full w-full', imgClass: 'h-full w-full object-cover' })}
             </div>
           `
         )}

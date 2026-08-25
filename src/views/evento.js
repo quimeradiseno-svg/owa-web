@@ -121,6 +121,13 @@ const fechaCortaDesdeLarga = (f) => {
   return mes === -1 ? f : `${+m[1]} ${MES_CORTO[mes]} ${m[3].slice(2)}`;
 };
 
+/** 14/11/2026 → "14 de noviembre", para la cinta de fecha estilo Instagram
+    (mes escrito entero, sin año — igual que el material de difusión). */
+const fechaRibbon = (f) => {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(f).trim());
+  return m ? `${+m[1]} de ${MESES_LARGO[+m[2] - 1]}` : f;
+};
+
 /** "Viernes 13 de noviembre" → "VIERNES 13 NOV". Para la pestaña del día. */
 const diaCorto = (f) => {
   const m = /^(\p{L}+) (\d{1,2}) de (\p{L}+)/iu.exec(String(f));
@@ -214,72 +221,94 @@ const jornadas = (e, f) => html`
       ${eyebrow('Dos jornadas, un fin de semana', 'sky')}
       <h2 id="h-jornadas" class="mt-3.5 u-h2">Días del evento</h2>
 
-      <!-- Tarjeta a toda foto (una por torneo — ya se ve que son cosas
-           distintas antes de leer una palabra), con la misma jerarquía de
-           texto de siempre: torneo → fecha → distancia → datos técnicos. -->
+      <!-- EXPERIMENTO — estilo "afiche de Instagram": cinta de fecha, sigla
+           gigante, bajada y pastillas de dato, en vez de la jerarquía
+           torneo→distancia de antes. Sin subir. -->
       <div class="mt-9 grid gap-5 lg:grid-cols-2" data-stagger>
         ${e.jornadas.map((j) => {
           const gp = j.torneo === 'GRAND PRIX';
-          const r = resumenJornada(f, j.torneo);
-          const distancias = r.distancias.split(' · ');
+          // Kid no lleva `torneo: 'CIRCUITO OWA'` en los datos (es la única
+          // sin puntaje, aparte de las competitivas) pero corre el domingo
+          // de Circuito igual, así que se suma a mano acá.
+          const distanciasTorneo = (f?.distancias || []).filter((d) => d.torneo === j.torneo || (!gp && d.rotulo === 'Kid'));
+          const puntajeGP = distanciasTorneo[0]?.puntaje?.split(' · ')[1];
+          const recorridoGP = f?.recorridos?.find((r) => r.torneo === 'GRAND PRIX');
 
           return html`
-            <article class="reveal relative flex min-h-[30rem] flex-col overflow-hidden rounded-owa-lg p-8 sm:p-10">
-              <div class="absolute inset-0" aria-hidden="true">
-                ${foto({
-                  slug: gp ? 'gp-contraluz' : 'circuito-grupo',
-                  alt: '',
-                  sizes: '(min-width: 1024px) 50vw, 100vw',
-                  className: 'block h-full w-full',
-                  imgClass: 'h-full w-full object-cover',
-                })}
-                <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/96 via-owa-abyss/62 to-owa-abyss/18"></div>
-              </div>
+            <a
+              href="${inscripcionDe(e, f, j.torneo)}"
+              class="reveal u-lift group block rounded-owa-lg bg-linear-to-br from-owa-sky via-white/85 to-owa-blue p-px"
+            >
+              <div class="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[27px]">
+                <div class="absolute inset-0" aria-hidden="true">
+                  ${foto({
+                    slug: gp ? 'gp-contraluz' : 'circuito-grupo',
+                    alt: '',
+                    sizes: '(min-width: 1024px) 50vw, 100vw',
+                    className: 'block h-full w-full',
+                    imgClass: 'h-full w-full object-cover',
+                  })}
+                  <div class="absolute inset-0 bg-linear-to-b from-transparent via-owa-abyss/55 to-owa-abyss/97"></div>
+                </div>
 
-              <div class="relative z-10 flex flex-1 flex-col">
-                <p data-nums class="font-display text-[13px] font-black tracking-[0.2em] text-owa-sky uppercase">${fechaCorta(j.fecha)}</p>
+                <div class="relative z-10 flex flex-1 flex-col p-8 sm:p-10">
+                <div class="flex items-start justify-between gap-4">
+                  <p
+                    class="inline-flex items-center gap-2 rounded-full bg-owa-cyan px-4 py-2 font-display text-[13px] font-black tracking-[0.06em] text-owa-deep uppercase"
+                  >
+                    ${fechaRibbon(j.fecha)}
+                  </p>
+                  <img
+                    src="/brand/owa-${gp ? 'grandprix' : 'circuito'}-s.svg"
+                    alt="${j.torneo}"
+                    class="mt-1 h-8 w-auto shrink-0 opacity-90 sm:h-9"
+                  />
+                </div>
 
-                <h3 class="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-[0.95] font-black uppercase">
-                  ${j.torneo}
-                </h3>
+                <p data-nums class="mt-6 font-display text-[clamp(4rem,9vw,6rem)] leading-[0.82] font-black text-owa-cyan uppercase">
+                  ${j.sigla}
+                </p>
+                <p class="mt-1.5 font-display text-sm font-black tracking-[0.16em] text-white uppercase">${j.nombreLargo}</p>
 
-                <p class="mt-9 flex flex-wrap items-baseline gap-x-5 gap-y-1">
-                  ${distancias.map(
-                    (d, n) => html`
-                      ${n > 0
-                        ? html`<span
-                            class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-black text-owa-cyan/70"
-                            aria-hidden="true"
-                            >·</span
-                          >`
-                        : ''}
-                      <span
-                        data-nums
-                        class="font-display text-[clamp(3rem,6vw,4.5rem)] leading-[0.85] font-black text-owa-cyan uppercase"
-                        >${d}</span
-                      >
-                    `
-                  )}
+                <p class="mt-6 max-w-[26ch] font-display text-[clamp(1.375rem,2.4vw,1.75rem)] leading-tight font-black text-white uppercase">
+                  ${raw(j.tagline)}
                 </p>
 
-                <div class="mt-6">
-                  <span
-                    class="inline-flex items-center gap-1.5 rounded-full border border-white/25 px-3.5 py-1.5 font-display text-[11px] font-black tracking-[0.08em] text-owa-line"
-                  >
-                    LARGADA <span data-nums class="text-white">${r.largada}</span>
-                  </span>
-                  <p class="mt-4 max-w-[38ch] text-[13px] leading-relaxed text-owa-line/75">${j.desc}</p>
+                <div class="mt-5 h-px w-10 bg-white/30" aria-hidden="true"></div>
+
+                <div class="mt-5 flex flex-wrap items-center gap-2.5">
+                  ${gp
+                    ? puntajeGP
+                      ? html`<span class="inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.02em] text-owa-sky uppercase">
+                          ${icono('trofeo', 'size-4.5')} <span data-nums>${puntajeGP}</span> en juego</span
+                        >`
+                      : ''
+                    : distanciasTorneo.map((d, i) => {
+                        const etiqueta = d.rotulo === 'arena Super Sprint' ? `Super Sprint ${d.km}` : d.rotulo === 'Kid' ? `Kid ${d.km}` : d.km;
+                        return html`
+                          <span
+                            class="rounded-full px-3.5 py-1.5 font-display text-[12px] font-black tracking-[0.04em] uppercase ${i < 2
+                              ? 'bg-owa-cyan text-owa-deep'
+                              : 'border border-white/30 text-white'}"
+                            >${etiqueta}</span
+                          >
+                        `;
+                      })}
                 </div>
 
-                <div class="mt-auto pt-7">
-                  <a
-                    href="${inscripcionDe(e, f, j.torneo)}"
-                    class="u-press block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
-                    >INSCRIBITE A ${j.torneo} →</a
+                <div class="mt-auto pt-8">
+                  <p class="flex items-center gap-2 text-[13px] text-owa-line">
+                    ${icono('pin', 'size-4 shrink-0 text-owa-sky')}
+                    ${gp && recorridoGP ? `${recorridoGP.largada}, San Pedro` : f?.sedeBarra || j.desc}
+                  </p>
+                  <span
+                    class="u-press mt-4 block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors group-hover:bg-owa-sky"
+                    >INSCRIBITE A ${j.torneo} →</span
                   >
                 </div>
               </div>
-            </article>
+              </div>
+            </a>
           `;
         })}
       </div>
@@ -412,45 +441,59 @@ export function render(ctx) {
       <h2 id="h-distancias" class="u-eyebrow text-owa-blue">Distancias y categorías</h2>
       ${f?.distancias
         ? html`
-            <ul class="mt-5.5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
-              ${f.distancias.map(
-                (d) => html`
-                  <!-- El número manda: es el dato que se busca primero. Debajo,
-                       en orden, torneo → puntaje → categorías, sin que ninguna
-                       línea chica compita con la distancia. -->
+            <!-- Cinco distancias, una sola fila desde xl: las tres que puntúan
+                 (Larga/Media/Corta) van en columnas más anchas y con la
+                 tarjeta completa; Kid y Super Sprint —participativa una,
+                 por invitación la otra, ninguna suma al ranking— quedan en
+                 columnas más angostas y con menos jerarquía tipográfica, así
+                 la diferencia se lee de un vistazo y no hay que leer la letra
+                 chica para saber cuáles son "las carreras". -->
+            <ul
+              class="mt-5.5 grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-[1.15fr_1.15fr_1.15fr_0.85fr_0.85fr] xl:gap-3"
+              data-stagger
+            >
+              ${f.distancias.map((d) => {
+                const principal = ['Larga', 'Media', 'Corta'].includes(d.rotulo);
+                return html`
                   <li
-                    class="reveal u-lift-sm flex flex-col rounded-owa-lg border border-owa-line p-6 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+                    class="reveal u-lift-sm flex flex-col rounded-owa-lg border transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] ${principal
+                      ? 'border-owa-line p-6'
+                      : 'border-dashed border-owa-line bg-owa-sand/50 p-4.5'}"
                   >
-                    <p class="font-display text-[12px] font-black tracking-[0.14em] text-owa-slate uppercase">
-                      ${d.rotulo}
-                    </p>
+                    <p class="font-display text-[10px] font-bold tracking-[0.16em] text-owa-slate/75 uppercase">${d.rotulo}</p>
                     <p
                       data-nums
-                      class="mt-1.5 font-display text-[clamp(3rem,6vw,4rem)] leading-[0.85] font-black text-owa-navy"
+                      class="mt-1.5 font-display font-black text-owa-navy ${principal
+                        ? 'text-[clamp(2.5rem,4.5vw,3.5rem)] leading-[0.85]'
+                        : 'text-[clamp(1.5rem,2.4vw,1.875rem)] leading-none'}"
                     >
                       ${d.km}
                     </p>
                     ${d.torneo
-                      ? html`<p class="mt-2.5 font-display text-[12px] font-black tracking-[0.1em] text-owa-blue">
-                          ${d.torneo}
-                        </p>`
-                      : ''}
-                    ${d.nota ? html`<p class="mt-2.5 text-[13px] leading-relaxed text-owa-slate">${d.nota}</p>` : ''}
-                    <div class="mt-auto space-y-1.5 pt-5">
-                      ${d.puntaje
-                        ? html`<p class="flex flex-wrap justify-between gap-x-4 border-t border-owa-sand pt-2.5 text-[13px]">
-                            <span class="text-owa-slate">Puntaje</span>
-                            <span class="font-display font-bold text-owa-navy">${d.puntaje}</span>
-                          </p>`
-                        : ''}
-                      <p class="flex flex-wrap justify-between gap-x-4 border-t border-owa-sand pt-2.5 text-[13px]">
-                        <span class="text-owa-slate">Categorías</span>
-                        <span class="font-display font-bold text-owa-navy">${d.cats}</span>
-                      </p>
-                    </div>
+                      ? html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-blue">${d.torneo}</p>`
+                      : html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-slate">CIRCUITO OWA</p>`}
+                    ${principal
+                      ? html`
+                          ${d.nota ? html`<p class="mt-2.5 text-[13px] leading-relaxed text-owa-slate">${d.nota}</p>` : ''}
+                          <div class="mt-auto space-y-2 pt-5">
+                            ${d.puntaje
+                              ? html`<p class="flex flex-wrap items-baseline justify-between gap-x-4 border-t border-owa-sand pt-2.5">
+                                  <span class="text-[11px] text-owa-slate/80">Puntaje</span>
+                                  <span class="font-display text-sm font-black text-owa-navy">${d.puntaje}</span>
+                                </p>`
+                              : ''}
+                            <p class="flex flex-wrap items-baseline justify-between gap-x-4 border-t border-owa-sand pt-2.5">
+                              <span class="text-[11px] text-owa-slate/80">Categorías</span>
+                              <span class="font-display text-sm font-black text-owa-navy">${d.cats}</span>
+                            </p>
+                          </div>
+                        `
+                      : html`
+                          <p class="mt-auto pt-4 text-[12px] leading-relaxed text-owa-slate">${d.nota || d.cats}</p>
+                        `}
                   </li>
-                `
-              )}
+                `;
+              })}
             </ul>
           `
         : html`
@@ -475,39 +518,50 @@ export function render(ctx) {
           `}
     </section>
 
-    <!-- recorridos: pestaña por distancia, un mapa grande y su ficha al lado -->
+    <!-- recorridos: una sola sección, todas las distancias como tabs. Cada
+         tab lleva el torneo como subtítulo (Grand Prix / Circuito OWA) para
+         que nunca haga falta adivinar a qué competencia pertenece un mapa. -->
     ${f?.recorridos
       ? (() => {
-          const activoId = f.recorridos.find((r) => r.id === recorridoActivo)?.id || f.recorridos[0].id;
-          const r = f.recorridos.find((x) => x.id === activoId);
-          const dato = (k) => (r.ficha.find(([kk]) => kk === k) || [])[1];
-          const puntaje = r.ficha.find(([k]) => k.startsWith('Puntaje'));
+          const activoId = f.recorridos.find((x) => x.id === recorridoActivo)?.id || f.recorridos[0].id;
+          const activo = f.recorridos.find((x) => x.id === activoId);
+          const nombreTorneo = (t) => (t === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito OWA');
+          const siglaTorneo = (t) => e.jornadas?.find((j) => j.torneo === t)?.sigla || '';
 
-          const filaResumen = (nombreIcono, etiqueta, valor) =>
-            valor
-              ? html`
-                  <div class="flex items-center justify-between gap-3 border-b border-owa-sand py-2.5 last:border-b-0">
-                    <dt class="flex items-center gap-2 text-[13px] text-owa-slate">
-                      ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
-                    </dt>
-                    <dd data-nums class="font-display text-[13px] font-bold text-owa-navy">${valor}</dd>
-                  </div>
-                `
-              : '';
+          // La fecha de la arena Super Sprint no está cargada aparte: corre el
+          // mismo día que el resto del Circuito, así que se toma de ahí.
+          const fechaDelTorneo = (torneo) => {
+            const conFicha = f.recorridos.find((x) => x.torneo === torneo && x.ficha);
+            return conFicha ? fechaCortaDesdeLarga((conFicha.ficha.find(([k]) => k === 'Fecha') || [])[1]) : '';
+          };
 
-          // Requisitos y premiación son párrafos, no un dato corto: van apilados
-          // en vez de en la misma fila con el rótulo.
-          const filaLarga = (nombreIcono, etiqueta, valor) =>
-            valor
-              ? html`
-                  <div class="border-b border-owa-sand py-2.5 last:border-b-0">
-                    <dt class="flex items-center gap-2 text-[13px] text-owa-slate">
-                      ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
-                    </dt>
-                    <dd class="mt-1.5 text-[13px] leading-relaxed font-bold text-owa-navy">${valor}</dd>
+          // Sin mapa ni ficha técnica todavía (la arena Super Sprint): misma
+          // cabecera que el resto, pero con lo poco que sí hay en vez de
+          // fabricar horarios o condiciones que nadie cargó.
+          const panelSinMapa = (r) => html`
+            <div class="reveal mt-6 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
+              <div class="grid lg:grid-cols-[1.5fr_1fr]">
+                <div class="flex min-h-64 items-center justify-center bg-owa-mist p-8 lg:border-r lg:border-owa-line">
+                  <div class="max-w-[30ch] text-center">
+                    <img src="/brand/owa-iso-cyan.svg" alt="" width="44" height="46" class="mx-auto h-11 w-auto opacity-60" />
+                    <p class="mt-4 font-display text-base font-black text-owa-navy">Mapa del recorrido</p>
+                    <p class="mt-2 text-sm text-owa-slate">Pendiente del track de la organización.</p>
                   </div>
-                `
-              : '';
+                </div>
+                <div class="flex flex-col p-6.5">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    ${chipModalidad(r.torneo, { oscuro: false })}
+                    <p data-nums class="rounded-full bg-owa-blue px-3.5 py-1.5 font-display text-[13px] font-black tracking-[0.04em] text-white">
+                      ${fechaDelTorneo(r.torneo)}
+                    </p>
+                  </div>
+                  <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">${r.titulo}</h3>
+                  <p class="mt-1 text-sm font-bold text-owa-slate">${r.cats}</p>
+                  <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">${r.nota}</p>
+                </div>
+              </div>
+            </div>
+          `;
 
           const dato_ = (nombreIcono, etiqueta, valor) => html`
             <div class="flex items-center gap-2.5 px-4 py-3.5">
@@ -519,64 +573,56 @@ export function render(ctx) {
             </div>
           `;
 
-          // Agrupados por torneo: sin esto, "18 km / 7 km / 4 km" se leía como
-          // tres variantes de una misma carrera en vez de dos competencias
-          // distintas (Grand Prix tiene una sola distancia; Circuito, dos).
-          const grupos = [];
-          for (const x of f.recorridos) {
-            let g = grupos.find((gg) => gg.torneo === x.torneo);
-            if (!g) grupos.push((g = { torneo: x.torneo, recorridos: [] }));
-            g.recorridos.push(x);
-          }
+          // Mapa + ficha técnica + franja de datos, para un recorrido puntual.
+          // Antes vivía una sola vez arriba del render; ahora se llama dos
+          // veces (una por torneo), así que queda como función.
+          const panelRecorrido = (r) => {
+            const dato = (k) => (r.ficha.find(([kk]) => kk === k) || [])[1];
+            const puntaje = r.ficha.find(([k]) => k.startsWith('Puntaje'));
 
-          return html`
-            <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
-              ${eyebrow('Recorridos')}
-              <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Elegí tu distancia</h2>
-
-              <div class="mt-6 flex flex-wrap gap-x-8 gap-y-5">
-                ${grupos.map(
-                  (g, i) => html`
-                    <div class="${i > 0 ? 'sm:border-l sm:border-owa-line sm:pl-8' : ''}">
-                      <div class="mb-2.5">${chipModalidad(g.torneo)}</div>
-                      <div class="flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia — ${g.torneo}">
-                        ${g.recorridos.map(
-                          (x) => html`
-                            <button
-                              type="button"
-                              role="tab"
-                              data-recorrido-tab="${x.id}"
-                              aria-selected="${x.id === activoId ? 'true' : 'false'}"
-                              class="u-press flex items-center gap-2 rounded-full border px-4.5 py-2.5 font-display text-sm font-black transition-colors duration-200 ${x.id ===
-                              activoId
-                                ? 'border-owa-blue bg-owa-blue text-white'
-                                : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
-                            >
-                              ${icono('ola', 'size-4.5')} ${x.titulo}
-                            </button>
-                          `
-                        )}
-                      </div>
+            const filaResumen = (nombreIcono, etiqueta, valor) =>
+              valor
+                ? html`
+                    <div class="flex items-center justify-between gap-3 border-b border-owa-sand py-2.5 last:border-b-0">
+                      <dt class="flex items-center gap-2 text-[13px] text-owa-slate">
+                        ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
+                      </dt>
+                      <dd data-nums class="font-display text-[13px] font-bold text-owa-navy">${valor}</dd>
                     </div>
                   `
-                )}
-              </div>
+                : '';
 
+            // Requisitos y premiación son párrafos, no un dato corto: van
+            // apilados en vez de en la misma fila con el rótulo.
+            const filaLarga = (nombreIcono, etiqueta, valor) =>
+              valor
+                ? html`
+                    <div class="border-b border-owa-sand py-2.5 last:border-b-0">
+                      <dt class="flex items-center gap-2 text-[13px] text-owa-slate">
+                        ${icono(nombreIcono, 'size-4 text-owa-blue')} ${etiqueta}
+                      </dt>
+                      <dd class="mt-1.5 text-[13px] leading-relaxed font-bold text-owa-navy">${valor}</dd>
+                    </div>
+                  `
+                : '';
+
+            return html`
               <div class="reveal mt-6 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
                 <div class="grid lg:grid-cols-[1.5fr_1fr]">
-                  <div class="reveal-clip flex items-center overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line" data-visible>
+                  <div class="reveal-clip flex overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line" data-visible>
                     ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 60vw, 100vw' })}
                   </div>
                   <div class="flex flex-col p-6.5">
+                    <!-- Con las tres distancias mezcladas en un solo tabbar,
+                         el torneo tiene que quedar dicho acá — es la única
+                         pista de a qué competencia pertenece este mapa. -->
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                      <p class="font-display text-[13px] font-black tracking-[0.08em] text-owa-blue">${r.titulo}</p>
+                      ${chipModalidad(r.torneo, { oscuro: false })}
                       <p data-nums class="rounded-full bg-owa-blue px-3.5 py-1.5 font-display text-[13px] font-black tracking-[0.04em] text-white">
-                        ${fechaCortaDesdeLarga(dato('Fecha'))}
+                        ${fechaDelTorneo(r.torneo)}
                       </p>
                     </div>
-                    <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">
-                      ${r.torneo === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito OWA'}
-                    </h3>
+                    <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">${r.titulo}</h3>
                     <p class="mt-1 text-sm font-bold text-owa-slate">Punto a punto</p>
                     <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">
                       Recorrido punto a punto sobre el río Paraná, desde ${r.largada} hasta ${r.llegada}.
@@ -603,6 +649,38 @@ export function render(ctx) {
                   ${dato_('ola', 'Corriente', corrienteDe(r))}
                 </div>
               </div>
+            `;
+          };
+
+          return html`
+            <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
+              ${eyebrow('Recorridos')}
+              <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Elegí tu distancia</h2>
+
+              <div class="mt-6 flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia">
+                ${f.recorridos.map(
+                  (x) => html`
+                    <button
+                      type="button"
+                      role="tab"
+                      data-recorrido-tab="${x.id}"
+                      aria-selected="${x.id === activoId ? 'true' : 'false'}"
+                      class="u-press flex flex-col items-start gap-0.5 rounded-owa-md border px-4.5 py-2.5 text-left transition-colors duration-200 ${x.id ===
+                      activoId
+                        ? 'border-owa-blue bg-owa-blue text-white'
+                        : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
+                    >
+                      <span class="font-display text-sm font-black">${x.titulo}</span>
+                      <span class="text-[11px] font-bold tracking-[0.04em] uppercase ${x.id === activoId ? 'text-owa-line' : 'text-owa-slate'}">
+                        <span class="${x.id === activoId ? 'text-owa-cyan' : 'text-owa-blue'}">${siglaTorneo(x.torneo)}</span> ·
+                        ${nombreTorneo(x.torneo)}</span
+                      >
+                    </button>
+                  `
+                )}
+              </div>
+
+              ${activo.mapas?.length ? panelRecorrido(activo) : panelSinMapa(activo)}
             </section>
           `;
         })()
@@ -679,9 +757,15 @@ export function render(ctx) {
           ? (() => {
               const dias = diasDeCronograma(f.cronogramas);
               const activo = dias[cronogramaActivo] || dias[0];
-              const nombreTorneo = (t) => (t === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito');
-              const subtitulo = (d) =>
-                d.bloques.length > 1 ? d.bloques.map((b) => nombreTorneo(b.torneo)).join(' + ') : d.bloques[0].lugar;
+              const nombreTorneoOWA = (t) => (t === 'GRAND PRIX' ? 'Grand Prix OWA' : 'Circuito OWA');
+              // Si alguno de los bloques del día es "el" día de carrera de su
+              // torneo, ese torneo manda el subtítulo (aunque ese mismo día
+              // también reciba kits de otro torneo, como el sábado). Si no,
+              // el día es puramente logístico y el subtítulo es el lugar.
+              const subtitulo = (d) => {
+                const principal = d.bloques.find((b) => b.lugar === 'Día del evento') || d.bloques[0];
+                return principal.lugar === 'Día del evento' ? nombreTorneoOWA(principal.torneo) : principal.lugar;
+              };
 
               return html`
                 <div class="mt-6.5 flex flex-wrap gap-2.5" role="tablist" aria-label="Día del cronograma">
@@ -701,7 +785,7 @@ export function render(ctx) {
                           <span class="block font-display text-[13px] leading-tight font-black tracking-[0.03em] uppercase"
                             >${diaCorto(d.fecha)}</span
                           >
-                          <span class="mt-0.5 block text-[11px] leading-tight ${d === activo ? 'text-owa-deep' : 'text-owa-slate'}"
+                          <span class="mt-0.5 block text-[13px] font-bold leading-tight ${d === activo ? 'text-owa-deep' : 'text-owa-slate'}"
                             >${subtitulo(d)}</span
                           >
                         </span>

@@ -39,7 +39,7 @@ export const EVENTOS = [
     distancias: { gp: 18, circuito: [4, 7] },
     // Dos jornadas con nombre propio: la Vuelta de Obligado abre el fin de
     // semana y la de San Pedro lo cierra (ver `jornadas`).
-    sigla: 'VOB · SNP',
+    sigla: 'VOB · SPD',
     nombre: 'Open Water San Pedro',
     corto: 'SAN PEDRO',
     sede: 'San Pedro · Buenos Aires',
@@ -56,16 +56,20 @@ export const EVENTOS = [
       {
         torneo: 'GRAND PRIX',
         sigla: 'VOB',
+        nombreLargo: 'Vuelta de Obligado',
         fecha: '14/11/2026',
         dia: 'Día 1 · Grand Prix',
         desc: 'Sobre el Paraná, con largada desde la costanera de San Pedro.',
+        tagline: '18 km de historia, río y desafío.',
       },
       {
         torneo: 'CIRCUITO OWA',
-        sigla: 'SNP',
+        sigla: 'SPD',
+        nombreLargo: 'San Pedro',
         fecha: '15/11/2026',
         dia: 'Día 2 · Circuito OWA',
         desc: 'Distancias accesibles y clasificación por categoría de edad.',
+        tagline: 'Un clásico del<br>Circuito OWA.',
       },
     ],
   },
