@@ -129,16 +129,6 @@ const diaCorto = (f) => {
   return mes === -1 ? f : `${m[1]} ${m[2]} ${MES_CORTO[mes]}`;
 };
 
-/** "Sábado 14 NOV": la fecha con el día de la semana, para la tarjeta de
-    "Elegí tu carrera" — sale del campo "Fecha" del recorrido, que ya lo
-    escribe en texto largo. Sin ficha con esa fecha (eventos sin recorridos
-    propios), cae a fechaCorta sobre el dato numérico de la jornada. */
-const fechaDeTorneo = (f, torneo, fechaNumerica) => {
-  const r = (f?.recorridos || []).find((rr) => rr.torneo === torneo);
-  const fechaLarga = r && (r.ficha.find(([k]) => k === 'Fecha') || [])[1];
-  return fechaLarga ? diaCorto(fechaLarga) : fechaCorta(fechaNumerica);
-};
-
 /** El cronograma real llega partido por torneo (Grand Prix / Circuito), pero
     el sábado ambos comparten la fecha: la entrega de kits del Circuito cae
     el mismo día que la carrera del Grand Prix. Acá se reagrupa por fecha real
@@ -154,6 +144,9 @@ function diasDeCronograma(cronogramas) {
   }
   return [...porFecha.values()];
 }
+
+/** Cada torneo abre su propio formulario cuando la ficha lo define. */
+const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
 
 const barraDatos = (e, esChallenge, f) => {
   const boton = (extra) =>
@@ -215,34 +208,23 @@ const bandaVivo = () => html`
   </a>
 `;
 
-// La decisión que importa acá no es "qué día" — es "qué carrera": Grand Prix
-// y Circuito OWA son dos competencias distintas que resultan compartir fin de
-// semana. Cada torneo tiene su propia foto, su propia bajada y va a su propia
-// página madre — nada de fundirlos en un genérico "Día 1 / Día 2".
-const DESCRIPTOR_TORNEO = {
-  'GRAND PRIX': 'Larga distancia',
-  'CIRCUITO OWA': 'Distancias para diferentes niveles',
-};
-const RUTA_TORNEO = { 'GRAND PRIX': '/grand-prix', 'CIRCUITO OWA': '/circuito' };
-
 const jornadas = (e, f) => html`
   <section class="bg-owa-navy px-0 py-20 text-white" aria-labelledby="h-jornadas">
     <div class="u-shell">
-      ${eyebrow('Dos jornadas · un fin de semana', 'sky')}
-      <h2 id="h-jornadas" class="mt-3.5 u-h2">Elegí tu carrera</h2>
+      ${eyebrow('Dos jornadas, un fin de semana', 'sky')}
+      <h2 id="h-jornadas" class="mt-3.5 u-h2">Días del evento</h2>
 
+      <!-- Tarjeta a toda foto (una por torneo — ya se ve que son cosas
+           distintas antes de leer una palabra), con la misma jerarquía de
+           texto de siempre: torneo → fecha → distancia → datos técnicos. -->
       <div class="mt-9 grid gap-5 lg:grid-cols-2" data-stagger>
-        ${e.jornadas.map((j) => {
+        ${e.jornadas.map((j, i) => {
           const gp = j.torneo === 'GRAND PRIX';
           const r = resumenJornada(f, j.torneo);
           const distancias = r.distancias.split(' · ');
-          const fecha = fechaDeTorneo(f, j.torneo, j.fecha);
 
           return html`
-            <a
-              href="${RUTA_TORNEO[j.torneo] || '/'}"
-              class="reveal u-lift group relative flex min-h-[28rem] flex-col overflow-hidden rounded-owa-lg sm:min-h-[32rem]"
-            >
+            <article class="reveal relative flex min-h-[30rem] flex-col overflow-hidden rounded-owa-lg p-8 sm:p-10">
               <div class="absolute inset-0" aria-hidden="true">
                 ${foto({
                   slug: gp ? 'gp-contraluz' : 'circuito-grupo',
@@ -251,47 +233,56 @@ const jornadas = (e, f) => html`
                   className: 'block h-full w-full',
                   imgClass: 'h-full w-full object-cover',
                 })}
-                <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/96 via-owa-abyss/60 to-owa-abyss/15"></div>
+                <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/96 via-owa-abyss/62 to-owa-abyss/18"></div>
               </div>
 
-              <div class="relative z-10 flex flex-1 flex-col p-8 sm:p-10">
-                <div class="flex flex-wrap items-center gap-3">
-                  ${chipModalidad(j.torneo, { oscuro: true })}
-                  <span data-nums class="font-display text-[13px] font-black tracking-[0.14em] text-owa-sky uppercase">${fecha}</span>
-                </div>
+              <div class="relative z-10 flex flex-1 flex-col">
+                <p class="font-display text-[13px] font-black tracking-[0.2em] text-owa-sky">DÍA ${i + 1}</p>
 
-                <h3 class="mt-5 font-display text-[clamp(2.25rem,4.4vw,3.25rem)] leading-[0.95] font-black text-white uppercase">
+                <h3 class="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-[0.95] font-black uppercase">
                   ${j.torneo}
                 </h3>
+                <p data-nums class="mt-3 font-display text-[clamp(0.9375rem,1.7vw,1.25rem)] font-bold text-owa-line">
+                  ${fechaCorta(j.fecha)}
+                </p>
 
-                <p class="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                <p class="mt-9 flex flex-wrap items-baseline gap-x-5 gap-y-1">
                   ${distancias.map(
                     (d, n) => html`
                       ${n > 0
-                        ? html`<span class="font-display text-[clamp(1.5rem,2.6vw,2rem)] font-black text-owa-cyan/70" aria-hidden="true"
+                        ? html`<span
+                            class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-black text-owa-cyan/70"
+                            aria-hidden="true"
                             >·</span
                           >`
                         : ''}
                       <span
                         data-nums
-                        class="font-display text-[clamp(2.25rem,4.4vw,3.25rem)] leading-[0.85] font-black text-owa-cyan uppercase"
+                        class="font-display text-[clamp(3rem,6vw,4.5rem)] leading-[0.85] font-black text-owa-cyan uppercase"
                         >${d}</span
                       >
                     `
                   )}
                 </p>
-                <p class="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-owa-line">
-                  ${DESCRIPTOR_TORNEO[j.torneo] || j.desc}
-                </p>
 
-                <div class="mt-auto pt-8">
+                <div class="mt-6">
                   <span
-                    class="u-press block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors group-hover:bg-owa-sky"
-                    >VER ${j.torneo} →</span
+                    class="inline-flex items-center gap-1.5 rounded-full border border-white/25 px-3.5 py-1.5 font-display text-[11px] font-black tracking-[0.08em] text-owa-line"
+                  >
+                    LARGADA <span data-nums class="text-white">${r.largada}</span>
+                  </span>
+                  <p class="mt-4 max-w-[38ch] text-[13px] leading-relaxed text-owa-line/75">${j.desc}</p>
+                </div>
+
+                <div class="mt-auto pt-7">
+                  <a
+                    href="${inscripcionDe(e, f, j.torneo)}"
+                    class="u-press block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors hover:bg-owa-sky"
+                    >INSCRIBITE A ${j.torneo} →</a
                   >
                 </div>
               </div>
-            </a>
+            </article>
           `;
         })}
       </div>
