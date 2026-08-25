@@ -427,6 +427,9 @@ export function render(ctx) {
         </p>
 
         <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">${e.nombre}</h1>
+        ${e.slug === 'san-pedro'
+          ? html`<p class="mt-2 font-display text-xs font-bold tracking-[0.1em] text-owa-line/80">by arena</p>`
+          : ''}
         <p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
           ${e.fechaLarga} · ${f?.sedeCiudad || e.sede}
         </p>
