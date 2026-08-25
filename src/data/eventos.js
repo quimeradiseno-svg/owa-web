@@ -60,7 +60,7 @@ export const EVENTOS = [
         fecha: '14/11/2026',
         dia: 'Día 1 · Grand Prix',
         desc: 'Sobre el Paraná, con largada desde la costanera de San Pedro.',
-        tagline: '18 km de historia, río y desafío.',
+        tagline: 'Km de historia,<br>río y desafío.',
       },
       {
         torneo: 'CIRCUITO OWA',

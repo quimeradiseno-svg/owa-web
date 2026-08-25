@@ -10,13 +10,12 @@ import {
   chipEstado,
   chipVivo,
   chipModalidad,
-  modalidadesDe,
   posicion,
   btnAccent,
   btnBorde,
   btnPrimario,
   pastillaChica,
-  pendiente,
+  olaCentrada,
 } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 
@@ -30,8 +29,12 @@ let demoAbierto = false;
 // carrera — el render cae al primer recorrido si el id no existe acá.
 let recorridoActivo = null;
 
-// Tab del cronograma: qué día está activo (índice sobre diasDeCronograma()).
-let cronogramaActivo = 0;
+// Cronograma: primero se elige el torneo (Grand Prix / Circuito), y recién
+// dentro de ese torneo, el día — no al revés. Mezclar los dos torneos en una
+// sola pestaña "por día" (como estaba antes) confundía, porque el sábado le
+// pertenece a los dos por motivos distintos (carrera de GP, entrega de kits
+// de Circuito). `dia` se resetea a 0 cada vez que cambia `torneo`.
+let cronogramaSel = { torneo: 0, dia: 0 };
 
 // "Entre 23 y 26 °C, sin visibilidad, corriente a favor" -> "A favor". Es el
 // único dato de corriente que hay: no vale la pena duplicarlo como campo
@@ -43,8 +46,11 @@ const corrienteDe = (r) => {
   return 'Variable';
 };
 
+// "core" corre Grand Prix y Circuito el mismo fin de semana: volver a
+// "/grand-prix" (como si esta ficha fuera sólo de ese torneo) no tiene
+// sentido cuando la propia página ya separa "elegí tu carrera" en dos.
 const VUELVE_A = {
-  core: ['/grand-prix', 'GRAND PRIX'],
+  core: ['/calendario', 'CALENDARIO'],
   especial: ['/especiales', 'EVENTOS ESPECIALES'],
   challenge: ['/challenge', 'OWA CHALLENGE'],
 };
@@ -127,6 +133,11 @@ const fechaRibbon = (f) => {
   return m ? `${+m[1]} de ${MESES_LARGO[+m[2] - 1]}` : f;
 };
 
+/** "7 km" → "7K", "1,5 km" → "1.5K", "500 m" → "500M": formato compacto para
+    la pastilla de fecha del banner, que a veces lista varias distancias
+    (Circuito) y no entra si van escritas como en el resto del sitio. */
+const distCorta = (km) => km.replace(',', '.').toUpperCase().replace(/\s*KM$/, 'K').replace(/\s*M$/, 'M');
+
 /** "Viernes 13 de noviembre" → "VIERNES 13 NOV". Para la pestaña del día. */
 const diaCorto = (f) => {
   const m = /^(\p{L}+) (\d{1,2}) de (\p{L}+)/iu.exec(String(f));
@@ -134,22 +145,6 @@ const diaCorto = (f) => {
   const mes = MESES_LARGO.indexOf(m[3].toLowerCase());
   return mes === -1 ? f : `${m[1]} ${m[2]} ${MES_CORTO[mes]}`;
 };
-
-/** El cronograma real llega partido por torneo (Grand Prix / Circuito), pero
-    el sábado ambos comparten la fecha: la entrega de kits del Circuito cae
-    el mismo día que la carrera del Grand Prix. Acá se reagrupa por fecha real
-    — cada pestaña es "un día en San Pedro", con un bloque por torneo que
-    tenga algo ese día, en vez de dos columnas fijas por torneo. */
-function diasDeCronograma(cronogramas) {
-  const porFecha = new Map();
-  for (const c of cronogramas) {
-    for (const dia of c.dias) {
-      if (!porFecha.has(dia.fecha)) porFecha.set(dia.fecha, { fecha: dia.fecha, bloques: [] });
-      porFecha.get(dia.fecha).bloques.push({ torneo: c.torneo, lugar: dia.lugar, aviso: c.aviso, items: dia.items });
-    }
-  }
-  return [...porFecha.values()];
-}
 
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
@@ -215,10 +210,14 @@ const bandaVivo = () => html`
 `;
 
 const jornadas = (e, f) => html`
-  <section class="bg-owa-navy px-0 py-20 text-white" aria-labelledby="h-jornadas">
+  <!-- EXPERIMENTO — fondo blanco en vez de navy: las tarjetas son fotos con
+       su propio velo, así que se leen igual sobre cualquier fondo; el
+       cambio es puramente del color de la sección. Ver Distancias y
+       categorías, que hace el cambio inverso a modo de contraste. -->
+  <section class="bg-white px-0 py-20" aria-labelledby="h-jornadas">
     <div class="u-shell">
-      ${eyebrow('Dos jornadas, un fin de semana', 'sky')}
-      <h2 id="h-jornadas" class="mt-3.5 u-h2">Días del evento</h2>
+      ${eyebrow('Dos jornadas, un fin de semana')}
+      <h2 id="h-jornadas" class="mt-3.5 u-h2 text-owa-navy">Días del evento</h2>
 
       <!-- EXPERIMENTO — estilo "afiche de Instagram": cinta de fecha, sigla
            gigante, bajada y pastillas de dato, en vez de la jerarquía
@@ -230,12 +229,12 @@ const jornadas = (e, f) => html`
           // sin puntaje, aparte de las competitivas) pero corre el domingo
           // de Circuito igual, así que se suma a mano acá.
           const distanciasTorneo = (f?.distancias || []).filter((d) => d.torneo === j.torneo || (!gp && d.rotulo === 'Kid'));
-          const puntajeGP = distanciasTorneo[0]?.puntaje?.split(' · ')[1];
-          const recorridoGP = f?.recorridos?.find((r) => r.torneo === 'GRAND PRIX');
 
           return html`
             <a
               href="${inscripcionDe(e, f, j.torneo)}"
+              target="_blank"
+              rel="noopener noreferrer"
               class="reveal u-lift group block rounded-owa-lg bg-linear-to-br from-owa-sky via-white/85 to-owa-blue p-px"
             >
               <div class="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[27px]">
@@ -255,7 +254,8 @@ const jornadas = (e, f) => html`
                   <p
                     class="inline-flex items-center gap-2 rounded-full bg-owa-cyan px-4 py-2 font-display text-[13px] font-black tracking-[0.06em] text-owa-deep uppercase"
                   >
-                    ${fechaRibbon(j.fecha)}
+                    <span class="sm:hidden">${fechaCorta(j.fecha).replace(/ \d{2}$/, '')}</span>
+                    <span class="hidden sm:inline">${fechaRibbon(j.fecha)}</span>
                   </p>
                   <img
                     src="/brand/owa-${gp ? 'grandprix' : 'circuito'}-s.svg"
@@ -273,35 +273,29 @@ const jornadas = (e, f) => html`
                   ${raw(j.tagline)}
                 </p>
 
-                <div class="mt-5 h-px w-10 bg-white/30" aria-hidden="true"></div>
+                <div class="mt-5 h-0.75 w-10 rounded-full bg-white/60" aria-hidden="true"></div>
 
                 <div class="mt-5 flex flex-wrap items-center gap-2.5">
-                  ${gp
-                    ? puntajeGP
-                      ? html`<span class="inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.02em] text-owa-sky uppercase">
-                          ${icono('trofeo', 'size-4.5')} <span data-nums>${puntajeGP}</span> en juego</span
-                        >`
-                      : ''
-                    : distanciasTorneo.map((d, i) => {
-                        const etiqueta = d.rotulo === 'arena Super Sprint' ? `Super Sprint ${d.km}` : d.rotulo === 'Kid' ? `Kid ${d.km}` : d.km;
-                        return html`
-                          <span
-                            class="rounded-full px-3.5 py-1.5 font-display text-[12px] font-black tracking-[0.04em] uppercase ${i < 2
-                              ? 'bg-owa-cyan text-owa-deep'
-                              : 'border border-white/30 text-white'}"
-                            >${etiqueta}</span
-                          >
-                        `;
-                      })}
+                  ${distanciasTorneo.map((d, i) => {
+                    const etiqueta = d.rotulo === 'arena Super Sprint' ? `Super Sprint ${d.km}` : d.rotulo === 'Kid' ? `Kid ${d.km}` : d.km;
+                    return html`
+                      <span
+                        class="rounded-full px-3.5 py-1.5 font-display text-[12px] font-black tracking-[0.04em] uppercase ${i < (gp ? 1 : 2)
+                          ? 'bg-owa-cyan text-owa-deep'
+                          : 'border border-white/30 text-white'}"
+                        >${etiqueta}</span
+                      >
+                    `;
+                  })}
                 </div>
 
                 <div class="mt-auto pt-8">
                   <p class="flex items-center gap-2 text-[13px] text-owa-line">
                     ${icono('pin', 'size-4 shrink-0 text-owa-sky')}
-                    ${gp && recorridoGP ? `${recorridoGP.largada}, San Pedro` : f?.sedeBarra || j.desc}
+                    ${f?.sedeBarra || j.desc}
                   </p>
                   <span
-                    class="u-press mt-4 block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors group-hover:bg-owa-sky"
+                    class="u-press mt-4 block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors group-hover:bg-white"
                     >INSCRIBITE A ${j.torneo} →</span
                   >
                 </div>
@@ -405,10 +399,10 @@ export function render(ctx) {
 
   return toHTML(html`
     <section class="relative flex min-h-[66svh] items-end overflow-hidden bg-owa-abyss">
-      ${fondo({ slug: e.img, alt: '', opacity: 0.7, priority: true })}
+      ${fondo({ slug: e.img, alt: '', opacity: 0.88, priority: true })}
       <div class="u-hero-scrim-sm absolute inset-0"></div>
 
-      <div class="u-shell relative pt-28 pb-15 text-white">
+      <div class="u-shell relative pt-28 pb-20 text-white">
         <a
           href="${volverHref}"
           class="u-nudge inline-flex items-center gap-2 font-display text-xs font-bold tracking-[0.12em] text-owa-sky transition-colors hover:text-owa-cyan"
@@ -417,72 +411,148 @@ export function render(ctx) {
         </a>
 
         <p class="mt-6.5 flex flex-wrap items-center gap-2.5">
-          <span
-            class="rounded-md border border-white/30 px-2.25 py-1 font-display text-[11px] font-black tracking-[0.14em] text-owa-line"
-            >${e.sigla}</span
-          >
-          ${modalidadesDe(e, { oscuro: true })}
+          ${e.sigla
+            ? html`<span
+                class="rounded-md border border-white/30 px-2.25 py-1 font-display text-[11px] font-black tracking-[0.14em] text-owa-line"
+                >${e.sigla.replace(/\s*·\s*/g, ' / ')}</span
+              >`
+            : ''}
           ${raceState === 'vivo' ? chipVivo() : chipEstado(raceState === 'finalizada' ? 'cerrada' : e.estado, { oscuro: true })}
         </p>
 
         <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">
           ${e.nombre}${e.slug === 'san-pedro'
-            ? html`<span
-                class="ml-4 align-middle font-display text-[clamp(1.25rem,2.6vw,2rem)] font-bold tracking-[0.04em] text-owa-line/80 normal-case"
-                >by arena</span
-              >`
+            ? html`<span class="ml-4 inline-flex items-center gap-2.5 align-middle normal-case">
+                <span class="font-display text-[clamp(0.8125rem,1.5vw,1.0625rem)] font-bold tracking-[0.04em] text-owa-line/80">by</span>
+                <!-- El logo de arena sólo existe en negro; se invierte a blanco
+                     por CSS para que se lea sobre el hero oscuro. -->
+                <img
+                  src="/brand/arena-logo.webp"
+                  alt="arena"
+                  class="h-[clamp(1.5rem,3.2vw,2.375rem)] w-auto opacity-90 brightness-0 invert"
+                />
+              </span>`
             : ''}
         </h1>
-        <p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
-          ${e.fechaLarga} · ${f?.sedeCiudad || e.sede}
+        <!-- Un vistazo a las dos jornadas sin bajar hasta "Elegí tu carrera":
+             misma fecha/torneo/distancia que las tarjetas, en formato
+             pastilla. La fecha suelta de antes quedaba repetida con esto,
+             así que en eventos con jornadas esto LA REEMPLAZA en vez de
+             sumarse — eventos sin jornadas (challenge, especiales) siguen
+             mostrando la fecha simple, que es todo lo que tienen. -->
+        ${e.jornadas?.length
+          ? html`
+              <div class="mt-5 flex flex-wrap gap-3">
+                ${e.jornadas.map((j) => {
+                  const gp = j.torneo === 'GRAND PRIX';
+                  // Acá sólo van las distancias que puntúan (Media/Corta):
+                  // Super Sprint y Kid quedan afuera de la pastilla del banner
+                  // — siguen completas en la tarjeta de "Elegí tu carrera".
+                  const dists = (f?.distancias || []).filter(
+                    (d) => d.torneo === j.torneo && d.rotulo !== 'arena Super Sprint' && d.rotulo !== 'Kid'
+                  );
+                  const distTxt = dists.length > 1 ? dists.map((d) => distCorta(d.km)).join(' · ') : (dists[0]?.km || '').toUpperCase();
+                  return html`
+                    <span
+                      class="inline-flex items-center gap-2.5 rounded-full border border-owa-cyan/60 px-4.5 py-2.5 font-display text-[13px] font-black tracking-[0.02em]"
+                    >
+                      <span data-nums class="text-[15px] text-owa-cyan"
+                        ><span class="sm:hidden">${fechaCorta(j.fecha).replace(/ \d{2}$/, '')}</span
+                        ><span class="hidden sm:inline">${fechaCorta(j.fecha)}</span></span
+                      >
+                      <span class="text-white/70" aria-hidden="true">·</span>
+                      <span class="text-white">${j.torneo}</span>
+                      <span class="text-white/70" aria-hidden="true">·</span>
+                      <span data-nums class="text-white">${distTxt}</span>
+                    </span>
+                  `;
+                })}
+              </div>
+            `
+          : html`<p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
+              ${e.fechaLarga}
+            </p>`}
+
+        <!-- La sede completa (predio + ciudad) reemplaza a la ciudad sola:
+             sedeBarra ya trae el predio ("Camping Club América, San Pedro");
+             se le pega el resto de sedeCiudad (provincia, país) sin repetir
+             la ciudad. Sin sedeBarra (eventos sin ficha propia), se cae a
+             sedeCiudad o a e.sede, como antes. -->
+        <p class="mt-4 flex flex-wrap items-center gap-2 text-[13px] font-bold tracking-[0.02em] text-owa-sky">
+          ${icono('pin', 'size-4 shrink-0')}
+          ${f?.sedeBarra ? `${f.sedeBarra}, ${f.sedeCiudad.split(', ').slice(1).join(', ')}` : f?.sedeCiudad || e.sede}
         </p>
       </div>
     </section>
 
-    ${barraDatos(e, esChallenge, f)} ${raceState === 'vivo' ? bandaVivo() : ''}
+    <!-- Misma ola que separa el hero de home, pero apuntando para abajo (girada
+         180°, la forma es simétrica así que da lo mismo que un flip vertical):
+         acá el blanco entra desde arriba, no sube desde abajo. -->
+    ${e.jornadas?.length
+      ? html`<div class="relative z-2 -mt-13 rotate-180 bg-white">${olaCentrada('#211e5f')}</div>`
+      : ''}
+
+    ${e.jornadas?.length ? '' : barraDatos(e, esChallenge, f)} ${raceState === 'vivo' ? bandaVivo() : ''}
     ${e.tipo === 'core' ? jornadas(e, f) : esChallenge ? requisitos() : ''}
 
     <!-- distancias -->
-    <section class="u-shell pt-20 pb-10" aria-labelledby="h-distancias">
-      <h2 id="h-distancias" class="u-eyebrow text-owa-blue">Distancias y categorías</h2>
+    <!-- EXPERIMENTO — fondo navy en vez de blanco: a probar junto con el
+         cambio inverso en "jornadas" (esa pasa a blanco). Si no convence,
+         alcanza con volver este bloque y el de arriba a como estaban. -->
+    <section class="bg-owa-navy px-0 pt-20 pb-16" aria-labelledby="h-distancias">
+      <div class="u-shell">
+      <div class="flex items-center gap-3">
+        <h2 id="h-distancias" class="font-display text-[clamp(1.125rem,2vw,1.5rem)] font-black tracking-[0.04em] text-owa-sky uppercase">
+          Distancias y categorías
+        </h2>
+      </div>
       ${f?.distancias
         ? html`
-            <!-- Cinco distancias, una sola fila desde xl: las tres que puntúan
-                 (Larga/Media/Corta) van en columnas más anchas y con la
-                 tarjeta completa; Kid y Super Sprint —participativa una,
-                 por invitación la otra, ninguna suma al ranking— quedan en
-                 columnas más angostas y con menos jerarquía tipográfica, así
-                 la diferencia se lee de un vistazo y no hay que leer la letra
-                 chica para saber cuáles son "las carreras". -->
+            <!-- Cinco distancias, una sola fila desde xl. Antes las tres que
+                 puntúan (Larga/Media/Corta) achicaban número y tarjeta para
+                 las otras dos — quedaba desprolijo. Ahora las cinco tarjetas
+                 son iguales en tamaño y número; la diferencia entre "carrera"
+                 y "actividad complementaria" se lee en el pie de cada una
+                 (Puntaje + Categorías vs. una descripción con ícono) y en un
+                 tinte de fondo apenas distinto, no en jerarquía tipográfica. -->
             <ul
-              class="mt-5.5 grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-[1.15fr_1.15fr_1.15fr_0.85fr_0.85fr] xl:gap-3"
+              class="mt-6 grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-[1.08fr_1.08fr_1.08fr_0.92fr_0.92fr]"
               data-stagger
             >
               ${f.distancias.map((d) => {
                 const principal = ['Larga', 'Media', 'Corta'].includes(d.rotulo);
+                const esSuperSprint = d.rotulo === 'arena Super Sprint';
+                // La sigla de la carrera dice más que el rótulo interno
+                // (Larga/Media/Corta): VOB es el Grand Prix, SPD el Circuito.
+                const siglaCard = d.rotulo === 'Larga' ? 'VOB' : d.rotulo === 'Media' || d.rotulo === 'Corta' ? 'SPD' : d.rotulo;
                 return html`
                   <li
-                    class="reveal u-lift-sm flex flex-col rounded-owa-lg border transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] ${principal
-                      ? 'border-owa-line p-6'
-                      : 'border-dashed border-owa-line bg-owa-sand/50 p-4.5'}"
+                    class="reveal u-lift-sm flex flex-col rounded-owa-lg p-6 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] ${principal
+                      ? 'bg-white'
+                      : 'bg-owa-mist'}"
                   >
-                    <div class="flex items-start justify-between gap-2">
-                      <p class="font-display text-[10px] font-bold tracking-[0.16em] text-owa-slate/75 uppercase">${d.rotulo}</p>
-                      ${d.rotulo === 'arena Super Sprint'
-                        ? html`<img src="/brand/arena-logo.webp" alt="arena" class="h-5 w-auto shrink-0" />`
-                        : ''}
+                    <div class="flex items-center gap-2.5">
+                      <span class="grid size-8 shrink-0 place-items-center">
+                        ${esSuperSprint
+                          ? html`<img src="/brand/arena-logo.webp" alt="" class="h-5 w-auto" />`
+                          : d.rotulo === 'Kid'
+                            ? html`<span class="text-owa-blue">${icono('persona', 'size-5')}</span>`
+                            : html`<img src="/brand/owa-iso-cyan.svg" alt="" class="size-5" />`}
+                      </span>
+                      <p class="font-display text-[11px] font-bold tracking-[0.1em] text-owa-slate uppercase">${siglaCard}</p>
                     </div>
+
                     <p
                       data-nums
-                      class="mt-1.5 font-display font-black text-owa-navy ${principal
-                        ? 'text-[clamp(2.5rem,4.5vw,3.5rem)] leading-[0.85]'
-                        : 'text-[clamp(1.5rem,2.4vw,1.875rem)] leading-none'}"
+                      class="mt-4 font-display leading-[0.85] font-black text-owa-navy ${principal
+                        ? 'text-[clamp(2.25rem,4vw,3rem)]'
+                        : 'text-[clamp(1.5rem,2.6vw,1.875rem)] whitespace-nowrap'}"
                     >
                       ${d.km}
                     </p>
                     ${d.torneo
                       ? html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-blue">${d.torneo}</p>`
-                      : html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-slate">CIRCUITO OWA</p>`}
+                      : html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-blue">CIRCUITO OWA</p>`}
                     ${principal
                       ? html`
                           ${d.nota ? html`<p class="mt-2.5 text-[13px] leading-relaxed text-owa-slate">${d.nota}</p>` : ''}
@@ -500,7 +570,10 @@ export function render(ctx) {
                           </div>
                         `
                       : html`
-                          <p class="mt-auto pt-4 text-[12px] leading-relaxed text-owa-slate">${d.nota || d.cats}</p>
+                          <div class="mt-auto flex items-start gap-2 pt-5">
+                            <span class="mt-0.5 shrink-0 text-owa-blue">${icono('persona', 'size-4')}</span>
+                            <p class="text-[13px] leading-relaxed font-bold text-owa-navy">${d.nota || d.cats}</p>
+                          </div>
                         `}
                   </li>
                 `;
@@ -512,7 +585,7 @@ export function render(ctx) {
               ${distanciasDe(e).map(
                 (d) => html`
                   <article
-                    class="reveal u-lift-sm rounded-owa-lg border border-owa-line p-6.5 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+                    class="reveal u-lift-sm rounded-owa-lg border border-owa-line bg-white p-6.5 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
                   >
                     <p class="font-display text-[2.875rem] leading-[0.9] font-black text-owa-navy">${d.km}</p>
                     <p class="mt-2.5 text-xs tracking-[0.1em] text-owa-blue">${d.torneo}</p>
@@ -525,8 +598,9 @@ export function render(ctx) {
                 `
               )}
             </div>
-            ${pendiente('Distancias, horarios y valores de inscripción: pendientes de confirmación por OWA.')}
+            <p class="mt-4 text-xs text-owa-line/80">Distancias, horarios y valores de inscripción: pendientes de confirmación por OWA.</p>
           `}
+      </div>
     </section>
 
     <!-- recorridos: una sola sección, todas las distancias como tabs. Cada
@@ -718,126 +792,132 @@ export function render(ctx) {
         <h2 id="h-cronograma" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)] text-owa-navy">Cronograma del evento</h2>
         ${f?.cronogramas
           ? (() => {
-              const dias = diasDeCronograma(f.cronogramas);
-              const activo = dias[cronogramaActivo] || dias[0];
+              const cronogramas = f.cronogramas;
+              const torneoActivo = cronogramas[cronogramaSel.torneo] || cronogramas[0];
+              const diaActivo = torneoActivo.dias[cronogramaSel.dia] || torneoActivo.dias[0];
               const nombreTorneoOWA = (t) => (t === 'GRAND PRIX' ? 'Grand Prix OWA' : 'Circuito OWA');
-              // Si alguno de los bloques del día es "el" día de carrera de su
-              // torneo, ese torneo manda el subtítulo (aunque ese mismo día
-              // también reciba kits de otro torneo, como el sábado). Si no,
-              // el día es puramente logístico y el subtítulo es el lugar.
-              const subtitulo = (d) => {
-                const principal = d.bloques.find((b) => b.lugar === 'Día del evento') || d.bloques[0];
-                return principal.lugar === 'Día del evento' ? nombreTorneoOWA(principal.torneo) : principal.lugar;
+              // Mismo resumen de distancias que la pastilla del banner, más
+              // "· Kid" en Circuito (no lleva `torneo` propio en los datos
+              // porque no puntúa, pero corre ese mismo fin de semana).
+              const resumenTab = (c) => {
+                const ds = (f?.distancias || []).filter((d) => d.torneo === c.torneo);
+                const base = ds.map((d) => d.km).join(' · ');
+                return c.torneo === 'GRAND PRIX' ? base : `${base} · Kid`;
               };
 
+              const filaCron = (it, idx, total) => html`
+                <li class="flex gap-4 px-6.5 ${it.destacado ? 'py-4' : 'py-3'}">
+                  <!-- Línea vertical armada en dos mitades por fila (arriba/abajo del
+                       punto): así queda continua entre filas sin medir alturas a mano,
+                       y se corta sola en el primer y último ítem de su columna. -->
+                  <div class="relative flex w-3 shrink-0 justify-center">
+                    ${idx > 0 ? html`<span class="absolute top-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>` : ''}
+                    ${idx < total - 1
+                      ? html`<span class="absolute bottom-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
+                      : ''}
+                    <span
+                      class="relative z-10 mt-1.5 shrink-0 rounded-full ${it.destacado
+                        ? 'size-3.5 bg-owa-cyan ring-4 ring-owa-cyan/20'
+                        : 'size-2.5 border-2 border-white bg-owa-slate/40'}"
+                    ></span>
+                  </div>
+                  <span
+                    data-nums
+                    class="shrink-0 pt-0.5 font-display font-black ${it.destacado ? 'w-16 text-base text-owa-blue' : 'w-14 text-[13px] text-owa-slate'}"
+                    >${it.hora}</span
+                  >
+                  <span class="min-w-0 flex-1 pb-0.5">
+                    ${it.zona && !it.destacado
+                      ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
+                      : ''}
+                    <span
+                      class="block font-display ${it.destacado
+                        ? 'text-base font-black text-owa-navy'
+                        : `text-sm font-bold text-owa-navy ${it.zona ? 'mt-0.5' : ''}`}"
+                      >${it.t}</span
+                    >
+                    ${it.d && !it.destacado ? html`<span class="mt-0.5 block text-[13px] text-owa-slate">${it.d}</span>` : ''}
+                  </span>
+                </li>
+              `;
+
               return html`
-                <div class="mt-6.5 flex flex-wrap gap-2.5" role="tablist" aria-label="Día del cronograma">
-                  ${dias.map(
-                    (d, i) => html`
+                <!-- Nivel 1: torneo, afuera de la tarjeta — son botones, la
+                     decisión de "cuál" antes que "qué día". Grand Prix y
+                     Circuito son competencias distintas; mezclarlas en
+                     pestañas por fecha (como estaba antes) confundía porque
+                     el sábado le pertenece a los dos a la vez, por motivos
+                     distintos. -->
+                <div class="mt-6.5 flex flex-wrap gap-2.5" role="tablist" aria-label="Torneo">
+                  ${cronogramas.map(
+                    (c, i) => html`
                       <button
                         type="button"
-                        data-cron-tab="${i}"
-                        aria-pressed="${d === activo ? 'true' : 'false'}"
-                        class="u-press flex items-center gap-3 rounded-owa-md border px-5 py-3.5 text-left transition-colors duration-200 ease-out ${d ===
-                        activo
+                        data-cron-torneo="${i}"
+                        aria-pressed="${c === torneoActivo ? 'true' : 'false'}"
+                        class="u-press rounded-owa-md border px-5 py-3.5 text-left transition-colors duration-200 ease-out ${c === torneoActivo
                           ? 'border-owa-cyan bg-owa-cyan text-owa-deep'
                           : 'border-owa-line bg-white text-owa-navy hover:bg-owa-sand'}"
                       >
-                        ${icono('calendario', 'size-5.5 shrink-0')}
-                        <span>
-                          <span class="block font-display text-[13px] leading-tight font-black tracking-[0.03em] uppercase"
-                            >${diaCorto(d.fecha)}</span
-                          >
-                          <span class="mt-0.5 block text-[13px] font-bold leading-tight ${d === activo ? 'text-owa-deep' : 'text-owa-slate'}"
-                            >${subtitulo(d)}</span
-                          >
-                        </span>
+                        <span class="block font-display text-[13px] leading-tight font-black tracking-[0.03em] uppercase"
+                          >${nombreTorneoOWA(c.torneo)}</span
+                        >
+                        <span data-nums class="mt-0.5 block text-[13px] font-bold leading-tight ${c === torneoActivo ? 'text-owa-deep' : 'text-owa-slate'}"
+                          >${resumenTab(c)}</span
+                        >
                       </button>
                     `
                   )}
                 </div>
 
                 <div class="reveal mt-5 overflow-hidden rounded-owa-lg bg-white text-owa-navy shadow-[var(--shadow-card)]" data-visible>
-                  ${activo.bloques.map(
-                    (b, i) => html`
-                      <div class="${i > 0 ? 'border-t border-owa-sand' : ''}">
-                        ${activo.bloques.length > 1
-                          ? html`
-                              <div class="flex flex-wrap items-center gap-3 px-6.5 pt-6">
-                                ${chipModalidad(b.torneo, { oscuro: false })}
-                                <p class="text-[13px] text-owa-slate">${b.lugar}</p>
-                              </div>
-                            `
-                          : b.aviso
-                            ? html`<p class="px-6.5 pt-6 text-[13px] text-owa-slate">${b.aviso}</p>`
-                            : ''}
-                        ${(() => {
-                          const filaCron = (it, idx, total) => html`
-                            <li class="flex gap-4 px-6.5 ${it.destacado ? 'py-4' : 'py-3'}">
-                              <!-- Línea vertical armada en dos mitades por fila (arriba/abajo del
-                                   punto): así queda continua entre filas sin medir alturas a mano,
-                                   y se corta sola en el primer y último ítem de su columna. -->
-                              <div class="relative flex w-3 shrink-0 justify-center">
-                                ${idx > 0
-                                  ? html`<span class="absolute top-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
-                                  : ''}
-                                ${idx < total - 1
-                                  ? html`<span class="absolute bottom-0 left-1/2 h-1/2 w-px -translate-x-1/2 bg-owa-line"></span>`
-                                  : ''}
-                                <span
-                                  class="relative z-10 mt-1.5 shrink-0 rounded-full ${it.destacado
-                                    ? 'size-3.5 bg-owa-cyan ring-4 ring-owa-cyan/20'
-                                    : 'size-2.5 border-2 border-white bg-owa-slate/40'}"
-                                ></span>
-                              </div>
-                              <span
-                                data-nums
-                                class="shrink-0 pt-0.5 font-display font-black ${it.destacado
-                                  ? 'w-16 text-base text-owa-blue'
-                                  : 'w-14 text-[13px] text-owa-slate'}"
-                                >${it.hora}</span
-                              >
-                              <span class="min-w-0 flex-1 pb-0.5">
-                                ${it.zona && !it.destacado
-                                  ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
-                                  : ''}
-                                <span
-                                  class="block font-display ${it.destacado
-                                    ? 'text-base font-black text-owa-navy'
-                                    : `text-sm font-bold text-owa-navy ${it.zona ? 'mt-0.5' : ''}`}"
-                                  >${it.t}</span
-                                >
-                                ${it.d && !it.destacado
-                                  ? html`<span class="mt-0.5 block text-[13px] text-owa-slate">${it.d}</span>`
-                                  : ''}
-                              </span>
-                            </li>
-                          `;
+                  <!-- Nivel 2: día, como tabs de línea pegadas al borde de la
+                       tarjeta — mismo padding horizontal que el resto del
+                       contenido, para que se lea como una sola pieza y no
+                       como un control flotando arriba. -->
+                  <div class="flex gap-6 border-b border-owa-sand px-6.5" role="tablist" aria-label="Día">
+                    ${torneoActivo.dias.map(
+                      (d, i) => html`
+                        <button
+                          type="button"
+                          data-cron-dia="${i}"
+                          aria-pressed="${d === diaActivo ? 'true' : 'false'}"
+                          class="u-press border-b-2 pt-5 pb-3 font-display text-[13px] font-black tracking-[0.03em] uppercase transition-colors duration-200 ease-out ${d ===
+                          diaActivo
+                            ? 'border-owa-blue text-owa-navy'
+                            : 'border-transparent text-owa-slate hover:text-owa-navy'}"
+                        >
+                          ${diaCorto(d.fecha)}
+                        </button>
+                      `
+                    )}
+                  </div>
 
-                          // Un cronograma largo (12 ítems del Circuito, por ejemplo) se vuelve
-                          // interminable en desktop en una sola columna. A partir de 7 ítems se
-                          // reparte en dos — en mobile los <ol> igual quedan uno debajo del otro,
-                          // así que ahí se sigue leyendo como una lista corrida.
-                          if (b.items.length > 6) {
-                            const mitad = Math.ceil(b.items.length / 2);
-                            const col1 = b.items.slice(0, mitad);
-                            const col2 = b.items.slice(mitad);
-                            return html`
-                              <div class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-2'} grid pb-3 lg:grid-cols-2">
-                                <ol>${col1.map((it, idx) => filaCron(it, idx, col1.length))}</ol>
-                                <ol class="lg:border-l lg:border-owa-sand">${col2.map((it, idx) => filaCron(it, idx, col2.length))}</ol>
-                              </div>
-                            `;
-                          }
-                          return html`
-                            <ol class="${activo.bloques.length > 1 ? 'mt-3' : 'mt-2'} pb-3">
-                              ${b.items.map((it, idx) => filaCron(it, idx, b.items.length))}
-                            </ol>
-                          `;
-                        })()}
-                      </div>
-                    `
-                  )}
+                  <div class="flex flex-wrap items-center gap-3 px-6.5 pt-5">
+                    <p class="font-display text-[13px] font-black text-owa-navy">${diaActivo.lugar}</p>
+                    ${torneoActivo.aviso ? html`<p class="text-[13px] text-owa-slate">${torneoActivo.aviso}</p>` : ''}
+                  </div>
+                  ${(() => {
+                    const items = diaActivo.items;
+                    // Un cronograma largo (12 ítems del Circuito, por ejemplo) se vuelve
+                    // interminable en desktop en una sola columna. A partir de 7 ítems se
+                    // reparte en dos — en mobile los <ol> igual quedan uno debajo del otro,
+                    // así que ahí se sigue leyendo como una lista corrida.
+                    if (items.length > 6) {
+                      const mitad = Math.ceil(items.length / 2);
+                      const col1 = items.slice(0, mitad);
+                      const col2 = items.slice(mitad);
+                      return html`
+                        <div class="mt-3 grid pb-3 lg:grid-cols-2">
+                          <ol>${col1.map((it, idx) => filaCron(it, idx, col1.length))}</ol>
+                          <ol class="lg:border-l lg:border-owa-sand">${col2.map((it, idx) => filaCron(it, idx, col2.length))}</ol>
+                        </div>
+                      `;
+                    }
+                    return html` <ol class="mt-3 pb-3">
+                      ${items.map((it, idx) => filaCron(it, idx, items.length))}
+                    </ol>`;
+                  })()}
                 </div>
               `;
             })()
@@ -909,22 +989,6 @@ export function render(ctx) {
                 </dl>
               `}
         </div>
-      </div>
-    </section>
-
-    <!-- logística -->
-    <section class="u-shell pt-15 pb-20" aria-labelledby="h-logistica">
-      <h2 id="h-logistica" class="u-eyebrow text-owa-blue">Logística</h2>
-      <div class="mt-5.5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
-        ${EVENTO_FICHA.logistica.map(
-          (i) => html`
-            <article class="reveal u-lift-sm rounded-owa-lg bg-owa-sand p-6.5">
-              <h3 class="font-display text-[17px] font-black text-owa-navy">${i.t}</h3>
-              <p class="mt-2.5 text-sm leading-relaxed text-owa-slate">${i.d}</p>
-              <p class="mt-4 text-xs tracking-[0.08em] text-owa-blue">${i.cta} →</p>
-            </article>
-          `
-        )}
       </div>
     </section>
 
@@ -1013,9 +1077,15 @@ export function mount(root, ctx) {
       return repintar();
     }
 
-    const cronTabBtn = e.target.closest('[data-cron-tab]');
-    if (cronTabBtn && +cronTabBtn.dataset.cronTab !== cronogramaActivo) {
-      cronogramaActivo = +cronTabBtn.dataset.cronTab;
+    const cronTorneoBtn = e.target.closest('[data-cron-torneo]');
+    if (cronTorneoBtn && +cronTorneoBtn.dataset.cronTorneo !== cronogramaSel.torneo) {
+      cronogramaSel = { torneo: +cronTorneoBtn.dataset.cronTorneo, dia: 0 };
+      return repintar();
+    }
+
+    const cronDiaBtn = e.target.closest('[data-cron-dia]');
+    if (cronDiaBtn && +cronDiaBtn.dataset.cronDia !== cronogramaSel.dia) {
+      cronogramaSel = { ...cronogramaSel, dia: +cronDiaBtn.dataset.cronDia };
       return repintar();
     }
   });

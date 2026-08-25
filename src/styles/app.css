@@ -297,12 +297,12 @@
   );
 }
 
+/* Opción B: oscurece sólo donde vive el texto (columna izquierda) y deja la
+   mitad derecha de la foto sin velo — el degradé de abajo es un respaldo
+   suave, no el que hace el trabajo, así las pastillas siguen legibles aunque
+   se corran hacia la derecha en pantallas anchas. */
 @utility u-hero-scrim-sm {
-  background: linear-gradient(
-    180deg,
-    rgb(13 16 48 / 0.5) 0%,
-    rgb(13 16 48 / 0.3) 30%,
-    rgb(13 16 48 / 0.78) 72%,
-    rgb(13 16 48 / 0.96) 100%
-  );
+  background:
+    linear-gradient(90deg, rgb(13 16 48 / 0.75) 0%, rgb(13 16 48 / 0.48) 38%, rgb(13 16 48 / 0.04) 65%, transparent 100%),
+    linear-gradient(180deg, rgb(13 16 48 / 0.04) 0%, rgb(13 16 48 / 0.03) 40%, rgb(33 30 95 / 0.55) 82%, rgb(33 30 95 / 1) 100%);
 }

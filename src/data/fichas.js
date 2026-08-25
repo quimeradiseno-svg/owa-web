@@ -26,7 +26,14 @@ export const FICHAS = {
     },
 
     distancias: [
-      { rotulo: 'Larga', torneo: 'GRAND PRIX', km: '18 km', puntaje: 'XXL · 1.600 puntos', cats: CATS_COMPLETAS },
+      {
+        rotulo: 'Larga',
+        torneo: 'GRAND PRIX',
+        km: '18 km',
+        nota: 'Única distancia del día 1',
+        puntaje: 'XXL · 1.600 puntos',
+        cats: CATS_COMPLETAS,
+      },
       {
         rotulo: 'Media',
         torneo: 'CIRCUITO OWA',
@@ -127,15 +134,6 @@ export const FICHAS = {
           ['Premiación con neopreno', PREMIACION_NEOPRENE],
           ['Puntaje Circuito OWA', 'M · 1.000 puntos'],
         ],
-      },
-      {
-        // Sin mapa propio todavía — el tab lo lleva con lo que sí hay
-        // (nota + categorías) en vez de esperar el track de la organización.
-        id: 'circ-ss',
-        torneo: 'CIRCUITO OWA',
-        titulo: '1,5 km',
-        cats: 'Por género',
-        nota: 'Prueba por invitación. Un cupo por cada 5 inscriptos.',
       },
     ],
 
