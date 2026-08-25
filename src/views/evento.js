@@ -218,7 +218,7 @@ const jornadas = (e, f) => html`
            distintas antes de leer una palabra), con la misma jerarquía de
            texto de siempre: torneo → fecha → distancia → datos técnicos. -->
       <div class="mt-9 grid gap-5 lg:grid-cols-2" data-stagger>
-        ${e.jornadas.map((j, i) => {
+        ${e.jornadas.map((j) => {
           const gp = j.torneo === 'GRAND PRIX';
           const r = resumenJornada(f, j.torneo);
           const distancias = r.distancias.split(' · ');
@@ -237,14 +237,11 @@ const jornadas = (e, f) => html`
               </div>
 
               <div class="relative z-10 flex flex-1 flex-col">
-                <p class="font-display text-[13px] font-black tracking-[0.2em] text-owa-sky">DÍA ${i + 1}</p>
+                <p data-nums class="font-display text-[13px] font-black tracking-[0.2em] text-owa-sky uppercase">${fechaCorta(j.fecha)}</p>
 
                 <h3 class="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-[0.95] font-black uppercase">
                   ${j.torneo}
                 </h3>
-                <p data-nums class="mt-3 font-display text-[clamp(0.9375rem,1.7vw,1.25rem)] font-bold text-owa-line">
-                  ${fechaCorta(j.fecha)}
-                </p>
 
                 <p class="mt-9 flex flex-wrap items-baseline gap-x-5 gap-y-1">
                   ${distancias.map(
