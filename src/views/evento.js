@@ -426,10 +426,14 @@ export function render(ctx) {
           ${raceState === 'vivo' ? chipVivo() : chipEstado(raceState === 'finalizada' ? 'cerrada' : e.estado, { oscuro: true })}
         </p>
 
-        <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">${e.nombre}</h1>
-        ${e.slug === 'san-pedro'
-          ? html`<p class="mt-2.5 font-display text-lg font-bold tracking-[0.06em] text-owa-line/80">by arena</p>`
-          : ''}
+        <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">
+          ${e.nombre}${e.slug === 'san-pedro'
+            ? html`<span
+                class="ml-4 align-middle font-display text-[clamp(1.25rem,2.6vw,2rem)] font-bold tracking-[0.04em] text-owa-line/80 normal-case"
+                >by arena</span
+              >`
+            : ''}
+        </h1>
         <p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
           ${e.fechaLarga} · ${f?.sedeCiudad || e.sede}
         </p>
