@@ -519,26 +519,45 @@ export function render(ctx) {
             </div>
           `;
 
+          // Agrupados por torneo: sin esto, "18 km / 7 km / 4 km" se leía como
+          // tres variantes de una misma carrera en vez de dos competencias
+          // distintas (Grand Prix tiene una sola distancia; Circuito, dos).
+          const grupos = [];
+          for (const x of f.recorridos) {
+            let g = grupos.find((gg) => gg.torneo === x.torneo);
+            if (!g) grupos.push((g = { torneo: x.torneo, recorridos: [] }));
+            g.recorridos.push(x);
+          }
+
           return html`
             <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
               ${eyebrow('Recorridos')}
               <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Elegí tu distancia</h2>
 
-              <div class="mt-6 flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia">
-                ${f.recorridos.map(
-                  (x) => html`
-                    <button
-                      type="button"
-                      role="tab"
-                      data-recorrido-tab="${x.id}"
-                      aria-selected="${x.id === activoId ? 'true' : 'false'}"
-                      class="u-press flex items-center gap-2 rounded-full border px-4.5 py-2.5 font-display text-sm font-black transition-colors duration-200 ${x.id ===
-                      activoId
-                        ? 'border-owa-blue bg-owa-blue text-white'
-                        : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
-                    >
-                      ${icono('ola', 'size-4.5')} ${x.titulo}
-                    </button>
+              <div class="mt-6 flex flex-wrap gap-x-8 gap-y-5">
+                ${grupos.map(
+                  (g, i) => html`
+                    <div class="${i > 0 ? 'sm:border-l sm:border-owa-line sm:pl-8' : ''}">
+                      <div class="mb-2.5">${chipModalidad(g.torneo)}</div>
+                      <div class="flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia — ${g.torneo}">
+                        ${g.recorridos.map(
+                          (x) => html`
+                            <button
+                              type="button"
+                              role="tab"
+                              data-recorrido-tab="${x.id}"
+                              aria-selected="${x.id === activoId ? 'true' : 'false'}"
+                              class="u-press flex items-center gap-2 rounded-full border px-4.5 py-2.5 font-display text-sm font-black transition-colors duration-200 ${x.id ===
+                              activoId
+                                ? 'border-owa-blue bg-owa-blue text-white'
+                                : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
+                            >
+                              ${icono('ola', 'size-4.5')} ${x.titulo}
+                            </button>
+                          `
+                        )}
+                      </div>
+                    </div>
                   `
                 )}
               </div>
