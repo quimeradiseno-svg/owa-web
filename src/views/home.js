@@ -194,7 +194,7 @@ function tarjetaSwimAdventureHome(t, otra) {
       <div class="flex flex-col p-6.5">
         <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">Swim &amp; Adventure</p>
         <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98] text-owa-navy">${t.salidaTitulo}</h3>
-        <p data-nums class="mt-1.5 font-display text-xs font-black tracking-[0.06em] text-owa-slate uppercase">${t.fechaLarga}</p>
+        <p data-nums class="mt-1.5 text-xs font-bold tracking-[0.04em] text-owa-slate uppercase">${t.fechaLarga}</p>
         <p class="mt-3.5 text-[13px] leading-relaxed text-owa-slate">${t.resumen}</p>
 
         <p class="mt-4 flex items-center gap-2 rounded-full bg-owa-sand px-3.5 py-2 text-[12px] text-owa-slate">
@@ -238,7 +238,7 @@ function tarjetaRaceTravelHome(r) {
         <div class="mt-auto">
           <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky uppercase">Race Travel</p>
           <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98]">${r.destino}</h3>
-          <p data-nums class="mt-1.5 font-display text-xs font-black tracking-[0.06em] text-owa-sky uppercase">${r.pais} · ${r.fecha}</p>
+          <p data-nums class="mt-1.5 text-xs font-bold tracking-[0.04em] text-owa-sky uppercase">${r.pais} · ${r.fecha}</p>
           <p class="mt-3.5 text-[13px] leading-relaxed text-owa-line">${r.resumen}</p>
           <p class="mt-1.5 text-[13px] font-bold text-white">${r.nota}</p>
 

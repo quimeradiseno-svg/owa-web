@@ -41,8 +41,8 @@ function tarjetaSalida(t) {
         <p class="absolute top-3.5 left-3.5">${chipViaje(t.chip)}</p>
       </div>
       <div class="p-6.5">
-        <h4 class="text-[1.375rem] leading-[0.98] text-owa-navy">${t.salidaTitulo}</h4>
-        <p data-nums class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-blue uppercase">${t.fechaLarga}</p>
+        <h4 class="font-display text-[1.375rem] leading-[0.98] font-black text-owa-navy uppercase">${t.salidaTitulo}</h4>
+        <p data-nums class="mt-2 text-xs font-bold tracking-[0.04em] text-owa-blue uppercase">${t.fechaLarga}</p>
         <p class="mt-3 text-sm leading-relaxed text-owa-slate">${t.resumen}</p>
         ${t.cta
           ? html`
@@ -79,8 +79,8 @@ function tarjetaAgenda(r) {
         <p class="absolute top-3.5 left-3.5">${chipViaje(r.chip)}</p>
       </div>
       <div class="flex flex-col p-6.5">
-        <h4 class="text-[1.375rem] leading-[0.98] text-owa-navy">${r.destino}</h4>
-        <p class="mt-1 font-display text-xs font-bold tracking-[0.1em] text-owa-blue uppercase">${r.pais} · ${r.fecha}</p>
+        <h4 class="font-display text-[1.375rem] leading-[0.98] font-black text-owa-navy uppercase">${r.destino}</h4>
+        <p class="mt-1 text-xs font-bold tracking-[0.04em] text-owa-blue uppercase">${r.pais} · ${r.fecha}</p>
         <p class="mt-3 text-sm leading-relaxed text-owa-slate">${r.resumen}</p>
         <p class="mt-2.5 text-sm font-bold ${activa ? 'text-owa-navy' : 'text-owa-slate'}">${r.nota}</p>
         ${r.cta
