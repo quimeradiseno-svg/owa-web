@@ -201,19 +201,17 @@ function tarjetaSwimAdventureHome(t, otra) {
           data-nums
           class="mt-3 flex w-fit items-center gap-2 rounded-full bg-owa-mist px-4 py-2 font-display text-xs font-bold tracking-[0.04em] text-owa-blue uppercase"
         >
-          ${icono('calendario', 'size-4')} ${t.fechaLarga}
+          ${t.fechaLarga}
         </p>
 
-        <p class="mt-3.5 text-[13px] leading-relaxed text-owa-slate">${t.resumen}</p>
+        <p class="mt-3.5 text-[13px] leading-snug text-owa-slate">${t.resumen}</p>
 
-        <p class="mt-4 flex items-center gap-3 rounded-full bg-owa-sand py-2 pr-4 pl-2 text-[13px] text-owa-slate">
-          <span class="grid size-8 shrink-0 place-items-center rounded-full bg-white text-owa-navy">${icono('ticket', 'size-4')}</span>
+        <p class="mt-4 flex items-center gap-3 rounded-full bg-owa-sand px-4 py-2.5 text-[13px] text-owa-slate">
           <span class="flex-1 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy uppercase">${otra.salidaTitulo}</span>
           <span class="rounded-full bg-owa-navy px-3 py-1.5 font-display text-[10px] font-black tracking-[0.1em] text-white">${otra.chip}</span>
         </p>
 
         <p class="mt-auto flex items-center gap-2.5 pt-5 font-display text-xs font-black tracking-[0.08em] text-owa-blue uppercase">
-          <span class="grid size-6 shrink-0 place-items-center rounded-full border-2 border-owa-blue">${icono('info', 'size-3.5')}</span>
           <span class="underline underline-offset-4">Quiero recibir información</span>
           <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
         </p>
