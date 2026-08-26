@@ -1,9 +1,12 @@
 /* ==========================================================================
    Movimiento
-   Un solo gesto autoral: el contenido se destapa desde abajo, como el agua
-   dejando ver algo. Todo lo demás es feedback funcional (press, hover, foco).
-   Reglas: sólo transform / opacity / clip-path / filter. Nada supera 300ms
-   salvo lo decorativo del hero. Reduced-motion y hover gating vienen incluidos.
+   Un solo gesto autoral, coherente en toda la página: el contenido asienta
+   (fade + leve movimiento), nunca se "descubre" con una cortina — eso se leía
+   como una carga a medio terminar, sobre todo en fotos, que además ya tienen
+   su propio cross-fade de borroso a nítido (ver .img-fade). Dos animaciones
+   de "revelado" superpuestas es ruido, no pulido.
+   Reglas: sólo transform / opacity / filter. Nada supera 300ms salvo lo
+   decorativo del hero. Reduced-motion y hover gating vienen incluidos.
    ========================================================================== */
 
 /* ---------------------------------------------------------- scroll reveal
@@ -29,20 +32,23 @@
   opacity: 1;
 }
 
-/* Variante para bloques con foto: se destapa de abajo hacia arriba. */
-/* El recorte va en el hijo, nunca en el elemento observado. Un elemento con
-   clip-path a área cero no intersecta con nada: el IntersectionObserver que
-   tiene que revelarlo no llega a disparar ni una vez, así que jamás recibe
-   [data-visible] y queda invisible para siempre. Recortando el hijo, el
-   contenedor conserva su caja y el observer funciona. */
-[data-reveal-ready] .reveal-clip > * {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 700ms var(--ease-in-out);
+/* Variante para bloques con foto: mismo fade que .reveal, con un asentamiento
+   sutil de escala en vez de posición — entra como una foto revelándose, no
+   como una tarjeta deslizándose. Sin cortina: la propia imagen ya resuelve de
+   borroso a nítido (.img-fade), así que acá alcanza con un solo movimiento de
+   contenedor, más lento y sereno por tratarse de una foto grande. */
+[data-reveal-ready] .reveal-clip {
+  opacity: 0;
+  transform: scale(1.035);
+  transition:
+    opacity 550ms var(--ease-out),
+    transform 550ms var(--ease-out);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-[data-reveal-ready] .reveal-clip[data-visible] > * {
-  clip-path: inset(0 0 0 0);
+[data-reveal-ready] .reveal-clip[data-visible] {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* --------------------------------------------------------------- stagger
@@ -239,20 +245,10 @@
    cambio de estado y se elimina todo desplazamiento.                        */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal-ready] .reveal,
-  [data-reveal-ready] .reveal-clip,
-  [data-reveal-ready] .reveal-clip > * {
+  [data-reveal-ready] .reveal-clip {
     transform: none;
-    clip-path: none;
     transition: opacity 260ms ease;
     transition-delay: 0ms;
-  }
-  /* Acá el velo es opacidad, que no afecta el área: el observer sigue viendo
-     el elemento y puede revelarlo. */
-  [data-reveal-ready] .reveal-clip {
-    opacity: 0;
-  }
-  [data-reveal-ready] .reveal-clip[data-visible] {
-    opacity: 1;
   }
 
   /* El carrusel navega por scrollIntoView: sin esto, cada clic en flecha o

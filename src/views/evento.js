@@ -1006,7 +1006,7 @@ export function render(ctx) {
     <!-- cta final -->
     <section class="bg-owa-blue px-0 py-18 text-white">
       <div class="u-shell flex flex-wrap items-center justify-between gap-6">
-        <div>
+        <div class="min-w-0 flex-1">
           <p class="font-display text-[clamp(1.625rem,3.4vw,2.75rem)] leading-none font-black uppercase">
             ${esChallenge ? 'Postulate a este desafío' : `Nos vemos en ${e.sedeCorta}`}
           </p>

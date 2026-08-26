@@ -17,6 +17,11 @@ export const TRAVEL = [
     cta: false,
     img: 'tv-hero',
     resumen: 'Islas, playas, trilhas, snorkel y una experiencia de natación diferente cada día.',
+    tags: [
+      { icono: 'ola', label: 'Natación en aguas abiertas' },
+      { icono: 'montana', label: 'Naturaleza' },
+      { icono: 'equipo', label: 'Grupo reducido' },
+    ],
     supervisa: 'Damián Blaum',
     itinerario: [
       { dia: '22/10', t: 'Llegada a Búzios', d: 'Check-in, tarde libre para aclimatarse y reunión de bienvenida con el equipo OWA.' },
@@ -124,14 +129,27 @@ export const MODALIDADES_TRAVEL = [
   },
 ];
 
-/** "Mucho más que nadar": cierre de la sección Swim & Adventure, tal como
-    lo mandó OWA. */
+/** "Mucho más que nadar": cierre de la sección Swim & Adventure. Resume en
+    tres ejes la misma idea que ya manda OWA (no competimos, descubrimos
+    lugares y OWA se ocupa de la experiencia), en formato de tres columnas. */
 export const MUCHO_MAS_QUE_NADAR = {
   titulo: 'Mucho más que nadar',
-  parrafos: [
-    'No venimos a competir.',
-    'Venimos a descubrir lugares nuevos, nadar en escenarios increíbles y compartir la experiencia con otros nadadores, amigos y acompañantes.',
-    '<span class="u-sigla">OWA</span> se ocupa de la experiencia. Vos, de vivirla.',
+  ejes: [
+    {
+      icono: 'brujula',
+      titulo: 'Exploramos',
+      desc: 'Descubrimos lugares nuevos, accedemos a escenarios increíbles y conectamos con la naturaleza.',
+    },
+    {
+      icono: 'equipo',
+      titulo: 'Compartimos',
+      desc: 'Vivimos experiencias auténticas junto a amigos y acompañantes que comparten la misma pasión.',
+    },
+    {
+      icono: 'corazon',
+      titulo: 'Transformamos',
+      desc: 'Cada viaje nos reta, nos inspira y nos invita a ir más allá. <span class="u-sigla">OWA</span> se ocupa de la experiencia, vos disfrutá.',
+    },
   ],
 };
 
@@ -149,6 +167,7 @@ export const RACE_TRAVEL_AGENDA = [
     img: 'tv-capri-napoli',
     resumen: 'Una de las pruebas más emblemáticas de las aguas abiertas internacionales.',
     nota: 'Cupos disponibles para equipos Relay.',
+    notaIcono: 'equipo',
     cta: true,
   },
   {
@@ -163,6 +182,7 @@ export const RACE_TRAVEL_AGENDA = [
     img: 'tv-portugal',
     resumen: 'Una nueva carrera, un nuevo destino y un grupo OWA viajando para competir.',
     nota: 'Próximamente más información.',
+    notaIcono: 'reloj',
     cta: false,
   },
   {
@@ -176,11 +196,14 @@ export const RACE_TRAVEL_AGENDA = [
     img: 'tv-mykonos',
     resumen: 'Aguas abiertas y competencia en uno de los destinos más atractivos del Mediterráneo.',
     nota: 'Próximamente más información.',
+    notaIcono: 'reloj',
     cta: false,
   },
 ];
 
-/** "Competir lejos. Viajar acompañado.": cierre de la sección Race Travel. */
+/** "Competir lejos. Viajar acompañado.": cierre de la sección Race Travel.
+    Los 4 ítems son la misma idea de "la experiencia" (arriba) desglosada en
+    lo concreto que OWA resuelve por cada competencia. */
 export const COMPETIR_LEJOS = {
   titulo: 'Competir lejos. Viajar acompañado.',
   parrafos: [
@@ -189,12 +212,25 @@ export const COMPETIR_LEJOS = {
     'Vos te preparás para el desafío. <span class="u-sigla">OWA</span> viaja con vos.',
   ],
   cta: 'Consultar Race Travel 2027',
+  items: [
+    { icono: 'persona', titulo: 'Inscripción asegurada', desc: 'Gestionamos tu inscripción para que solo te ocupes de competir.' },
+    { icono: 'cama', titulo: 'Alojamiento seleccionado', desc: 'Opciones cómodas y estratégicas cerca de la competencia.' },
+    { icono: 'valija', titulo: 'Logística organizada', desc: 'Traslados, acreditaciones y detalles cubiertos de punta a punta.' },
+    { icono: 'equipo', titulo: 'Acompañamiento OWA', desc: 'Estamos con vos antes, durante y después de cada competencia.' },
+  ],
 };
 
-/** Nota de cierre de Race Travel: la agenda sigue creciendo. */
+/** Nota de cierre de Race Travel: la agenda sigue creciendo. El título va
+    pegado al primer ítem (iso de OWA Travel), no suelto arriba de los dos. */
 export const MAS_CARRERAS = {
-  titulo: 'Más carreras. Más destinos.',
-  parrafos: ['La agenda <span class="u-sigla">OWA</span> Race Travel 2027 sigue creciendo.', 'Pronto sumaremos nuevas competencias internacionales.'],
+  items: [
+    {
+      img: '/brand/owa-travel-iso.svg',
+      titulo: 'Más carreras. Más destinos.',
+      texto: 'La agenda <span class="u-sigla">OWA</span> Race Travel 2027 sigue creciendo.',
+    },
+    { icono: 'globo', texto: 'Pronto sumaremos nuevas competencias internacionales.' },
+  ],
 };
 
 /** Galería de Búzios. Curada de Fotos/TRAVEL: se dejaron afuera las tomas

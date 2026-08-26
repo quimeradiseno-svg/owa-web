@@ -2,7 +2,7 @@ import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto, fondoVideo, montarFondoVideo } from '../lib/img.js';
 import { MODALIDADES_TRAVEL, GALERIA_TRAVEL, TRAVEL, RACE_TRAVEL_AGENDA, MUCHO_MAS_QUE_NADAR, COMPETIR_LEJOS, MAS_CARRERAS } from '../data/travel.js';
 import { icono } from '../components/iconos.js';
-import { eyebrow, btnPrimario, btnBordeClaro, olaSuperior } from '../components/ui.js';
+import { eyebrow, btnAccent, btnBordeClaro, olaSuperior } from '../components/ui.js';
 
 export const titulo = 'OWA Travel';
 
@@ -29,7 +29,9 @@ function chipViaje(texto) {
 /** Card de "Próximas salidas": itinerario de Búzios, una por fecha. */
 function tarjetaSalida(t) {
   return html`
-    <div class="overflow-hidden rounded-owa-lg border border-owa-line bg-white">
+    <div
+      class="reveal u-lift-sm u-press overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+    >
       <div class="relative h-40">
         ${foto({
           slug: t.img,
@@ -44,13 +46,28 @@ function tarjetaSalida(t) {
         <h4 class="font-display text-[1.375rem] leading-[0.98] font-black text-owa-navy uppercase">${t.salidaTitulo}</h4>
         <p data-nums class="mt-2 text-xs font-bold tracking-[0.04em] text-owa-blue uppercase">${t.fechaLarga}</p>
         <p class="mt-3 text-sm leading-relaxed text-owa-slate">${t.resumen}</p>
+        ${t.tags
+          ? html`
+              <ul class="mt-4 flex flex-wrap gap-2">
+                ${t.tags.map(
+                  (tag) => html`
+                    <li
+                      class="inline-flex items-center gap-1.5 rounded-full bg-owa-mist px-3.5 py-2 text-[13px] font-medium text-owa-navy"
+                    >
+                      ${icono(tag.icono, 'size-4 text-owa-blue')} ${tag.label}
+                    </li>
+                  `
+                )}
+              </ul>
+            `
+          : ''}
         ${t.cta
           ? html`
               <a
                 href="${waLink(t.salidaTitulo)}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="u-press mt-5 inline-flex items-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-xs font-black tracking-[0.08em] text-white transition-colors duration-200 ease-out hover:bg-owa-electric"
+                class="u-press mt-5 inline-flex items-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-xs font-black tracking-[0.08em] text-white uppercase transition-colors duration-200 ease-out hover:bg-owa-electric"
               >
                 Quiero recibir información
               </a>
@@ -67,7 +84,11 @@ function tarjetaSalida(t) {
 function tarjetaAgenda(r) {
   const activa = r.estado === 'abierta';
   return html`
-    <div class="overflow-hidden rounded-owa-lg border ${activa ? 'border-owa-cyan/60' : 'border-owa-line'} bg-white">
+    <div
+      class="reveal u-lift-sm u-press overflow-hidden rounded-owa-lg border ${activa
+        ? 'border-owa-cyan/60'
+        : 'border-owa-line'} bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+    >
       <div class="relative h-40">
         ${foto({
           slug: r.img,
@@ -79,17 +100,26 @@ function tarjetaAgenda(r) {
         <p class="absolute top-3.5 left-3.5">${chipViaje(r.chip)}</p>
       </div>
       <div class="flex flex-col p-6.5">
-        <h4 class="font-display text-[1.375rem] leading-[0.98] font-black text-owa-navy uppercase">${r.destino}</h4>
-        <p class="mt-1 text-xs font-bold tracking-[0.04em] text-owa-blue uppercase">${r.pais} · ${r.fecha}</p>
+        <div class="flex items-center gap-2.5">
+          <span class="shrink-0 text-owa-blue">${icono('calendario', 'size-5')}</span>
+          <h4 class="font-display text-[1.375rem] leading-[0.98] font-black text-owa-navy uppercase">${r.destino}</h4>
+        </div>
+        <p class="mt-1.5 text-xs font-bold tracking-[0.04em] text-owa-blue uppercase">${r.pais} · ${r.fecha}</p>
         <p class="mt-3 text-sm leading-relaxed text-owa-slate">${r.resumen}</p>
-        <p class="mt-2.5 text-sm font-bold ${activa ? 'text-owa-navy' : 'text-owa-slate'}">${r.nota}</p>
+        <p
+          class="mt-3.5 flex w-fit items-center gap-2 rounded-lg bg-owa-mist px-3.5 py-2.5 text-sm font-bold ${activa
+            ? 'text-owa-navy'
+            : 'text-owa-slate'}"
+        >
+          ${icono(r.notaIcono, 'size-4.5 text-owa-blue')} ${r.nota}
+        </p>
         ${r.cta
           ? html`
               <a
                 href="${waLink(`${r.destino} · ${r.pais}`)}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="u-press mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-xs font-black tracking-[0.08em] text-white transition-colors duration-200 ease-out hover:bg-owa-electric"
+                class="u-press mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-xs font-black tracking-[0.08em] text-white uppercase transition-colors duration-200 ease-out hover:bg-owa-electric"
               >
                 Quiero recibir información
               </a>
@@ -158,14 +188,37 @@ function modalidad(m, i) {
         ? html`
             <div class="u-shell mt-14">
               <h3 class="u-eyebrow text-owa-blue">Próximas salidas</h3>
-              <div class="mt-5 grid gap-5 sm:grid-cols-2">${TRAVEL.map(tarjetaSalida)}</div>
+              <div class="mt-5 grid gap-5 sm:grid-cols-2" data-stagger>${TRAVEL.map(tarjetaSalida)}</div>
             </div>
 
             <div class="u-shell mt-11">
-              <div class="rounded-owa-lg bg-owa-navy p-8 text-white sm:p-11">
-                <h3 class="text-[clamp(1.5rem,2.6vw,2.125rem)] leading-[0.98]">${MUCHO_MAS_QUE_NADAR.titulo}</h3>
-                <div class="mt-4 grid max-w-[56ch] gap-2.5 text-[15px] leading-relaxed text-owa-line">
-                  ${MUCHO_MAS_QUE_NADAR.parrafos.map((p) => html`<p>${raw(p)}</p>`)}
+              <div class="reveal-clip grid overflow-hidden rounded-owa-lg bg-owa-navy text-white lg:grid-cols-[1.6fr_1fr]">
+                <div class="p-8 sm:p-11">
+                  <h3 class="text-[clamp(1.5rem,2.6vw,2.125rem)] leading-[0.98]">${MUCHO_MAS_QUE_NADAR.titulo}</h3>
+                  <div class="mt-7 grid gap-7 sm:grid-cols-3 sm:gap-8 sm:divide-x sm:divide-white/15">
+                    ${MUCHO_MAS_QUE_NADAR.ejes.map(
+                      (e) => html`
+                        <div class="sm:pl-8 sm:first:pl-0">
+                          <span class="grid size-11 place-items-center rounded-full bg-white/10 text-owa-sky">
+                            ${icono(e.icono, 'size-5.5')}
+                          </span>
+                          <p class="mt-4 font-display text-base font-black tracking-[0.02em] uppercase">${e.titulo}</p>
+                          <p class="mt-1.5 text-[15px] leading-relaxed text-owa-line">${raw(e.desc)}</p>
+                        </div>
+                      `
+                    )}
+                  </div>
+                </div>
+
+                <div class="relative h-56 lg:h-auto">
+                  ${foto({
+                    slug: 'tv-caps',
+                    alt: 'El grupo nadando junto con gorras de colores y boyas naranjas',
+                    sizes: '(min-width: 1024px) 33vw, 100vw',
+                    className: 'absolute inset-0 block h-full w-full',
+                    imgClass: 'h-full w-full object-cover',
+                  })}
+                  <div class="absolute inset-0 hidden bg-linear-to-r from-owa-navy via-owa-navy/8 to-transparent lg:block"></div>
                 </div>
               </div>
             </div>
@@ -175,30 +228,65 @@ function modalidad(m, i) {
         ? html`
             <div class="u-shell mt-14">
               <h3 class="u-eyebrow text-owa-blue">Agenda 2027</h3>
-              <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">${RACE_TRAVEL_AGENDA.map(tarjetaAgenda)}</div>
+              <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-stagger>${RACE_TRAVEL_AGENDA.map(tarjetaAgenda)}</div>
             </div>
 
             <div class="u-shell mt-11">
-              <div class="rounded-owa-lg bg-white p-8 sm:p-11">
-                <h3 class="text-[clamp(1.5rem,2.6vw,2.125rem)] leading-[0.98] text-owa-navy">${COMPETIR_LEJOS.titulo}</h3>
-                <div class="mt-4 grid max-w-[56ch] gap-2.5 text-[15px] leading-relaxed text-owa-slate">
-                  ${COMPETIR_LEJOS.parrafos.map((p) => html`<p>${raw(p)}</p>`)}
+              <div class="grid gap-9 rounded-owa-lg border border-owa-line bg-white p-8 sm:p-11 lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-11">
+                <div>
+                  <h3 class="text-[clamp(1.5rem,2.6vw,2.125rem)] leading-[0.98] text-owa-navy">${COMPETIR_LEJOS.titulo}</h3>
+                  <div class="mt-4 grid max-w-[48ch] gap-2.5 text-[15px] leading-relaxed text-owa-slate">
+                    ${COMPETIR_LEJOS.parrafos.map((p) => html`<p>${raw(p)}</p>`)}
+                  </div>
+                  <a
+                    href="${waLink('OWA Race Travel 2027')}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="u-press mt-6 inline-flex items-center gap-2 rounded-full bg-owa-blue px-6 py-3 font-display text-xs font-black tracking-[0.08em] text-white uppercase transition-colors duration-200 ease-out hover:bg-owa-electric"
+                  >
+                    ${COMPETIR_LEJOS.cta}
+                  </a>
                 </div>
-                <a
-                  href="${waLink('OWA Race Travel 2027')}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="u-press mt-6 inline-flex items-center gap-2 rounded-full bg-owa-blue px-6 py-3 font-display text-xs font-black tracking-[0.08em] text-white transition-colors duration-200 ease-out hover:bg-owa-electric"
-                >
-                  ${COMPETIR_LEJOS.cta}
-                </a>
+
+                <div class="grid gap-x-7 gap-y-6 border-owa-line sm:grid-cols-2 lg:border-s lg:ps-11">
+                  ${COMPETIR_LEJOS.items.map(
+                    (it) => html`
+                      <div class="flex items-start gap-3.5">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-full bg-owa-cyan/15 text-owa-blue">
+                          ${icono(it.icono, 'size-5.5')}
+                        </span>
+                        <div>
+                          <p class="font-display text-sm font-black text-owa-navy">${it.titulo}</p>
+                          <p class="mt-1 text-[13px] leading-relaxed text-owa-slate">${raw(it.desc)}</p>
+                        </div>
+                      </div>
+                    `
+                  )}
+                </div>
               </div>
             </div>
 
             <div class="u-shell mt-8">
-              <p class="font-display text-sm font-black tracking-[0.04em] text-owa-navy uppercase">${MAS_CARRERAS.titulo}</p>
-              <div class="mt-2 grid max-w-[52ch] gap-1 text-sm leading-relaxed text-owa-slate">
-                ${MAS_CARRERAS.parrafos.map((p) => html`<p>${raw(p)}</p>`)}
+              <div class="grid gap-6 rounded-owa-lg border border-owa-line bg-white p-7 sm:grid-cols-2 sm:divide-x sm:divide-owa-line">
+                ${MAS_CARRERAS.items.map(
+                  (it) => html`
+                    <div class="flex items-center gap-3.5 sm:first:pr-6 sm:last:pl-6">
+                      ${it.img
+                        ? html`<img src="${it.img}" alt="" class="size-11 shrink-0" aria-hidden="true" />`
+                        : html`
+                            <span class="grid size-11 shrink-0 place-items-center rounded-full bg-owa-mist text-owa-blue">
+                              ${icono(it.icono, 'size-5.5')}
+                            </span>
+                          `}
+                      <p>
+                        ${it.titulo
+                          ? html`<span class="block font-display text-sm font-black text-owa-navy uppercase">${it.titulo}</span>`
+                          : ''}
+                        <span class="text-[15px] leading-relaxed text-owa-navy">${raw(it.texto)}</span>
+                      </p>
+                    </div>
+                  `
+                )}
               </div>
             </div>
           `
@@ -283,7 +371,7 @@ export function render() {
 
     <section class="bg-owa-navy px-0 py-18 text-white">
       <div class="u-shell flex flex-wrap items-center justify-between gap-6">
-        <div>
+        <div class="min-w-0 flex-1">
           <p class="font-display text-[clamp(1.5rem,3vw,2.375rem)] leading-none font-black uppercase">
             ¿Te interesa alguna salida?
           </p>
@@ -291,8 +379,8 @@ export function render() {
             Escribinos y te pasamos el detalle del viaje: itinerario, valores y todo lo que incluye.
           </p>
         </div>
-        <div class="flex flex-wrap gap-2.5">
-          ${btnPrimario('Consultar por WhatsApp', WA)} ${btnBordeClaro('Escribir por mail', MAIL)}
+        <div class="flex shrink-0 flex-wrap gap-2.5">
+          ${btnAccent('Consultar por WhatsApp', WA)} ${btnBordeClaro('Escribir por mail', MAIL)}
         </div>
       </div>
     </section>

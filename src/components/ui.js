@@ -88,7 +88,7 @@ export const posicion = (p, { oscuro = false } = {}) =>
 
 const FLECHA = raw('<span class="u-nudge-arrow" aria-hidden="true">→</span>');
 
-const BASE_LAYOUT = 'btn u-press u-nudge h-auto min-h-0 gap-2.5 border-0 tracking-[0.06em]';
+const BASE_LAYOUT = 'btn u-press u-nudge h-auto min-h-0 gap-2.5 border-0 tracking-[0.06em] uppercase';
 const BASE = `${BASE_LAYOUT} text-[13px] font-display font-black`;
 // btnBlanco es un punto más grande que el resto (14px) — la propia clase trae
 // su tamaño en vez de heredar el de BASE, así no depende del orden en que

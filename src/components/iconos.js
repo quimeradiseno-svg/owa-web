@@ -42,6 +42,19 @@ const TRAZOS = {
   // Día del cronograma: calendario con una fecha marcada.
   calendario:
     '<rect x="3.5" y="4.5" width="17" height="16" rx="2.2"/><path d="M3.5 9.5h17"/><path d="M8 3v3"/><path d="M16 3v3"/><circle cx="12" cy="14.5" r="1.6" fill="currentColor" stroke="none"/>',
+  // Naturaleza: montaña de dos picos.
+  montana: '<path d="m3 18.5 6.2-10 4 6.2 2-3 5.8 6.8z"/><path d="M9.2 8.5 12.5 12"/>',
+  // Explorar: brújula.
+  brujula: '<circle cx="12" cy="12" r="8.5"/><path d="m14.8 9.2-1.6 4.4-4.4 1.6 1.6-4.4z"/>',
+  // Vínculo, transformación: corazón.
+  corazon:
+    '<path d="M12 20.2S3.5 15 3.5 9.1A4.6 4.6 0 0 1 12 6.5a4.6 4.6 0 0 1 8.5 2.6c0 5.9-8.5 11.1-8.5 11.1z"/>',
+  // Alojamiento: cama.
+  cama: '<path d="M3 19v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 19v2"/><path d="M21 19v2"/><path d="M3 15V7.5A1.5 1.5 0 0 1 4.5 6H10a1.5 1.5 0 0 1 1.5 1.5V11"/>',
+  // Logística: valija.
+  valija: '<rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M9 8V6.3a2.3 2.3 0 0 1 2.3-2.3h1.4A2.3 2.3 0 0 1 15 6.3V8"/><path d="M3.5 13h17"/>',
+  // Alcance internacional: globo terráqueo.
+  globo: '<circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="3.4" ry="8.5"/><path d="M3.5 12h17"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>
