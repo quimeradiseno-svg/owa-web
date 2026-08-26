@@ -187,7 +187,7 @@ function tarjetaSwimAdventureHome(t, otra) {
           imgClass: 'h-full w-full object-cover',
         })}
         <p
-          class="absolute top-0 left-0 rounded-br-2xl bg-owa-blue px-5 py-3 font-display text-[11px] font-black tracking-[0.14em] text-white"
+          class="absolute top-4 left-4 rounded-full bg-owa-cyan px-4 py-2 font-display text-[11px] font-black tracking-[0.14em] text-owa-deep"
         >
           ${t.chip}
         </p>
@@ -207,7 +207,7 @@ function tarjetaSwimAdventureHome(t, otra) {
         <p class="mt-3.5 text-[13px] leading-snug text-owa-slate">${t.resumen}</p>
 
         <p class="mt-4 flex items-center gap-3 rounded-full bg-owa-sand px-4 py-2.5 text-[13px] text-owa-slate">
-          <span class="flex-1 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy uppercase">${otra.salidaTitulo}</span>
+          <span class="flex-1 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy uppercase">${otra.destino} - ${otra.fechaCorta}</span>
           <span class="rounded-full bg-owa-navy px-3 py-1.5 font-display text-[10px] font-black tracking-[0.1em] text-white">${otra.chip}</span>
         </p>
 
