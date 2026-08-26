@@ -55,6 +55,10 @@ const TRAZOS = {
   valija: '<rect x="3.5" y="8" width="17" height="12" rx="2"/><path d="M9 8V6.3a2.3 2.3 0 0 1 2.3-2.3h1.4A2.3 2.3 0 0 1 15 6.3V8"/><path d="M3.5 13h17"/>',
   // Alcance internacional: globo terráqueo.
   globo: '<circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="3.4" ry="8.5"/><path d="M3.5 12h17"/>',
+  // Edición anterior: entrada/ticket con perforación.
+  ticket: '<rect x="3.5" y="6.5" width="17" height="11" rx="2.5"/><path d="M13.5 6.5v11" stroke-dasharray="2 2.2"/>',
+  // Más información: i minúscula en círculo.
+  info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>

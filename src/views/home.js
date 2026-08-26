@@ -185,7 +185,7 @@ function tarjetaSwimAdventureHome(t, otra) {
           imgClass: 'h-full w-full object-cover',
         })}
         <p
-          class="absolute top-0 left-0 rounded-br-[20px] bg-owa-cyan px-4.5 py-2.5 font-display text-[11px] font-black tracking-[0.14em] text-owa-deep"
+          class="absolute top-0 left-0 rounded-br-2xl bg-owa-blue px-5 py-3 font-display text-[11px] font-black tracking-[0.14em] text-white"
         >
           ${t.chip}
         </p>
@@ -194,16 +194,25 @@ function tarjetaSwimAdventureHome(t, otra) {
       <div class="flex flex-col p-6.5">
         <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">Swim &amp; Adventure</p>
         <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98] text-owa-navy">${t.salidaTitulo}</h3>
-        <p data-nums class="mt-1.5 text-xs font-bold tracking-[0.04em] text-owa-slate uppercase">${t.fechaLarga}</p>
-        <p class="mt-3.5 text-[13px] leading-relaxed text-owa-slate">${t.resumen}</p>
 
-        <p class="mt-4 flex items-center gap-2 rounded-full bg-owa-sand px-3.5 py-2 text-[12px] text-owa-slate">
-          <span class="font-display font-black tracking-[0.04em] text-owa-navy">${otra.salidaTitulo}</span>
-          <span class="font-display text-[10px] font-black tracking-[0.1em] text-owa-slate/80">${otra.chip}</span>
+        <p
+          data-nums
+          class="mt-3 flex w-fit items-center gap-2 rounded-full bg-owa-mist px-4 py-2 font-display text-xs font-bold tracking-[0.04em] text-owa-blue uppercase"
+        >
+          ${icono('calendario', 'size-4')} ${t.fechaLarga}
         </p>
 
-        <p class="mt-auto flex items-center gap-2 pt-5 font-display text-xs font-black tracking-[0.08em] text-owa-blue">
-          Quiero recibir información
+        <p class="mt-3.5 text-[13px] leading-relaxed text-owa-slate">${t.resumen}</p>
+
+        <p class="mt-4 flex items-center gap-3 rounded-full bg-owa-sand py-2 pr-4 pl-2 text-[13px] text-owa-slate">
+          <span class="grid size-8 shrink-0 place-items-center rounded-full bg-white text-owa-navy">${icono('ticket', 'size-4')}</span>
+          <span class="flex-1 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy uppercase">${otra.salidaTitulo}</span>
+          <span class="rounded-full bg-owa-navy px-3 py-1.5 font-display text-[10px] font-black tracking-[0.1em] text-white">${otra.chip}</span>
+        </p>
+
+        <p class="mt-auto flex items-center gap-2.5 pt-5 font-display text-xs font-black tracking-[0.08em] text-owa-blue uppercase">
+          <span class="grid size-6 shrink-0 place-items-center rounded-full border-2 border-owa-blue">${icono('info', 'size-3.5')}</span>
+          <span class="underline underline-offset-4">Quiero recibir información</span>
           <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
         </p>
       </div>
