@@ -211,6 +211,7 @@ function tarjetaSwimAdventureHome(t, otra) {
   `;
 }
 
+// Sin foto propia todavía cuando se escribió esto (ya la tiene: tv-capri-faraglioni).
 function tarjetaRaceTravelHome(r) {
   return html`
     <a
@@ -219,7 +220,7 @@ function tarjetaRaceTravelHome(r) {
       class="reveal u-lift-sm group relative flex min-h-64 flex-col overflow-hidden rounded-owa-lg text-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-lifted)] sm:h-full"
     >
       ${foto({
-        slug: r.img,
+        slug: 'tv-capri-faraglioni',
         alt: `Nadadores en ${r.destino}, ${r.pais}`,
         sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
         className: 'absolute inset-0 block h-full w-full',
@@ -229,7 +230,7 @@ function tarjetaRaceTravelHome(r) {
 
       <div class="relative flex flex-1 flex-col p-6.5">
         <div class="flex items-start justify-between gap-3">
-          <img src="/brand/owa-iso-cyan.svg" alt="" class="size-10" aria-hidden="true" />
+          <img src="/brand/owa-travel-iso.svg" alt="" class="size-10" aria-hidden="true" />
           <span class="rounded-full bg-owa-cyan px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-deep">
             ${r.chip}
           </span>

@@ -64,6 +64,9 @@ const PHOTOS = {
   // Portugal. "myconos.jpg", pese a vivir en la carpeta de Capri Nápoli, es
   // Mykonos (Pequeña Venecia): quedó mezclada ahí en el envío de OWA.
   'tv-capri-napoli': 'Fotos/TRAVEL/Fotos Capri Napoli/2021-15_orig.jpg',
+  // Home: nadadores frente a los Faraglioni, foto distinta a la del recorrido
+  // de /travel para no repetir la misma imagen en dos lugares cercanos.
+  'tv-capri-faraglioni': 'Fotos/TRAVEL/capri.png',
   'tv-portugal': 'Fotos/TRAVEL/capri.jpg',
   'tv-mykonos': 'Fotos/TRAVEL/Fotos Capri Napoli/myconos.jpg',
   // --- Mapas de recorrido · San Pedro --------------------------------------

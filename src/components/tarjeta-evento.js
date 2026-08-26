@@ -26,7 +26,7 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
       href="/carrera/${e.slug}"
       class="reveal u-lift group flex min-h-[27rem] flex-col overflow-hidden rounded-owa-lg bg-linear-to-b from-owa-navy to-owa-abyss text-white"
     >
-      <div class="relative h-53 shrink-0 overflow-hidden u-pico-ola">
+      <div class="relative h-53 shrink-0 overflow-hidden u-pico-ola" data-sobre-foto>
         ${foto({
           slug: e.img,
           alt: ALT[e.tipo](e),
@@ -36,10 +36,10 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
         })}
         <div class="absolute inset-0 bg-linear-to-b from-owa-abyss/10 to-owa-abyss/45"></div>
         <p
-          class="absolute top-0 left-0 flex flex-col items-center rounded-br-[20px] bg-owa-cyan px-5 pt-3.5 pb-3 text-center leading-none text-owa-deep"
+          class="absolute top-4 left-4 flex flex-col items-center rounded-2xl border border-owa-sky/70 bg-owa-abyss/35 px-3.5 py-2 text-center leading-none text-white backdrop-blur-sm"
         >
-          <span data-nums class="font-display text-[2rem] font-black tracking-[-0.02em]">${dia}</span>
-          <span class="mt-1.5 font-display text-[10px] font-bold tracking-[0.18em]">${mes}</span>
+          <span data-nums class="font-display text-base font-black tracking-[-0.01em]">${dia}</span>
+          <span class="mt-1 font-display text-[10px] font-bold tracking-[0.14em]">${mes}</span>
         </p>
       </div>
 
