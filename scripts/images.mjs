@@ -13,6 +13,8 @@ const PHOTOS = {
   // home
   'travel-barco': 'VOB/06_LARGADA_RIO_BARCO',
   'pad-infantil': 'Fotos/PDA/DSC_9296.jpg',
+  // Romeo Giménez, becado PDA de la temporada 2026/27 (nombrado en PDA_BECAS).
+  'pda-romeo': 'Fotos/PDA/romeo.jpg',
   // torneos
   'gp-contraluz': 'SPD/14_CARRERA_CONTRALUZ',
   'circuito-grupo': 'VOB/07_NADO_GRUPO',
@@ -29,8 +31,8 @@ const PHOTOS = {
   'ev-pinamar': 'Fotos/PNR/DSC_0207.jpg',
   // Eventos especiales de Bariloche/San Pedro: fotos reales de cada uno
   // (antes eran genéricas de SPD/VOB).
-  'ev-nahuel': 'Fotos/NHL/DJI_20260221110433_0039_D.JPG',
-  'ev-huemul': 'Fotos/VHU/DSC_5614.JPG',
+  'ev-nahuel': 'Fotos/NHL/JCR-3240.jpg',
+  'ev-huemul': 'Fotos/VHU/isla.png',
   'ev-colon': 'Fotos/CLN/DSC_ (80).jpg',
   'ev-maraton': 'Fotos/SPD/10_CARRERA_CRAWL_PRIMER_PLANO_MLE-128141.jpg',
   // Challenge: fotos reales de cada travesía (antes eran genéricas de SPD/VOB).

@@ -49,11 +49,11 @@ export function render() {
 
       <div class="reveal-clip h-80 overflow-hidden rounded-owa-lg">
         ${foto({
-          slug: 'pad-familia',
-          alt: 'Nadador saliendo del agua recibido por el equipo de OWA',
+          slug: 'pda-romeo',
+          alt: 'Romeo Giménez con su certificado de beca del PDA',
           sizes: '(min-width: 1024px) 50vw, 100vw',
           className: 'block h-full w-full',
-          imgClass: 'h-full w-full object-cover',
+          imgClass: 'h-full w-full object-cover object-top',
         })}
       </div>
     </section>
