@@ -233,15 +233,16 @@ function tarjetaRaceTravelHome(r) {
         alt: `Nadadores en ${r.destino}, ${r.pais}`,
         sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
         className: 'absolute inset-0 block h-full w-full',
-        imgClass: 'h-full w-full object-cover',
+        imgClass: 'h-full w-full object-cover object-[68%_32%]',
       })}
-      <!-- Diagonal: limpia en la punta superior derecha (los veleros quedan a
-           la vista), funde hacia abajo-izquierda, donde vive el texto. -->
-      <div class="absolute inset-0 bg-linear-to-tr from-owa-abyss/95 via-owa-abyss/45 to-transparent"></div>
+      <!-- Diagonal concentrada cerca del texto: la mitad superior derecha
+           (los farallones y los veleros) queda prácticamente sin velo. -->
+      <div
+        class="absolute inset-0 [background-image:linear-gradient(to_top_right,rgb(13_16_48/0.95)_0%,rgb(13_16_48/0.55)_32%,transparent_68%)]"
+      ></div>
 
       <div class="relative flex flex-1 flex-col p-6.5">
-        <div class="flex items-start justify-between gap-3">
-          <img src="/brand/owa-travel-iso.svg" alt="" class="size-10" aria-hidden="true" />
+        <div class="flex justify-end">
           <span class="flex items-center gap-1.5 rounded-full bg-owa-cyan px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-deep">
             ${icono('equipo', 'size-3.5')} ${r.chip}
           </span>
@@ -264,14 +265,13 @@ function tarjetaRaceTravelHome(r) {
             ${icono('equipo', 'size-4 shrink-0 text-owa-sky')} ${r.nota}
           </p>
 
-          <p class="mt-5 flex items-center gap-3 font-display text-xs font-black tracking-[0.08em] text-owa-cyan uppercase">
-            <span
-              class="grid size-8 shrink-0 place-items-center rounded-full border-2 border-owa-cyan transition-transform duration-200 ease-out group-hover:translate-x-1"
-              aria-hidden="true"
-              >→</span
-            >
-            Quiero recibir información
-          </p>
+          <div class="mt-5 flex items-center justify-between gap-3">
+            <p class="flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan uppercase">
+              Quiero recibir información
+              <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
+            </p>
+            <img src="/brand/owa-travel-iso.svg" alt="" class="size-8 shrink-0" aria-hidden="true" />
+          </div>
         </div>
       </div>
     </a>
