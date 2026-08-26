@@ -174,9 +174,11 @@ function tarjetaSwimAdventureHome(t, otra) {
   return html`
     <a
       href="/travel#h-swim-adventure"
-      class="reveal u-lift-sm group grid overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] sm:grid-cols-2"
+      class="reveal u-lift-sm group grid overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] sm:grid-cols-[44%_56%]"
     >
-      <div class="relative h-52 sm:h-full sm:min-h-64 sm:-mr-4 sm:u-horizonte">
+      <div
+        class="relative h-52 sm:h-full sm:min-h-64 sm:-mr-4 sm:[clip-path:polygon(0_0,100%_0,88%_100%,0_100%)]"
+      >
         ${foto({
           slug: t.img,
           alt: `Nadadores en ${t.destino}`,
