@@ -235,26 +235,42 @@ function tarjetaRaceTravelHome(r) {
         className: 'absolute inset-0 block h-full w-full',
         imgClass: 'h-full w-full object-cover',
       })}
-      <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/95 via-owa-abyss/45 to-owa-abyss/15"></div>
+      <!-- Diagonal: limpia en la punta superior derecha (los veleros quedan a
+           la vista), funde hacia abajo-izquierda, donde vive el texto. -->
+      <div class="absolute inset-0 bg-linear-to-tr from-owa-abyss/95 via-owa-abyss/45 to-transparent"></div>
 
       <div class="relative flex flex-1 flex-col p-6.5">
         <div class="flex items-start justify-between gap-3">
           <img src="/brand/owa-travel-iso.svg" alt="" class="size-10" aria-hidden="true" />
-          <span class="rounded-full bg-owa-cyan px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-deep">
-            ${r.chip}
+          <span class="flex items-center gap-1.5 rounded-full bg-owa-cyan px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-deep">
+            ${icono('equipo', 'size-3.5')} ${r.chip}
           </span>
         </div>
 
         <div class="mt-auto">
           <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky uppercase">Race Travel</p>
           <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98]">${r.destino}</h3>
-          <p data-nums class="mt-1.5 text-xs font-bold tracking-[0.04em] text-owa-sky uppercase">${r.pais} · ${r.fecha}</p>
-          <p class="mt-3.5 text-[13px] leading-relaxed text-owa-line">${r.resumen}</p>
-          <p class="mt-1.5 text-[13px] font-bold text-white">${r.nota}</p>
 
-          <p class="mt-5 flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan">
+          <p data-nums class="mt-2.5 flex items-center gap-2.5 text-xs font-bold tracking-[0.04em] text-owa-sky uppercase">
+            <span class="inline-flex items-center gap-1.5">${icono('pin', 'size-4')} ${r.pais}</span>
+            <span class="text-white/30" aria-hidden="true">|</span>
+            <span class="inline-flex items-center gap-1.5">${icono('calendario', 'size-4')} ${r.fecha}</span>
+          </p>
+          <span class="mt-2.5 block h-px w-14 bg-owa-cyan/50" aria-hidden="true"></span>
+
+          <p class="mt-3.5 text-[13px] leading-snug text-owa-line">${r.resumen}</p>
+
+          <p class="mt-4 flex items-center gap-2.5 rounded-xl border border-white/25 bg-white/5 px-4 py-3 text-[13px] text-owa-line">
+            ${icono('equipo', 'size-4 shrink-0 text-owa-sky')} ${r.nota}
+          </p>
+
+          <p class="mt-5 flex items-center gap-3 font-display text-xs font-black tracking-[0.08em] text-owa-cyan uppercase">
+            <span
+              class="grid size-8 shrink-0 place-items-center rounded-full border-2 border-owa-cyan transition-transform duration-200 ease-out group-hover:translate-x-1"
+              aria-hidden="true"
+              >→</span
+            >
             Quiero recibir información
-            <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
           </p>
         </div>
       </div>
