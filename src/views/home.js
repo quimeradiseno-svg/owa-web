@@ -174,44 +174,47 @@ function tarjetaSwimAdventureHome(t, otra) {
   return html`
     <a
       href="/travel#h-swim-adventure"
-      data-sobre-foto
-      class="reveal u-lift-sm group relative flex min-h-64 flex-col overflow-hidden rounded-owa-lg text-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-lifted)] sm:h-full"
+      class="reveal u-lift-sm group grid overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] sm:grid-cols-[44%_56%]"
     >
-      ${foto({
-        slug: t.img,
-        alt: `Nadadores en ${t.destino}`,
-        sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
-        className: 'absolute inset-0 block h-full w-full',
-        imgClass: 'h-full w-full object-cover',
-      })}
-      <!-- Diagonal: la punta superior derecha de la foto queda limpia y el
-           degradé cae hacia abajo-izquierda, donde vive el texto. -->
-      <div class="absolute inset-0 bg-linear-to-bl from-transparent via-owa-abyss/55 to-owa-abyss/95"></div>
+      <div
+        class="relative h-52 sm:h-full sm:min-h-64 sm:-mr-4 sm:[clip-path:polygon(0_0,100%_0,88%_100%,0_100%)]"
+      >
+        ${foto({
+          slug: t.img,
+          alt: `Nadadores en ${t.destino}`,
+          sizes: '(min-width: 640px) 25vw, 100vw',
+          className: 'block h-full w-full',
+          imgClass: 'h-full w-full object-cover',
+        })}
+        <p
+          class="absolute top-4 left-4 rounded-full bg-owa-cyan px-4 py-2 font-display text-[11px] font-black tracking-[0.14em] text-owa-deep"
+        >
+          ${t.chip}
+        </p>
+      </div>
 
-      <div class="relative flex flex-1 flex-col p-6.5">
-        <div class="flex items-start justify-between gap-3">
-          <img src="/brand/owa-travel-iso.svg" alt="" class="size-10" aria-hidden="true" />
-          <span class="rounded-full bg-owa-cyan px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-deep">
-            ${t.chip}
-          </span>
-        </div>
+      <div class="flex flex-col p-6.5">
+        <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">Swim &amp; Adventure</p>
+        <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98] text-owa-navy">${t.salidaTitulo}</h3>
 
-        <div class="mt-auto">
-          <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky uppercase">Swim &amp; Adventure</p>
-          <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98]">${t.salidaTitulo}</h3>
-          <p data-nums class="mt-1.5 text-xs font-bold tracking-[0.04em] text-owa-sky uppercase">${t.fechaLarga}</p>
-          <p class="mt-3.5 text-[13px] leading-snug text-owa-line">${t.resumen}</p>
+        <p
+          data-nums
+          class="mt-3 flex w-fit items-center gap-2 rounded-full bg-owa-mist px-4 py-2 font-display text-xs font-bold tracking-[0.04em] text-owa-blue uppercase"
+        >
+          ${t.fechaLarga}
+        </p>
 
-          <p class="mt-4 flex items-center gap-3 rounded-full bg-white/10 px-4 py-2.5 text-[13px] text-owa-line ring-1 ring-white/15">
-            <span class="flex-1 font-display text-[11px] font-black tracking-[0.06em] text-white uppercase">${otra.destino} - ${otra.fechaCorta}</span>
-            <span class="rounded-full bg-owa-navy px-3 py-1.5 font-display text-[10px] font-black tracking-[0.1em] text-white">${otra.chip}</span>
-          </p>
+        <p class="mt-3.5 text-[13px] leading-snug text-owa-slate">${t.resumen}</p>
 
-          <p class="mt-5 flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan">
-            Quiero recibir información
-            <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
-          </p>
-        </div>
+        <p class="mt-4 flex items-center gap-3 rounded-full bg-owa-sand px-4 py-2.5 text-[13px] text-owa-slate">
+          <span class="flex-1 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy uppercase">${otra.destino} - ${otra.fechaCorta}</span>
+          <span class="rounded-full bg-owa-navy px-3 py-1.5 font-display text-[10px] font-black tracking-[0.1em] text-white">${otra.chip}</span>
+        </p>
+
+        <p class="mt-auto flex items-center gap-2.5 pt-5 font-display text-xs font-black tracking-[0.08em] text-owa-blue uppercase">
+          <span class="underline underline-offset-4">Quiero recibir información</span>
+          <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
+        </p>
       </div>
     </a>
   `;
