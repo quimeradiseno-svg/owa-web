@@ -56,6 +56,14 @@ const PHOTOS = {
   'tv-trilha': 'Fotos/TRAVEL/d695cdbd-3543-4150-93b4-52a168785111.JPG',
   'tv-playa-grupo': 'Fotos/TRAVEL/b6053075-10cb-4915-8df0-d1c8e45ec4af.JPG',
   'tv-costa': 'Fotos/TRAVEL/IMG_0381.jpg',
+  // --- OWA Travel · Race Travel 2027 ---------------------------------------
+  // Capri-Nápoli tiene fotos reales de la propia carrera. "capri.jpg" (pese
+  // al nombre) es el Monumento a los Descubrimientos en Lisboa — sirve para
+  // Portugal. "myconos.jpg", pese a vivir en la carpeta de Capri Nápoli, es
+  // Mykonos (Pequeña Venecia): quedó mezclada ahí en el envío de OWA.
+  'tv-capri-napoli': 'Fotos/TRAVEL/Fotos Capri Napoli/2021-15_orig.jpg',
+  'tv-portugal': 'Fotos/TRAVEL/capri.jpg',
+  'tv-mykonos': 'Fotos/TRAVEL/Fotos Capri Napoli/myconos.jpg',
   // --- Mapas de recorrido · San Pedro --------------------------------------
   // El Grand Prix va en dos laminas (tramo 2 y llegada); el Circuito, una por
   // distancia. Son capturas satelitales con trazado: mucho detalle fino, asi

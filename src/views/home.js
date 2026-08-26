@@ -1,10 +1,10 @@
 import { html, toHTML, stagger } from '../lib/html.js';
 import { foto, fondo, fondoVideo, montarFondoVideo } from '../lib/img.js';
 import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
-import { TRAVEL } from '../data/travel.js';
+import { TRAVEL, RACE_TRAVEL_AGENDA } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
 import { GP, CIRC, CLUBES_GP, CLUBES_CIRC } from '../data/rankings.js';
-import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge, tarjetaTravel } from '../components/tarjeta-evento.js';
+import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
 import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, pastillaChica, olaCentrada } from '../components/ui.js';
 
@@ -161,6 +161,97 @@ function panelClubes() {
   `;
 }
 
+/* -------------------------------------------------------------- owa travel */
+
+// La salida de mayo va a la izquierda (pedido del cliente) con una nota chica
+// de que también hubo una salida en octubre, ya sin cupo. A la derecha, Race
+// Travel promociona la primera carrera con cupos abiertos: Capri–Nápoli.
+const salidaActiva = TRAVEL.find((t) => t.slug === 'travel-mayo-2027');
+const salidaCerrada = TRAVEL.find((t) => t.slug === 'buzios-2026');
+const raceDestacada = RACE_TRAVEL_AGENDA.find((r) => r.slug === 'capri-napoli');
+
+function tarjetaSwimAdventureHome(t, otra) {
+  return html`
+    <a
+      href="/travel#h-swim-adventure"
+      class="reveal u-lift-sm group grid overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] sm:grid-cols-2"
+    >
+      <div class="relative h-52 sm:h-full sm:min-h-64 sm:-mr-4 sm:u-horizonte">
+        ${foto({
+          slug: t.img,
+          alt: `Nadadores en ${t.destino}`,
+          sizes: '(min-width: 640px) 25vw, 100vw',
+          className: 'block h-full w-full',
+          imgClass: 'h-full w-full object-cover',
+        })}
+        <p
+          class="absolute top-0 left-0 rounded-br-[20px] bg-owa-cyan px-4.5 py-2.5 font-display text-[11px] font-black tracking-[0.14em] text-owa-deep"
+        >
+          ${t.chip}
+        </p>
+      </div>
+
+      <div class="flex flex-col p-6.5">
+        <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">Swim &amp; Adventure</p>
+        <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98] text-owa-navy">${t.salidaTitulo}</h3>
+        <p data-nums class="mt-1.5 font-display text-xs font-black tracking-[0.06em] text-owa-slate uppercase">${t.fechaLarga}</p>
+        <p class="mt-3.5 text-[13px] leading-relaxed text-owa-slate">${t.resumen}</p>
+
+        <p class="mt-4 flex items-center gap-2 rounded-full bg-owa-sand px-3.5 py-2 text-[12px] text-owa-slate">
+          <span class="font-display font-black tracking-[0.04em] text-owa-navy">${otra.salidaTitulo}</span>
+          <span class="font-display text-[10px] font-black tracking-[0.1em] text-owa-slate/80">${otra.chip}</span>
+        </p>
+
+        <p class="mt-auto flex items-center gap-2 pt-5 font-display text-xs font-black tracking-[0.08em] text-owa-blue">
+          Quiero recibir información
+          <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
+        </p>
+      </div>
+    </a>
+  `;
+}
+
+function tarjetaRaceTravelHome(r) {
+  return html`
+    <a
+      href="/travel#h-race-travel"
+      data-sobre-foto
+      class="reveal u-lift-sm group relative flex min-h-64 flex-col overflow-hidden rounded-owa-lg text-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-lifted)] sm:h-full"
+    >
+      ${foto({
+        slug: r.img,
+        alt: `Nadadores en ${r.destino}, ${r.pais}`,
+        sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
+        className: 'absolute inset-0 block h-full w-full',
+        imgClass: 'h-full w-full object-cover',
+      })}
+      <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/95 via-owa-abyss/45 to-owa-abyss/15"></div>
+
+      <div class="relative flex flex-1 flex-col p-6.5">
+        <div class="flex items-start justify-between gap-3">
+          <img src="/brand/owa-iso-cyan.svg" alt="" class="size-10" aria-hidden="true" />
+          <span class="rounded-full bg-owa-cyan px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-deep">
+            ${r.chip}
+          </span>
+        </div>
+
+        <div class="mt-auto">
+          <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky uppercase">Race Travel</p>
+          <h3 class="mt-2 text-[clamp(1.5rem,2.4vw,2rem)] leading-[0.98]">${r.destino}</h3>
+          <p data-nums class="mt-1.5 font-display text-xs font-black tracking-[0.06em] text-owa-sky uppercase">${r.pais} · ${r.fecha}</p>
+          <p class="mt-3.5 text-[13px] leading-relaxed text-owa-line">${r.resumen}</p>
+          <p class="mt-1.5 text-[13px] font-bold text-white">${r.nota}</p>
+
+          <p class="mt-5 flex items-center gap-2 font-display text-xs font-black tracking-[0.08em] text-owa-cyan">
+            Quiero recibir información
+            <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
+          </p>
+        </div>
+      </div>
+    </a>
+  `;
+}
+
 /* ------------------------------------------------------------------ vista */
 
 export function render() {
@@ -290,7 +381,9 @@ export function render() {
           ${linkFuerte('Conocer OWA Travel', '/travel')}
         </div>
 
-        <div class="grid gap-4.5 lg:grid-cols-2" data-stagger>${TRAVEL.map((t) => tarjetaTravel(t))}</div>
+        <div class="grid gap-4.5 lg:grid-cols-2" data-stagger>
+          ${tarjetaSwimAdventureHome(salidaActiva, salidaCerrada)} ${tarjetaRaceTravelHome(raceDestacada)}
+        </div>
       </div>
     </section>
 

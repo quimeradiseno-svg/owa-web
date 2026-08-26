@@ -1,8 +1,6 @@
 // OWA Travel — viajes grupales de nado. Los datos de Búzios salen de la
-// propuesta "Buzios Propuesta Octubre 2026" pasada por OWA.
-//
-// Las dos salidas son a Búzios. La de octubre 2026 tiene itinerario y valores
-// cerrados (vienen del PDF); la de mayo 2027 todavía no.
+// propuesta "Buzios Propuesta Octubre 2026" pasada por OWA. Copys de esta
+// página y de Race Travel, pasados por OWA por mail.
 
 export const TRAVEL = [
   {
@@ -10,13 +8,15 @@ export const TRAVEL = [
     destino: 'Búzios',
     pais: 'Brasil',
     titulo: 'Swim & Adventure',
+    salidaTitulo: 'Búzios · Octubre 2026',
     fechaCorta: 'OCT 2026',
-    fechaLarga: 'Del 22 al 27 de octubre de 2026',
+    fechaLarga: '22 al 27 de octubre de 2026',
     anio: '2026',
-    estado: 'abierta',
+    estado: 'cerrada',
+    chip: 'SOLD OUT',
+    cta: false,
     img: 'tv-hero',
-    resumen:
-      'Seis días nadando entre islas: Ilha Branca, Ilha Feia y una caverna natural a la que se entra nadando. Snorkel sobre corales, trilhas hasta la cima de las islas y un nado nocturno con luna llena.',
+    resumen: 'Islas, playas, trilhas, snorkel y una experiencia de natación diferente cada día.',
     supervisa: 'Damián Blaum',
     itinerario: [
       { dia: '22/10', t: 'Llegada a Búzios', d: 'Check-in, tarde libre para aclimatarse y reunión de bienvenida con el equipo OWA.' },
@@ -57,13 +57,16 @@ export const TRAVEL = [
     destino: 'Búzios',
     pais: 'Brasil',
     titulo: 'Swim & Adventure',
+    salidaTitulo: 'Mayo 2027',
     fechaCorta: 'MAY 2027',
-    fechaLarga: 'Mayo de 2027',
+    fechaLarga: '20 al 25 de mayo de 2027',
     anio: '2027',
-    estado: 'proximamente',
+    estado: 'abierta',
+    chip: 'CUPOS DISPONIBLES',
+    cta: true,
     // Buzios tambien: travel-barco era una carrera en Argentina.
     img: 'tv-costa',
-    resumen: 'La segunda salida del año a Búzios, con la misma propuesta Swim & Adventure. Itinerario y valores a confirmar por la organización.',
+    resumen: 'Una nueva oportunidad para vivir Swim & Adventure. Nadamos, exploramos y compartimos el destino dentro y fuera del agua.',
     supervisa: '',
     itinerario: [],
     incluye: [],
@@ -76,52 +79,123 @@ export const TRAVEL = [
 
 export const porSlugTravel = (slug) => TRAVEL.find((t) => t.slug === slug) || null;
 
-/** Las dos modalidades de OWA Travel. Es el contenido de la página /travel:
-    explica la propuesta, no el detalle de cada salida (eso va en el PDF que
-    la organización manda a quien consulta). */
+/** Contenido de cabecera de cada modalidad — tagline + bajada, tal como los
+    pasó OWA por mail. `experiencia` (más abajo, sólo en Swim & Adventure)
+    es contenido nuestro previo, que se mantiene como refuerzo. */
 export const MODALIDADES_TRAVEL = [
   {
     slug: 'swim-adventure',
     nombre: 'Swim & Adventure',
-    tagline: 'Viajar para nadar, descubrir y disfrutar.',
+    tagline: 'Viajar para nadar. Nadar para descubrir.',
     // La del hero anterior: el grupo entero en el agua turquesa de Buzios.
     img: 'tv-turquesa',
     alt: 'El grupo de OWA Travel flotando junto en el mar turquesa de Búzios',
     parrafos: [
-      'Experiencias grupales en destinos elegidos por sus paisajes, su entorno y las posibilidades que ofrecen para disfrutar del agua de una manera diferente.',
-      'Swim &amp; Adventure no tiene a la competencia como objetivo. La propuesta es viajar, nadar, conocer nuevos lugares y compartir la experiencia con otros nadadores, amigos y acompañantes.',
-      '<span class="u-sigla">OWA</span> diseña cada viaje y acompaña al grupo durante toda la estadía, combinando natación, turismo y momentos para disfrutar el destino dentro y fuera del agua.',
+      'Experiencias grupales diseñadas por <span class="u-sigla">OWA</span> para conocer destinos únicos desde una perspectiva diferente: el agua.',
+      'Natación en aguas abiertas, naturaleza, aventura y tiempo para disfrutar, acompañados durante toda la experiencia por el equipo <span class="u-sigla">OWA</span>.',
     ],
     experiencia: [
-      { t: 'Destinos elegidos', d: 'Seleccionados por su entorno y su atractivo natural.' },
-      { t: 'Sin competencia', d: 'Travesías y actividades de natación sin enfoque competitivo.' },
-      { t: 'Logística resuelta', d: 'Traslados, hospedaje y coordinación de todo el viaje.' },
-      { t: 'Acompañamiento', d: 'El equipo de <span class="u-sigla">OWA</span> con el grupo durante toda la experiencia.' },
-      { t: 'Tiempo para disfrutar', d: 'Espacio para conocer, compartir y vivir el destino.' },
+      { icono: 'pin', t: 'Destinos elegidos', d: 'Seleccionados por su entorno y su atractivo natural.' },
+      { icono: 'ola', t: 'Sin competencia', d: 'Travesías y actividades de natación sin enfoque competitivo.' },
+      { icono: 'documento', t: 'Logística resuelta', d: 'Traslados, hospedaje y coordinación de todo el viaje.' },
+      { icono: 'persona', t: 'Acompañamiento', d: 'El equipo de <span class="u-sigla">OWA</span> con el grupo durante toda la experiencia.' },
+      { icono: 'reloj', t: 'Tiempo para disfrutar', d: 'Espacio para conocer, compartir y vivir el destino.' },
     ],
   },
   {
     slug: 'race-travel',
     nombre: 'Race Travel',
-    tagline: 'Viajar para competir.',
+    tagline: 'Viajar juntos. Competir en el mundo.',
     // Drone sobre la isla, con zoom sobre el grupo (ver imgPos en la vista).
     img: 'tv-isla-drone',
     alt: 'Grupo de nadadores reunido en la cima de una isla frente al mar',
     zoom: true,
     parrafos: [
-      'Viajes grupales para participar en competencias de aguas abiertas en distintos destinos del mundo.',
-      '<span class="u-sigla">OWA</span> reúne al grupo y coordina la experiencia alrededor de cada carrera: viaje, hospedaje, inscripción y acompañamiento durante la estadía. Vos elegís el desafío y te concentrás en llegar preparado para competir.',
-      'Una forma de conocer nuevas carreras, representar a tu equipo y compartir la experiencia de competir lejos de casa junto a otros nadadores.',
+      '<span class="u-sigla">OWA</span> Race Travel reúne grupos de nadadores para viajar y participar en grandes competencias de aguas abiertas del calendario internacional.',
+      'En algunas carreras competimos individualmente. En otras, formamos equipos. Pero la experiencia siempre es compartida: viajamos como grupo y vivimos cada desafío acompañados por <span class="u-sigla">OWA</span>.',
     ],
     experiencia: [
-      { t: 'Carreras seleccionadas', d: 'Viajes grupales a competencias elegidas del calendario internacional.' },
-      { t: 'Inscripción gestionada', d: '<span class="u-sigla">OWA</span> coordina tu cupo con la organización del evento.' },
-      { t: 'Traslados y hospedaje', d: 'Organizados para todo el grupo.' },
-      { t: 'Acompañamiento', d: 'El equipo de <span class="u-sigla">OWA</span> con vos durante toda la estadía.' },
-      { t: 'En grupo', d: 'Una experiencia compartida antes, durante y después de la carrera.' },
+      { icono: 'bandera', t: 'Carreras seleccionadas', d: 'Viajes grupales a competencias elegidas del calendario internacional.' },
+      { icono: 'documento', t: 'Inscripción gestionada', d: '<span class="u-sigla">OWA</span> coordina tu cupo con la organización del evento.' },
+      { icono: 'pin', t: 'Traslados y hospedaje', d: 'Organizados para todo el grupo.' },
+      { icono: 'persona', t: 'Acompañamiento', d: 'El equipo de <span class="u-sigla">OWA</span> con vos durante toda la estadía.' },
+      { icono: 'equipo', t: 'En grupo', d: 'Una experiencia compartida antes, durante y después de la carrera.' },
     ],
   },
 ];
+
+/** "Mucho más que nadar": cierre de la sección Swim & Adventure, tal como
+    lo mandó OWA. */
+export const MUCHO_MAS_QUE_NADAR = {
+  titulo: 'Mucho más que nadar',
+  parrafos: [
+    'No venimos a competir.',
+    'Venimos a descubrir lugares nuevos, nadar en escenarios increíbles y compartir la experiencia con otros nadadores, amigos y acompañantes.',
+    '<span class="u-sigla">OWA</span> se ocupa de la experiencia. Vos, de vivirla.',
+  ],
+};
+
+/** Agenda 2027 de Race Travel. Capri–Nápoli ya tiene cupos abiertos para
+    equipos Relay; Portugal y Mykonos todavía no tienen fecha ni foto
+    confirmadas por OWA — quedan "próximamente" hasta que las manden. */
+export const RACE_TRAVEL_AGENDA = [
+  {
+    slug: 'capri-napoli',
+    destino: 'Capri–Nápoli',
+    pais: 'Italia',
+    fecha: 'Julio 2027',
+    estado: 'abierta',
+    chip: 'CUPOS DISPONIBLES',
+    img: 'tv-capri-napoli',
+    resumen: 'Una de las pruebas más emblemáticas de las aguas abiertas internacionales.',
+    nota: 'Cupos disponibles para equipos Relay.',
+    cta: true,
+  },
+  {
+    slug: 'swim-gp-portugal',
+    destino: 'Swim GP',
+    pais: 'Portugal',
+    fecha: 'Julio 2027',
+    estado: 'proximamente',
+    chip: 'PRÓXIMAMENTE',
+    // Foto de referencia del destino (Lisboa), no de la carrera: todavía no
+    // tiene fecha ni sede confirmadas.
+    img: 'tv-portugal',
+    resumen: 'Una nueva carrera, un nuevo destino y un grupo OWA viajando para competir.',
+    nota: 'Próximamente más información.',
+    cta: false,
+  },
+  {
+    slug: 'swim-gp-mykonos',
+    destino: 'Swim GP Mykonos',
+    pais: 'Grecia',
+    fecha: 'Octubre 2027',
+    estado: 'proximamente',
+    chip: 'PRÓXIMAMENTE',
+    // Ídem: foto de referencia del destino, no de la carrera.
+    img: 'tv-mykonos',
+    resumen: 'Aguas abiertas y competencia en uno de los destinos más atractivos del Mediterráneo.',
+    nota: 'Próximamente más información.',
+    cta: false,
+  },
+];
+
+/** "Competir lejos. Viajar acompañado.": cierre de la sección Race Travel. */
+export const COMPETIR_LEJOS = {
+  titulo: 'Competir lejos. Viajar acompañado.',
+  parrafos: [
+    '<span class="u-sigla">OWA</span> organiza la experiencia alrededor de cada competencia: inscripción, alojamiento, logística y acompañamiento durante el viaje.',
+    'Competí individualmente, armá tu equipo o sumate a uno.',
+    'Vos te preparás para el desafío. <span class="u-sigla">OWA</span> viaja con vos.',
+  ],
+  cta: 'Consultar Race Travel 2027',
+};
+
+/** Nota de cierre de Race Travel: la agenda sigue creciendo. */
+export const MAS_CARRERAS = {
+  titulo: 'Más carreras. Más destinos.',
+  parrafos: ['La agenda <span class="u-sigla">OWA</span> Race Travel 2027 sigue creciendo.', 'Pronto sumaremos nuevas competencias internacionales.'],
+};
 
 /** Galería de Búzios. Curada de Fotos/TRAVEL: se dejaron afuera las tomas
     movidas o de baja resolución. El orden alterna agua / tierra / grupo para
