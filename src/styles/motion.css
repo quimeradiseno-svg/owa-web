@@ -149,6 +149,28 @@
   }
 }
 
+/* Rayita del eyebrow: un solo crecimiento al cargar duraba medio segundo y
+   se perdía en medio de todo lo demás asentando — en vez de eso, respira
+   todo el tiempo que el hero está a la vista (mismo espíritu que
+   .hero-drift: decorativo, puede durar mucho más que 300ms). Lenta a
+   propósito para que lea como un detalle vivo, no como una alerta. */
+.hero-rule {
+  transform-origin: left center;
+  animation: owa-hero-rule 2.6s var(--ease-in-out) infinite;
+  animation-delay: var(--hero-delay, 0ms);
+}
+@keyframes owa-hero-rule {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scaleX(0.62);
+  }
+}
+
 /* --------------------------------------------------- cambio de ruta (SPA)
    Salida rápida, entrada un poco más larga: el sistema responde ya, y lo que
    llega tiene tiempo de leerse.                                             */
@@ -260,6 +282,10 @@
   .hero-drift {
     animation: none;
     transform: scale(1.06);
+  }
+  .hero-rule {
+    animation: none;
+    transform: scaleX(1);
   }
   .hero-in,
   .ficha-in {

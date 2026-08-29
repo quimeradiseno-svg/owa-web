@@ -6,7 +6,17 @@ import { MODALIDADES } from '../data/madres.js';
 import { GP, CIRC, CLUBES_GP, CLUBES_CIRC } from '../data/rankings.js';
 import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
-import { eyebrow, tituloSeccion, btnAccent, btnBlanco, btnBorde, linkFuerte, pastillaChica, olaCentrada } from '../components/ui.js';
+import {
+  eyebrow,
+  tituloSeccion,
+  btnAccent,
+  btnAccentGrande,
+  btnBlanco,
+  btnBorde,
+  linkClaro,
+  linkFuerte,
+  olaCentrada,
+} from '../components/ui.js';
 
 export const titulo = 'El agua nos une';
 
@@ -23,8 +33,13 @@ const PANELES = [
 // círculo en toda la sección, para que no se lea como "roto" ni finjan ser
 // una foto real de alguien que no es. `oscuro` lo adapta a la tarjeta navy de
 // clubes (mismo criterio que el resto de la marca sobre fondo oscuro).
+// La variante oscura lleva vidrio (borde + blur) en vez de un relleno sólido:
+// sin eso se leía como un botón celeste, no como un placeholder de logo.
 const avatar = (clase, oscuro = false) =>
-  html`<span class="grid ${clase} shrink-0 place-items-center rounded-full ${oscuro ? 'bg-white/10 text-owa-sky' : 'bg-owa-mist text-owa-blue'}"
+  html`<span
+    class="grid ${clase} shrink-0 place-items-center rounded-full ${oscuro
+      ? 'border border-white/14 bg-white/10 text-white/45 backdrop-blur'
+      : 'bg-owa-mist text-owa-blue'}"
     >${icono('persona', 'size-1/2')}</span
   >`;
 
@@ -111,31 +126,29 @@ function panelRanking() {
   `;
 }
 
-// Clubes tiene su propio ranking por torneo (Grand Prix y Circuito son
-// campeonatos por equipos distintos) — pastilla propia, independiente de la
-// que elige el torneo de nadadores al lado.
+// Grand Prix y Circuito son dos estados del mismo módulo de rankings — un
+// solo toggle (el de la tarjeta de nadadores) manda sobre las tres columnas
+// a la vez: hombres, mujeres Y clubes. Por eso clubes ya no tiene su propia
+// pastilla adentro ni su propio estado: lee el mismo estadoHome.tab.
 const CLUBES_POR_TAB = { gp: CLUBES_GP, circ: CLUBES_CIRC };
-const estadoClubes = { tab: 'gp' };
 
 function panelClubes() {
-  const clubes = CLUBES_POR_TAB[estadoClubes.tab];
+  const clubes = CLUBES_POR_TAB[estadoHome.tab];
   return html`
     <article class="reveal relative overflow-hidden rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
-      <!-- Foto a sangre de toda la tarjeta: sin recorte visible, se apaga hacia
-           arriba con un degradado para que el listado siga siendo lo que se lee. -->
+      <!-- Foto a sangre de toda la tarjeta: sin recorte visible. Degradado
+           compuesto en vez de un linear-gradient plano — oscuro arriba
+           (tabs/título) y a la izquierda (números/logos/texto), más
+           transparente hacia abajo/derecha para que se note que hay foto. -->
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         ${foto({ slug: 'podio-trofeo', alt: '', className: 'block h-full w-full', imgClass: 'h-full w-full object-cover' })}
-        <div class="absolute inset-0 bg-linear-to-t from-owa-navy/45 via-owa-navy/85 to-owa-navy"></div>
+        <div
+          class="absolute inset-0 [background-image:linear-gradient(90deg,rgb(24_20_92/0.94)_0%,rgb(28_24_100/0.82)_42%,rgb(28_24_100/0.55)_100%),linear-gradient(180deg,rgb(18_16_80/0.9)_0%,rgb(18_16_80/0.45)_55%,rgb(18_16_80/0.25)_100%)]"
+        ></div>
       </div>
 
       <div class="relative">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <h3 class="font-display text-xl font-black tracking-[0.1em] text-owa-sky">CLUBES</h3>
-          <div class="flex gap-1.5 rounded-full bg-white/8 p-1.5" role="group" aria-label="Torneo — Clubes">
-            ${pastillaChica('GP', estadoClubes.tab === 'gp', 'data-club-tab="gp"', { oscuro: true })}
-            ${pastillaChica('CIRC', estadoClubes.tab === 'circ', 'data-club-tab="circ"', { oscuro: true })}
-          </div>
-        </div>
+        <h3 class="font-display text-xl font-black tracking-[0.1em] text-owa-sky">CLUBES</h3>
         <ol class="mt-9">
           ${clubes.map(
             (c, i) => html`
@@ -297,12 +310,12 @@ export function render() {
 
       <div class="u-shell relative pt-32 pb-36">
         <p class="hero-in flex items-center gap-3.5" style="--hero-delay:60ms">
-          <span class="h-0.5 w-11 bg-owa-cyan"></span>
+          <span class="hero-rule h-0.5 w-11 bg-owa-cyan" style="--hero-delay:60ms"></span>
           <span class="u-eyebrow text-owa-sky">Temporada 2026/27</span>
         </p>
 
         <h1 class="hero-in mt-6 text-[clamp(3.25rem,9.5vw,9.25rem)] text-white" style="--hero-delay:140ms">
-          El agua<br />nos une.
+          El agua<br />nos une
         </h1>
 
         <!-- En desktop el párrafo termina justo donde termina "NOS UNE.": el
@@ -319,31 +332,35 @@ export function render() {
           en&nbsp;el&nbsp;agua.
         </p>
 
-        <div class="hero-in mt-9 flex flex-wrap items-center gap-x-8 gap-y-6" style="--hero-delay:300ms">
-          ${btnBlanco('VER CALENDARIO 26/27', '/calendario')}
-          <!-- Los cuatro rótulos van a dos líneas para que queden del mismo alto
-               y el bloque lea como una grilla, no como una lista despareja. -->
-          <!-- Todos los ítems llevan separador; la lista se corre 21px a la
-               izquierda (borde + padding) y el contenedor recorta esa columna.
-               Así el borde desaparece solo en el primero de CADA fila, que en
-               mobile son dos, y el "4" sigue alineado con el párrafo. -->
-          <div class="overflow-hidden">
-            <ul class="ms-[-21px] flex flex-wrap gap-y-3.5 font-display text-white/85">
-              ${[
-                ['4', 'Eventos', 'puntuables'],
-                ['4', 'Eventos', 'especiales'],
-                ['3', 'OWA', 'Challenge'],
-                ['2', 'OWA', 'Travel'],
-              ].map(
-                ([n, l1, l2]) => html`
-                  <li class="flex items-center gap-2 border-s border-white/25 px-5">
-                    <span data-nums class="text-[1.5rem] leading-none font-black text-owa-cyan">${n}</span>
-                    <span class="text-[11px] leading-[1.3] font-bold tracking-[0.12em] uppercase">${l1}<br />${l2}</span>
-                  </li>
-                `
-              )}
-            </ul>
-          </div>
+        <!-- Los cuatro rótulos van a dos líneas para que queden del mismo alto
+             y el bloque lea como una grilla, no como una lista despareja. -->
+        <!-- Todos los ítems llevan separador; la lista se corre 21px a la
+             izquierda (borde + padding) y el contenedor recorta esa columna.
+             Así el borde desaparece solo en el primero de CADA fila, que en
+             mobile son dos, y el "4" sigue alineado con el párrafo. -->
+        <div class="hero-in mt-7 overflow-hidden" style="--hero-delay:300ms">
+          <ul class="ms-[-21px] flex flex-wrap gap-y-3.5 font-display text-white/85">
+            ${[
+              ['4', 'Eventos', 'puntuables'],
+              ['4', 'Eventos', 'especiales'],
+              ['3', 'OWA', 'Challenge'],
+              ['2', 'OWA', 'Travel'],
+            ].map(
+              ([n, l1, l2]) => html`
+                <li class="flex items-center gap-2 border-s border-white/25 px-5">
+                  <span data-nums class="text-[1.5rem] leading-none font-black text-owa-cyan">${n}</span>
+                  <span class="text-[11px] leading-[1.3] font-bold tracking-[0.12em] uppercase">${l1}<br />${l2}</span>
+                </li>
+              `
+            )}
+          </ul>
+        </div>
+
+        <!-- El secundario es un link liviano (sin caja) para que quede claro
+             que es la opción de menor jerarquía frente al primario. -->
+        <div class="hero-in mt-13 flex flex-wrap items-center gap-x-7 gap-y-4" style="--hero-delay:380ms">
+          ${btnAccentGrande('Ver calendario 2026/27', '/calendario')}
+          ${linkClaro('Soy nuevo en aguas abiertas', '/primeros-pasos')}
         </div>
       </div>
     </section>
@@ -368,7 +385,13 @@ export function render() {
     </section>
 
     <!-- -------------------------------------------------- eventos especiales -->
-    <section class="bg-owa-sand px-0 py-22" aria-labelledby="h-especiales">
+    <!-- Degradé propio en vez de bg-owa-sand a secas: el sand plano se veía
+         con un tinte verdoso. Gris claro (#e4e6e3 = owa-line) abajo a la
+         izquierda, blanco arriba a la derecha, en diagonal de 45°. -->
+    <section
+      class="[background:linear-gradient(45deg,#e4e6e3_0%,#ffffff_100%)] px-0 py-22"
+      aria-labelledby="h-especiales"
+    >
       <div class="u-shell">
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
@@ -464,20 +487,20 @@ export function render() {
     </section>
 
     <!-- ------------------------------------------------------------- rankings -->
-    <section class="bg-owa-sand px-0 py-22" aria-labelledby="h-rankings">
+    <section class="bg-white px-0 py-22" aria-labelledby="h-rankings">
       <div class="u-shell">
-        <div class="mb-9 flex flex-wrap items-end justify-between gap-5">
-          <div>
-            ${eyebrow('Rankings en vivo')}
-            <h2 id="h-rankings" class="u-h2 mt-3.5">
-              In aqua veritas<br />aqua autem nos unit
-            </h2>
-          </div>
-          ${btnBorde('VER RANKINGS COMPLETOS', '/resultados')}
+        <div class="mb-9">
+          ${eyebrow('Rankings en vivo')}
+          <h2 id="h-rankings" class="u-h2 mt-3.5">
+            In aqua veritas<br />aqua autem nos unit
+          </h2>
         </div>
 
         <div class="grid gap-4.5 lg:grid-cols-[1.7fr_1fr]" data-stagger>${panelRanking()} ${panelClubes()}</div>
 
+        <!-- El CTA "Ver rankings completos" vivía arriba, al lado del título;
+             se movió acá (en el lugar de "Cómo funciona el ranking") porque
+             tiene más sentido como cierre de la sección que como header. -->
         <div class="reveal relative mt-4.5 overflow-hidden rounded-owa-lg bg-owa-navy">
           ${fondo({ slug: 'circuito-grupo', alt: '', opacity: 0.35 })}
           <div class="relative flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
@@ -488,7 +511,7 @@ export function render() {
                 <p class="mt-1.5 text-sm text-owa-line">Viví cada fecha. Sumá puntos. Dejá tu huella.</p>
               </div>
             </div>
-            ${btnAccent('CÓMO FUNCIONA EL RANKING', '/resultados?tab=gp#h-calculo')}
+            ${btnAccent('VER RANKINGS COMPLETOS', '/resultados')}
           </div>
         </div>
       </div>
@@ -527,9 +550,7 @@ export function mount(root) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarFondoVideo(root);
 
-  const repintar = (selector, render, estado, clave, valor) => {
-    if (estado[clave] === valor) return;
-    estado[clave] = valor;
+  const pintar = (selector, render) => {
     const viejo = root.querySelector(selector);
     const tmp = document.createElement('div');
     tmp.innerHTML = toHTML(render());
@@ -539,11 +560,15 @@ export function mount(root) {
     viejo.replaceWith(nuevo);
   };
 
+  // Un solo toggle (el de la tarjeta de nadadores) es la fuente de verdad de
+  // Grand Prix / Circuito para todo el módulo: al cambiarlo se repintan
+  // nadadores Y clubes juntos, nunca uno solo — son dos estados del mismo
+  // ranking, no dos widgets independientes.
   root.addEventListener('click', (e) => {
     const tab = e.target.closest('[data-tab]');
-    if (tab) return repintar('[data-panel-ranking]', panelRanking, estadoHome, 'tab', tab.dataset.tab);
-
-    const clubTab = e.target.closest('[data-club-tab]');
-    if (clubTab) return repintar('[data-panel-clubes]', panelClubes, estadoClubes, 'tab', clubTab.dataset.clubTab);
+    if (!tab || tab.dataset.tab === estadoHome.tab) return;
+    estadoHome.tab = tab.dataset.tab;
+    pintar('[data-panel-ranking]', panelRanking);
+    pintar('[data-panel-clubes]', panelClubes);
   });
 }

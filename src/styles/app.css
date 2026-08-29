@@ -270,18 +270,16 @@
   clip-path: url(#owa-horizonte);
 }
 
-/* Velo del hero: deja el medio limpio para que se vea la foto y cierra abajo
-   casi opaco, que es donde caen el titular, la bajada y los botones.
-   Sin el tramo del 72% el párrafo queda sobre nadadores y no llega a 4.5:1. */
+/* Velo del hero: es un VIDEO de fondo, no una foto fija, así que un velo
+   uniforme falla — hay fotogramas claros y oscuros y el contraste del texto
+   varía con el tiempo. En vez de depender de un tramo ajustado a un frame
+   puntual, se oscurece con margen donde el contenido SIEMPRE vive (columna
+   izquierda + franja inferior, porque el hero usa items-end) y se libera
+   fuerte la derecha, que es puro agua/cielo y no lleva texto encima. */
 @utility u-hero-scrim {
-  background: linear-gradient(
-    180deg,
-    rgb(13 16 48 / 0.62) 0%,
-    rgb(13 16 48 / 0.12) 32%,
-    rgb(13 16 48 / 0.55) 62%,
-    rgb(13 16 48 / 0.88) 84%,
-    rgb(13 16 48 / 0.97) 100%
-  );
+  background:
+    linear-gradient(90deg, rgb(12 16 42 / 0.78) 0%, rgb(12 16 42 / 0.56) 38%, rgb(12 16 42 / 0.12) 72%),
+    linear-gradient(0deg, rgb(12 16 42 / 0.75) 0%, transparent 55%);
 }
 
 /* Igual pero más corto, para los heros de ficha y de sección. */

@@ -94,9 +94,15 @@ const BASE = `${BASE_LAYOUT} text-[13px] font-display font-black`;
 // su tamaño en vez de heredar el de BASE, así no depende del orden en que
 // Tailwind emite las utilidades arbitrarias en la hoja de estilos.
 const BASE_BLANCO = `${BASE_LAYOUT} text-[14px] font-display font-black`;
+// Mismo criterio: tamaño propio en vez de override por `extra`, para el CTA
+// principal del hero (necesita destacar más que un btnAccent normal de 13px).
+const BASE_ACCENT_GRANDE = `${BASE_LAYOUT} text-[15px] font-display font-black`;
 
 export const btnAccent = (label, href, extra = '') =>
   html`<a href="${href}" class="${BASE} bg-owa-cyan px-7 py-4 text-owa-deep hover:bg-owa-sky ${extra}">${label} ${FLECHA}</a>`;
+
+export const btnAccentGrande = (label, href, extra = '') =>
+  html`<a href="${href}" class="${BASE_ACCENT_GRANDE} bg-owa-cyan px-7 py-4 text-owa-deep hover:bg-owa-sky ${extra}">${label} ${FLECHA}</a>`;
 
 export const btnBlanco = (label, href, extra = '') =>
   html`<a href="${href}" class="${BASE_BLANCO} bg-white px-7 py-4 text-owa-navy hover:bg-owa-mist ${extra}">${label} ${FLECHA}</a>`;
@@ -123,6 +129,15 @@ export const linkFuerte = (label, href, extra = '') =>
   html`<a
     href="${href}"
     class="u-nudge inline-flex items-center gap-2 border-b-2 border-owa-blue pb-1 font-display text-[13px] font-black tracking-[0.08em] text-owa-blue uppercase transition-colors hover:border-owa-electric hover:text-owa-electric ${extra}"
+    >${label} ${FLECHA}</a
+  >`;
+
+/** CTA secundario para fondos oscuros: texto liviano subrayado, sin caja ni
+ *  mayúsculas — al lado de un botón lleno lee como opción de menor jerarquía. */
+export const linkClaro = (label, href, extra = '') =>
+  html`<a
+    href="${href}"
+    class="u-nudge inline-flex items-center gap-2 border-b border-white/40 pb-1 font-display text-[15px] font-semibold text-white/85 transition-colors duration-200 ease-out hover:border-white hover:text-white ${extra}"
     >${label} ${FLECHA}</a
   >`;
 
