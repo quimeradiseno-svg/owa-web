@@ -148,6 +148,9 @@ const diaCorto = (f) => {
 
 /** Cada torneo abre su propio formulario cuando la ficha lo define. */
 const inscripcionDe = (e, f, torneo) => f?.inscripcion?.[torneo] || linkInscripcion(e);
+// Sin fallback genérico: si la ficha no trae starting list todavía, el botón
+// no se muestra (no hay una URL "de cualquier torneo" que tenga sentido acá).
+const startingListDe = (e, f, torneo) => f?.startingList?.[torneo] || '';
 
 const barraDatos = (e, esChallenge, f) => {
   const boton = (extra) =>
@@ -230,29 +233,44 @@ const jornadas = (e, f) => html`
           // de Circuito igual, así que se suma a mano acá.
           const distanciasTorneo = (f?.distancias || []).filter((d) => d.torneo === j.torneo || (!gp && d.rotulo === 'Kid'));
 
+          const linkInsc = inscripcionDe(e, f, j.torneo);
+          const linkStarting = startingListDe(e, f, j.torneo);
+
           return html`
-            <a
-              href="${inscripcionDe(e, f, j.torneo)}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="reveal u-lift group block rounded-owa-lg bg-linear-to-br from-owa-sky via-white/85 to-owa-blue p-px"
-            >
+            <div class="reveal u-lift group block rounded-owa-lg bg-linear-to-br from-owa-sky via-white/85 to-owa-blue p-px">
               <div class="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[27px]">
                 <div class="absolute inset-0" aria-hidden="true">
                   ${foto({
-                    slug: gp ? 'gp-contraluz' : 'circuito-grupo',
+                    slug: gp ? 'vob-rio-barco' : 'spd-brazada-colores',
                     alt: '',
                     sizes: '(min-width: 1024px) 50vw, 100vw',
                     className: 'block h-full w-full',
-                    imgClass: 'h-full w-full object-cover',
+                    // La foto de VOB es panorámica y los nadadores quedan
+                    // en el tercio inferior: centrado los recortaba de más.
+                    imgClass: `h-full w-full object-cover ${gp ? 'object-[50%_75%]' : ''}`,
                   })}
-                  <div class="absolute inset-0 bg-linear-to-b from-transparent via-owa-abyss/55 to-owa-abyss/97"></div>
+                  <!-- Dos degradés combinados en vez de un solo velo parejo:
+                       el vertical sostiene texto/CTA abajo sin tapar la foto
+                       arriba (recién oscurece de verdad después del 45%), y
+                       el horizontal deja "respirar" la esquina superior
+                       derecha. Mismo velo para VOB y SPD — la diferencia de
+                       color va en pills/CTA, no en toda la foto. -->
+                  <div
+                    class="absolute inset-0 [background-image:linear-gradient(to_bottom,rgb(7_12_40/0.04)_0%,rgb(7_12_40/0.15)_45%,rgb(7_12_40/0.6)_72%,rgb(7_12_40/0.96)_100%),linear-gradient(to_right,rgb(7_12_40/0.45)_0%,rgb(7_12_40/0.15)_55%,rgb(7_12_40/0.05)_100%)]"
+                  ></div>
                 </div>
 
                 <div class="relative z-10 flex flex-1 flex-col p-8 sm:p-10">
+                <!-- class="contents": no genera caja propia, así el resto de
+                     la card sigue en su lugar mientras esto pasa a ser un
+                     link real — necesario para poder sacar el botón de
+                     Starting List afuera sin anidar <a> dentro de <a>. -->
+                <a href="${linkInsc}" target="_blank" rel="noopener noreferrer" class="contents">
                 <div class="flex items-start justify-between gap-4">
                   <p
-                    class="inline-flex items-center gap-2 rounded-full bg-owa-cyan px-4 py-2 font-display text-[13px] font-black tracking-[0.06em] text-owa-deep uppercase"
+                    class="inline-flex items-center gap-2 rounded-full px-4 py-2 font-display text-[13px] font-black tracking-[0.06em] uppercase ${gp
+                      ? 'bg-owa-electric text-white'
+                      : 'bg-owa-cyan text-owa-deep'}"
                   >
                     <span class="sm:hidden">${fechaCorta(j.fecha).replace(/ \d{2}$/, '')}</span>
                     <span class="hidden sm:inline">${fechaRibbon(j.fecha)}</span>
@@ -264,10 +282,13 @@ const jornadas = (e, f) => html`
                   />
                 </div>
 
-                <p data-nums class="mt-6 font-display text-[clamp(4rem,9vw,6rem)] leading-[0.82] font-black text-owa-cyan uppercase">
+                <p
+                  data-nums
+                  class="mt-6 font-display text-[clamp(4rem,9vw,6rem)] leading-[0.82] font-black uppercase ${gp ? 'text-owa-electric' : 'text-owa-cyan'}"
+                >
                   ${j.sigla}
                 </p>
-                <p class="mt-1.5 font-display text-sm font-black tracking-[0.16em] text-white uppercase">${j.nombreLargo}</p>
+                <p class="-mt-2 font-display text-sm font-black tracking-[0.16em] text-white uppercase">${j.nombreLargo}</p>
 
                 <p class="mt-6 max-w-[26ch] font-display text-[clamp(1.375rem,2.4vw,1.75rem)] leading-tight font-black text-white uppercase">
                   ${raw(j.tagline)}
@@ -281,27 +302,48 @@ const jornadas = (e, f) => html`
                     return html`
                       <span
                         class="rounded-full px-3.5 py-1.5 font-display text-[12px] font-black tracking-[0.04em] uppercase ${i < (gp ? 1 : 2)
-                          ? 'bg-owa-cyan text-owa-deep'
+                          ? gp
+                            ? 'bg-owa-electric text-white'
+                            : 'bg-owa-cyan text-owa-deep'
                           : 'border border-white/30 text-white'}"
                         >${etiqueta}</span
                       >
                     `;
                   })}
                 </div>
+                </a>
 
                 <div class="mt-auto pt-8">
-                  <p class="flex items-center gap-2 text-[13px] text-owa-line">
+                  <a href="${linkInsc}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-[13px] text-owa-line">
                     ${icono('pin', 'size-4 shrink-0 text-owa-sky')}
                     ${f?.sedeBarra || j.desc}
-                  </p>
-                  <span
-                    class="u-press mt-4 block rounded-full bg-owa-cyan py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-owa-deep transition-colors group-hover:bg-white"
-                    >INSCRIBITE A ${j.torneo} →</span
-                  >
+                  </a>
+                  <div class="mt-4 flex gap-2.5">
+                    <a
+                      href="${linkInsc}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="u-press flex-1 rounded-full py-4 text-center font-display text-[13px] font-black tracking-[0.06em] transition-colors duration-200 ease-out group-hover:bg-white ${gp
+                        ? 'bg-owa-electric text-white group-hover:text-owa-electric'
+                        : 'bg-owa-cyan text-owa-deep'}"
+                      >INSCRIBITE A ${j.torneo} →</a
+                    >
+                    ${linkStarting
+                      ? html`
+                          <a
+                            href="${linkStarting}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="u-press shrink-0 rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep"
+                            >STARTING LIST</a
+                          >
+                        `
+                      : ''}
+                  </div>
                 </div>
               </div>
               </div>
-            </a>
+            </div>
           `;
         })}
       </div>

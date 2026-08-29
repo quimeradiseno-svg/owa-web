@@ -238,15 +238,42 @@ export const KIDS = {
   ],
 };
 
-// "Nivel recomendado" por modalidad, para completar las cinco cards que ya
-// existen en madres.js (MODALIDADES) sin duplicar título/desc/foto/href.
+// Bajada breve de cada modalidad para esta página (distinta del `desc`
+// genérico que usa MODALIDADES en el home): texto del documento de OWA,
+// pensado para quien todavía está eligiendo su primer desafío.
+export const DESCRIPCIONES_MODALIDAD = {
+  '/grand-prix':
+    'Nuestra propuesta para quienes buscan mayores distancias y un nivel de exigencia superior. Son pruebas pensadas para nadadores con experiencia y preparación específica en aguas abiertas.',
+  '/circuito':
+    'Nuestros grandes encuentros, abiertos a nadadores de distintos niveles y con diferentes distancias dentro de una misma fecha. Podés competir individualmente, representar a tu equipo y formar parte de la comunidad OWA.',
+  '/especiales':
+    'Carreras elegidas por su escenario, formato o historia: mar, lagos y ríos fuera de los campeonatos anuales. No suman puntos para Circuito ni Grand Prix — el objetivo es vivir una experiencia particular. Según el evento, puede haber alternativas para distintos niveles.',
+  '/challenge':
+    'Desafíos de larga distancia y experiencias extraordinarias para quienes quieren llevar las aguas abiertas a otro nivel. Requieren preparación específica, planificación y, según el desafío, procesos de admisión o selección.',
+};
+
+// "Nivel recomendado" por modalidad. Eventos Especiales no tiene: el propio
+// documento de OWA no le asigna uno (varía según el evento).
 export const NIVELES_MODALIDAD = {
   '/grand-prix': 'Medio, alto y competitivo.',
   '/circuito': 'Inicial, medio y competitivo.',
-  '/especiales': 'Según el evento.',
   '/challenge': 'Alto.',
-  '/travel': 'Inicial, medio, alto y competitivo, según la experiencia.',
 };
+
+// OWA Travel se abre en dos sub-modalidades dentro de la misma card, tal
+// como las separa el documento (Swim & Travel / Race Travel).
+export const TRAVEL_MODALIDAD = [
+  {
+    t: 'Swim & Travel',
+    d: 'Viajes vinculados a la aventura, las aguas abiertas y el placer de descubrir nuevos destinos nadando, con acompañamiento de personal calificado.',
+    nivel: 'Inicial, medio, alto y competitivo, según la experiencia.',
+  },
+  {
+    t: 'Race Travel',
+    d: 'Viajes para participar en competencias internacionales acompañado por OWA.',
+    nivel: 'Medio, alto y competitivo.',
+  },
+];
 
 export const CIERRE = {
   titulo: 'Vos elegís hasta dónde querés llegar',

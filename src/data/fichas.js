@@ -24,6 +24,16 @@ export const FICHAS = {
       'GRAND PRIX': 'https://cronometrajeinstantaneo.com/inscripciones/vuelta-de-obligado-vob-gp-owa-2627',
       'CIRCUITO OWA': 'https://cronometrajeinstantaneo.com/inscripciones/san-pedro-spd-circuito-owa-2627',
     },
+    // Starting list (lista de inscriptos) de Cronometraje Instantáneo, misma
+    // plataforma que la inscripción. La de Circuito la pasó OWA; la de Grand
+    // Prix se arma con el mismo patrón de URL sobre el slug de Vuelta de
+    // Obligado — confirmar con OWA si el evento todavía no tiene inscriptos.
+    startingList: {
+      'GRAND PRIX':
+        'https://cronometrajeinstantaneo.com/resultados/vuelta-de-obligado-vob-gp-owa-2627/participantes?orden=categoria&r=1',
+      'CIRCUITO OWA':
+        'https://cronometrajeinstantaneo.com/resultados/san-pedro-spd-circuito-owa-2627/participantes?orden=categoria&r=1',
+    },
 
     distancias: [
       {

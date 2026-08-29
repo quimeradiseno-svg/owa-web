@@ -12,6 +12,13 @@ const OUT = 'public/img';
 const PHOTOS = {
   // home
   'travel-barco': 'VOB/06_LARGADA_RIO_BARCO',
+  // Card de la jornada Grand Prix (Vuelta de Obligado) en /carrera/san-pedro:
+  // foto real del propio evento, no el stock genérico de contraluz.
+  'vob-rio-barco': 'VOB/06_LARGADA_RIO_BARCO',
+  // Ídem, card de la jornada Circuito OWA (San Pedro). Mismo archivo que usa
+  // 'ev-ramallo' para la tarjeta de Ramallo — coincidencia de contenido, no
+  // se reusa ese slug para no atarlas entre sí.
+  'spd-brazada-colores': 'SPD/09_CARRERA_BRAZADA_COLORES',
   'pad-infantil': 'Fotos/PDA/DSC_9296.jpg',
   // Romeo Giménez, becado PDA de la temporada 2026/27 (nombrado en PDA_BECAS).
   'pda-romeo': 'Fotos/PDA/romeo.jpg',

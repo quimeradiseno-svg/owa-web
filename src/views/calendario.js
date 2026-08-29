@@ -1,7 +1,9 @@
 import { html, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
 import { EVENTOS, ALL, MESES } from '../data/eventos.js';
-import { modalidadesDe, pastilla } from '../components/ui.js';
+import { TRAVEL } from '../data/travel.js';
+import { fichaDe } from '../data/fichas.js';
+import { modalidadesDe, chipModalidad, pastilla } from '../components/ui.js';
 import { fechaBadge } from '../components/tarjeta-evento.js';
 
 export const titulo = 'Calendario 2026/27';
@@ -12,7 +14,27 @@ const FILTROS = [
   ['CIRCUITO', 'CIRC'],
   ['EVENTOS ESPECIALES', 'ESP'],
   ['CHALLENGE', 'CHA'],
+  ['TRAVEL', 'TRAVEL'],
 ];
+
+// Las salidas de OWA Travel no viven en EVENTOS/CHALLENGES (otra forma:
+// destino + fechas, no torneo ni sede de carrera), así que se normalizan acá
+// nomás para poder reusar la misma fila del calendario. Van siempre a /travel:
+// no tienen landing propia por salida.
+const normalizarTravel = (t) => ({
+  slug: t.slug,
+  tipo: 'travel',
+  img: t.img,
+  sigla: t.titulo,
+  nombre: t.salidaTitulo,
+  sede: `${t.destino} · ${t.pais}`,
+  // La fecha corta de Travel ya trae el año ("OCT 2026"): sin `anio` acá
+  // para no repetirlo en la fila.
+  fechaCorta: t.fechaCorta,
+  anio: '',
+  estado: t.estado,
+  chip: t.chip,
+});
 
 let filtro = 'TODOS';
 
@@ -22,6 +44,39 @@ const pasaFiltro = (e) => {
   if (filtro === 'CHA') return e.tipo === 'challenge';
   return e.tipo === 'core';
 };
+
+const MES_ABR = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+const fechaCortaDeJornada = (f) => {
+  const [dd, mm] = f.split('/');
+  return `${+dd} ${MES_ABR[+mm - 1]}`;
+};
+
+// San Pedro, Ramallo y Colón corren Grand Prix y Circuito en días distintos
+// (Luján es la única fecha donde caen el mismo día). Filtrando por un torneo
+// puntual, cada evento se reemplaza por SU jornada de ese torneo — fecha,
+// sigla y nombre propios — en vez de seguir mostrando el resumen combinado
+// ("14 Y 15 NOV") que sólo tiene sentido en la vista "Todos".
+function expandirPorFiltro(lista) {
+  if (filtro !== 'GP' && filtro !== 'CIRC') return lista;
+  const torneo = filtro === 'GP' ? 'GRAND PRIX' : 'CIRCUITO OWA';
+  const out = [];
+  for (const e of lista) {
+    if (e.tipo !== 'core' || !e.jornadas?.length) {
+      out.push(e);
+      continue;
+    }
+    const j = e.jornadas.find((x) => x.torneo === torneo);
+    if (!j) continue;
+    out.push({
+      ...e,
+      jornadaActiva: j,
+      sigla: j.sigla,
+      nombre: j.nombreLargo || e.nombre,
+      fechaCorta: fechaCortaDeJornada(j.fecha),
+    });
+  }
+  return out;
+}
 
 /** Agrupa por mes de la fecha corta; los Challenge caen en "a confirmar". */
 function agrupar(lista) {
@@ -50,16 +105,30 @@ function agrupar(lista) {
 }
 
 function fila(e) {
+  const travel = e.tipo === 'travel';
   const abierta = e.estado === 'abierta';
   const chal = e.tipo === 'challenge';
   const { dia, mes } = fechaBadge(e);
+  const href = travel ? '/travel' : `/carrera/${e.slug}`;
+
+  // Sólo hay link real de inscripción/starting list cuando la fila es de UN
+  // torneo puntual (filtro Grand Prix o Circuito activo: `jornadaActiva`) y
+  // esa carrera ya tiene ficha cargada en fichas.js. En "Todos" la fila
+  // combina los dos torneos y no hay un único link que valga para ambos.
+  const torneo = e.jornadaActiva?.torneo;
+  const ficha = torneo && !travel && !chal ? fichaDe(e.slug) : null;
+  const inscripcionUrl = ficha?.inscripcion?.[torneo];
+  const startingListUrl = ficha?.startingList?.[torneo];
 
   return html`
-    <li>
-      <a
-        href="/carrera/${e.slug}"
-        class="group grid items-center gap-x-5 gap-y-4 border-b border-owa-sand p-4 transition-colors duration-200 ease-out hover:bg-owa-mist/50 md:grid-cols-[15rem_9rem_minmax(0,1fr)_auto]"
-      >
+    <li
+      class="group grid items-center gap-x-5 gap-y-4 border-b border-owa-sand p-4 transition-colors duration-200 ease-out hover:bg-owa-mist/50 md:grid-cols-[15rem_9rem_minmax(0,1fr)_auto]"
+    >
+      <!-- class="contents": el link no genera su propia caja, así sus tres
+           hijos (foto, fecha, info) siguen siendo celdas directas de esta
+           grilla — necesario para poder sacar los botones de acá afuera y
+           que cada uno sea un <a> real a su propio destino. -->
+      <a href="${href}" class="contents">
         <div class="relative h-30 overflow-hidden rounded-owa-md bg-owa-abyss md:h-29.5">
           ${foto({
             slug: e.img,
@@ -81,32 +150,54 @@ function fila(e) {
           <p class="font-display text-[13px] font-black tracking-[0.18em] text-owa-blue">${e.sigla}</p>
           <h3 class="mt-2 text-[clamp(1.1875rem,2vw,1.5625rem)] leading-[1.05] text-owa-navy">${e.nombre}</h3>
           <p class="mt-1.5 text-[13px] text-owa-slate">${e.sede}</p>
-          <p class="mt-2.5 flex flex-wrap gap-1.5">${modalidadesDe(e)}</p>
-        </div>
-
-        <div class="grid gap-2 md:min-w-43">
-          <!-- Badge de estado, no una acción propia: toda la fila es un único
-               link a "ver detalles" (la inscripción real vive ahí adentro),
-               así que esto no reacciona al hover — si lo hiciera, parecería
-               un botón distinto llevando a otro lado. -->
-          <span
-            class="rounded-full px-5 py-3 text-center font-display text-xs font-black tracking-[0.06em] ${abierta || chal
-              ? 'bg-owa-blue text-white'
-              : 'bg-owa-sand text-owa-slate'}"
-            >${chal ? 'POSTULARME' : abierta ? 'INSCRIBIRSE →' : 'PRÓXIMAMENTE'}</span
-          >
-          <span
-            class="rounded-full border border-owa-line px-4.5 py-2.5 text-center font-display text-[11px] font-bold tracking-[0.06em] text-owa-slate transition-colors duration-200 ease-out group-hover:border-owa-navy group-hover:bg-owa-navy group-hover:text-white"
-            >VER DETALLES</span
-          >
+          <p class="mt-2.5 flex flex-wrap gap-1.5">${travel ? '' : torneo ? chipModalidad(torneo) : modalidadesDe(e)}</p>
         </div>
       </a>
+
+      <div class="grid gap-2 md:min-w-43">
+        ${inscripcionUrl
+          ? html`
+              <a
+                href="${inscripcionUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="u-press rounded-full bg-owa-blue px-5 py-3 text-center font-display text-xs font-black tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:bg-owa-navy"
+                >INSCRIBIRSE →</a
+              >
+            `
+          : html`
+              <span
+                class="rounded-full px-5 py-3 text-center font-display text-xs font-black tracking-[0.06em] ${abierta || chal
+                  ? 'bg-owa-blue text-white'
+                  : 'bg-owa-sand text-owa-slate'}"
+                >${travel ? e.chip : chal ? 'POSTULARME' : abierta ? 'INSCRIBIRSE →' : 'PRÓXIMAMENTE'}</span
+              >
+            `}
+        ${startingListUrl
+          ? html`
+              <a
+                href="${startingListUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="u-press rounded-full border border-owa-line px-4.5 py-2.5 text-center font-display text-[11px] font-bold tracking-[0.06em] text-owa-slate transition-colors duration-200 ease-out hover:border-owa-navy hover:bg-owa-navy hover:text-white"
+                >STARTING LIST</a
+              >
+            `
+          : html`
+              <a
+                href="${href}"
+                class="rounded-full border border-owa-line px-4.5 py-2.5 text-center font-display text-[11px] font-bold tracking-[0.06em] text-owa-slate transition-colors duration-200 ease-out group-hover:border-owa-navy group-hover:bg-owa-navy group-hover:text-white"
+                >VER DETALLES</a
+              >
+            `}
+      </div>
     </li>
   `;
 }
 
 const lista = () => {
-  const grupos = agrupar(ALL.filter(pasaFiltro));
+  const base = filtro === 'TRAVEL' ? TRAVEL.map(normalizarTravel) : expandirPorFiltro(ALL.filter(pasaFiltro));
+  const grupos = agrupar(base);
   if (!grupos.length)
     return html`<p class="py-16 text-center text-owa-slate">No hay carreras en esta modalidad todavía.</p>`;
 

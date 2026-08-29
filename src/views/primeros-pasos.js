@@ -13,7 +13,9 @@ import {
   ETAPAS,
   ACOMPANADO,
   KIDS,
+  DESCRIPCIONES_MODALIDAD,
   NIVELES_MODALIDAD,
+  TRAVEL_MODALIDAD,
   CIERRE,
   CTA_FINAL,
 } from '../data/primeros-pasos.js';
@@ -373,26 +375,64 @@ export function render() {
         ${eyebrow('Cuando quieras seguir descubriendo', 'sky')}
         <h2 id="h-modalidades" class="mt-3.5 u-h2">Cinco formas de vivir<br />las aguas abiertas</h2>
 
-        <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-stagger>
-          ${MODALIDADES.map(
-            (m) => html`
-              <a
-                href="${m.href}"
-                class="reveal u-lift-sm group relative flex min-h-56 flex-col justify-between overflow-hidden rounded-owa-lg border border-white/13 bg-white/6 p-6.5 transition-colors duration-250 ease-out hover:border-owa-cyan/50"
-              >
-                <div>
+        <!-- Orden propio de esta página (Circuito primero, es la puerta de
+             entrada) y Travel integrada a la misma grilla, ocupando 2
+             columnas junto a Challenge: cierra la fila en vez de quedar
+             como un bloque aparte. -->
+        <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+          ${['/circuito', '/grand-prix', '/especiales', '/challenge']
+            .map((href) => MODALIDADES.find((m) => m.href === href))
+            .map(
+              (m) => html`
+                <a
+                  href="${m.href}"
+                  class="reveal u-lift-sm group flex flex-col rounded-owa-lg border border-white/13 bg-white/6 p-7 transition-colors duration-250 ease-out hover:border-owa-cyan/50"
+                >
                   <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white/10">
                     <img src="${m.iso || '/brand/owa-iso-cyan.svg'}" alt="" class="size-5" aria-hidden="true" />
                   </span>
                   <h3 class="mt-4 text-[1.25rem] leading-[1.02] text-white">${m.titulo}</h3>
+                  <p class="mt-2.5 text-[14px] leading-relaxed text-owa-line">${DESCRIPCIONES_MODALIDAD[m.href]}</p>
+                  ${NIVELES_MODALIDAD[m.href]
+                    ? html`
+                        <p class="mt-4 text-[13px] leading-relaxed text-owa-sky uppercase">
+                          <span class="font-display font-black tracking-[0.03em] text-owa-line">Nivel:</span>
+                          ${NIVELES_MODALIDAD[m.href]}
+                        </p>
+                      `
+                    : ''}
+                </a>
+              `
+            )}
+          ${(() => {
+            const travel = MODALIDADES.find((m) => m.href === '/travel');
+            return html`
+              <a
+                href="${travel.href}"
+                class="reveal u-lift-sm group flex flex-col rounded-owa-lg border border-white/13 bg-white/6 p-7 transition-colors duration-250 ease-out hover:border-owa-cyan/50 sm:col-span-2"
+              >
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white/10">
+                  <img src="${travel.iso || '/brand/owa-iso-cyan.svg'}" alt="" class="size-5" aria-hidden="true" />
+                </span>
+                <h3 class="mt-4 text-[1.25rem] leading-[1.02] text-white">${travel.titulo}</h3>
+
+                <div class="mt-4 grid gap-6 sm:grid-cols-2">
+                  ${TRAVEL_MODALIDAD.map(
+                    (sub, i) => html`
+                      <div class="${i === 1 ? 'sm:pl-6' : ''}">
+                        <p class="font-display text-[12px] font-black tracking-[0.06em] text-owa-sky uppercase">${sub.t}</p>
+                        <p class="mt-2 text-[14px] leading-relaxed text-owa-line">${sub.d}</p>
+                        <p class="mt-3 text-[13px] leading-relaxed text-owa-sky uppercase">
+                          <span class="font-display font-black tracking-[0.03em] text-owa-line">Nivel:</span>
+                          ${sub.nivel}
+                        </p>
+                      </div>
+                    `
+                  )}
                 </div>
-                <p class="text-[13px] leading-relaxed text-owa-sky">
-                  <span class="font-display font-black tracking-[0.03em] text-owa-line uppercase">Nivel recomendado:</span>
-                  ${NIVELES_MODALIDAD[m.href]}
-                </p>
               </a>
-            `
-          )}
+            `;
+          })()}
         </div>
       </div>
     </section>

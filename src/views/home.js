@@ -235,10 +235,13 @@ function tarjetaRaceTravelHome(r) {
         className: 'absolute inset-0 block h-full w-full',
         imgClass: 'h-full w-full object-cover object-[68%_32%]',
       })}
-      <!-- Diagonal concentrada cerca del texto: la mitad superior derecha
-           (los farallones y los veleros) queda prácticamente sin velo. -->
+      <!-- Radial anclado abajo-izquierda (donde vive el texto) en vez de un
+           velo parejo: los farallones, el cielo y buena parte del agua
+           quedan casi con su color original. El linear-to-top suma un
+           oscurecimiento muy leve general para que "Quiero recibir
+           información" nunca dependa sólo del radial. -->
       <div
-        class="absolute inset-0 [background-image:linear-gradient(to_top_right,rgb(13_16_48/0.95)_0%,rgb(13_16_48/0.55)_32%,transparent_68%)]"
+        class="absolute inset-0 [background-image:radial-gradient(ellipse_at_0%_100%,rgb(0_12_32/0.95)_0%,rgb(0_12_32/0.65)_30%,rgb(0_12_32/0.22)_55%,transparent_75%),linear-gradient(to_top,rgb(0_12_32/0.3)_0%,transparent_40%)]"
       ></div>
 
       <div class="relative flex flex-1 flex-col p-6.5">
