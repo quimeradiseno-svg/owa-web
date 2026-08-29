@@ -59,6 +59,13 @@ const TRAZOS = {
   ticket: '<rect x="3.5" y="6.5" width="17" height="11" rx="2.5"/><path d="M13.5 6.5v11" stroke-dasharray="2 2.2"/>',
   // Más información: i minúscula en círculo.
   info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/>',
+  // Completar la distancia: recorrido punteado que termina en un pin.
+  ruta: '<circle cx="5" cy="18" r="1.9"/><path d="M7.2 17.2c3-.9 4.8-2.4 5.8-4.2" stroke-dasharray="2 2.6"/><path d="M16.5 13.5s3.5-3.3 3.5-5.9a3.5 3.5 0 1 0-7 0c0 2.6 3.5 5.9 3.5 5.9z"/><circle cx="16.5" cy="7.6" r="1.2"/>',
+  // Asistencia en el agua: chaleco salvavidas.
+  chaleco:
+    '<path d="M9.5 3.5 6.5 5.3V19A1.5 1.5 0 0 0 8 20.5h2.5v-17z"/><path d="M14.5 3.5l3 1.8V19a1.5 1.5 0 0 1-1.5 1.5h-2.5v-17z"/><path d="M9.5 3.5 12 6l2.5-2.5"/><path d="M6.5 10.5h4"/><path d="M13.5 10.5h4"/>',
+  // Seguridad: escudo con tilde.
+  escudo: '<path d="M12 3 5 5.8v5.4c0 4.2 2.9 7.7 7 8.8 4.1-1.1 7-4.6 7-8.8V5.8z"/><path d="m9.1 11.8 2.2 2.2 3.7-4"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>

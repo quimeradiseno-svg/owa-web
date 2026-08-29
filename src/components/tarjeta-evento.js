@@ -151,8 +151,10 @@ export function tarjetaTravel(t) {
 
 /** Tarjeta chica para las listas de fechas de las páginas madre.
     `estado` se puede apagar donde el chip no aporta: en Challenge no hay fecha
-    de inscripción, así que "PRÓXIMAMENTE" sólo agregaría ruido. */
-export function tarjetaFecha(e, { orden, linea, sublinea, estado = true }) {
+    de inscripción, así que "PRÓXIMAMENTE" sólo agregaría ruido.
+    `destacado` agrega una pastilla debajo de la sublínea: la usa Primeros
+    pasos para la distancia recomendada de cada fecha. */
+export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '' }) {
   return html`
     <a
       href="/carrera/${e.slug}"
@@ -176,6 +178,13 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true }) {
         ${estado ? chipEstado(e.estado) : ''}
         <p class="${estado ? 'mt-3' : ''} font-display text-base font-black text-owa-navy">${linea}</p>
         <p class="mt-1.5 text-[13px] text-owa-slate">${sublinea}</p>
+        ${destacado
+          ? html`<p
+              class="mt-3 inline-flex items-center rounded-lg bg-owa-mist px-3.5 py-2 font-display text-[13px] font-black tracking-[0.04em] text-owa-blue uppercase"
+            >
+              ${destacado}
+            </p>`
+          : ''}
         <p
           class="mt-4 flex items-center gap-2 border-t border-owa-sand pt-3.5 font-display text-xs font-bold tracking-[0.08em] text-owa-blue"
         >
