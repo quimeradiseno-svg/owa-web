@@ -109,9 +109,12 @@ const resumenJornada = (f, torneo) => {
   const hora = (r) => (r.ficha.find(([k]) => k === 'Horario de largada') || [])[1];
   return {
     distancias: (ds.length ? ds.map((d) => d.km) : rs.map((r) => r.titulo)).join(' · ') || 'A confirmar',
-    largada: rs.map(hora).filter(Boolean).join(' · ') || 'A confirmar',
+    largada: (rs.map(hora).filter(Boolean).join(' · ') || ds.map((d) => d.hora).filter(Boolean).join(' · ')) || 'A confirmar',
   };
 };
+
+/** La prueba lleva el nombre del sponsor: "Super Sprint by arena". */
+const SUPER_SPRINT = 'Super Sprint by arena';
 
 const MES_CORTO = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
@@ -232,15 +235,21 @@ const bandaVivo = () => html`
   </a>
 `;
 
-const jornadas = (e, f) => html`
+const jornadas = (e, f) => {
+  // Luján corre los dos torneos el mismo día; San Pedro, Ramallo y Colón los
+  // reparten en sábado y domingo. El encabezado lo dice según la fecha real
+  // en vez de dar por sentado el fin de semana.
+  const unSoloDia = new Set((e.jornadas || []).map((j) => j.fecha)).size === 1;
+
+  return html`
   <!-- EXPERIMENTO — fondo blanco en vez de navy: las tarjetas son fotos con
        su propio velo, así que se leen igual sobre cualquier fondo; el
        cambio es puramente del color de la sección. Ver Distancias y
        categorías, que hace el cambio inverso a modo de contraste. -->
-  <section class="bg-white px-0 py-20" aria-labelledby="h-jornadas">
+  <section class="bg-white px-0 pt-10 pb-20" aria-labelledby="h-jornadas">
     <div class="u-shell">
-      ${eyebrow('Dos jornadas, un fin de semana')}
-      <h2 id="h-jornadas" class="mt-3.5 u-h2 text-owa-navy">Días del evento</h2>
+      ${eyebrow(unSoloDia ? 'Dos campeonatos, una misma jornada' : 'Dos jornadas, un fin de semana')}
+      <h2 id="h-jornadas" class="mt-3.5 u-h2 text-owa-navy">${unSoloDia ? 'Día del evento' : 'Días del evento'}</h2>
 
       <!-- EXPERIMENTO — estilo "afiche de Instagram": cinta de fecha, sigla
            gigante, bajada y pastillas de dato, en vez de la jerarquía
@@ -261,13 +270,14 @@ const jornadas = (e, f) => html`
               <div class="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[27px]">
                 <div class="absolute inset-0" aria-hidden="true">
                   ${foto({
-                    slug: gp ? 'vob-rio-barco' : 'spd-brazada-colores',
+                    slug: j.img || e.img,
                     alt: '',
                     sizes: '(min-width: 1024px) 50vw, 100vw',
                     className: 'block h-full w-full',
-                    // La foto de VOB es panorámica y los nadadores quedan
-                    // en el tercio inferior: centrado los recortaba de más.
-                    imgClass: `h-full w-full object-cover ${gp ? 'object-[50%_75%]' : ''}`,
+                    // Recorte propio por jornada: la de VOB es panorámica y
+                    // los nadadores quedan en el tercio inferior, centrada los
+                    // recortaba de más.
+                    imgClass: `h-full w-full object-cover ${j.imgPos || ''}`,
                   })}
                   <!-- Dos degradés combinados en vez de un solo velo parejo:
                        el vertical sostiene texto/CTA abajo sin tapar la foto
@@ -318,7 +328,7 @@ const jornadas = (e, f) => html`
 
                 <div class="mt-5 flex flex-wrap items-center gap-2.5">
                   ${distanciasTorneo.map((d, i) => {
-                    const etiqueta = d.rotulo === 'arena Super Sprint' ? `Super Sprint ${d.km}` : d.rotulo === 'Kid' ? `Kid ${d.km}` : d.km;
+                    const etiqueta = d.rotulo === 'arena Super Sprint' ? `${SUPER_SPRINT} ${d.km}` : d.rotulo === 'Kid' ? `Kid ${d.km}` : d.km;
                     return html`
                       <span
                         class="rounded-full px-3.5 py-1.5 font-display text-[12px] font-black tracking-[0.04em] uppercase ${i < (gp ? 1 : 2)
@@ -345,7 +355,7 @@ const jornadas = (e, f) => html`
                       href="${linkInsc}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="u-press flex-1 rounded-full py-4 text-center font-display text-[13px] font-black tracking-[0.06em] transition-colors duration-200 ease-out group-hover:bg-white ${gp
+                      class="u-press flex-1 rounded-full py-4 text-center font-display text-[11px] tracking-[0.04em] font-black sm:text-[13px] sm:tracking-[0.06em] transition-colors duration-200 ease-out group-hover:bg-white ${gp
                         ? 'bg-owa-electric text-white group-hover:text-owa-electric'
                         : 'bg-owa-cyan text-owa-deep'}"
                       >INSCRIBITE A ${j.torneo} →</a
@@ -356,7 +366,7 @@ const jornadas = (e, f) => html`
                             href="${linkStarting}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="u-press rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep sm:shrink-0"
+                            class="u-press rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[11px] tracking-[0.04em] font-black sm:text-[13px] sm:tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep sm:shrink-0"
                             >STARTING LIST</a
                           >
                         `
@@ -372,6 +382,7 @@ const jornadas = (e, f) => html`
     </div>
   </section>
 `;
+};
 
 const requisitos = () => html`
   <section class="bg-owa-navy px-0 py-19 text-white" aria-labelledby="h-admision">
@@ -485,7 +496,7 @@ export function render(ctx) {
         </p>
 
         <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">
-          ${e.nombre}${e.slug === 'san-pedro'
+          ${e.nombre}${e.sponsor === 'arena'
             ? html`<span class="ml-4 inline-flex items-center gap-2.5 align-middle normal-case">
                 <span class="font-display text-[clamp(0.8125rem,1.5vw,1.0625rem)] font-bold tracking-[0.04em] text-owa-line/80">by</span>
                 <!-- El logo de arena sólo existe en negro; se invierte a blanco
@@ -505,34 +516,55 @@ export function render(ctx) {
              sumarse — eventos sin jornadas (challenge, especiales) siguen
              mostrando la fecha simple, que es todo lo que tienen. -->
         ${e.jornadas?.length
-          ? html`
-              <div class="mt-5 flex flex-wrap gap-3">
-                ${e.jornadas.map((j) => {
-                  const gp = j.torneo === 'GRAND PRIX';
-                  // Acá sólo van las distancias que puntúan (Media/Corta):
-                  // Super Sprint y Kid quedan afuera de la pastilla del banner
-                  // — siguen completas en la tarjeta de "Elegí tu carrera".
-                  const dists = (f?.distancias || []).filter(
-                    (d) => d.torneo === j.torneo && d.rotulo !== 'arena Super Sprint' && d.rotulo !== 'Kid'
-                  );
-                  const distTxt = dists.length > 1 ? dists.map((d) => distCorta(d.km)).join(' · ') : (dists[0]?.km || '').toUpperCase();
-                  return html`
-                    <span
-                      class="inline-flex items-center gap-2.5 rounded-full border border-owa-cyan/60 px-4.5 py-2.5 font-display text-[13px] font-black tracking-[0.02em]"
-                    >
-                      <span data-nums class="text-[15px] text-owa-cyan"
-                        ><span class="sm:hidden">${fechaCorta(j.fecha).replace(/ \d{2}$/, '')}</span
-                        ><span class="hidden sm:inline">${fechaCorta(j.fecha)}</span></span
-                      >
-                      <span class="text-white/70" aria-hidden="true">·</span>
-                      <span class="text-white">${j.torneo}</span>
-                      <span class="text-white/70" aria-hidden="true">·</span>
-                      <span data-nums class="text-white">${distTxt}</span>
-                    </span>
-                  `;
-                })}
-              </div>
-            `
+          ? (() => {
+              // Acá sólo van las distancias que puntúan (Media/Corta):
+              // Super Sprint y Kid quedan afuera de la pastilla del banner
+              // — siguen completas en la tarjeta de "Elegí tu carrera".
+              const distTxtDe = (torneo) => {
+                const ds = (f?.distancias || []).filter(
+                  (d) => d.torneo === torneo && d.rotulo !== 'arena Super Sprint' && d.rotulo !== 'Kid'
+                );
+                return ds.length > 1 ? ds.map((d) => distCorta(d.km)).join(' · ') : (ds[0]?.km || '').toUpperCase();
+              };
+              const sep = html`<span class="text-white/70" aria-hidden="true">·</span>`;
+              const fecha = (dia) => html`<span data-nums class="text-[15px] text-owa-cyan"
+                ><span class="sm:hidden">${fechaCorta(dia).replace(/ \d{2}$/, '')}</span
+                ><span class="hidden sm:inline">${fechaCorta(dia)}</span></span
+              >`;
+              const PILL =
+                'inline-flex flex-wrap items-center gap-2.5 rounded-full border border-owa-cyan/60 px-4.5 py-2.5 font-display text-[13px] font-black tracking-[0.02em]';
+              // Luján corre las dos jornadas el mismo día: dos pastillas
+              // repetían la fecha idéntica. Va una sola, con la fecha adelante
+              // y los dos torneos con sus distancias detrás.
+              const mismoDia = new Set(e.jornadas.map((j) => j.fecha)).size === 1;
+              return html`
+                <div class="mt-5 flex flex-wrap gap-3">
+                  ${mismoDia
+                    ? html`
+                        <span class="${PILL}">
+                          ${fecha(e.jornadas[0].fecha)}
+                          ${e.jornadas.map(
+                            (j) => html`${sep}<span class="text-white">${j.torneo}</span>${sep}<span
+                                data-nums
+                                class="text-white"
+                                >${distTxtDe(j.torneo)}</span
+                              >`
+                          )}
+                        </span>
+                      `
+                    : e.jornadas.map(
+                        (j) => html`
+                          <span class="${PILL}">
+                            ${fecha(j.fecha)} ${sep}
+                            <span class="text-white">${j.torneo}</span>
+                            ${sep}
+                            <span data-nums class="text-white">${distTxtDe(j.torneo)}</span>
+                          </span>
+                        `
+                      )}
+                </div>
+              `;
+            })()
           : html`<p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
               ${e.fechaLarga}
             </p>`}
@@ -588,7 +620,11 @@ export function render(ctx) {
                 const esSuperSprint = d.rotulo === 'arena Super Sprint';
                 // La sigla de la carrera dice más que el rótulo interno
                 // (Larga/Media/Corta): VOB es el Grand Prix, SPD el Circuito.
-                const siglaCard = d.rotulo === 'Larga' ? 'VOB' : d.rotulo === 'Media' || d.rotulo === 'Corta' ? 'SPD' : d.rotulo;
+                const siglaCard = principal
+                  ? e.jornadas?.find((j) => j.torneo === d.torneo)?.sigla || d.torneo
+                  : esSuperSprint
+                    ? SUPER_SPRINT
+                    : d.rotulo;
                 return html`
                   <li
                     class="reveal u-lift-sm flex flex-col rounded-owa-lg p-6 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] ${principal
@@ -614,9 +650,11 @@ export function render(ctx) {
                     >
                       ${d.km}
                     </p>
+                    <!-- Sin torneo no se inventa uno: Kids y OWA Relay no
+                         puntúan para ningún campeonato. -->
                     ${d.torneo
                       ? html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-blue">${d.torneo}</p>`
-                      : html`<p class="mt-2 font-display text-xs font-black tracking-[0.06em] text-owa-blue">CIRCUITO OWA</p>`}
+                      : ''}
                     ${principal
                       ? html`
                           ${d.nota ? html`<p class="mt-2.5 text-[13px] leading-relaxed text-owa-slate">${d.nota}</p>` : ''}
@@ -627,10 +665,12 @@ export function render(ctx) {
                                   <span class="font-display text-sm font-black text-owa-navy">${d.puntaje}</span>
                                 </p>`
                               : ''}
-                            <p class="flex flex-wrap items-baseline justify-between gap-x-4 border-t border-owa-sand pt-2.5">
-                              <span class="text-[11px] text-owa-slate/80">Categorías</span>
-                              <span class="font-display text-sm font-black text-owa-navy">${d.cats}</span>
-                            </p>
+                            ${d.cats
+                              ? html`<p class="flex flex-wrap items-baseline justify-between gap-x-4 border-t border-owa-sand pt-2.5">
+                                  <span class="text-[11px] text-owa-slate/80">Categorías</span>
+                                  <span class="font-display text-sm font-black text-owa-navy">${d.cats}</span>
+                                </p>`
+                              : ''}
                           </div>
                         `
                       : html`
@@ -862,6 +902,51 @@ export function render(ctx) {
         ${f?.cronogramas
           ? (() => {
               const cronogramas = f.cronogramas;
+
+              // Cronograma corto (Luján: tres largadas en un solo día) se lee
+              // mejor como línea de tiempo horizontal: las pestañas de torneo
+              // y día son demasiado aparato para eso. San Pedro, con dos días
+              // y una docena de ítems, sigue con el selector.
+              const dias = cronogramas.flatMap((c) => c.dias);
+              const unDia = new Set(dias.map((d) => d.fecha)).size === 1;
+              const items = cronogramas.flatMap((c) =>
+                c.dias.flatMap((d) => d.items.map((it) => ({ ...it, torneo: c.torneo })))
+              );
+              // Clases literales: Tailwind escanea el fuente, un
+              // `grid-cols-${n}` armado en runtime no se generaría.
+              const COLS = { 1: "lg:grid-cols-1", 2: "lg:grid-cols-2", 3: "lg:grid-cols-3", 4: "lg:grid-cols-4", 5: "lg:grid-cols-5" };
+              // Hasta 5 ítems, una columna por ítem; de 6 a 8 se reparten en
+              // filas de 4 para que no queden celdas demasiado angostas.
+              const cols = COLS[items.length] || COLS[4];
+              if (unDia && items.length <= 8) {
+                const orden = [...items].sort((a, b) => a.hora.localeCompare(b.hora));
+                return html`
+                  <p class="mt-3 font-display text-sm font-bold tracking-[0.08em] text-owa-slate uppercase">
+                    ${dias[0].fecha} · ${dias[0].lugar}
+                  </p>
+                  <ol class="mt-6.5 grid gap-y-9 sm:grid-cols-2 ${cols}" data-stagger>
+                    ${orden.map(
+                      (it) => html`
+                        <li class="reveal relative pr-4.5">
+                          <div class="relative mb-5.5 h-0.5 bg-owa-line">
+                            <span
+                              class="absolute left-0 rounded-full ${it.destacado
+                                ? '-top-2.25 size-5 border-4 border-owa-cyan bg-white'
+                                : '-top-1.75 size-4 bg-owa-cyan'}"
+                            ></span>
+                          </div>
+                          <p data-nums class="font-display text-[1.5625rem] font-black text-owa-blue">${it.hora}</p>
+                          <p class="mt-2 font-display text-[15px] font-bold text-owa-navy uppercase">${it.t}</p>
+                          <p class="mt-1.5 text-[13px] leading-normal text-owa-slate">
+                            ${it.d || (cronogramas.length > 1 ? it.torneo : '')}
+                          </p>
+                        </li>
+                      `
+                    )}
+                  </ol>
+                `;
+              }
+
               const torneoActivo = cronogramas[cronogramaSel.torneo] || cronogramas[0];
               const diaActivo = torneoActivo.dias[cronogramaSel.dia] || torneoActivo.dias[0];
               const nombreTorneoOWA = (t) => (t === 'GRAND PRIX' ? 'Grand Prix OWA' : 'Circuito OWA');
@@ -871,7 +956,9 @@ export function render(ctx) {
               const resumenTab = (c) => {
                 const ds = (f?.distancias || []).filter((d) => d.torneo === c.torneo);
                 const base = ds.map((d) => d.km).join(' · ');
-                return c.torneo === 'GRAND PRIX' ? base : `${base} · Kid`;
+                // Sólo si la fecha realmente la corre: Luján, por ejemplo, no tiene Kid.
+                const kid = c.torneo !== 'GRAND PRIX' && (f?.distancias || []).some((d) => d.rotulo === 'Kid');
+                return kid ? `${base} · Kid` : base;
               };
 
               const filaCron = (it, idx, total) => html`
@@ -1014,7 +1101,7 @@ export function render(ctx) {
     </section>
 
     <!-- reglamento + kit -->
-    <section class="u-shell pt-4 pb-20" aria-labelledby="h-reglamento">
+    <section class="u-shell pt-12 pb-20" aria-labelledby="h-reglamento">
       <div class="grid gap-4.5 lg:grid-cols-2">
         <div class="reveal rounded-owa-lg bg-owa-mist p-8" data-visible>
           ${eyebrow('Reglamento')}

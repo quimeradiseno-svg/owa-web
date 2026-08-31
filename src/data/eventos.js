@@ -4,6 +4,8 @@
 export const EVENTOS = [
   {
     slug: 'lujan',
+    // Lleva el nombre del sponsor en el titular: "... by arena".
+    sponsor: 'arena',
     distancias: { gp: 8, circuito: [2, 4] },
     sigla: 'LJN',
     nombre: 'Open Water Luján',
@@ -21,21 +23,28 @@ export const EVENTOS = [
       {
         torneo: 'GRAND PRIX',
         sigla: 'LJN',
+        img: 'ljn-sede',
+        nombreLargo: 'Luján',
         fecha: '31/10/2026',
         dia: 'Jornada Grand Prix',
         desc: 'Élite y máster competitivo. Puntúa para el ranking Grand Prix.',
+        tagline: 'Ocho kilómetros en<br>agua sin corriente',
       },
       {
         torneo: 'CIRCUITO OWA',
         sigla: 'LJN',
+        img: 'ljn-largada',
+        nombreLargo: 'Luján',
         fecha: '31/10/2026',
         dia: 'Jornada Circuito · mismo día',
         desc: 'Única fecha del calendario donde ambas competencias se corren el mismo día.',
+        tagline: 'Única jornada compartida:<br>Grand Prix y Circuito',
       },
     ],
   },
   {
     slug: 'san-pedro',
+    sponsor: 'arena',
     distancias: { gp: 18, circuito: [4, 7] },
     // Dos jornadas con nombre propio: la Vuelta de Obligado abre el fin de
     // semana y la de San Pedro lo cierra (ver `jornadas`).
@@ -56,6 +65,8 @@ export const EVENTOS = [
       {
         torneo: 'GRAND PRIX',
         sigla: 'VOB',
+        img: 'vob-rio-barco',
+        imgPos: 'object-[50%_75%]',
         nombreLargo: 'Vuelta de Obligado',
         fecha: '14/11/2026',
         dia: 'Día 1 · Grand Prix',
@@ -65,6 +76,7 @@ export const EVENTOS = [
       {
         torneo: 'CIRCUITO OWA',
         sigla: 'SPD',
+        img: 'spd-brazada-colores',
         nombreLargo: 'San Pedro',
         fecha: '15/11/2026',
         dia: 'Día 2 · Circuito OWA',

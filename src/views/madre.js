@@ -59,7 +59,7 @@ const bloqueDistancias = (key) => html`
   <div class="mt-9">
     <h3 class="u-eyebrow text-owa-blue">Las distancias</h3>
     <ul class="mt-4">
-      ${EVENTOS.filter((e) => e.tipo === 'core').map((e) => {
+      ${EVENTOS.filter((e) => e.tipo === 'core').map((e, i) => {
         // La sigla es la de la jornada que se está mirando: San Pedro es VOB
         // en Grand Prix y SNP en Circuito; Colón, LBC y CLN.
         const j = e.jornadas.find((x) => x.torneo === TORNEO[key]);
@@ -73,6 +73,7 @@ const bloqueDistancias = (key) => html`
               class="group -mx-2 flex items-baseline justify-between gap-4 rounded-owa-md px-2 py-3 transition-colors duration-200 ease-out hover:bg-owa-mist/60"
             >
               <span class="flex min-w-0 items-center gap-2.5">
+                <span data-nums class="font-display text-[13px] font-black text-owa-slate">${String(i + 1).padStart(2, '0')}</span>
                 <span class="font-display text-[13px] font-black tracking-[0.1em] text-owa-blue">${j.sigla}</span>
                 <!-- El separador va como borde, no como carácter "|": un glifo
                      decorativo tan tenue no llega al contraste mínimo de texto,
@@ -202,7 +203,7 @@ export function render(ctx) {
         ${key === 'especiales' ? bloqueEscenarios() : ''}
       </div>
 
-      <div class="rounded-owa-lg bg-owa-mist p-7.5 px-9 pt-12">
+      <div class="rounded-owa-lg bg-owa-mist p-7.5 pt-12 pl-9 pr-9 lg:pr-16">
         <h3 class="font-display text-[17px] font-black text-owa-navy">${m.cajaTitulo}</h3>
         <ul class="mt-4">
           ${m.cajaItems.map((i) =>

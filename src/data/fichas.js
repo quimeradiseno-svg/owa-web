@@ -12,6 +12,62 @@ const PREMIACION_NEOPRENE = 'Generales 1 al 3 por género';
 const AGUA = 'Entre 23 y 26 °C, sin visibilidad, con corriente a favor';
 
 export const FICHAS = {
+  lujan: {
+    sedeBarra: 'Awass Beach Club · Surf Village, Luján',
+    sedeCiudad: 'Luján, Buenos Aires, Argentina',
+
+    // Luján corre las dos jornadas el mismo día y OWA pasó un solo
+    // formulario, así que ambas entran por el mismo link. El slug dice
+    // "circuito" pero es el único que mandaron: confirmar con OWA si el
+    // Grand Prix abre uno propio.
+    inscripcion: {
+      'GRAND PRIX': 'https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627',
+      'CIRCUITO OWA': 'https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627',
+    },
+    // SIN CONFIRMAR: OWA no pasó las starting lists de Luján. Estas se arman
+    // aplicando al slug de inscripción el mismo patrón que sí confirmó para
+    // San Pedro (/resultados/<slug>/participantes?orden=categoria). Verificar
+    // antes de publicar.
+    startingList: {
+      'GRAND PRIX': 'https://cronometrajeinstantaneo.com/resultados/lujan-ljn-circuito-owa-2627/participantes?orden=categoria',
+      'CIRCUITO OWA': 'https://cronometrajeinstantaneo.com/resultados/lujan-ljn-circuito-owa-2627/participantes?orden=categoria',
+    },
+
+    // La largada va en `hora` y no sale de `recorridos` como en San Pedro:
+    // de Luján todavía no hay mapas ni fichas técnicas por distancia.
+    distancias: [
+      { rotulo: 'Larga', torneo: 'GRAND PRIX', km: '8 km', hora: '12:00', puntaje: 'XXL' },
+      { rotulo: 'Media', torneo: 'CIRCUITO OWA', km: '4 km', hora: '12:00' },
+      { rotulo: 'Corta', torneo: 'CIRCUITO OWA', km: '2 km', hora: '14:30' },
+      { rotulo: 'Kids', km: '500 m', hora: '16:00', cats: 'Participativo · No competitivo' },
+      { rotulo: 'OWA Relay', km: '4 × 50 m', hora: '16:45', cats: 'Por equipos' },
+    ],
+
+    // Un solo cronograma para toda la fecha, no uno por torneo: en Luján
+    // Grand Prix y Circuito comparten la jornada y a las 12:00 largan juntos
+    // el 8K y el 4K, así que separarlos daría dos listas casi idénticas.
+    cronogramas: [
+      {
+        torneo: 'GRAND PRIX Y CIRCUITO OWA',
+        dias: [
+          {
+            fecha: 'Sábado 31 de octubre',
+            lugar: 'Awass Beach Club · Surf Village',
+            items: [
+              { hora: '08:30', t: 'Apertura del predio', d: 'Y acreditaciones.' },
+              { hora: '08:30 a 10:45', t: 'Entrega de kits', d: 'Aptos médicos y documentación.' },
+              { hora: '12:00', t: 'Largada 8K + 4K', d: '', destacado: true },
+              { hora: '14:30', t: 'Largada 2K', d: '', destacado: true },
+              { hora: '16:00', t: 'Largada Kids 200 m', d: '', destacado: true },
+              { hora: '16:45', t: 'Largada OWA Relay 4 × 50 m', d: '', destacado: true },
+              { hora: '17:30', t: 'Premiación general', d: '' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
   'san-pedro': {
     // Dos versiones de la sede: la barra de datos necesita el predio (es el
     // punto de encuentro), el subtítulo del hero ya lo dice el propio título
@@ -67,6 +123,7 @@ export const FICHAS = {
       },
       {
         rotulo: 'Kid',
+        torneo: 'CIRCUITO OWA',
         km: '500 m',
         nota: 'Prueba gratuita para nadadores de hasta 13 años',
         cats: 'Participativo · No competitivo',

@@ -19,6 +19,10 @@ const PHOTOS = {
   // 'ev-ramallo' para la tarjeta de Ramallo — coincidencia de contenido, no
   // se reusa ese slug para no atarlas entre sí.
   'spd-brazada-colores': 'SPD/09_CARRERA_BRAZADA_COLORES',
+  // Cards de las dos jornadas de Luján: 1 es la sede (lago y club), 2 la
+  // largada con nadadores.
+  'ljn-sede': 'Fotos/LJN/1.jpg',
+  'ljn-largada': 'Fotos/LJN/2.jpg',
   'pad-infantil': 'Fotos/PDA/DSC_9296.jpg',
   // Romeo Giménez, becado PDA de la temporada 2026/27 (nombrado en PDA_BECAS).
   'pda-romeo': 'Fotos/PDA/romeo.jpg',
