@@ -1,6 +1,6 @@
 import { html } from '../lib/html.js';
 import { foto } from '../lib/img.js';
-import { modalidadesDe, chipEstado } from './ui.js';
+import { modalidadesDe, chipEstado, olaTarjeta } from './ui.js';
 
 /** "14 Y 15 NOV" -> { dia: "14–15", mes: "NOV 2026" } */
 export function fechaBadge(e) {
@@ -169,10 +169,11 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destaca
           imgClass: 'h-full w-full object-cover',
         })}
         <div class="absolute inset-0 bg-linear-to-b from-owa-abyss/10 to-owa-abyss/80"></div>
-        <div class="absolute bottom-3.5 left-4.5 text-white">
+        <div class="absolute bottom-6 left-4.5 text-white">
           <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky">${orden}</p>
           <h3 class="mt-1.5 text-xl leading-none">${e.corto}</h3>
         </div>
+        ${olaTarjeta('#fff')}
       </div>
       <div class="p-5">
         ${estado ? chipEstado(e.estado) : ''}
@@ -199,11 +200,18 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destaca
 /** Tarjeta grande a toda foto para Eventos Especiales: sin panel de texto
     aparte, el título y la bajada se leen directo sobre la imagen. */
 export function tarjetaEspecial(e) {
+  // min-h: con aspect 2/1 puro la tarjeta queda de 150px en tablet y el bloque
+  // de texto (anclado abajo) ocupa el alto entero, sin franja libre arriba
+  // para el sello o el logo. El piso garantiza esa franja; en desktop manda el
+  // aspect, que ya da más alto que el mínimo.
+  // w-full es obligatorio junto al min-h: aspect-ratio also deriva ancho desde
+  // el alto, así que sin fijar el ancho la tarjeta se estiraba a 432px (216×2)
+  // y se desbordaba de su columna de la grilla.
   return html`
     <a
       href="/carrera/${e.slug}"
       data-sobre-foto
-      class="reveal u-lift-sm group relative block aspect-[2/1] overflow-hidden rounded-owa-lg"
+      class="reveal u-lift-sm group relative block aspect-[2/1] min-h-60 w-full overflow-hidden rounded-owa-lg"
     >
       ${foto({
         slug: e.img,
@@ -213,6 +221,42 @@ export function tarjetaEspecial(e) {
         imgClass: 'h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105',
       })}
       <div class="absolute inset-0 bg-linear-to-t from-owa-abyss/90 via-owa-abyss/5 to-transparent"></div>
+
+      <!-- Distintivo opcional de la fecha, siempre arriba a la derecha: el
+           sello propio de OWA (aniversario, cierre de temporada) o el logo
+           institucional invitado. Ninguna fecha lleva los dos.
+           La bandera velo enciende una banda oscura arriba para los
+           distintivos claros —el logo blanco del museo, el sello cian— que
+           sobre el cielo o la espuma de su foto caen a 1.4:1 y se pierden.
+           Es una banda y no una viñeta de esquina porque el logo del museo
+           es ancho y se salía del alcance del degradé radial.
+           El sello azul marino NO la lleva: se apoya sobre cielo claro, ahí
+           ya da 6.3:1, y oscurecerle el fondo lo haría desaparecer. -->
+      ${e.velo
+        ? html`<div
+            class="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_bottom,rgb(7_12_40/0.86)_0%,rgb(7_12_40/0.66)_30%,rgb(7_12_40/0.26)_48%,transparent_66%)]"
+            aria-hidden="true"
+          ></div>`
+        : ''}
+      ${e.sello
+        ? html`<img
+            src="${e.sello.src}"
+            alt="${e.sello.alt}"
+            loading="lazy"
+            decoding="async"
+            class="absolute top-4 right-4 size-20 lg:size-28 [filter:drop-shadow(0_1px_3px_rgb(7_12_40/0.45))]"
+          />`
+        : ''}
+      ${e.logo
+        ? html`<img
+            src="${e.logo.src}"
+            alt="${e.logo.alt}"
+            loading="lazy"
+            decoding="async"
+            class="absolute top-4 right-4 h-14 w-auto lg:h-20 [filter:drop-shadow(0_1px_2px_rgb(7_12_40/0.55))]"
+          />`
+        : ''}
+
       <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6.5 sm:p-7.5">
         <div>
           <p class="font-display text-xs font-bold tracking-[0.14em] text-owa-sky">${e.sigla}</p>

@@ -314,18 +314,24 @@ export function render() {
           <span class="u-eyebrow text-owa-sky">Temporada 2026/27</span>
         </p>
 
-        <h1 class="hero-in mt-6 text-[clamp(3.25rem,9.5vw,9.25rem)] text-white" style="--hero-delay:140ms">
+        <!-- 9.5vw/9.25rem quedaba enorme en notebook (1280–1536px de ancho):
+             ahí no hay tanto viewport como en un monitor de escritorio, pero
+             el título igual escalaba como si lo hubiera. Curva más chica
+             (7vw) y techo más bajo (8rem) para que en esas resoluciones lea
+             como titular, no como cartel. -->
+        <h1 class="hero-in mt-6 text-[clamp(3.25rem,7vw,8rem)] text-white" style="--hero-delay:140ms">
           El agua<br />nos une
         </h1>
 
         <!-- En desktop el párrafo termina justo donde termina "NOS UNE.": el
-             titular escala con 9.5vw y su segunda línea mide 5.53 veces el
-             font-size, de ahí el clamp. Debajo de lg se queda en 560px, que es
+             titular escala con 7vw y su segunda línea mide 5.53 veces el
+             font-size, de ahí el clamp (misma proporción, reescalada junto
+             con el título de arriba). Debajo de lg se queda en 560px, que es
              la medida de lectura cómoda.
              Los espacios duros del final evitan que a 1440 quede "agua." sola
              en la segunda línea; text-wrap:pretty no alcanza a resolverlo. -->
         <p
-          class="hero-in mt-6.5 max-w-[560px] text-lg leading-relaxed text-pretty text-owa-line lg:max-w-[clamp(287px,52.5vw,818px)]"
+          class="hero-in mt-6.5 max-w-[560px] text-lg leading-relaxed text-pretty text-owa-line lg:max-w-[clamp(287px,38.7vw,707px)]"
           style="--hero-delay:220ms"
         >
           Elegí tu próximo desafío. Una temporada para disfrutar, competir y vivir nuevas experiencias

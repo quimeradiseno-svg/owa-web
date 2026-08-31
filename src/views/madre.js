@@ -64,20 +64,28 @@ const bloqueDistancias = (key) => html`
         // en Grand Prix y SNP en Circuito; Colón, LBC y CLN.
         const j = e.jornadas.find((x) => x.torneo === TORNEO[key]);
         return html`
-          <li class="flex items-baseline justify-between gap-4 border-t border-owa-navy/12 py-3">
-            <span class="flex min-w-0 items-center gap-2.5">
-              <span class="font-display text-[13px] font-black tracking-[0.1em] text-owa-blue">${j.sigla}</span>
-              <!-- El separador va como borde, no como carácter "|": un glifo
-                   decorativo tan tenue no llega al contraste mínimo de texto,
-                   y además ensucia el árbol de accesibilidad. -->
-              <span
-                class="truncate border-l border-owa-navy/20 pl-2.5 font-display text-[15px] font-bold text-owa-navy uppercase"
-                >${e.corto}</span
-              >
-            </span>
-            <span data-nums class="font-display text-[17px] font-black whitespace-nowrap text-owa-blue">
-              ${DIST[key](e)}
-            </span>
+          <li class="border-t border-owa-navy/12">
+            <!-- Toda la fila es el link a la ficha: el nombre solo es un blanco
+                 chico y el dato de distancia, que es lo que se viene a mirar,
+                 quedaría fuera del área clickeable. -->
+            <a
+              href="/carrera/${e.slug}"
+              class="group -mx-2 flex items-baseline justify-between gap-4 rounded-owa-md px-2 py-3 transition-colors duration-200 ease-out hover:bg-owa-mist/60"
+            >
+              <span class="flex min-w-0 items-center gap-2.5">
+                <span class="font-display text-[13px] font-black tracking-[0.1em] text-owa-blue">${j.sigla}</span>
+                <!-- El separador va como borde, no como carácter "|": un glifo
+                     decorativo tan tenue no llega al contraste mínimo de texto,
+                     y además ensucia el árbol de accesibilidad. -->
+                <span
+                  class="truncate border-l border-owa-navy/20 pl-2.5 font-display text-[15px] font-bold text-owa-navy uppercase group-hover:underline"
+                  >${e.corto}</span
+                >
+              </span>
+              <span data-nums class="font-display text-[17px] font-black whitespace-nowrap text-owa-blue">
+                ${DIST[key](e)}
+              </span>
+            </a>
           </li>
         `;
       })}
@@ -170,7 +178,11 @@ export function render(ctx) {
 
       <div class="u-shell relative">
         ${eyebrow(m.kicker, 'sky')}
-        <h1 class="mt-4 text-[clamp(2.375rem,6vw,5.375rem)] leading-[0.9]">${m.titulo}</h1>
+        <!-- 6vw/5.375rem quedaba enorme en notebook (1280-1536px): mismo
+             ajuste que el título del hero del home, curva y techo más
+             chicos para que en esas resoluciones lea como titular de
+             sección, no como cartel. -->
+        <h1 class="mt-4 text-[clamp(2.375rem,4.5vw,4.25rem)] leading-[0.9]">${m.titulo}</h1>
         <p class="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-owa-line">${m.intro}</p>
       </div>
 

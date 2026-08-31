@@ -124,6 +124,11 @@ export const EVENTOS = [
     nota: 'Fecha a confirmar según condiciones',
     estado: 'proximamente',
     img: 'ev-nahuel',
+    // Logo institucional invitado: el Museo Malvinas acompaña esta fecha. Va
+    // en blanco porque se apoya sobre la foto de la tarjeta. Necesita velo:
+    // sobre el cielo de esta foto el blanco mide 1.99:1.
+    logo: { src: '/brand/museo-malvinas-blanco.webp', alt: 'Museo Malvinas, Antártida y Atlántico Sur' },
+    velo: true,
   },
   {
     slug: 'vuelta-a-la-huemul',
@@ -140,6 +145,8 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-huemul',
+    // Décima edición de la travesía.
+    sello: { src: '/brand/sello-10-anios.webp', alt: '10 años de la Vuelta a la Huemul' },
   },
   {
     slug: 'colon',
@@ -176,6 +183,10 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-maraton',
+    // Última fecha del calendario 26/27. El sello es cian y esta foto es agua
+    // con espuma: sin velo mide 1.44:1 y se pierde.
+    sello: { src: '/brand/sello-cierre-temporada.webp', alt: 'Cierre de temporada' },
+    velo: true,
   },
 ];
 

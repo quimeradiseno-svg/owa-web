@@ -21,6 +21,26 @@ import { icono } from '../components/iconos.js';
 
 export const titulo = (ctx) => porSlug(ctx.params.slug)?.nombre ?? 'Carrera no encontrada';
 
+// Destino del CTA de cierre. OWA todavía no definió si va a haber UNA página de
+// beneficios para toda la comunidad o una por carrera, así que la resolución
+// recibe el evento y sirve para las dos formas:
+//   general   -> return '/beneficios';
+//   por fecha -> return `/carrera/${e.slug}/beneficios`;
+// Mientras devuelva vacío el CTA se muestra pero NO navega: es un span inerte,
+// no un link. Ojo: no publicar las fichas de carrera con esto sin definir.
+const beneficiosHref = (e) => ''; // eslint-disable-line no-unused-vars
+
+// Gemelo visual de btnAccent mientras no hay destino. Comparte las clases para
+// que lo que se revisa sea el botón final, pero sin href no es un link y los
+// lectores de pantalla no lo anuncian como tal.
+const ctaSinDestino = (label) => html`
+  <span
+    aria-disabled="true"
+    class="btn u-press h-auto min-h-0 shrink-0 cursor-default gap-2.5 border-0 bg-owa-cyan px-7 py-4 font-display text-[13px] font-black tracking-[0.06em] text-owa-deep uppercase"
+    >${label}</span
+  >
+`;
+
 // Estado de demo: deja ver las tres caras de la misma página.
 let raceState = 'proxima';
 let demoAbierto = false;
@@ -318,7 +338,9 @@ const jornadas = (e, f) => html`
                     ${icono('pin', 'size-4 shrink-0 text-owa-sky')}
                     ${f?.sedeBarra || j.desc}
                   </a>
-                  <div class="mt-4 flex gap-2.5">
+                  <!-- Apilados en mobile: lado a lado, "INSCRIBITE A GRAND
+                       PRIX" queda en 96px y se parte en cuatro líneas. -->
+                  <div class="mt-4 flex flex-col gap-2.5 sm:flex-row">
                     <a
                       href="${linkInsc}"
                       target="_blank"
@@ -334,7 +356,7 @@ const jornadas = (e, f) => html`
                             href="${linkStarting}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="u-press shrink-0 rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep"
+                            class="u-press rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[13px] font-black tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep sm:shrink-0"
                             >STARTING LIST</a
                           >
                         `
@@ -653,6 +675,10 @@ export function render(ctx) {
           const activoId = f.recorridos.find((x) => x.id === recorridoActivo)?.id || f.recorridos[0].id;
           const activo = f.recorridos.find((x) => x.id === activoId);
           const nombreTorneo = (t) => (t === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito OWA');
+          // En mobile los tres tabs no entran en una fila con el nombre largo
+          // del torneo (155px cada uno sobre 335 disponibles). La abreviatura
+          // es la misma que ya usan los filtros del calendario y del home.
+          const abrevTorneo = (t) => (t === 'GRAND PRIX' ? 'GP' : 'Circ');
           const siglaTorneo = (t) => e.jornadas?.find((j) => j.torneo === t)?.sigla || '';
 
           // La fecha de la arena Super Sprint no está cargada aparte: corre el
@@ -666,7 +692,7 @@ export function render(ctx) {
           // cabecera que el resto, pero con lo poco que sí hay en vez de
           // fabricar horarios o condiciones que nadie cargó.
           const panelSinMapa = (r) => html`
-            <div class="reveal mt-6 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
+            <div class="reveal mt-3.5 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
               <div class="grid lg:grid-cols-[1.5fr_1fr]">
                 <div class="flex min-h-64 items-center justify-center bg-owa-mist p-8 lg:border-r lg:border-owa-line">
                   <div class="max-w-[30ch] text-center">
@@ -734,7 +760,7 @@ export function render(ctx) {
                 : '';
 
             return html`
-              <div class="reveal mt-6 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
+              <div class="reveal mt-3.5 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
                 <div class="grid lg:grid-cols-[1.5fr_1fr]">
                   <div class="reveal-clip flex overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line" data-visible>
                     ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 60vw, 100vw' })}
@@ -750,7 +776,7 @@ export function render(ctx) {
                       </p>
                     </div>
                     <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">${r.titulo}</h3>
-                    <p class="mt-1 text-sm font-bold text-owa-slate">Punto a punto</p>
+                    <p class="mt-1 text-sm font-bold text-owa-slate">${r.subtitulo || 'Punto a punto'}</p>
                     <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">
                       Recorrido punto a punto sobre el río Paraná, desde ${r.largada} hasta ${r.llegada}.
                     </p>
@@ -792,15 +818,16 @@ export function render(ctx) {
                       role="tab"
                       data-recorrido-tab="${x.id}"
                       aria-selected="${x.id === activoId ? 'true' : 'false'}"
-                      class="u-press flex flex-col items-start gap-0.5 rounded-owa-md border px-4.5 py-2.5 text-left transition-colors duration-200 ${x.id ===
+                      class="u-press flex flex-col items-start gap-0.5 rounded-owa-md border px-3 py-2 text-left transition-colors duration-200 sm:px-4.5 sm:py-2.5 ${x.id ===
                       activoId
                         ? 'border-owa-blue bg-owa-blue text-white'
                         : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
                     >
                       <span class="font-display text-sm font-black">${x.titulo}</span>
-                      <span class="text-[11px] font-bold tracking-[0.04em] uppercase ${x.id === activoId ? 'text-owa-line' : 'text-owa-slate'}">
+                      <span class="text-[11px] font-bold tracking-[0.04em] whitespace-nowrap uppercase ${x.id === activoId ? 'text-owa-line' : 'text-owa-slate'}">
                         <span class="${x.id === activoId ? 'text-owa-cyan' : 'text-owa-blue'}">${siglaTorneo(x.torneo)}</span> ·
-                        ${nombreTorneo(x.torneo)}</span
+                        <span class="sm:hidden">${abrevTorneo(x.torneo)}</span>
+                        <span class="hidden sm:inline">${nombreTorneo(x.torneo)}</span></span
                       >
                     </button>
                   `
@@ -1046,21 +1073,28 @@ export function render(ctx) {
       : ''}
 
     <!-- cta final -->
+    <!-- Las carreras cierran promocionando los beneficios de la comunidad. Los
+         Challenge conservan su CTA de postulación: ese mail es el único camino
+         para anotarse a esas travesías, no hay inscripción online. -->
     <section class="bg-owa-blue px-0 py-18 text-white">
-      <div class="u-shell flex flex-wrap items-center justify-between gap-6">
-        <div class="min-w-0 flex-1">
+      <!-- Apilado en mobile: con flex-1 el texto se encoge en vez de bajar, y
+           la bajada terminaba en una columna de cinco líneas al lado del botón. -->
+      <div class="u-shell flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div class="min-w-0 sm:flex-1">
           <p class="font-display text-[clamp(1.625rem,3.4vw,2.75rem)] leading-none font-black uppercase">
-            ${esChallenge ? 'Postulate a este desafío' : `Nos vemos en ${e.sedeCorta}`}
+            ${esChallenge ? 'Postulate a este desafío' : 'Beneficios Comunidad OWA'}
           </p>
           <p class="mt-2.5 text-[15px] text-white/80">
             ${esChallenge
               ? 'La organización responde cada postulación por mail.'
-              : 'La inscripción se completa en la plataforma externa de OWA.'}
+              : 'Ser parte de la comunidad OWA tiene sus ventajas.'}
           </p>
         </div>
         ${esChallenge
           ? btnAccent('Postularme', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla)
-          : btnAccent('Inscribite', linkInscripcion(e))}
+          : beneficiosHref(e)
+            ? btnAccent('Ver beneficios', beneficiosHref(e), 'shrink-0')
+            : ctaSinDestino('Ver beneficios')}
       </div>
     </section>
 

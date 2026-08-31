@@ -97,31 +97,59 @@ for (const dir of ['SPD', 'VOB']) {
 }
 
 await mkdir(OUT, { recursive: true });
-const lqip = {};
 
-for (const [slug, key] of Object.entries(PHOTOS)) {
+// Sin argumentos procesa todo. Con slugs (`node scripts/images.mjs ev-nahuel`)
+// rehace sólo esos y conserva el LQIP del resto, que si no se perdería.
+const filtro = process.argv.slice(2);
+const entradas = Object.entries(PHOTOS).filter(([slug]) => !filtro.length || filtro.includes(slug));
+if (filtro.length && entradas.length !== filtro.length) {
+  const faltan = filtro.filter((s) => !PHOTOS[s]);
+  throw new Error(`No están en PHOTOS: ${faltan.join(', ')}`);
+}
+
+const lqip = {};
+if (filtro.length) Object.assign(lqip, (await import('../src/data/media-lqip.js')).LQIP);
+
+for (const [slug, valor] of entradas) {
+  // El valor puede ser la ruta sola o `{ foto, recorte }`. `recorte` va en
+  // fracciones del original (0-1) y se aplica ANTES de todo lo demás, así que
+  // el recorte queda horneado en el asset servido: no depende de que cada
+  // maquetado acierte con object-position.
+  const { foto: key, recorte } = typeof valor === 'string' ? { foto: valor } : valor;
   const src = index[key] || (key.startsWith('Fotos/') ? key : null);
   if (!src) throw new Error(`No encontré la foto ${key}`);
 
-  const img = sharp(src);
-  const { width: sw, height: sh } = await img.metadata();
+  const { width: ow, height: oh } = await sharp(src).metadata();
+  // Las medidas del recorte se calculan acá y no con un segundo `.metadata()`:
+  // sharp informa siempre las del archivo de entrada, así que tras un extract
+  // seguiría devolviendo el tamaño original y el ratio del LQIP saldría mal.
+  const { left = 0, top = 0, ancho = 1, alto = 1 } = recorte || {};
+  const area = recorte && {
+    left: Math.round(ow * left),
+    top: Math.round(oh * top),
+    width: Math.round(ow * ancho),
+    height: Math.round(oh * alto),
+  };
+  const base = () => (area ? sharp(src).extract(area) : sharp(src));
+  const sw = area ? area.width : ow;
+  const sh = area ? area.height : oh;
 
   for (const w of WIDTHS) {
     if (w > sw) continue;
-    await sharp(src).resize({ width: w }).avif({ quality: 58, effort: 6 }).toFile(`${OUT}/${slug}-${w}.avif`);
-    await sharp(src).resize({ width: w }).webp({ quality: 76 }).toFile(`${OUT}/${slug}-${w}.webp`);
+    await base().resize({ width: w }).avif({ quality: 58, effort: 6 }).toFile(`${OUT}/${slug}-${w}.avif`);
+    await base().resize({ width: w }).webp({ quality: 76 }).toFile(`${OUT}/${slug}-${w}.webp`);
   }
   // widest webp doubles as the <img src> fallback
-  await sharp(src).resize({ width: Math.min(1250, sw) }).jpeg({ quality: 78, mozjpeg: true }).toFile(`${OUT}/${slug}.jpg`);
+  await base().resize({ width: Math.min(1250, sw) }).jpeg({ quality: 78, mozjpeg: true }).toFile(`${OUT}/${slug}.jpg`);
 
-  const blur = await sharp(src).resize({ width: 20 }).blur(1).webp({ quality: 30 }).toBuffer();
+  const blur = await base().resize({ width: 20 }).blur(1).webp({ quality: 30 }).toBuffer();
   lqip[slug] = { d: `data:image/webp;base64,${blur.toString('base64')}`, r: +(sw / sh).toFixed(4) };
 
-  console.log(`${slug.padEnd(22)} ${sw}x${sh}  ${WIDTHS.filter((w) => w <= sw).join('/')}`);
+  console.log(`${slug.padEnd(22)} ${sw}x${sh}${recorte ? ' (recortada)' : ''}  ${WIDTHS.filter((w) => w <= sw).join('/')}`);
 }
 
 await writeFile(
   'src/data/media-lqip.js',
   `// Generado por scripts/images.mjs — no editar a mano.\nexport const LQIP = ${JSON.stringify(lqip, null, 0)};\n`
 );
-console.log(`\n${Object.keys(PHOTOS).length} fotos → ${OUT}`);
+console.log(`\n${entradas.length} fotos → ${OUT}`);

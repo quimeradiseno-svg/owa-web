@@ -207,6 +207,25 @@ export const olaSuperior = (fill = '#fff') => html`
   </div>
 `;
 
+/** El mismo pico, en chico, para calar el borde inferior de la foto de una
+    tarjeta. Es la curva de olaCentrada reescalada (viewBox 1200x52 -> 300x18),
+    así la pendiente es la de la marca y no una ola inventada aparte.
+    El pico arranca donde arranca el texto de la tarjeta (~16% del ancho): la
+    curva sube justo desde el borde izquierdo del título y lo marca. */
+export const olaTarjeta = (fill = '#fff') => html`
+  <svg
+    viewBox="0 0 300 18"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 -bottom-px block h-4.5 w-full"
+  >
+    <path
+      d="M0,18 L0,13.8 L15.5,13.8 C28,13.8 35,11.4 42.5,5.2 C45.5,2.4 47,1 48,1 C49,1 50.5,2.4 53.5,5.2 C61,11.4 68,13.8 80.5,13.8 L300,13.8 L300,18 Z"
+      fill="${fill}"
+    />
+  </svg>
+`;
+
 export const olaCentrada = (fill = '#fff') => html`
   <svg viewBox="0 0 1200 52" preserveAspectRatio="none" aria-hidden="true" class="block h-13 w-full">
     <path
