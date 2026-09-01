@@ -16,18 +16,16 @@ export const FICHAS = {
     sedeBarra: 'Awass Beach Club · Surf Village, Luján',
     sedeCiudad: 'Luján, Buenos Aires, Argentina',
 
-    // Luján corre las dos jornadas el mismo día y OWA pasó un solo
-    // formulario, así que ambas entran por el mismo link. El slug dice
-    // "circuito" pero es el único que mandaron: confirmar con OWA si el
-    // Grand Prix abre uno propio.
+    // Un solo formulario para las dos jornadas: Luján las corre el mismo día
+    // y la propia página de inscripción se titula "Open Water Luján 2026 -
+    // Grand Prix & Circuito OWA", así que el slug "circuito" cubre las dos.
     inscripcion: {
       'GRAND PRIX': 'https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627',
       'CIRCUITO OWA': 'https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627',
     },
-    // SIN CONFIRMAR: OWA no pasó las starting lists de Luján. Estas se arman
-    // aplicando al slug de inscripción el mismo patrón que sí confirmó para
-    // San Pedro (/resultados/<slug>/participantes?orden=categoria). Verificar
-    // antes de publicar.
+    // Armadas con el patrón que OWA confirmó para San Pedro
+    // (/resultados/<slug>/participantes). Verificadas: la página responde y
+    // se titula "Lujan - LJN - Circuito Owa 26/27 - Listado de participantes".
     startingList: {
       'GRAND PRIX': 'https://cronometrajeinstantaneo.com/resultados/lujan-ljn-circuito-owa-2627/participantes?orden=categoria',
       'CIRCUITO OWA': 'https://cronometrajeinstantaneo.com/resultados/lujan-ljn-circuito-owa-2627/participantes?orden=categoria',

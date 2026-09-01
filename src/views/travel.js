@@ -5,6 +5,8 @@ import { icono } from '../components/iconos.js';
 import { eyebrow, btnAccent, btnBordeClaro, olaSuperior } from '../components/ui.js';
 
 export const titulo = 'OWA Travel';
+export const descripcion =
+  'Viajes para nadar en aguas abiertas: Swim & Adventure en Búzios y Race Travel a carreras internacionales como Capri-Nápoli. Nadamos, exploramos y compartimos el destino.';
 
 const WA = 'https://wa.me/5491125543112';
 const MAIL = 'mailto:info@owa.com.ar?subject=OWA%20Travel';

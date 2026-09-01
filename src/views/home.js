@@ -17,8 +17,15 @@ import {
   linkFuerte,
   olaCentrada,
 } from '../components/ui.js';
+import { grafo, organizacion, sitioWeb } from '../lib/schema.js';
 
-export const titulo = 'El agua nos une';
+export const titulo = 'Carreras de aguas abiertas 2026/27';
+export const descripcion =
+  'Ocho fechas en río, lago y mar. Grand Prix, Circuito OWA, eventos especiales y las travesías del OWA Challenge. Mirá el calendario y elegí tu próxima carrera.';
+
+// La identidad de OWA se declara una sola vez, en el home: el resto de las
+// páginas la referencia por @id desde sus propios nodos.
+export const schema = () => grafo(organizacion(), sitioWeb());
 
 /* --------------------------------------------------------------- rankings */
 

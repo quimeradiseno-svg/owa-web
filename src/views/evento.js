@@ -18,8 +18,45 @@ import {
   olaCentrada,
 } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
+import { grafo, migas, eventoDeportivo } from '../lib/schema.js';
 
 export const titulo = (ctx) => porSlug(ctx.params.slug)?.nombre ?? 'Carrera no encontrada';
+
+// Descripción armada con los datos que la propia ficha muestra: sede, fecha
+// y distancias. Sin plantilla genérica ni relleno.
+export const descripcion = (ctx) => {
+  const e = porSlug(ctx.params.slug);
+  if (!e) return '';
+  const f = fichaDe(e.slug);
+  const kms = (f?.distancias || []).map((d) => d.km).join(', ');
+  const cuando = e.fechaLarga || `${e.fechaCorta} ${e.anio}`.trim();
+  return [
+    `${e.nombre}: ${cuando} en ${e.sede}.`,
+    kms ? `Distancias de ${kms}.` : '',
+    'Recorrido, cronograma, requisitos e inscripción.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
+
+// Foto propia al compartir: hoy cada carrera se previsualizaba con la del home.
+export const imagen = (ctx) => {
+  const e = porSlug(ctx.params.slug);
+  return e ? `/img/${e.img}-1250.jpg` : '';
+};
+
+export const tipoOG = 'article';
+
+// SportsEvent + migas. `eventoDeportivo` sólo emite propiedades con dato real.
+export const schema = (ctx) => {
+  const e = porSlug(ctx.params.slug);
+  if (!e) return null;
+  const [volverHref] = VUELVE_A[e.tipo];
+  // Nombre legible para el buscador: VUELVE_A trae la etiqueta del botón,
+  // que va en mayúsculas y así se vería en el resultado de búsqueda.
+  const seccion = e.tipo === 'challenge' ? 'OWA Challenge' : e.tipo === 'especial' ? 'Eventos especiales' : 'Calendario';
+  return grafo(eventoDeportivo(e), migas([[seccion, volverHref], [e.nombre, `/carrera/${e.slug}`]]));
+};
 
 // Destino del CTA de cierre. OWA todavía no definió si va a haber UNA página de
 // beneficios para toda la comunidad o una por carrera, así que la resolución
@@ -42,8 +79,11 @@ const ctaSinDestino = (label) => html`
 `;
 
 // Estado de demo: deja ver las tres caras de la misma página.
+// Estado de la carrera. La ficha ya sabe mostrarse en las tres caras —previa,
+// en vivo y finalizada—; hoy queda fija en "proxima" porque todavía no hay de
+// dónde leerla. El panel para cambiarla a mano se sacó del sitio público: se
+// rehace cuando se defina el operativo del día de la carrera.
 let raceState = 'proxima';
-let demoAbierto = false;
 
 // Tab de "Elegí tu distancia": qué recorrido está activo. No se resetea por
 // carrera — el render cae al primer recorrido si el id no existe acá.
@@ -1198,28 +1238,6 @@ export function render(ctx) {
             : ctaSinDestino('Ver beneficios')}
       </div>
     </section>
-
-    <!-- Control de demo: deja ver las tres caras de la misma ficha sin tocar
-         datos. Arranca plegado para no taparle contenido a quien revisa. -->
-    <details
-      data-demo
-      ${raw(demoAbierto ? 'open' : '')}
-      class="fixed bottom-4 left-4 z-90 max-w-[calc(100vw-2rem)] rounded-owa-md border border-white/16 bg-owa-abyss/94 text-white shadow-[0_16px_44px_rgb(0_0_0/0.3)] backdrop-blur-lg"
-    >
-      <summary
-        class="u-press flex cursor-pointer list-none items-center gap-2 px-4 py-2.5 font-display text-[10px] font-black tracking-[0.14em] text-owa-sky"
-      >
-        <span class="size-1.5 rounded-full bg-owa-cyan" aria-hidden="true"></span>
-        ESTADO DE CARRERA · DEMO
-      </summary>
-      <div class="flex flex-wrap gap-1.5 border-t border-white/12 px-3 pt-2.5 pb-3">
-        ${[
-          ['PRÓXIMA', 'proxima'],
-          ['EN VIVO', 'vivo'],
-          ['FINALIZADA', 'finalizada'],
-        ].map(([label, v]) => pastillaChica(label, raceState === v, `data-estado="${v}"`, { oscuro: true }))}
-      </div>
-    </details>
   `);
 }
 
@@ -1227,9 +1245,6 @@ export function mount(root, ctx) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarCarruseles(root);
 
-  root.querySelector('[data-demo]')?.addEventListener('toggle', (e) => {
-    demoAbierto = e.target.open;
-  });
 
   const repintar = () => {
     const y = window.scrollY;
@@ -1242,11 +1257,6 @@ export function mount(root, ctx) {
   };
 
   root.addEventListener('click', (e) => {
-    const estadoBtn = e.target.closest('[data-estado]');
-    if (estadoBtn && estadoBtn.dataset.estado !== raceState) {
-      raceState = estadoBtn.dataset.estado;
-      return repintar();
-    }
 
     const tabBtn = e.target.closest('[data-recorrido-tab]');
     if (tabBtn && tabBtn.dataset.recorridoTab !== recorridoActivo) {

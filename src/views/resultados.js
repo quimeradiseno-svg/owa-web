@@ -4,6 +4,8 @@ import { GP, CIRC, CLUBES_GP, CLUBES_CIRC, RESULTADOS, CATS, REGLAS } from '../d
 import { posicion, pastilla } from '../components/ui.js';
 
 export const titulo = 'Resultados & Rankings';
+export const descripcion =
+  'Resultados y rankings de la temporada 2026/27 del Grand Prix y el Circuito OWA. Posiciones por nadador, por categoría y campeonato por equipos.';
 
 const TABS = [
   ['RESULTADOS POR CARRERA', 'carrera'],

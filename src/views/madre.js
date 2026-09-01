@@ -6,8 +6,19 @@ import { tarjetaFecha } from '../components/tarjeta-evento.js';
 import { eyebrow, btnPrimarioChico, olaSuperior } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 import { bannerCTA } from '../components/banner-cta.js';
+import { grafo, migas } from '../lib/schema.js';
 
 export const titulo = (ctx) => MADRES[ctx.path.replace(/^\//, '')]?.titulo ?? 'Torneo';
+
+// La descripción sale del propio intro de cada torneo: es el texto que ya
+// resume la modalidad, así que no hay que escribir uno paralelo que después
+// se desincronice.
+export const descripcion = (ctx) => MADRES[ctx.path.replace(/^\//, '')]?.intro ?? '';
+
+export const schema = (ctx) => {
+  const m = MADRES[ctx.path.replace(/^\//, '')];
+  return m ? grafo(migas([[m.titulo, ctx.path]])) : null;
+};
 
 // Nombre del torneo tal como figura en cada jornada. Sólo los dos puntuables
 // tienen la grilla de cuatro fechas con distancias.

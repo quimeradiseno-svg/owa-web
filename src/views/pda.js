@@ -3,7 +3,9 @@ import { foto } from '../lib/img.js';
 import { PDA_INTRO, PDA_BECAS, PDA_CONVOCATORIAS } from '../data/pda.js';
 import { eyebrow, btnPrimario, btnBorde, olaSuperior, pendiente } from '../components/ui.js';
 
-export const titulo = 'PDA';
+export const titulo = 'Programa Desarrollo Aguas Abiertas';
+export const descripcion =
+  'El PDA de OWA: becas, acompañamiento a nadadores y trabajo con clubes, escuelas y entrenadores para que más gente pueda crecer dentro de las aguas abiertas.';
 
 export function render() {
   return toHTML(html`

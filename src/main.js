@@ -27,9 +27,9 @@ definir('/resultados', () => import('./views/resultados.js'));
 definir('/travel', () => import('./views/travel.js'));
 definir('/primeros-pasos', () => import('./views/primeros-pasos.js'));
 definir('/pda', () => import('./views/pda.js'));
-// El programa se llamaba PAD: la ruta vieja sigue resolviendo para no romper
-// links ya compartidos.
-definir('/pad', () => import('./views/pda.js'));
+// /pad (el nombre viejo del programa) ya no se resuelve acá: vercel.json lo
+// redirige con un 301 a /pda, así los enlaces compartidos siguen andando sin
+// dejar dos URLs con el mismo contenido.
 definir('/reglamentos', () => import('./views/reglamentos.js'));
 definir('/404', () => import('./views/no-encontrada.js'));
 

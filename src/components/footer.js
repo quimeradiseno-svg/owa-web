@@ -22,8 +22,10 @@ const COLUMNAS = [
   {
     t: 'INFO',
     items: [
+      ['Cómo empezar', '/primeros-pasos'],
       ['Resultados & Rankings', '/resultados'],
       ['PDA', '/pda'],
+      ['Reglamentos', '/reglamentos'],
     ],
   },
 ];

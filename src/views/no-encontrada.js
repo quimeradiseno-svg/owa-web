@@ -2,6 +2,8 @@ import { html, toHTML } from '../lib/html.js';
 import { btnBlanco, btnBordeClaro } from '../components/ui.js';
 
 export const titulo = 'Página no encontrada';
+export const descripcion =
+  'La página que buscabas no existe. Volvé al calendario para ver todas las fechas de la temporada.';
 
 export const render = () =>
   toHTML(html`

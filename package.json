@@ -6,10 +6,11 @@
   "description": "Open Water Argentina — sitio temporada 2026/27",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs && node scripts/seo.mjs",
     "preview": "vite preview",
     "images": "node scripts/images.mjs",
-    "fonts": "node scripts/fonts.mjs"
+    "fonts": "node scripts/fonts.mjs",
+    "seo": "node scripts/seo.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.14",

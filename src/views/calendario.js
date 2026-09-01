@@ -7,6 +7,8 @@ import { modalidadesDe, chipModalidad, pastilla } from '../components/ui.js';
 import { fechaBadge } from '../components/tarjeta-evento.js';
 
 export const titulo = 'Calendario 2026/27';
+export const descripcion =
+  'Todas las fechas de aguas abiertas de la temporada 2026/27 en Argentina: Luján, San Pedro, Ramallo, Colón, Pinamar y Bariloche. Distancias, sedes e inscripción de cada carrera.';
 
 const FILTROS = [
   ['TODOS', 'TODOS'],

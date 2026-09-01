@@ -4,6 +4,8 @@ import { eyebrow, olaSuperior } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 
 export const titulo = 'Reglamentos';
+export const descripcion =
+  'Reglamento general, reglamentos deportivos del Grand Prix y el Circuito OWA, y los anexos de cada carrera: neopreno, categorías, cortes de tiempo y seguridad en el agua.';
 
 /** Fila de anexo. Sin link todavía no es un enlace: un <a> que no lleva a
     ningún lado es peor que un texto que avisa que falta. */

@@ -22,7 +22,9 @@ import {
 import { icono } from '../components/iconos.js';
 import { eyebrow, olaSuperior } from '../components/ui.js';
 
-export const titulo = 'Primeros pasos';
+export const titulo = 'Cómo empezar en aguas abiertas';
+export const descripcion =
+  'Guía para tu primera carrera de aguas abiertas: qué distancia elegir, cómo pasar de la pileta al río, qué llevar y qué esperar el día del evento. No hace falta ser elite.';
 
 /** Ítem de "De la pileta al agua abierta": ícono, título y texto alineados
     en fila, sin card ni fondo propio — la sección funciona como respiro

@@ -1,5 +1,7 @@
 // Router de historia con vistas planas. Cada vista exporta
 // { titulo, render(ctx) -> raw, mount?(root, ctx) }.
+import { aplicarMeta } from './lib/meta.js';
+
 
 const rutas = [];
 let contenedor;
@@ -49,8 +51,9 @@ async function pintar(path, { scroll = true } = {}) {
     const vistaEl = document.createElement('div');
     vistaEl.innerHTML = vista.render(ctx);
     contenedor.replaceChildren(vistaEl);
-    const t = typeof vista.titulo === 'function' ? vista.titulo(ctx) : vista.titulo;
-    document.title = t ? `${t} · OWA` : 'Open Water Argentina';
+    // Título, descripción, canonical, Open Graph, Twitter y JSON-LD, todo
+    // desde lo que declara la vista.
+    aplicarMeta(vista, ctx);
     vista.mount?.(vistaEl, ctx);
     actual = hallada.patron;
     alCambiar(hallada.patron, ctx);
@@ -63,6 +66,9 @@ async function pintar(path, { scroll = true } = {}) {
     const vt = document.startViewTransition(aplicar);
     // Navegar de nuevo antes de que termine aborta la transición: es esperable,
     // no un error que deba burbujear como unhandled rejection.
+    // `ready` también rechaza —y es la que salta con la pestaña en segundo
+    // plano, donde startViewTransition aborta con InvalidStateError.
+    vt.ready.catch(() => {});
     vt.finished.catch(() => {});
     vt.updateCallbackDone.catch(() => {});
   } else aplicar();
