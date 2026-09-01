@@ -36,11 +36,11 @@ export const FICHAS = {
     // La largada va en `hora` y no sale de `recorridos` como en San Pedro:
     // de Luján todavía no hay mapas ni fichas técnicas por distancia.
     distancias: [
-      { rotulo: 'Larga', torneo: 'GRAND PRIX', km: '8 km', hora: '12:00', puntaje: 'XXL' },
-      { rotulo: 'Media', torneo: 'CIRCUITO OWA', km: '4 km', hora: '12:00' },
-      { rotulo: 'Corta', torneo: 'CIRCUITO OWA', km: '2 km', hora: '14:30' },
-      { rotulo: 'Kids', km: '500 m', hora: '16:00', cats: 'Participativo · No competitivo' },
-      { rotulo: 'OWA Relay', km: '4 × 50 m', hora: '16:45', cats: 'Por equipos' },
+      { rotulo: 'Larga', torneo: 'GRAND PRIX', km: '8 km', hora: '12:00', puntaje: 'XXL · 1.600 puntos', cats: CATS_COMPLETAS },
+      { rotulo: 'Media', torneo: 'CIRCUITO OWA', km: '4 km', hora: '12:00', puntaje: 'L · 1.200 puntos', cats: CATS_COMPLETAS },
+      { rotulo: 'Corta', torneo: 'CIRCUITO OWA', km: '2 km', hora: '14:30', puntaje: 'M · 1.000 puntos' },
+      { rotulo: 'Kids', km: '200 m', hora: '16:00', cats: 'Participativo · No competitivo' },
+      { rotulo: 'OWA Relay', km: '4 × 50 m', hora: '16:45', nota: 'Por equipos · 1.000 puntos al equipo ganador' },
     ],
 
     // Un solo cronograma para toda la fecha, no uno por torneo: en Luján
@@ -65,6 +65,19 @@ export const FICHAS = {
           },
         ],
       },
+    ],
+
+    // Un solo mapa para toda la fecha: las tres distancias se corren dentro
+    // de la misma laguna, así que no hay una lámina por recorrido como en
+    // San Pedro. Por eso `mapa` y no `recorridos`, que arma las pestañas.
+    mapa: { slug: 'mapa-ljn', alt: 'Vista aérea de la laguna Cantera Aguas con el circuito de Luján marcado en rojo' },
+
+    kit: [
+      { t: 'Remera del evento' },
+      { t: 'Gorra oficial' },
+      { t: 'Chip de cronometraje' },
+      { t: 'Numeración' },
+      { t: 'Medalla finisher' },
     ],
   },
 
@@ -280,9 +293,8 @@ export const FICHAS = {
       { t: 'Remera OWA del evento' },
       { t: 'Gorra de silicona arena' },
       { t: 'Mochila kit' },
-      { t: 'Productos de auspiciantes', nota: true },
+      { t: 'Productos de auspiciantes' },
     ],
-    kitNota: 'Según disponibilidad.',
   },
 };
 

@@ -3,7 +3,7 @@ import { foto } from '../lib/img.js';
 import { EVENTOS, CHALLENGES, km } from '../data/eventos.js';
 import { MADRES } from '../data/madres.js';
 import { tarjetaFecha } from '../components/tarjeta-evento.js';
-import { eyebrow, btnPrimario, olaSuperior } from '../components/ui.js';
+import { eyebrow, btnPrimarioChico, olaSuperior } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 import { bannerCTA } from '../components/banner-cta.js';
 
@@ -25,6 +25,11 @@ const CTA_DESTINO = {
   especiales: '/calendario',
   challenge: 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20OWA%20Challenge',
 };
+
+// El torneo que declara `campeones` usa el layout nuevo: resumen de tres
+// datos en la columna y la distancia dentro de cada tarjeta. El que no, sigue
+// con el listado "Las distancias" y tarjetas sin pastilla.
+const conResumen = (key) => Boolean(MADRES[key]?.campeones);
 
 /** Cada madre arma su lista de fechas distinto. */
 function fechasDe(key) {
@@ -49,8 +54,45 @@ function fechasDe(key) {
     orden: `FECHA ${String(i + 1).padStart(2, '0')}`,
     linea: e.jornadas.find((j) => j.torneo === TORNEO[key]).fecha,
     sublinea: e.sede,
+    pill: conResumen(key) ? DIST[key](e) : '',
   }));
 }
+
+/** Los tres datos que resumen el torneo. Las dos primeras cifras salen del
+    calendario real (si se agrega una fecha, se actualizan solas); la tercera
+    la declara cada torneo, que sabe cuántos títulos reparte. */
+const bloqueDatos = (key, m, fechas) => {
+  const nums = EVENTOS.filter((e) => e.tipo === 'core').flatMap((e) =>
+    key === 'grand-prix' ? [e.distancias.gp] : e.distancias.circuito
+  );
+  const rango = `${km(Math.min(...nums)).replace(' km', '')}–${km(Math.max(...nums))}`;
+  const datos = [
+    { i: 'calendario', n: String(fechas.length), t: 'fechas' },
+    { i: 'ondas', n: rango, t: 'por fecha' },
+    ...(m.campeones ? [{ i: 'trofeo', ...m.campeones }] : []),
+  ];
+  return html`
+    <!-- Todos los ítems llevan separador y la lista se corre 28px a la
+         izquierda (borde + padding), que el contenedor recorta: así el borde
+         desaparece solo en el primero de CADA fila, no sólo en el primero de
+         la lista. Mismo recurso que los rótulos del hero del home. -->
+    <div class="mt-8 overflow-hidden">
+      <ul class="ms-[-28px] flex flex-wrap items-center gap-y-5">
+        ${datos.map(
+          (d) => html`
+            <li class="flex items-center gap-3 border-s border-owa-navy/12 px-7">
+              <span class="shrink-0 text-owa-blue">${icono(d.i, 'size-6')}</span>
+              <span>
+                <span data-nums class="block font-display text-[1.375rem] leading-none font-black text-owa-navy">${d.n}</span>
+                <span class="mt-1 block font-display text-[11px] font-bold tracking-[0.12em] text-owa-slate uppercase">${d.t}</span>
+              </span>
+            </li>
+          `
+        )}
+      </ul>
+    </div>
+  `;
+};
 
 /** Desglose de distancias por fecha. Cierra el dato que el intro promete
     ("entre 8 y 18 km") y nunca detallaba, y de paso empareja la altura de la
@@ -191,7 +233,9 @@ export function render(ctx) {
     </section>
 
     <div class="u-shell grid gap-12 pt-18 lg:grid-cols-2">
-      <div>
+      <!-- Padding derecho sólo en desktop: mete las distancias hacia adentro
+           en vez de dejarlas pegadas al borde de la columna. -->
+      <div class="lg:pr-20">
         ${eyebrow(m.bloque1Kicker)}
         <h2 class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.5rem)] leading-[0.98]">${m.bloque1Titulo}</h2>
         <!-- bloque1Texto puede ser un string o varios párrafos. -->
@@ -199,11 +243,11 @@ export function render(ctx) {
           ${[].concat(m.bloque1Texto).map((t) => html`<p>${t}</p>`)}
         </div>
         <!-- Cada madre llena la columna con el dato que le falta a sus tarjetas. -->
-        ${DIST[key] ? bloqueDistancias(key) : ''} ${key === 'challenge' ? bloqueTravesias() : ''}
+        ${DIST[key] ? (conResumen(key) ? bloqueDatos(key, m, fechas) : bloqueDistancias(key)) : ''} ${key === 'challenge' ? bloqueTravesias() : ''}
         ${key === 'especiales' ? bloqueEscenarios() : ''}
       </div>
 
-      <div class="rounded-owa-lg bg-owa-mist p-7.5 pt-12 pl-9 pr-9 lg:pr-16">
+      <div class="rounded-owa-lg bg-owa-mist p-7.5 pt-12 pl-9 pr-9 lg:pr-24">
         <h3 class="font-display text-[17px] font-black text-owa-navy">${m.cajaTitulo}</h3>
         <ul class="mt-4">
           ${m.cajaItems.map((i) =>
@@ -229,14 +273,17 @@ export function render(ctx) {
                 `
           )}
         </ul>
-        <div class="mt-5 flex flex-wrap gap-2.5">
-          ${btnPrimario(m.cajaCta, CTA_DESTINO[key])}
+        <div class="mt-5 flex flex-wrap gap-2">
+          <!-- Ancho completo en mobile: el boton de daisyUI no encoge
+               (flex-shrink 0) y etiquetas largas como "ESCRIBIR A LA
+               ORGANIZACIÓN" se desbordaban de la caja. -->
+          ${btnPrimarioChico(m.cajaCta, CTA_DESTINO[key], 'w-full justify-center sm:w-auto')}
           ${m.reglamento
             ? html`<a
                 href="${m.reglamento}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="btn u-press u-nudge h-auto min-h-0 gap-2.5 border-2 border-owa-navy bg-transparent px-7 py-3.5 font-display text-[13px] font-black tracking-[0.06em] text-owa-navy hover:bg-owa-navy hover:text-white"
+                class="btn u-press u-nudge w-full justify-center sm:w-auto h-auto min-h-0 gap-2.5 border-2 border-owa-navy bg-transparent px-4.5 py-3 font-display text-[12px] font-black tracking-[0.06em] text-owa-navy hover:bg-owa-navy hover:text-white"
                 >REGLAMENTO <span class="u-nudge-arrow" aria-hidden="true">↗</span></a
               >`
             : ''}
@@ -251,7 +298,7 @@ export function render(ctx) {
            Pinneado a esta categoría a propósito, no a "cuando hay 3 items". -->
       <div class="mt-6 grid gap-4 sm:grid-cols-2 ${key === 'challenge' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'}" data-stagger>
         ${fechas.map((f) =>
-          tarjetaFecha(f.e, { orden: f.orden, linea: f.linea, sublinea: f.sublinea, estado: key !== 'challenge' })
+          tarjetaFecha(f.e, { orden: f.orden, linea: f.linea, sublinea: f.sublinea, estado: key !== 'challenge', pill: f.pill })
         )}
       </div>
     </section>

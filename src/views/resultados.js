@@ -1,7 +1,7 @@
 import { html, toHTML, stagger } from '../lib/html.js';
 import { EVENTOS } from '../data/eventos.js';
 import { GP, CIRC, CLUBES_GP, CLUBES_CIRC, RESULTADOS, CATS, REGLAS } from '../data/rankings.js';
-import { posicion, pastilla, btnBorde } from '../components/ui.js';
+import { posicion, pastilla } from '../components/ui.js';
 
 export const titulo = 'Resultados & Rankings';
 
@@ -80,9 +80,6 @@ function tablaCarrera() {
       ${selector('temporada', 'Temporada', s.temporada, ['2026/27', '2025/26'])}
       ${selector('carrera', 'Carrera', s.carrera, carrerasOpts, 'min-w-70')}
       ${selector('distancia', 'Distancia', s.distancia, ['TODAS', '1K', '3K', '5K'])}
-      <div class="w-full sm:ml-auto sm:w-auto">
-        ${btnBorde('Descargar PDF', '/resultados.pdf', 'w-full justify-center py-3 sm:w-auto')}
-      </div>
     </div>
 
     <div class="mt-5.5">${buscador('Buscar nadador')}</div>
@@ -327,7 +324,7 @@ export function render(ctx) {
   return toHTML(html`
     <section class="bg-owa-navy px-0 pt-15 text-white">
       <div class="u-shell">
-        <h1 class="u-h1">Resultados<br />&amp; rankings</h1>
+        <h1 class="text-[clamp(2.375rem,4.5vw,4.25rem)] leading-[0.9]">Resultados<br />&amp; rankings</h1>
         <p class="mt-3.5 font-display text-sm font-bold tracking-[0.14em] text-owa-sky">TEMPORADA 2026/27</p>
         <div data-tabs>${barraTabs()}</div>
       </div>

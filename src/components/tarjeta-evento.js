@@ -154,7 +154,7 @@ export function tarjetaTravel(t) {
     de inscripción, así que "PRÓXIMAMENTE" sólo agregaría ruido.
     `destacado` agrega una pastilla debajo de la sublínea: la usa Primeros
     pasos para la distancia recomendada de cada fecha. */
-export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '' }) {
+export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '' }) {
   return html`
     <a
       href="/carrera/${e.slug}"
@@ -172,6 +172,15 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destaca
         <div class="absolute bottom-6 left-4.5 text-white">
           <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky">${orden}</p>
           <h3 class="mt-1.5 text-xl leading-none">${e.corto}</h3>
+          <!-- La distancia va sobre la foto, pegada al nombre: es el dato
+               que diferencia una fecha de otra dentro del mismo torneo. -->
+          ${pill
+            ? html`<p
+                class="mt-2 inline-flex rounded-full bg-owa-cyan px-3 py-1 font-display text-[11px] font-black tracking-[0.08em] text-owa-deep uppercase"
+              >
+                ${pill}
+              </p>`
+            : ''}
         </div>
         ${olaTarjeta('#fff')}
       </div>

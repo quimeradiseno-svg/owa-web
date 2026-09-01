@@ -33,6 +33,9 @@ const PHOTOS = {
   // ocupar toda la tarjeta en el hover de "Cinco formas de entrar al agua".
   'modalidad-circuito': 'SPD/10_CARRERA_CRAWL_PRIMER_PLANO',
   'especiales-panoramica': 'SPD/06_RIO_SUP_PANORAMICA',
+  // Hero de Eventos Especiales: amanecer en el Nahuel Huapi con las boyas
+  // de OWA. Dice "escenario" mejor que la panorámica de río que estaba antes.
+  'esp-lago-amanecer': 'Fotos/VHU/02_PREVIA_LAGO_AMANECER_4278.jpg',
   // solitario, boya de seguridad, montañas nevadas: la postal de ultradistancia.
   'challenge-lago': 'Fotos/CHALLENGE/@juancruzrabaglia-2077.jpg',
   // eventos
@@ -84,6 +87,7 @@ const PHOTOS = {
   // El Grand Prix va en dos laminas (tramo 2 y llegada); el Circuito, una por
   // distancia. Son capturas satelitales con trazado: mucho detalle fino, asi
   // que se sirven mas grandes que una foto normal.
+  'mapa-ljn': 'Fotos/LJN/mapa2.jpg',
   'mapa-vob-tramo1': 'Fotos/SPD/mapas/VOB1.jpg',
   'mapa-vob-tramo2': 'Fotos/SPD/mapas/tramo_2_VOB.jpg',
   'mapa-vob-llegada': 'Fotos/SPD/mapas/Llegada_VOB.jpg',

@@ -110,6 +110,12 @@ export const btnBlanco = (label, href, extra = '') =>
 export const btnPrimario = (label, href, extra = '') =>
   html`<a href="${href}" class="${BASE} bg-owa-blue px-6 py-3.5 text-white hover:bg-owa-navy ${extra}">${label} ${FLECHA}</a>`;
 
+// Variante compacta del primario: un punto menos de fuente y menos padding.
+// La usa la caja de puntaje de las madres, donde tienen que entrar dos
+// botones en una sola fila.
+export const btnPrimarioChico = (label, href, extra = '') =>
+  html`<a href="${href}" class="${BASE_LAYOUT} px-4.5 py-3 font-display text-[12px] font-black bg-owa-blue text-white hover:bg-owa-navy ${extra}">${label} ${FLECHA}</a>`;
+
 export const btnBorde = (label, href, extra = '') =>
   html`<a
     href="${href}"
@@ -148,7 +154,7 @@ export const pastilla = (label, activo, attrs = '') => html`
     type="button"
     ${raw(attrs)}
     aria-pressed="${activo ? 'true' : 'false'}"
-    class="u-press cursor-pointer rounded-full px-4.5 py-2.5 font-display text-xs font-black tracking-[0.08em] transition-colors duration-200 ${activo
+    class="u-press shrink-0 cursor-pointer rounded-full px-4 py-2.5 font-display text-xs font-black tracking-[0.08em] transition-colors duration-200 ${activo
       ? 'bg-owa-navy text-white'
       : 'border border-owa-line bg-white text-owa-slate hover:border-owa-navy hover:text-owa-navy'}"
   >

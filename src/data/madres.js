@@ -47,6 +47,9 @@ export const MADRES = {
     },
     cajaCta: 'VER RANKING GRAND PRIX',
     reglamento: 'https://drive.google.com/open?id=1EIbzGs8ObKESwSOEv-dfO1Y83-TT_3We&usp=drive_fs',
+    // Tercer dato de la fila de resumen. Sin esto, la página cae al
+    // listado de distancias de siempre.
+    campeones: { n: '1', t: 'campeón' },
     listaKicker: 'TEMPORADA 26/27',
   },
   circuito: {
@@ -101,8 +104,8 @@ export const MADRES = {
     titulo: 'EVENTOS ESPECIALES',
     intro:
       'Experiencias fuera de los calendarios puntuables, elegidas por la singularidad de sus escenarios y por el desafío que propone cada recorrido.',
-    img: 'especiales-panoramica',
-    alt: 'Vista panorámica del río con nadadores y tablas de SUP',
+    img: 'esp-lago-amanecer',
+    alt: 'Amanecer en el lago Nahuel Huapi con las boyas de largada de OWA y las montañas de fondo',
     bloque1Kicker: 'QUÉ SON',
     bloque1Titulo: 'ESCENARIOS ÚNICOS. DESAFÍOS DIFERENTES.',
     bloque1Texto: [

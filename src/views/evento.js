@@ -882,15 +882,26 @@ export function render(ctx) {
           <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorrido">
             ${eyebrow('Recorrido')}
             <h2 id="h-recorrido" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Recorrido ${e.corto}</h2>
-            <div class="mt-5.5 grid h-105 place-items-center rounded-owa-lg bg-owa-mist">
-              <div class="max-w-[34ch] px-6 text-center">
-                <img src="/brand/owa-iso-cyan.svg" alt="" width="44" height="46" class="mx-auto h-11 w-auto opacity-60" />
-                <p class="mt-4 font-display text-base font-black text-owa-navy">Mapa del recorrido</p>
-                <p class="mt-2 text-sm text-owa-slate">
-                  Pendiente del export del track de ${e.sedeCorta.toLowerCase()} por parte de la organización.
-                </p>
-              </div>
-            </div>
+            <!-- Con mapa cargado se muestra; si no, el aviso de que falta -->
+            ${f?.mapa
+              ? html`<div class="reveal-clip mt-5.5 overflow-hidden rounded-owa-lg bg-owa-mist">
+                  ${foto({
+                    slug: f.mapa.slug,
+                    alt: f.mapa.alt,
+                    sizes: '(min-width: 1280px) 1216px, 100vw',
+                    className: 'block w-full',
+                    imgClass: 'w-full',
+                  })}
+                </div>`
+              : html`<div class="mt-5.5 grid h-105 place-items-center rounded-owa-lg bg-owa-mist">
+                  <div class="max-w-[34ch] px-6 text-center">
+                    <img src="/brand/owa-iso-cyan.svg" alt="" width="44" height="46" class="mx-auto h-11 w-auto opacity-60" />
+                    <p class="mt-4 font-display text-base font-black text-owa-navy">Mapa del recorrido</p>
+                    <p class="mt-2 text-sm text-owa-slate">
+                      Pendiente del export del track de ${e.sedeCorta.toLowerCase()} por parte de la organización.
+                    </p>
+                  </div>
+                </div>`}
           </section>
         `}
 
@@ -1011,14 +1022,17 @@ export function render(ctx) {
                         type="button"
                         data-cron-torneo="${i}"
                         aria-pressed="${c === torneoActivo ? 'true' : 'false'}"
-                        class="u-press rounded-owa-md border px-5 py-3.5 text-left transition-colors duration-200 ease-out ${c === torneoActivo
+                        class="u-press rounded-owa-md border px-4 py-2.5 text-left sm:px-5 sm:py-3.5 transition-colors duration-200 ease-out ${c === torneoActivo
                           ? 'border-owa-cyan bg-owa-cyan text-owa-deep'
                           : 'border-owa-line bg-white text-owa-navy hover:bg-owa-sand'}"
                       >
-                        <span class="block font-display text-[13px] leading-tight font-black tracking-[0.03em] uppercase"
+                        <span class="block font-display text-[12px] leading-tight sm:text-[13px] font-black tracking-[0.03em] uppercase"
                           >${nombreTorneoOWA(c.torneo)}</span
                         >
-                        <span data-nums class="mt-0.5 block text-[13px] font-bold leading-tight ${c === torneoActivo ? 'text-owa-deep' : 'text-owa-slate'}"
+                        <!-- El detalle de distancias se esconde en mobile: ya
+                             vive en "Distancias y categorías" y acá hacía que
+                             cada pestaña ocupara dos líneas y media. -->
+                        <span data-nums class="mt-0.5 hidden text-[13px] sm:block font-bold leading-tight ${c === torneoActivo ? 'text-owa-deep' : 'text-owa-slate'}"
                           >${resumenTab(c)}</span
                         >
                       </button>

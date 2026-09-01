@@ -28,10 +28,10 @@ const normalizarTravel = (t) => ({
   sigla: t.titulo,
   nombre: t.salidaTitulo,
   sede: `${t.destino} · ${t.pais}`,
-  // La fecha corta de Travel ya trae el año ("OCT 2026"): sin `anio` acá
-  // para no repetirlo en la fila.
-  fechaCorta: t.fechaCorta,
-  anio: '',
+  // "OCT 2026" se parte en mes + año: la fila los vuelve a juntar al
+  // renderizar, y así cae en el mismo grupo que las carreras de ese mes.
+  fechaCorta: t.fechaCorta.split(' ')[0],
+  anio: t.fechaCorta.split(' ').slice(1).join(' '),
   estado: t.estado,
   chip: t.chip,
 });
@@ -101,6 +101,11 @@ function agrupar(lista) {
     const core = g.items.find((x) => ordenCore.includes(x.slug));
     g.cuenta = core ? `FECHA ${String(ordenCore.indexOf(core.slug) + 1).padStart(2, '0')}` : '';
   }
+  // Los Challenge no tienen fecha cerrada: su grupo cierra siempre la lista,
+  // sin importar en qué orden hayan entrado los eventos.
+  const sinFecha = grupos.findIndex((g) => g.key === 'SIN-FECHA');
+  if (sinFecha >= 0) grupos.push(...grupos.splice(sinFecha, 1));
+
   return grupos;
 }
 
@@ -196,7 +201,15 @@ function fila(e) {
 }
 
 const lista = () => {
-  const base = filtro === 'TRAVEL' ? TRAVEL.map(normalizarTravel) : expandirPorFiltro(ALL.filter(pasaFiltro));
+  const travel = TRAVEL.map(normalizarTravel);
+  // "Todos" es todo: antes las dos salidas de Travel sólo se veían con su
+  // propio filtro y la vista general las dejaba afuera.
+  const base =
+    filtro === 'TRAVEL'
+      ? travel
+      : filtro === 'TODOS'
+        ? [...ALL.filter(pasaFiltro), ...travel]
+        : expandirPorFiltro(ALL.filter(pasaFiltro));
   const grupos = agrupar(base);
   if (!grupos.length)
     return html`<p class="py-16 text-center text-owa-slate">No hay carreras en esta modalidad todavía.</p>`;
@@ -239,7 +252,7 @@ export function render() {
     </section>
 
     <div class="u-shell pt-8 pb-24">
-      <div class="mb-7 flex flex-wrap gap-2" role="group" aria-label="Filtrar por modalidad" data-filtros>
+      <div class="u-scroll-x mb-7 flex gap-2" role="group" aria-label="Filtrar por modalidad" data-filtros>
         ${FILTROS.map(([label, v]) => pastilla(label, filtro === v, `data-f="${v}"`))}
       </div>
 
@@ -256,7 +269,11 @@ export function mount(root) {
     const btn = e.target.closest('[data-f]');
     if (!btn || btn.dataset.f === filtro) return;
     filtro = btn.dataset.f;
+    // La tira scrollea: repintarla la mandaba de vuelta al principio y el
+    // filtro recién tocado se salía de vista.
+    const x = barra.scrollLeft;
     barra.innerHTML = toHTML(FILTROS.map(([label, v]) => pastilla(label, filtro === v, `data-f="${v}"`)));
+    barra.scrollLeft = x;
     contenedor.innerHTML = toHTML(lista());
     contenedor.querySelectorAll('.reveal').forEach((el) => el.setAttribute('data-visible', ''));
     stagger(contenedor, '.reveal');
