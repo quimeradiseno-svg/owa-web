@@ -3,6 +3,7 @@
 // en eventos.js o fichas.js, la propiedad no se emite.
 import { ORIGEN, SITIO, url } from '../data/sitio.js';
 import { fichaDe } from '../data/fichas.js';
+import { sinIngreso } from '../data/eventos.js';
 
 export const organizacion = () => ({
   '@type': 'SportsOrganization',
@@ -91,6 +92,13 @@ export function eventoDeportivo(e) {
   // Challenge corren en una ventana ("verano 2027"), no en un día cerrado:
   // se quedan con las migas y sin SportsEvent hasta que tengan fecha.
   if (!inicio) return null;
+
+  // Ramallo tiene jornadas con fecha (12/12, 13/12) pero esa fecha todavía no
+  // la confirmó la sede: la propia página lo dice ("fecha a confirmar") y no
+  // se puede entrar a ella desde ningún lado. Emitir un startDate acá
+  // contradiría el cartel — la ficha ya es noindex (ver evento.js), así que
+  // no perdemos nada dejándola también sin SportsEvent hasta que se confirme.
+  if (sinIngreso(e)) return null;
 
   const direccion = direccionDe(e);
   const lugar = direccion

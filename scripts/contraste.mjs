@@ -5,7 +5,24 @@ import puppeteer from 'puppeteer-core';
 
 const CHROME = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe';
 const BASE = process.env.BASE || 'http://127.0.0.1:5180';
-const RUTAS = ['/', '/calendario', '/grand-prix', '/challenge', '/carrera/san-pedro', '/carrera/rdp40', '/resultados', '/travel', '/pad', '/primeros-pasos'];
+// `/circuito` y `/especiales` faltaban: las cuatro madres comparten vista pero
+// no contenido —cada una trae su propio texto, sus colores de chip y su
+// bloque de premio—, así que auditar sólo Grand Prix y Challenge dejaba la
+// mitad sin mirar. `/pda` idem: es la única con su propia maqueta.
+const RUTAS = [
+  '/',
+  '/calendario',
+  '/grand-prix',
+  '/circuito',
+  '/especiales',
+  '/challenge',
+  '/carrera/san-pedro',
+  '/carrera/rdp40',
+  '/resultados',
+  '/travel',
+  '/pda',
+  '/primeros-pasos',
+];
 
 const AUDIT = () => {
   const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);

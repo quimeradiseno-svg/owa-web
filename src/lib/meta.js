@@ -67,7 +67,8 @@ export function aplicarMeta(vista, ctx) {
 
   // El dominio provisorio no se indexa (ver src/data/sitio.js). `noindex` no
   // afecta a quien entra por el link ni a las previsualizaciones al compartir.
-  meta('robots', INDEXABLE ? 'index, follow, max-image-preview:large' : 'noindex, nofollow');
+  const indexable = INDEXABLE && !resolver(vista.noindex, ctx);
+  meta('robots', indexable ? 'index, follow, max-image-preview:large' : 'noindex, nofollow');
 
   propiedad('og:type', d.tipo);
   propiedad('og:title', d.titulo);

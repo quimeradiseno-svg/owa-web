@@ -1,6 +1,6 @@
 import { html, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
-import { EVENTOS, ALL, MESES } from '../data/eventos.js';
+import { EVENTOS, ALL, MESES, sinIngreso } from '../data/eventos.js';
 import { TRAVEL } from '../data/travel.js';
 import { fichaDe } from '../data/fichas.js';
 import { modalidadesDe, chipModalidad, pastilla } from '../components/ui.js';
@@ -117,6 +117,7 @@ function fila(e) {
   const chal = e.tipo === 'challenge';
   const { dia, mes } = fechaBadge(e);
   const href = travel ? '/travel' : `/carrera/${e.slug}`;
+  const bloqueada = sinIngreso(e);
 
   // Sólo hay link real de inscripción/starting list cuando la fila es de UN
   // torneo puntual (filtro Grand Prix o Circuito activo: `jornadaActiva`) y
@@ -135,7 +136,7 @@ function fila(e) {
            hijos (foto, fecha, info) siguen siendo celdas directas de esta
            grilla — necesario para poder sacar los botones de acá afuera y
            que cada uno sea un <a> real a su propio destino. -->
-      <a href="${href}" class="contents">
+      <${bloqueada ? 'div' : 'a'} ${bloqueada ? '' : `href="${href}"`} class="contents">
         <div class="relative h-30 overflow-hidden rounded-owa-md bg-owa-abyss md:h-29.5">
           ${foto({
             slug: e.img,
@@ -148,7 +149,10 @@ function fila(e) {
 
         <div class="min-w-0">
           <p class="font-display text-[clamp(1rem,1.5vw,1.375rem)] leading-tight break-words text-owa-slate uppercase">
-            ${e.fechaCorta}${e.anio ? html` <span class="text-owa-slate">${e.anio}</span>` : ''}
+            <!-- Sin fecha confirmada no se muestra la que había: quedaba
+                 contradictorio al lado del cartel de abajo diciendo lo
+                 contrario. -->
+            ${bloqueada ? 'A confirmar' : html`${e.fechaCorta}${e.anio ? html` <span class="text-owa-slate">${e.anio}</span>` : ''}`}
           </p>
           ${e.nota ? html`<p class="mt-2 text-[11px] text-owa-slate">${e.nota}</p>` : ''}
         </div>
@@ -159,7 +163,7 @@ function fila(e) {
           <p class="mt-1.5 text-[13px] text-owa-slate">${e.sede}</p>
           <p class="mt-2.5 flex flex-wrap gap-1.5">${travel ? '' : torneo ? chipModalidad(torneo) : modalidadesDe(e)}</p>
         </div>
-      </a>
+      </${bloqueada ? 'div' : 'a'}>
 
       <div class="grid gap-2 md:min-w-43">
         ${inscripcionUrl
@@ -177,7 +181,15 @@ function fila(e) {
                 class="rounded-full px-5 py-3 text-center font-display text-xs font-black tracking-[0.06em] ${abierta || chal
                   ? 'bg-owa-blue text-white'
                   : 'bg-owa-sand text-owa-slate'}"
-                >${travel ? e.chip : chal ? 'POSTULARME' : abierta ? 'INSCRIBIRSE →' : 'PRÓXIMAMENTE'}</span
+                >${travel
+                  ? e.chip
+                  : chal
+                    ? 'POSTULARME'
+                    : abierta
+                      ? 'INSCRIBIRSE →'
+                      : bloqueada
+                        ? 'FECHA A CONFIRMAR'
+                        : 'PRÓXIMAMENTE'}</span
               >
             `}
         ${startingListUrl
@@ -191,11 +203,16 @@ function fila(e) {
               >
             `
           : html`
-              <a
-                href="${href}"
-                class="rounded-full border border-owa-line px-4.5 py-2.5 text-center font-display text-[11px] font-bold tracking-[0.06em] text-owa-slate transition-colors duration-200 ease-out group-hover:border-owa-navy group-hover:bg-owa-navy group-hover:text-white"
-                >VER DETALLES</a
-              >
+              ${bloqueada
+                ? html`<span
+                    class="rounded-full border border-owa-line px-4.5 py-2.5 text-center font-display text-[11px] font-bold tracking-[0.06em] text-owa-slate"
+                    >FECHA A CONFIRMAR</span
+                  >`
+                : html`<a
+                    href="${href}"
+                    class="rounded-full border border-owa-line px-4.5 py-2.5 text-center font-display text-[11px] font-bold tracking-[0.06em] text-owa-slate transition-colors duration-200 ease-out group-hover:border-owa-navy group-hover:bg-owa-navy group-hover:text-white"
+                    >VER DETALLES</a
+                  >`}
             `}
       </div>
     </li>

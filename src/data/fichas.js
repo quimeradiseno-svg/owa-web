@@ -294,6 +294,174 @@ export const FICHAS = {
       { t: 'Productos de auspiciantes' },
     ],
   },
+
+  colon: {
+    sedeBarra: 'Camping Club Piedras Coloradas, Colón',
+    sedeCiudad: 'Colón, Entre Ríos, Argentina',
+    // Colón corre sobre el Uruguay, no sobre el Paraná como San Pedro y
+    // Ramallo: la vista lo tenía fijo y ahora lo lee de acá.
+    rio: 'Uruguay',
+
+    distancias: [
+      {
+        rotulo: 'Larga',
+        torneo: 'GRAND PRIX',
+        km: '10 km',
+        nota: 'Única distancia del día 1',
+        puntaje: '1.200 puntos',
+        cats: CATS_COMPLETAS,
+      },
+      { rotulo: 'Media', torneo: 'CIRCUITO OWA', km: '5 km', puntaje: '1.000 puntos', cats: CATS_COMPLETAS },
+      { rotulo: 'Corta', torneo: 'CIRCUITO OWA', km: '2,5 km', puntaje: '800 puntos', cats: CATS_COMPLETAS },
+      {
+        rotulo: 'arena Knock Out Swim',
+        torneo: 'CIRCUITO OWA',
+        km: 'A confirmar',
+        nota: 'Prueba por invitación. Un cupo por género cada 5 inscriptos',
+        cats: 'Por género',
+      },
+      {
+        rotulo: 'Kids',
+        torneo: 'CIRCUITO OWA',
+        // OWA todavía no pasó la distancia.
+        km: 'A confirmar',
+        nota: 'Prueba gratuita',
+        cats: 'Participativo · No competitivo',
+      },
+    ],
+
+    recorridos: [
+      {
+        id: 'gp-10k',
+        torneo: 'GRAND PRIX',
+        titulo: '10 km',
+        subtitulo: 'Liebig',
+        largada: 'Playa pública Liebig',
+        llegada: 'Colón',
+        mapas: [{ slug: 'mapa-cln-10k', alt: 'Mapa del recorrido de 10 km sobre el río Uruguay, desde Liebig hasta Colón' }],
+        ficha: [
+          ['Fecha', 'Sábado 20 de marzo de 2027'],
+          ['Distancia', '10 km · recorrido punto a punto'],
+          ['Cupos disponibles', '200 nadadores'],
+          // Sólo la corriente: de Colón no hay dato de temperatura ni
+          // visibilidad. De acá sale el "A favor" de la franja de abajo.
+          ['Condiciones del agua', 'Con corriente a favor'],
+          ['Tiempo estimado', 'Entre 1 h 35 min y 2 h 30 min'],
+          ['Tiempo límite', '3 horas'],
+          ['Uso de neopreno', 'Optativo · categoría única'],
+          ['Requisitos', '14 años cumplidos y acreditar 1.000 m nadados en menos de 22 minutos'],
+          ['Premiación', PREMIACION],
+          ['Premiación con neopreno', PREMIACION_NEOPRENE],
+          ['Puntaje OWA', '1.200 puntos'],
+        ],
+      },
+      {
+        id: 'circ-5k',
+        torneo: 'CIRCUITO OWA',
+        titulo: '5 km',
+        subtitulo: 'San José',
+        largada: 'Playa pública San José',
+        llegada: 'Colón',
+        mapas: [{ slug: 'mapa-cln-5k', alt: 'Mapa del recorrido de 5 km sobre el río Uruguay, desde San José hasta Colón' }],
+        ficha: [
+          ['Fecha', 'Domingo 21 de marzo de 2027'],
+          ['Distancia', '5 km · recorrido punto a punto'],
+          ['Cupos disponibles', '200 nadadores'],
+          ['Condiciones del agua', 'Con corriente a favor'],
+          ['Tiempo estimado', 'Entre 45 min y 1 h 20 min'],
+          ['Tiempo límite', '2 horas'],
+          ['Uso de neopreno', 'Optativo · categoría única'],
+          ['Requisitos', '14 años cumplidos'],
+          ['Premiación', PREMIACION],
+          ['Premiación con neopreno', PREMIACION_NEOPRENE],
+          ['Puntaje OWA', '1.000 puntos'],
+        ],
+      },
+      {
+        id: 'circ-25k',
+        torneo: 'CIRCUITO OWA',
+        titulo: '2,5 km',
+        subtitulo: 'Termas',
+        largada: 'Extremo Playa Norte',
+        llegada: 'Colón',
+        mapas: [
+          { slug: 'mapa-cln-25k', alt: 'Mapa del recorrido de 2,5 km sobre el río Uruguay, desde Playa Norte hasta Colón' },
+        ],
+        ficha: [
+          ['Fecha', 'Domingo 21 de marzo de 2027'],
+          ['Distancia', '2,5 km · recorrido punto a punto'],
+          ['Cupos disponibles', '200 nadadores'],
+          ['Condiciones del agua', 'Con corriente a favor'],
+          ['Tiempo estimado', 'Entre 25 y 40 minutos'],
+          ['Tiempo límite', '1 h 15 min'],
+          ['Uso de neopreno', 'Optativo · categoría única'],
+          ['Requisitos', '14 años cumplidos'],
+          ['Premiación', PREMIACION],
+          ['Premiación con neopreno', PREMIACION_NEOPRENE],
+          ['Puntaje OWA', '800 puntos'],
+        ],
+      },
+    ],
+
+    // Armado con el mismo modelo que San Pedro pero sin horarios: OWA todavía
+    // no los pasó. Los `aviso` lo dicen en la propia página para que no se lea
+    // como un cronograma cerrado.
+    cronogramas: [
+      {
+        torneo: 'GRAND PRIX',
+        aviso: 'Horarios a confirmar.',
+        dias: [
+          {
+            fecha: 'Viernes 19 de marzo',
+            lugar: 'Camping Club Piedras Coloradas',
+            items: [
+              { hora: 'A confirmar', t: 'Entrega de kits', d: 'Recepción de aptos médicos y firma de deslindes.' },
+              { hora: 'A confirmar', t: 'Charla técnica obligatoria', d: '' },
+            ],
+          },
+          {
+            fecha: 'Sábado 20 de marzo',
+            lugar: 'Día del evento',
+            items: [
+              { hora: 'A confirmar', t: 'Traslado a la largada', d: 'Hacia la playa pública de Liebig.' },
+              { hora: 'A confirmar', t: 'Largada · 10 km', d: '', destacado: true },
+              { hora: 'A confirmar', t: 'Premiación', d: '' },
+            ],
+          },
+        ],
+      },
+      {
+        torneo: 'CIRCUITO OWA',
+        aviso: 'Horarios a confirmar.',
+        dias: [
+          {
+            fecha: 'Sábado 20 de marzo',
+            lugar: 'Camping Club Piedras Coloradas',
+            items: [{ hora: 'A confirmar', t: 'Entrega de kits', d: 'Aptos médicos, deslindes y numeración.' }],
+          },
+          {
+            fecha: 'Domingo 21 de marzo',
+            lugar: 'Día del evento',
+            items: [
+              { hora: 'A confirmar', t: 'Charla técnica obligatoria', d: '' },
+              { hora: 'A confirmar', t: 'Largada · 5 km', d: '', destacado: true },
+              { hora: 'A confirmar', t: 'Largada · 2,5 km', d: '', destacado: true },
+              { hora: 'A confirmar', t: 'Largada arena Knock Out Swim', d: '' },
+              { hora: 'A confirmar', t: 'Largada prueba Kids', d: '' },
+              { hora: 'A confirmar', t: 'Ceremonia de premiación general', d: '' },
+            ],
+          },
+        ],
+      },
+    ],
+
+    kit: [
+      { t: 'Remera OWA del evento' },
+      { t: 'Gorra de silicona arena' },
+      { t: 'Mochila kit' },
+      { t: 'Productos de auspiciantes' },
+    ],
+  },
 };
 
 export const fichaDe = (slug) => FICHAS[slug] || null;

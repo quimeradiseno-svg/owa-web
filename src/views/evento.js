@@ -1,6 +1,6 @@
 import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto, fondo } from '../lib/img.js';
-import { porSlug, ESTADOS, linkInscripcion } from '../data/eventos.js';
+import { porSlug, ESTADOS, linkInscripcion, sinIngreso } from '../data/eventos.js';
 import { fichaDe } from '../data/fichas.js';
 import { carrusel, montarCarruseles } from '../components/carrusel.js';
 import { EVENTO_FICHA } from '../data/madres.js';
@@ -19,6 +19,11 @@ import {
 } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 import { grafo, migas, eventoDeportivo } from '../lib/schema.js';
+
+// Sin fecha confirmada la ficha existe (el link directo sigue andando) pero
+// no se indexa: no está enlazada desde ningún lado y su contenido puede
+// cambiar entero cuando la sede confirme.
+export const noindex = (ctx) => sinIngreso(porSlug(ctx.params.slug));
 
 export const titulo = (ctx) => porSlug(ctx.params.slug)?.nombre ?? 'Carrera no encontrada';
 
@@ -153,8 +158,18 @@ const resumenJornada = (f, torneo) => {
   };
 };
 
-/** La prueba lleva el nombre del sponsor: "Super Sprint by arena". */
-const SUPER_SPRINT = 'Super Sprint by arena';
+// Pruebas patrocinadas y prueba de menores. Antes se comparaba contra el
+// literal 'arena Super Sprint' —la única que existía— y contra 'Kid'; con
+// Colón entran "arena Knock Out Swim" y "Kids", así que se reconocen por
+// forma y no por nombre exacto.
+const esArena = (d) => /^arena /.test(d.rotulo || '');
+const esKids = (d) => /^kids?$/i.test(d.rotulo || '');
+
+/** Un valor todavía sin confirmar por OWA, para no mostrarlo pegado a otro. */
+const sinDato = (v) => !v || /^a confirmar$/i.test(String(v).trim());
+
+/** La prueba lleva el nombre del sponsor al final: "Super Sprint by arena". */
+const nombreArena = (d) => `${d.rotulo.replace(/^arena /, '')} by arena`;
 
 const MES_CORTO = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
@@ -300,7 +315,7 @@ const jornadas = (e, f) => {
           // Kid no lleva `torneo: 'CIRCUITO OWA'` en los datos (es la única
           // sin puntaje, aparte de las competitivas) pero corre el domingo
           // de Circuito igual, así que se suma a mano acá.
-          const distanciasTorneo = (f?.distancias || []).filter((d) => d.torneo === j.torneo || (!gp && d.rotulo === 'Kid'));
+          const distanciasTorneo = (f?.distancias || []).filter((d) => d.torneo === j.torneo || (!gp && esKids(d)));
 
           const linkInsc = inscripcionDe(e, f, j.torneo);
           const linkStarting = startingListDe(e, f, j.torneo);
@@ -368,7 +383,13 @@ const jornadas = (e, f) => {
 
                 <div class="mt-5 flex flex-wrap items-center gap-2.5">
                   ${distanciasTorneo.map((d, i) => {
-                    const etiqueta = d.rotulo === 'arena Super Sprint' ? `${SUPER_SPRINT} ${d.km}` : d.rotulo === 'Kid' ? `Kid ${d.km}` : d.km;
+                    // Las pruebas con nombre propio lo llevan delante de la
+                    // distancia; si la distancia todavía no está, va el
+                    // nombre solo — "Knock Out Swim by arena A confirmar" no
+                    // se entiende.
+                    const nombrePrueba = esArena(d) ? nombreArena(d) : esKids(d) ? d.rotulo : '';
+                    const kmConcreto = sinDato(d.km) ? '' : d.km;
+                    const etiqueta = [nombrePrueba, kmConcreto].filter(Boolean).join(' ') || d.km;
                     return html`
                       <span
                         class="rounded-full px-3.5 py-1.5 font-display text-[12px] font-black tracking-[0.04em] uppercase ${i < (gp ? 1 : 2)
@@ -384,10 +405,35 @@ const jornadas = (e, f) => {
                 </a>
 
                 <div class="mt-auto pt-8">
+                  <!-- Sede y descripción son dos datos distintos: antes la
+                       sede pisaba a la descripción de la jornada, así que una
+                       carrera con ficha cargada perdía cosas como "última
+                       fecha puntuable" o el requisito de estar presente. -->
                   <a href="${linkInsc}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-[13px] text-owa-line">
                     ${icono('pin', 'size-4 shrink-0 text-owa-sky')}
                     ${f?.sedeBarra || j.desc}
                   </a>
+                  ${f?.sedeBarra && j.desc ? html`<p class="mt-2 text-[13px] leading-relaxed text-owa-line/80">${j.desc}</p>` : ''}
+                  <!-- El aviso es la condición que hay que leer sí o sí (por
+                       ejemplo, tener que estar presente para consagrarse
+                       campeón): va en recuadro para que no se pierda entre la
+                       sede y el botón. La descripción común sigue como texto
+                       suelto arriba. -->
+                  ${j.aviso
+                    ? (() => {
+                        // La primera oración es el titular del aviso ("Última
+                        // fecha puntuable…") y va en negrita; lo que sigue es
+                        // la condición, en peso normal.
+                        const corte = j.aviso.indexOf('. ');
+                        const titular = corte < 0 ? j.aviso : j.aviso.slice(0, corte + 1);
+                        const resto = corte < 0 ? '' : j.aviso.slice(corte + 2);
+                        return html`<p
+                          class="mt-3 rounded-owa-md border border-white/20 bg-white/10 p-3.5 text-[13px] leading-relaxed text-white backdrop-blur-sm"
+                        >
+                          <span class="font-bold">${titular}</span>${resto ? html` ${resto}` : ''}
+                        </p>`;
+                      })()
+                    : ''}
                   <!-- Apilados en mobile: lado a lado, "INSCRIBITE A GRAND
                        PRIX" queda en 96px y se parte en cuatro líneas. -->
                   <div class="mt-4 flex flex-col gap-2.5 sm:flex-row">
@@ -558,12 +604,11 @@ export function render(ctx) {
         ${e.jornadas?.length
           ? (() => {
               // Acá sólo van las distancias que puntúan (Media/Corta):
-              // Super Sprint y Kid quedan afuera de la pastilla del banner
-              // — siguen completas en la tarjeta de "Elegí tu carrera".
+              // Las pruebas de arena y las de menores quedan afuera de la
+              // pastilla del banner — siguen completas en la tarjeta de
+              // "Elegí tu carrera".
               const distTxtDe = (torneo) => {
-                const ds = (f?.distancias || []).filter(
-                  (d) => d.torneo === torneo && d.rotulo !== 'arena Super Sprint' && d.rotulo !== 'Kid'
-                );
+                const ds = (f?.distancias || []).filter((d) => d.torneo === torneo && !esArena(d) && !esKids(d));
                 return ds.length > 1 ? ds.map((d) => distCorta(d.km)).join(' · ') : (ds[0]?.km || '').toUpperCase();
               };
               const sep = html`<span class="text-white/70" aria-hidden="true">·</span>`;
@@ -657,13 +702,13 @@ export function render(ctx) {
             >
               ${f.distancias.map((d) => {
                 const principal = ['Larga', 'Media', 'Corta'].includes(d.rotulo);
-                const esSuperSprint = d.rotulo === 'arena Super Sprint';
+                const conArena = esArena(d);
                 // La sigla de la carrera dice más que el rótulo interno
                 // (Larga/Media/Corta): VOB es el Grand Prix, SPD el Circuito.
                 const siglaCard = principal
                   ? e.jornadas?.find((j) => j.torneo === d.torneo)?.sigla || d.torneo
-                  : esSuperSprint
-                    ? SUPER_SPRINT
+                  : conArena
+                    ? nombreArena(d)
                     : d.rotulo;
                 return html`
                   <li
@@ -673,9 +718,9 @@ export function render(ctx) {
                   >
                     <div class="flex items-center gap-2.5">
                       <span class="grid size-8 shrink-0 place-items-center">
-                        ${esSuperSprint
+                        ${conArena
                           ? html`<img src="/brand/arena-logo.webp" alt="" class="h-5 w-auto" />`
-                          : d.rotulo === 'Kid'
+                          : esKids(d)
                             ? html`<span class="text-owa-blue">${icono('persona', 'size-5')}</span>`
                             : html`<img src="/brand/owa-iso-cyan.svg" alt="" class="size-5" />`}
                       </span>
@@ -857,8 +902,11 @@ export function render(ctx) {
                     </div>
                     <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">${r.titulo}</h3>
                     <p class="mt-1 text-sm font-bold text-owa-slate">${r.subtitulo || 'Punto a punto'}</p>
+                    <!-- El río sale de la ficha: estaba fijo en "Paraná", que
+                         vale para San Pedro y Ramallo pero no para Colón, que
+                         corre sobre el Uruguay. -->
                     <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">
-                      Recorrido punto a punto sobre el río Paraná, desde ${r.largada} hasta ${r.llegada}.
+                      Recorrido punto a punto sobre el río ${f?.rio || 'Paraná'}, desde ${r.largada} hasta ${r.llegada}.
                     </p>
 
                     <!-- Sin repetir lo que ya está en la franja de abajo (largada,
@@ -1005,11 +1053,17 @@ export function render(ctx) {
               // "· Kid" en Circuito (no lleva `torneo` propio en los datos
               // porque no puntúa, pero corre ese mismo fin de semana).
               const resumenTab = (c) => {
-                const ds = (f?.distancias || []).filter((d) => d.torneo === c.torneo);
+                // La prueba de menores se agrega aparte, abajo, y las que
+                // todavía no tienen distancia quedan fuera: si no, el resumen
+                // salía "5 km · 2,5 km · A confirmar · A confirmar · Kids".
+                const ds = (f?.distancias || []).filter(
+                  (d) => d.torneo === c.torneo && !esKids(d) && !sinDato(d.km)
+                );
                 const base = ds.map((d) => d.km).join(' · ');
-                // Sólo si la fecha realmente la corre: Luján, por ejemplo, no tiene Kid.
-                const kid = c.torneo !== 'GRAND PRIX' && (f?.distancias || []).some((d) => d.rotulo === 'Kid');
-                return kid ? `${base} · Kid` : base;
+                // Sólo si la fecha realmente la corre: no todas tienen prueba
+                // de menores, y el rótulo va "Kid" o "Kids" según la carrera.
+                const kid = c.torneo !== 'GRAND PRIX' && (f?.distancias || []).find(esKids);
+                return kid ? `${base} · ${kid.rotulo}` : base;
               };
 
               const filaCron = (it, idx, total) => html`

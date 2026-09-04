@@ -1,9 +1,13 @@
 import { html } from '../lib/html.js';
 import { foto } from '../lib/img.js';
+import { sinIngreso, ESTADOS } from '../data/eventos.js';
 import { modalidadesDe, chipEstado, olaTarjeta } from './ui.js';
 
 /** "14 Y 15 NOV" -> { dia: "14–15", mes: "NOV 2026" } */
 export function fechaBadge(e) {
+  // Sin ingreso a la ficha no se muestra una fecha específica: sería
+  // contradictorio con el cartel de "fecha a confirmar" que lleva la tarjeta.
+  if (sinIngreso(e)) return { dia: '—', mes: 'A CONFIRMAR' };
   const nums = e.fechaCorta.match(/\d+/g) || [];
   const mes = (e.fechaCorta.match(/[A-ZÁÉÍÓÚ]{3,}$/) || [''])[0];
   const dia = nums.length > 1 ? `${nums[0]}–${nums.at(-1)}` : nums[0] || '—';
@@ -22,8 +26,8 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
   const abierta = e.estado === 'abierta';
 
   return html`
-    <a
-      href="/carrera/${e.slug}"
+    <${sinIngreso(e) ? 'div' : 'a'}
+      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
       class="reveal u-lift group flex min-h-[27rem] flex-col overflow-hidden rounded-owa-lg bg-linear-to-b from-owa-navy to-owa-abyss text-white"
     >
       <div class="relative h-53 shrink-0 overflow-hidden u-pico-ola" data-sobre-foto>
@@ -48,7 +52,7 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
           class="self-start rounded-full border px-3.5 py-1.5 font-display text-[10px] font-black tracking-[0.12em] ${abierta
             ? 'border-owa-sky/70 text-owa-sky'
             : 'border-white/28 text-owa-line'}"
-          >${abierta ? 'INSCRIPCIÓN ABIERTA' : 'PRÓXIMAMENTE'}</span
+          >${abierta ? 'INSCRIPCIÓN ABIERTA' : ESTADOS[e.estado] || 'PRÓXIMAMENTE'}</span
         >
         <p class="mt-3 font-display text-[11px] font-bold tracking-[0.2em] text-owa-sky">${e.sigla}</p>
         <h3 class="mt-2 text-[clamp(1.625rem,2.6vw,2.125rem)] leading-[0.94]">${e.corto}</h3>
@@ -56,15 +60,15 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
         <p class="mt-4 mb-7 flex flex-wrap gap-1.5">${modalidadesDe(e, { oscuro: true })}</p>
 
         <span class="mt-auto flex items-center justify-between gap-2.5 border-t border-white/18 pt-5.5">
-          <span class="font-display text-xs font-black tracking-[0.08em]">VER DETALLES</span>
-          <span
+          <span class="font-display text-xs font-black tracking-[0.08em]">${sinIngreso(e) ? 'FECHA A CONFIRMAR' : 'VER DETALLES'}</span>
+          ${sinIngreso(e) ? '' : html`<span
             class="grid size-7.5 place-items-center rounded-full bg-owa-cyan text-sm text-owa-deep transition-transform duration-200 ease-out group-hover:translate-x-1"
             aria-hidden="true"
             >→</span
-          >
+          >`}
         </span>
       </div>
-    </a>
+    </${sinIngreso(e) ? 'div' : 'a'}>
   `;
 }
 
@@ -72,8 +76,8 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
     distancia y debajo la ventana (o la condición de cupo, como en SNP). */
 export function tarjetaChallenge(e) {
   return html`
-    <a
-      href="/carrera/${e.slug}"
+    <${sinIngreso(e) ? 'div' : 'a'}
+      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
       class="reveal u-lift group flex flex-col overflow-hidden rounded-owa-lg bg-linear-to-b from-owa-navy to-owa-abyss text-white"
     >
       <div class="relative h-44 shrink-0 overflow-hidden u-pico-ola-derecha">
@@ -97,15 +101,15 @@ export function tarjetaChallenge(e) {
         <p class="mt-1 font-display text-sm font-black tracking-[0.02em] text-owa-sky">${e.ventana}</p>
 
         <span class="mt-6 flex items-center justify-between gap-2.5 border-t border-white/18 pt-5">
-          <span class="font-display text-xs font-black tracking-[0.08em]">VER DETALLES</span>
-          <span
+          <span class="font-display text-xs font-black tracking-[0.08em]">${sinIngreso(e) ? 'FECHA A CONFIRMAR' : 'VER DETALLES'}</span>
+          ${sinIngreso(e) ? '' : html`<span
             class="grid size-7.5 place-items-center rounded-full bg-owa-cyan text-sm text-owa-deep transition-transform duration-200 ease-out group-hover:translate-x-1"
             aria-hidden="true"
             >→</span
-          >
+          >`}
         </span>
       </div>
-    </a>
+    </${sinIngreso(e) ? 'div' : 'a'}>
   `;
 }
 
@@ -156,8 +160,8 @@ export function tarjetaTravel(t) {
     pasos para la distancia recomendada de cada fecha. */
 export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '' }) {
   return html`
-    <a
-      href="/carrera/${e.slug}"
+    <${sinIngreso(e) ? 'div' : 'a'}
+      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
       class="reveal u-lift-sm group overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
     >
       <div class="relative h-35 bg-owa-abyss">
@@ -198,11 +202,11 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destaca
         <p
           class="mt-4 flex items-center gap-2 border-t border-owa-sand pt-3.5 font-display text-xs font-bold tracking-[0.08em] text-owa-blue"
         >
-          VER DETALLES
-          <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
+          ${sinIngreso(e) ? 'FECHA A CONFIRMAR' : 'VER DETALLES'}
+          ${sinIngreso(e) ? '' : html`<span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>`}
         </p>
       </div>
-    </a>
+    </${sinIngreso(e) ? 'div' : 'a'}>
   `;
 }
 
@@ -217,8 +221,8 @@ export function tarjetaEspecial(e) {
   // el alto, así que sin fijar el ancho la tarjeta se estiraba a 432px (216×2)
   // y se desbordaba de su columna de la grilla.
   return html`
-    <a
-      href="/carrera/${e.slug}"
+    <${sinIngreso(e) ? 'div' : 'a'}
+      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
       data-sobre-foto
       class="reveal u-lift-sm group relative block aspect-[2/1] min-h-60 w-full overflow-hidden rounded-owa-lg"
     >
@@ -278,6 +282,6 @@ export function tarjetaEspecial(e) {
           >→</span
         >
       </div>
-    </a>
+    </${sinIngreso(e) ? 'div' : 'a'}>
   `;
 }

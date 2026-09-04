@@ -98,7 +98,9 @@ export const EVENTOS = [
     anio: '2026',
     fechaLarga: '12 y 13 de diciembre de 2026',
     nota: '',
-    estado: 'proximamente',
+    // Ramallo todavía no confirmó la fecha: hasta que lo haga, la tarjeta
+    // lo dice y no se puede entrar a la ficha (ver `sinIngreso`).
+    estado: 'a-confirmar',
     img: 'ev-ramallo',
     jornadas: [
       { torneo: 'GRAND PRIX', sigla: 'RML', fecha: '12/12/2026', dia: 'Día 1 · Grand Prix', desc: 'Tercera fecha puntuable del Grand Prix.' },
@@ -176,8 +178,32 @@ export const EVENTOS = [
     estado: 'proximamente',
     img: 'ev-colon',
     jornadas: [
-      { torneo: 'GRAND PRIX', sigla: 'LBC', fecha: '20/03/2027', dia: 'Día 1 · Grand Prix', desc: 'Última fecha puntuable del Grand Prix 26/27.' },
-      { torneo: 'CIRCUITO OWA', sigla: 'CLN', fecha: '21/03/2027', dia: 'Día 2 · Circuito OWA', desc: 'Última fecha puntuable del Circuito 26/27.' },
+      {
+        torneo: 'GRAND PRIX',
+        sigla: 'LBC',
+        nombreLargo: 'Liebig a Colón',
+        fecha: '20/03/2027',
+        dia: 'Día 1 · Grand Prix',
+        // En recuadro y no como descripción suelta: es una condición para
+        // consagrarse campeón, no un dato de color.
+        aviso: 'Última fecha puntuable del Grand Prix 26/27. Para el título general o por categoría hay que estar presente.',
+        tagline: 'Un clásico del<br>río Uruguay.',
+        // Foto propia de la jornada: sin esto las dos tarjetas de Colón
+        // repetían la misma imagen del evento.
+        img: 'lbc-crawl',
+      },
+      {
+        torneo: 'CIRCUITO OWA',
+        sigla: 'CLN',
+        nombreLargo: 'Colón',
+        fecha: '21/03/2027',
+        dia: 'Día 2 · Circuito OWA',
+        aviso: 'Última fecha puntuable del Circuito 26/27. Para el título general o por categoría hay que estar presente.',
+        // Provisoria, a la espera del texto de OWA. Evita "cierre de
+        // temporada" (es el sello de la Maratón San Pedro, que cierra el
+        // calendario) y no repite el "clásico" de la tarjeta de al lado.
+        tagline: 'Distancias para<br>animarse.',
+      },
     ],
   },
   {
@@ -290,10 +316,17 @@ export const MESES = {
 export const ESTADOS = {
   abierta: 'INSCRIPCIÓN ABIERTA',
   proximamente: 'PRÓXIMAMENTE',
+  'a-confirmar': 'FECHA A CONFIRMAR',
   cerrada: 'CERRADA',
 };
 
 /** A dónde manda "Inscribite". Hasta que OWA pase el link real de cada carrera,
     todo va al calendario, que es donde van a vivir esos links. Cuando lleguen,
     se agrega `inscripcion: 'https://…'` al evento y esta función lo toma sola. */
+// Una carrera sin fecha confirmada no abre ficha: la tarjeta se muestra
+// igual (la fecha está en el calendario) pero no lleva a ningún lado, para
+// no publicar recorrido, cronograma ni inscripción de algo que puede
+// cambiar. Alcanza con sacarle el estado para que vuelva a entrar.
+export const sinIngreso = (e) => e?.estado === 'a-confirmar';
+
 export const linkInscripcion = (e) => e?.inscripcion || '/calendario';

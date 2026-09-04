@@ -9,7 +9,7 @@
 // publicarlo.
 import { writeFile } from 'node:fs/promises';
 import { ORIGEN, INDEXABLE } from '../src/data/sitio.js';
-import { ALL } from '../src/data/eventos.js';
+import { ALL, sinIngreso } from '../src/data/eventos.js';
 
 const OUT = 'dist';
 
@@ -42,7 +42,10 @@ const entrada = ([ruta, prioridad, frecuencia]) =>
 
 // Cada carrera con página propia. Las puntuables van más arriba que los
 // especiales y las travesías porque son las que se buscan por nombre y fecha.
-const carreras = ALL.map((e) => [`/carrera/${e.slug}`, e.tipo === 'core' ? 0.9 : 0.7, 'monthly']);
+// Las carreras sin fecha confirmada quedan fuera: no se puede entrar desde
+// ningún lado del sitio, así que ofrecerlas a Google sería mandar tráfico a
+// una página huérfana.
+const carreras = ALL.filter((e) => !sinIngreso(e)).map((e) => [`/carrera/${e.slug}`, e.tipo === 'core' ? 0.9 : 0.7, 'monthly']);
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

@@ -9,6 +9,17 @@ export const MADRES = {
       'Maratones acuáticas de entre 8 y 18 km, en escenarios que exigen estrategia, resistencia y adaptación.',
     img: 'gp-contraluz',
     alt: 'Nadador a contraluz encarando una brazada en aguas abiertas',
+    // Se muestra en el hero, debajo del intro. Sólo Grand Prix lo declara —el
+    // premio es propio de este torneo, no un patrón que las otras madres
+    // deban repetir. `lead`/`monto`/`cierre` separados (en vez de un único
+    // título armado) para poder resaltar sólo la cifra en cyan.
+    premio: {
+      temporada: 'GRAND PRIX OWA 2026/2027',
+      lead: 'DOS CAMPEONES.',
+      destacado: '$2.700.000',
+      cierre: 'EN PREMIOS.',
+      detalle: '$1.350.000 en crédito para el campeón general de cada género.',
+    },
     bloque1Kicker: 'QUÉ ES',
     bloque1Titulo: 'COMPETITIVO LARGA DISTANCIA',
     bloque1Texto:
@@ -59,6 +70,19 @@ export const MADRES = {
       'Tu lugar para vivir las aguas abiertas. Distancias para distintos niveles, diferentes desafíos y una experiencia pensada para nadar, superarte y compartir el día con tu equipo, amigos y familia.',
     img: 'circuito-grupo',
     alt: 'Grupo de nadadores avanzando juntos en el río',
+    // El premio del Circuito no es plata sino el viaje: por eso el destacado
+    // en cyan es el destino y no una cifra, y lleva link — Swim GP Portugal ya
+    // vive en /travel como Race Travel 2027.
+    premio: {
+      icono: 'globo',
+      temporada: 'DEL CIRCUITO OWA A PORTUGAL',
+      lead: 'SWIM GP',
+      destacado: 'PORTUGAL',
+      cierre: '2027',
+      detalle: 'Los campeones generales femenino y masculino ganan su inscripción para competir en Portugal.',
+      href: '/travel#h-race-travel',
+      hrefLabel: 'Ver Race Travel',
+    },
     bloque1Kicker: 'QUÉ ES',
     bloque1Titulo: 'PARA ANIMARSE, COMPARTIR Y SUPERARSE',
     bloque1Texto: [

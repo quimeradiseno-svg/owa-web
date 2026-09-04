@@ -4,6 +4,9 @@ import { footer } from './components/footer.js';
 import { volverArriba, montarVolverArriba } from './components/volver-arriba.js';
 import { activarReveal, observarReveals, revelarVisibles } from './lib/reveal.js';
 import { montarFotos } from './lib/img.js';
+import { montarAnalitica } from './lib/analitica.js';
+import { montarPixel } from './lib/meta-pixel.js';
+import { medirRuta, medirClics, medirBusqueda } from './lib/eventos-analitica.js';
 
 const shell = document.getElementById('shell');
 const main = document.getElementById('contenido');
@@ -33,6 +36,12 @@ definir('/pda', () => import('./views/pda.js'));
 definir('/reglamentos', () => import('./views/reglamentos.js'));
 definir('/404', () => import('./views/no-encontrada.js'));
 
+// Analytics: se carga una sola vez y los clics se escuchan por delegación,
+// así sobreviven al reemplazo de contenido que hace el router.
+montarAnalitica();
+montarPixel();
+medirClics();
+
 activarReveal(main);
 
 // El fundido de las fotos se activa por JS (la CSP no permite onload= inline),
@@ -44,4 +53,6 @@ arrancar(main, (_patron, ctx) => {
   montarFotos(main);
   revelarVisibles(main);
   observarReveals(main);
+  medirRuta(ctx.path.split('?')[0]);
+  medirBusqueda(main);
 });

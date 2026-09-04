@@ -23,6 +23,11 @@ const PHOTOS = {
   // largada con nadadores.
   'ljn-sede': 'Fotos/LJN/1.jpg',
   'ljn-largada': 'Fotos/LJN/2.jpg',
+  // Card de la jornada Grand Prix (Liebig a Colón). El nadador va a la
+  // derecha y deja libre la mitad izquierda, que es donde la tarjeta apoya la
+  // sigla y la frase. Se recorta el 8% de abajo: ahí vive la marca de agua
+  // del fotógrafo, y horneada en el asset no depende del encuadre del CSS.
+  'lbc-crawl': { foto: 'Fotos/LBC/MER_4843.jpg', recorte: { alto: 0.92 } },
   'pad-infantil': 'Fotos/PDA/DSC_9296.jpg',
   // Romeo Giménez, becado PDA de la temporada 2026/27 (nombrado en PDA_BECAS).
   'pda-romeo': 'Fotos/PDA/romeo.jpg',
@@ -93,6 +98,10 @@ const PHOTOS = {
   'mapa-vob-llegada': 'Fotos/SPD/mapas/Llegada_VOB.jpg',
   'mapa-spd-7k': 'Fotos/SPD/mapas/SPD7.jpg',
   'mapa-spd-4k': 'Fotos/SPD/mapas/SPD4.jpg',
+  // Colón: una lámina por distancia, las tres sobre el río Uruguay.
+  'mapa-cln-10k': 'Fotos/CLN/MAPA-COLON-10.jpg',
+  'mapa-cln-5k': 'Fotos/CLN/MAPA-COLON-5.jpg',
+  'mapa-cln-25k': 'Fotos/CLN/MAPA-COLON-25.jpg',
   // poster del video del hero — vive fuera de SPD/VOB, así que se referencia
   // con la ruta completa en vez de una clave del índice.
   'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',

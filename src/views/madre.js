@@ -1,6 +1,6 @@
 import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
-import { EVENTOS, CHALLENGES, km } from '../data/eventos.js';
+import { EVENTOS, CHALLENGES, km, sinIngreso } from '../data/eventos.js';
 import { MADRES } from '../data/madres.js';
 import { tarjetaFecha } from '../components/tarjeta-evento.js';
 import { eyebrow, btnPrimarioChico, olaSuperior } from '../components/ui.js';
@@ -63,7 +63,9 @@ function fechasDe(key) {
   return EVENTOS.filter((e) => e.tipo === 'core').map((e, i) => ({
     e,
     orden: `FECHA ${String(i + 1).padStart(2, '0')}`,
-    linea: e.jornadas.find((j) => j.torneo === TORNEO[key]).fecha,
+    // Sin ingreso a la ficha (ver `sinIngreso`), la fecha de la jornada no se
+    // muestra: contradiría al chip "FECHA A CONFIRMAR" de la propia tarjeta.
+    linea: sinIngreso(e) ? 'Fecha a confirmar' : e.jornadas.find((j) => j.torneo === TORNEO[key]).fecha,
     sublinea: e.sede,
     pill: conResumen(key) ? DIST[key](e) : '',
   }));
@@ -105,6 +107,40 @@ const bloqueDatos = (key, m, fechas) => {
   `;
 };
 
+/** Franja de premio, sección propia entre el bloque de info y las fechas —no
+    en el hero, para no competir con el título. Mismo molde que la placa
+    "Cada brazada suma" del ranking en home.js: card navy angosta, ícono a la
+    izquierda, texto al lado. Sin foto de fondo (ahí sí la lleva) porque acá
+    el premio tiene que ser lo único que se lea.
+
+    El titular va partido en `lead` + `destacado` + `cierre` para poder
+    resaltar en cyan sólo la parte que importa: el monto en Grand Prix, el
+    destino en Circuito. `href` es opcional — sólo Circuito lo usa, porque su
+    premio (Swim GP Portugal) sí tiene una página adonde ir. */
+const bloquePremio = (p) => html`
+  <section class="u-shell pt-14">
+    <div class="reveal flex flex-col items-start gap-5 rounded-owa-lg bg-owa-navy p-7 sm:flex-row sm:items-center sm:p-8">
+      <span class="grid size-14 shrink-0 place-items-center rounded-full bg-white/10 text-owa-cyan">
+        ${icono(p.icono || 'trofeo', 'size-7')}
+      </span>
+      <div>
+        <p class="font-display text-[11px] font-bold tracking-[0.14em] text-owa-sky uppercase">${p.temporada}</p>
+        <p data-nums class="mt-2 font-display text-[clamp(1.5rem,2.8vw,2rem)] leading-[1.1] font-black text-white">
+          ${p.lead} <span class="text-owa-cyan">${p.destacado}</span> ${p.cierre}
+        </p>
+        <p class="mt-2 max-w-[54ch] text-sm leading-relaxed text-owa-line">${p.detalle}</p>
+        ${p.href
+          ? html`<a
+              href="${p.href}"
+              class="u-nudge mt-3.5 inline-flex items-center gap-2 border-b border-owa-cyan/50 pb-0.5 font-display text-[12px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:border-owa-cyan"
+              >${p.hrefLabel} <span class="u-nudge-arrow" aria-hidden="true">→</span></a
+            >`
+          : ''}
+      </div>
+    </div>
+  </section>
+`;
+
 /** Desglose de distancias por fecha. Cierra el dato que el intro promete
     ("entre 8 y 18 km") y nunca detallaba, y de paso empareja la altura de la
     columna izquierda con la caja de puntaje. */
@@ -121,8 +157,8 @@ const bloqueDistancias = (key) => html`
             <!-- Toda la fila es el link a la ficha: el nombre solo es un blanco
                  chico y el dato de distancia, que es lo que se viene a mirar,
                  quedaría fuera del área clickeable. -->
-            <a
-              href="/carrera/${e.slug}"
+            <${sinIngreso(e) ? 'div' : 'a'}
+              ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
               class="group -mx-2 flex items-baseline justify-between gap-4 rounded-owa-md px-2 py-3 transition-colors duration-200 ease-out hover:bg-owa-mist/60"
             >
               <span class="flex min-w-0 items-center gap-2.5">
@@ -139,7 +175,7 @@ const bloqueDistancias = (key) => html`
               <span data-nums class="font-display text-[17px] font-black whitespace-nowrap text-owa-blue">
                 ${DIST[key](e)}
               </span>
-            </a>
+            </${sinIngreso(e) ? 'div' : 'a'}>
           </li>
         `;
       })}
@@ -301,6 +337,8 @@ export function render(ctx) {
         </div>
       </div>
     </div>
+
+    ${m.premio ? bloquePremio(m.premio) : ''}
 
     <section class="u-shell pt-16 pb-24" aria-labelledby="h-fechas">
       <h2 id="h-fechas" class="u-eyebrow text-owa-blue">${m.listaKicker}</h2>
