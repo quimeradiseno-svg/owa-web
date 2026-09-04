@@ -158,7 +158,7 @@ const bloqueDistancias = (key) => html`
                  chico y el dato de distancia, que es lo que se viene a mirar,
                  quedaría fuera del área clickeable. -->
             <${sinIngreso(e) ? 'div' : 'a'}
-              ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
+              ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
               class="group -mx-2 flex items-baseline justify-between gap-4 rounded-owa-md px-2 py-3 transition-colors duration-200 ease-out hover:bg-owa-mist/60"
             >
               <span class="flex min-w-0 items-center gap-2.5">

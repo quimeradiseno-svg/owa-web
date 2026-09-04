@@ -1,4 +1,4 @@
-import { html } from '../lib/html.js';
+import { html, raw } from '../lib/html.js';
 import { foto } from '../lib/img.js';
 import { sinIngreso, ESTADOS } from '../data/eventos.js';
 import { modalidadesDe, chipEstado, olaTarjeta } from './ui.js';
@@ -27,7 +27,7 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
 
   return html`
     <${sinIngreso(e) ? 'div' : 'a'}
-      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
+      ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
       class="reveal u-lift group flex min-h-[27rem] flex-col overflow-hidden rounded-owa-lg bg-linear-to-b from-owa-navy to-owa-abyss text-white"
     >
       <div class="relative h-53 shrink-0 overflow-hidden u-pico-ola" data-sobre-foto>
@@ -77,7 +77,7 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
 export function tarjetaChallenge(e) {
   return html`
     <${sinIngreso(e) ? 'div' : 'a'}
-      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
+      ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
       class="reveal u-lift group flex flex-col overflow-hidden rounded-owa-lg bg-linear-to-b from-owa-navy to-owa-abyss text-white"
     >
       <div class="relative h-44 shrink-0 overflow-hidden u-pico-ola-derecha">
@@ -161,7 +161,7 @@ export function tarjetaTravel(t) {
 export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '' }) {
   return html`
     <${sinIngreso(e) ? 'div' : 'a'}
-      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
+      ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
       class="reveal u-lift-sm group overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
     >
       <div class="relative h-35 bg-owa-abyss">
@@ -222,7 +222,7 @@ export function tarjetaEspecial(e) {
   // y se desbordaba de su columna de la grilla.
   return html`
     <${sinIngreso(e) ? 'div' : 'a'}
-      ${sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`}
+      ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
       data-sobre-foto
       class="reveal u-lift-sm group relative block aspect-[2/1] min-h-60 w-full overflow-hidden rounded-owa-lg"
     >

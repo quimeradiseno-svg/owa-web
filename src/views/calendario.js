@@ -1,4 +1,4 @@
-import { html, toHTML, stagger } from '../lib/html.js';
+import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
 import { EVENTOS, ALL, MESES, sinIngreso } from '../data/eventos.js';
 import { TRAVEL } from '../data/travel.js';
@@ -136,7 +136,7 @@ function fila(e) {
            hijos (foto, fecha, info) siguen siendo celdas directas de esta
            grilla — necesario para poder sacar los botones de acá afuera y
            que cada uno sea un <a> real a su propio destino. -->
-      <${bloqueada ? 'div' : 'a'} ${bloqueada ? '' : `href="${href}"`} class="contents">
+      <${bloqueada ? 'div' : 'a'} ${raw(bloqueada ? '' : `href="${href}"`)} class="contents">
         <div class="relative h-30 overflow-hidden rounded-owa-md bg-owa-abyss md:h-29.5">
           ${foto({
             slug: e.img,
