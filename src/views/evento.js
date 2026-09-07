@@ -424,10 +424,15 @@ const jornadas = (e, f) => {
                         const corte = j.aviso.indexOf('. ');
                         const titular = corte < 0 ? j.aviso : j.aviso.slice(0, corte + 1);
                         const resto = corte < 0 ? '' : j.aviso.slice(corte + 2);
+                        // Cada oración en su renglón: seguidas, la condición
+                        // se leía como continuación del titular en negrita y
+                        // se perdía justamente lo que hay que hacer.
                         return html`<p
                           class="mt-3 rounded-owa-md border border-white/20 bg-white/10 p-3.5 text-[13px] leading-relaxed text-white backdrop-blur-sm"
                         >
-                          <span class="font-bold">${titular}</span>${resto ? html` ${resto}` : ''}
+                          <span class="block font-bold">${titular}</span>${resto
+                            ? html`<span class="mt-1 block">${resto}</span>`
+                            : ''}
                         </p>`;
                       })()
                     : ''}
