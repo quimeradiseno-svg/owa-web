@@ -294,6 +294,44 @@
     linear-gradient(0deg, rgb(12 16 42 / 0.75) 0%, transparent 55%);
 }
 
+/* EN PRUEBA — hero del home. Tres capas, ninguna con negro: todo el velo usa
+   el azul de la identidad (20 22 48) para que empalme con el header.
+   La composición es izquierda oscura pero translúcida (se sigue viendo el
+   agua detrás del titular) → centro con el video limpio → derecha apenas
+   bajada para que el pasto no se lleve la mirada → abajo en degradé hasta el
+   azul, que es donde apoya la ola blanca.
+   Si no convence, el hero vuelve a u-hero-scrim. */
+@utility u-hero-scrim-b {
+  background:
+    /* Derecha: le baja el protagonismo al pasto sin taparlo. */
+    linear-gradient(to left, rgb(20 22 48 / 0.25) 0%, rgb(20 22 48 / 0.08) 20%, rgb(20 22 48 / 0) 35%),
+    /* Abajo: integra el video con el cierre del hero y, de paso, es la capa
+       que sostiene la legibilidad. Arranca antes y más marcada que en la
+       propuesta original (que empezaba en 35% con 0.10): medido sobre el
+       compuesto real de siete frames del clip, con aquellos valores el párrafo
+       caía a 2.56:1 y el link secundario a 3.48:1, debajo del 4.5 de AA.
+       Reforzar acá y no a la izquierda deja intacta la zona del titular, que
+       es donde se quiere ver el agua. */
+    linear-gradient(
+        to bottom,
+        rgb(20 22 48 / 0) 15%,
+        rgb(20 22 48 / 0.3) 42%,
+        rgb(20 22 48 / 0.62) 69%,
+        rgb(20 22 48 / 0.95) 100%
+      ),
+    /* Izquierda: protege el texto sin volverse un bloque sólido. Va a 100deg
+       y no a 90 para que la caída sea diagonal y no se lea como un corte. */
+      linear-gradient(
+        100deg,
+        rgb(20 22 48 / 0.78) 0%,
+        rgb(20 22 48 / 0.7) 22%,
+        rgb(20 22 48 / 0.5) 38%,
+        rgb(20 22 48 / 0.27) 52%,
+        rgb(20 22 48 / 0.08) 68%,
+        rgb(20 22 48 / 0) 82%
+      );
+}
+
 /* Igual pero más corto, para los heros de ficha y de sección. */
 /* Para heroes con video: casi sin velo arriba (el navbar ya tapa esa franja)
    y oscuro solo abajo, donde apoya el titulo. */

@@ -3,7 +3,7 @@ import { foto, fondo, fondoVideo, montarFondoVideo } from '../lib/img.js';
 import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
 import { TRAVEL, RACE_TRAVEL_AGENDA } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
-import { GP, CIRC, CLUBES_GP, CLUBES_CIRC } from '../data/rankings.js';
+import { DESTACADOS, CLUBES, TEMPORADA } from '../data/ranking-destacados.js';
 import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
 import {
@@ -15,6 +15,7 @@ import {
   btnBorde,
   linkClaro,
   linkFuerte,
+  numero,
   olaCentrada,
 } from '../components/ui.js';
 import { grafo, organizacion, sitioWeb } from '../lib/schema.js';
@@ -32,8 +33,8 @@ export const schema = () => grafo(organizacion(), sitioWeb());
 const estadoHome = { tab: 'gp' };
 
 const PANELES = [
-  { id: 'gp', label: 'GRAND PRIX OWA', data: GP, ruta: 'gp' },
-  { id: 'circ', label: 'CIRCUITO OWA', data: CIRC, ruta: 'circ' },
+  { id: 'gp', label: 'GRAND PRIX OWA', torneo: 'grand-prix' },
+  { id: 'circ', label: 'CIRCUITO OWA', torneo: 'circuito' },
 ];
 
 // Avatar placeholder hasta que OWA mande la foto real de cada nadador: mismo
@@ -75,7 +76,7 @@ const numeroPos = (p, oscuro = false) => {
 };
 
 const columnaGenero = (panel, sexo) => {
-  const rows = panel.data.filter((r) => r.sexo === sexo).slice(0, 3);
+  const rows = (DESTACADOS[panel.torneo]?.[sexo] ?? []).slice(0, 3);
   return html`
     <div>
       <p class="flex items-center gap-2.5 font-display text-sm font-black tracking-[0.12em] text-owa-navy">
@@ -88,12 +89,12 @@ const columnaGenero = (panel, sexo) => {
         ? html`
             <ol class="mt-3.5 grid">
               ${rows.map(
-                (r, i) => html`
+                (r) => html`
                   <li class="flex items-center gap-3.5 border-b border-owa-sand py-3.5 last:border-0">
-                    ${numeroPos(i + 1)} ${avatar('size-15')}
+                    ${numeroPos(r.pos)} ${avatar('size-15')}
                     <span class="min-w-0 flex-1">
                       <span class="block truncate font-display text-lg font-bold text-owa-navy">${r.nombre}</span>
-                      <span data-nums class="mt-0.5 block text-sm font-bold text-owa-blue">${r.puntos} pts</span>
+                      <span data-nums class="mt-0.5 block text-sm font-bold text-owa-blue">${numero(r.puntos)} pts</span>
                     </span>
                   </li>
                 `
@@ -133,14 +134,15 @@ function panelRanking() {
   `;
 }
 
-// Grand Prix y Circuito son dos estados del mismo módulo de rankings — un
-// solo toggle (el de la tarjeta de nadadores) manda sobre las tres columnas
-// a la vez: hombres, mujeres Y clubes. Por eso clubes ya no tiene su propia
-// pastilla adentro ni su propio estado: lee el mismo estadoHome.tab.
-const CLUBES_POR_TAB = { gp: CLUBES_GP, circ: CLUBES_CIRC };
-
+// El campeonato por equipos es uno solo: OWA suma en la misma tabla los puntos
+// que los nadadores de cada club hacen en Grand Prix y en Circuito, no lleva un
+// ranking de clubes por torneo. Por eso esta tarjeta no cambia con el toggle
+// —que sí manda sobre hombres y mujeres— y lo dice en el subtítulo, para que no
+// se lea como si mostrara los clubes del torneo elegido.
 function panelClubes() {
-  const clubes = CLUBES_POR_TAB[estadoHome.tab];
+  // Tres, como las columnas de nadadores: la tarjeta se lee de un vistazo y el
+  // resto de la tabla está a un click en /resultados.
+  const clubes = CLUBES.slice(0, 3);
   return html`
     <article class="reveal relative overflow-hidden rounded-owa-lg bg-owa-navy p-7 text-white" data-panel-clubes>
       <!-- Foto a sangre de toda la tarjeta: sin recorte visible. Degradado
@@ -156,21 +158,22 @@ function panelClubes() {
 
       <div class="relative">
         <h3 class="font-display text-xl font-black tracking-[0.1em] text-owa-sky">CLUBES</h3>
-        <ol class="mt-9">
+        <p class="mt-1.5 text-[13px] text-owa-line/85">Campeonato por equipos, las dos competencias juntas.</p>
+        <ol class="mt-7">
           ${clubes.map(
-            (c, i) => html`
+            (c) => html`
               <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
-                ${numeroPos(i + 1, true)} ${avatar('size-15', true)}
+                ${numeroPos(c.pos, true)} ${avatar('size-15', true)}
                 <span class="min-w-0 flex-1">
                   <span class="block font-display text-lg leading-tight font-bold">${c.nombre}</span>
-                  <span data-nums class="mt-1 block text-sm font-bold text-owa-sky">${c.puntos} pts</span>
+                  <span data-nums class="mt-1 block text-sm font-bold text-owa-sky">${numero(c.puntos)} pts</span>
                 </span>
               </li>
             `
           )}
         </ol>
         <a
-          href="/resultados?vista=equipos"
+          href="/resultados?tab=equipos"
           class="u-nudge mt-6 inline-flex items-center gap-2 rounded-full border border-owa-cyan/60 px-4.5 py-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:border-owa-sky hover:text-owa-sky"
         >
           Ver todos los clubes
@@ -306,16 +309,26 @@ function tarjetaRaceTravelHome(r) {
 export function render() {
   return toHTML(html`
     <!-- ------------------------------------------------------------ hero -->
-    <section class="relative flex min-h-[86svh] items-end overflow-hidden bg-owa-abyss">
+    <!-- svh y no vh: en móvil el 100vh cuenta la barra del navegador y el hero
+         queda más alto que la pantalla, empujando el indicador fuera de vista. -->
+    <section class="relative flex min-h-[calc(100svh-69px)] items-end overflow-hidden bg-[#141630]">
       ${fondoVideo({
         posterSlug: 'hero-drone',
         mp4: '/video/hero-drone.mp4',
         alt: 'Vista aérea de nadadores cruzando entre boyas de OWA, con público en la costa',
-        opacity: 0.78,
+        // Sin velo plano: el degradé de u-hero-scrim-b ya trae sus tres capas
+        // y encimarle un velo parejo taparía justo lo que se busca dejar ver.
+        opacity: 1,
+        // Realce mínimo. Más saturación que esto y el verde del pasto de la
+        // derecha se vuelve artificial.
+        filtro: 'saturate(1.03) contrast(1.03)',
       })}
-      <div class="u-hero-scrim absolute inset-0"></div>
+      <!-- El overlay va encima del video y debajo del contenido (que abre más
+           abajo, posicionado con relative). pointer-events-none para que no se
+           coma los clics de los CTA ni del indicador. -->
+      <div class="u-hero-scrim-b pointer-events-none absolute inset-0"></div>
 
-      <div class="u-shell relative pt-32 pb-36">
+      <div class="u-shell relative pt-20 pb-36 sm:pt-32">
         <p class="hero-in flex items-center gap-3.5" style="--hero-delay:60ms">
           <span class="hero-rule h-0.5 w-11 bg-owa-cyan" style="--hero-delay:60ms"></span>
           <span class="u-eyebrow text-owa-sky">Temporada 2026/27</span>
@@ -376,12 +389,32 @@ export function render() {
           ${linkClaro('Soy nuevo en aguas abiertas', '/primeros-pasos')}
         </div>
       </div>
+
+      <!-- Ancla a la primera sección. Va absoluto y centrado, en el hueco que
+           deja el pb-36 del contenido: así no empuja al CTA ni pelea con él.
+           El scroll suave lo resuelve el scroll-behavior global, y el router
+           deja pasar las anclas de la misma página sin interceptarlas. -->
+      <a
+        href="#empezar"
+        class="hero-in absolute inset-x-0 bottom-16 z-3 mx-auto hidden w-fit items-center p-3 [@media(min-height:720px)]:flex text-owa-line/75 transition-colors duration-200 hover:text-white"
+        style="--hero-delay:460ms"
+      >
+        <!-- Sin rótulo: la flecha sola alcanza. El texto queda para lectores de
+             pantalla, que no ven el ícono. El padding da área de toque cómoda
+             sin agrandar el dibujo. -->
+        <span class="sr-only">Ir al contenido</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="u-cue-flecha size-6" aria-hidden="true">
+          <path d="M12 4v15m0 0 6-6m-6 6-6-6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
     </section>
 
     <div class="relative z-2 -mt-13">${olaCentrada('#fff')}</div>
 
     <!-- ------------------------------------------------- eventos puntuables -->
-    <section class="bg-white px-0 pt-8 pb-23" aria-labelledby="h-puntuables">
+    <!-- scroll-mt para que el header sticky no tape el título al bajar desde
+         el indicador del hero. -->
+    <section id="empezar" class="scroll-mt-20 bg-white px-0 pt-8 pb-23" aria-labelledby="h-puntuables">
       <div class="u-shell">
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
@@ -503,7 +536,10 @@ export function render() {
     <section class="bg-white px-0 py-22" aria-labelledby="h-rankings">
       <div class="u-shell">
         <div class="mb-9">
-          ${eyebrow('Rankings en vivo')}
+          <!-- "Rankings en vivo" hasta que arranque 26/27 sería mentira: lo que
+               se muestra es la temporada anterior ya cerrada. Vuelve a ser en
+               vivo con la primera fecha, el 31 de octubre en Luján. -->
+          ${eyebrow(`Ranking ${TEMPORADA} · final`)}
           <h2 id="h-rankings" class="u-h2 mt-3.5">
             In aqua veritas<br />aqua autem nos unit
           </h2>
@@ -562,6 +598,23 @@ export function render() {
 export function mount(root) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarFondoVideo(root);
+
+  // El indicador "deslizar" es un ancla normal y sin JS ya funciona. Acá se
+  // toma el control del scroll para poder fijar el offset del header sticky
+  // en un solo lugar y respetar prefers-reduced-motion sin depender de cómo
+  // cada navegador combine el salto de fragmento con scroll-behavior.
+  const cue = root.querySelector('a[href="#empezar"]');
+  cue?.addEventListener('click', (e) => {
+    const destino = document.getElementById('empezar');
+    if (!destino) return;
+    e.preventDefault();
+    const suave = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const alto = document.querySelector('header')?.getBoundingClientRect().height ?? 0;
+    window.scrollTo({
+      top: destino.getBoundingClientRect().top + window.scrollY - alto - 16,
+      behavior: suave ? 'smooth' : 'instant',
+    });
+  });
 
   const pintar = (selector, render) => {
     const viejo = root.querySelector(selector);

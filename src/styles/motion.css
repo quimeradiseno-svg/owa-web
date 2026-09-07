@@ -237,6 +237,23 @@
   }
 }
 
+/* ------------------------------------------------- indicador "deslizar"
+   La flecha del hero baja y vuelve en loop. Recorrido corto (5px) y ciclo
+   largo: tiene que sugerir el gesto, no llamar la atención por encima del
+   CTA que está justo arriba. */
+.u-cue-flecha {
+  animation: owa-cue 2.2s var(--ease-in-out) infinite;
+}
+@keyframes owa-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
 /* ----------------------------------------------------------- estado en vivo */
 .live-dot {
   animation: owa-pulse 1.6s var(--ease-in-out) infinite;
@@ -314,6 +331,7 @@
     animation: none;
     transform: scaleX(1);
   }
+  .u-cue-flecha,
   .group:hover .u-pin-rebote {
     animation: none;
   }

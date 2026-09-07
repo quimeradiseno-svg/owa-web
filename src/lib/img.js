@@ -65,7 +65,9 @@ export function fondo({ slug, alt = '', opacity = 0.62, drift = false, priority 
  * `mp4` alcanza para todo (Safari incluido); no vale la pena duplicar en WebM
  * un clip que ya pesa unos pocos MB.
  */
-export function fondoVideo({ slug, posterSlug, mp4, alt = '', opacity = 0.62, sizes = '100vw' }) {
+// `filtro` es un filter CSS opcional para el clip (saturación/contraste). Sin
+// él el video va tal cual: sólo el hero del home lo usa por ahora.
+export function fondoVideo({ slug, posterSlug, mp4, alt = '', opacity = 0.62, sizes = '100vw', filtro = '' }) {
   return html`
     <div class="absolute inset-0 overflow-hidden" aria-hidden="${alt ? 'false' : 'true'}">
       ${foto({
@@ -79,6 +81,7 @@ export function fondoVideo({ slug, posterSlug, mp4, alt = '', opacity = 0.62, si
       <video
         data-fondo-video
         class="video-fade absolute inset-0 h-full w-full object-cover"
+        ${raw(filtro ? `style="filter:${filtro}"` : '')}
         muted
         loop
         playsinline
