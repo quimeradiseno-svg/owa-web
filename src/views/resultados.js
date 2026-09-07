@@ -18,11 +18,16 @@ const TABS = [
   ['CAMPEONATO POR EQUIPOS', 'equipos'],
 ];
 
+// El tercer valor es el rótulo de pantalla chica. Con el nombre completo cada
+// píldora mide más de la mitad del ancho y las cuatro caen una por fila, con
+// anchos distintos: se lee desprolijo. Acortadas entran de a dos. No se pierde
+// nada: el título de la tarjeta de abajo dice igual "Ranking general
+// masculino".
 const VISTAS = [
-  ['GENERAL MASCULINO', 'gen-m'],
-  ['GENERAL FEMENINO', 'gen-f'],
-  ['CATEGORÍAS MASCULINAS', 'cat-m'],
-  ['CATEGORÍAS FEMENINAS', 'cat-f'],
+  ['GENERAL MASCULINO', 'gen-m', 'MASCULINO'],
+  ['GENERAL FEMENINO', 'gen-f', 'FEMENINO'],
+  ['CATEGORÍAS MASCULINAS', 'cat-m', 'CAT. MASCULINAS'],
+  ['CATEGORÍAS FEMENINAS', 'cat-f', 'CAT. FEMENINAS'],
 ];
 
 // Filas por página. El Circuito masculino tiene más de 500 nadadores: en una
@@ -525,20 +530,25 @@ const comoSeCalcula = () => {
 /** Nivel 2 de navegación. A propósito NO usa las mismas pestañas del nivel 1:
     es un segmented control —una sola pista con la opción activa rellena— para
     que se lea como un filtro de la sección y no como otra sección. */
+// Nivel 2. Mismo criterio que el nivel 1: nada de scroll horizontal, las
+// cuatro opciones a la vista. Envuelven en vez de cortarse. Siguen siendo
+// píldoras sobre blanco, así que no se confunden con las pestañas del hero
+// aunque en móvil las dos ocupen dos filas.
 const barraVistas = () => html`
-  <div class="flex snap-x gap-2.5 overflow-x-auto" role="group" aria-label="Vista del ranking">
+  <div class="flex flex-wrap gap-2 sm:gap-2.5" role="group" aria-label="Vista del ranking">
     ${VISTAS.map(
-      ([label, v]) => html`
+      ([label, v, corto]) => html`
         <button
           type="button"
           data-vista="${v}"
           aria-pressed="${s.vista === v ? 'true' : 'false'}"
-          class="u-press shrink-0 snap-start cursor-pointer rounded-full border px-5 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] transition-colors duration-200 ${s.vista ===
+          aria-label="${label}"
+          class="u-press cursor-pointer rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${s.vista ===
           v
             ? 'border-owa-navy bg-owa-navy text-white'
             : 'border-owa-line bg-white text-owa-slate hover:border-owa-navy hover:text-owa-navy'}"
         >
-          ${label}
+          <span class="sm:hidden">${corto}</span><span class="hidden sm:inline">${label}</span>
         </button>
       `
     )}
@@ -555,11 +565,15 @@ const panel = () => {
 };
 
 const barraTabs = () => html`
-  <!-- Nivel 1: pestañas ancladas al borde inferior del hero, la activa
-       "abriéndose" sobre el panel. Apiladas en móvil se leen como tarjetas
-       rotas, así que en pantalla chica scrollean en una sola fila. -->
+  <!-- Nivel 1. En desktop son pestañas ancladas al borde inferior del hero,
+       con la activa "abriéndose" sobre el panel blanco.
+       En pantalla chica esa metáfora no entra: las cuatro en una fila obligan
+       a scrollear, la elegida queda cortada contra el borde y la tira se lee
+       como algo roto. Ahí pasan a grilla —las cuatro visibles, sin scroll— y
+       pierden el anclaje (esquinas redondeadas completas), porque una grilla
+       de dos filas no se puede "pegar" al panel. -->
   <div
-    class="mt-8 flex snap-x gap-1 overflow-x-auto lg:flex-wrap lg:overflow-visible"
+    class="mt-8 grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:flex lg:flex-wrap lg:gap-1"
     role="tablist"
     aria-label="Secciones de resultados"
   >
@@ -570,10 +584,10 @@ const barraTabs = () => html`
           role="tab"
           data-tab="${v}"
           aria-selected="${s.tab === v ? 'true' : 'false'}"
-          class="u-press shrink-0 snap-start cursor-pointer rounded-t-owa-md px-3 py-3.5 sm:px-5.5 font-display text-xs font-black tracking-[0.08em] whitespace-nowrap transition-colors duration-200 ease-out ${s.tab ===
+          class="u-press cursor-pointer rounded-owa-md px-3 py-3 text-center font-display text-[11px] leading-tight font-black tracking-[0.06em] transition-colors duration-200 ease-out lg:rounded-b-none lg:px-5.5 lg:py-3.5 lg:text-xs lg:tracking-[0.08em] lg:whitespace-nowrap ${s.tab ===
           v
             ? 'bg-white text-owa-navy'
-            : 'bg-white/8 text-white/70 hover:bg-white/14 hover:text-white'}"
+            : 'bg-white/10 text-white/75 hover:bg-white/16 hover:text-white'}"
         >
           ${label}
         </button>
