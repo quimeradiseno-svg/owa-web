@@ -87,8 +87,7 @@ export const MADRES = {
     bloque1Titulo: 'PARA ANIMARSE, COMPARTIR Y SUPERARSE',
     bloque1Texto: [
       'El Circuito OWA es para quienes quieren disfrutar las aguas abiertas, desde sus primeros pasos hasta la competencia.',
-      'Cada fecha ofrece distancias S, M y L de menos de 8 km, en un entorno seguro y organizado. Podés nadar por un objetivo personal, competir por tu categoría o sumar puntos con tu equipo.',
-      'No hace falta ser elite. Solo estar preparado y tener ganas de ser parte.',
+      'Elegí tu distancia, competí por tu categoría o sumá puntos con tu equipo a lo largo de la temporada.',
     ],
     cajaTitulo: 'SISTEMA DE PUNTAJE',
     // Mismos títulos que Grand Prix en las cuatro reglas que comparten: los dos
