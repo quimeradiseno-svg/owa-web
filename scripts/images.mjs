@@ -96,6 +96,9 @@ const PHOTOS = {
   'mapa-vob-tramo1': 'Fotos/SPD/mapas/VOB1.jpg',
   'mapa-vob-tramo2': 'Fotos/SPD/mapas/tramo_2_VOB.jpg',
   'mapa-vob-llegada': 'Fotos/SPD/mapas/Llegada_VOB.jpg',
+  // Pinamar: una lámina por distancia, las dos sobre la misma playa.
+  'mapa-pnr-35': 'Fotos/PNR/CIRCUITOPINAMAR35.jpg',
+  'mapa-pnr-18': 'Fotos/PNR/CIRCUITOPINAMAR18.jpg',
   'mapa-spd-7k': 'Fotos/SPD/mapas/SPD7.jpg',
   'mapa-spd-4k': 'Fotos/SPD/mapas/SPD4.jpg',
   // Colón: una lámina por distancia, las tres sobre el río Uruguay.
