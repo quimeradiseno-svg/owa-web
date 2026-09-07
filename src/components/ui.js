@@ -73,16 +73,19 @@ export const modalidadesDe = (e, opts) => {
 // se lee a 9:1 y el metal queda más claro que antes.
 const MEDALLA = { 1: 'bg-owa-gold', 2: 'bg-owa-gray', 3: 'bg-owa-bronze' };
 
-export const posicion = (p, { oscuro = false } = {}) =>
-  MEDALLA[p]
-    ? html`<span
-        data-nums
-        class="grid size-8 place-items-center rounded-full font-display text-sm font-black text-owa-navy ${MEDALLA[p]}"
+// `cuerpo` cambia Vito por Lato. Lo usa la tabla de /resultados, donde los
+// puestos llegan a tres cifras: en Vito Wide "101" mide 39px y no entra en el
+// círculo de 32. Los rankings cortos (home) siguen con la display.
+export const posicion = (p, { oscuro = false, cuerpo = false } = {}) => {
+  const fuente = cuerpo ? 'font-body font-bold' : 'font-display font-black';
+  return MEDALLA[p]
+    ? html`<span data-nums class="grid size-8 place-items-center rounded-full text-sm text-owa-navy ${fuente} ${MEDALLA[p]}"
         >${p}</span
       >`
-    : html`<span data-nums class="grid size-8 place-items-center font-display text-base font-black ${oscuro ? 'text-owa-line' : 'text-owa-slate'}"
+    : html`<span data-nums class="grid size-8 place-items-center text-base ${fuente} ${oscuro ? 'text-owa-line' : 'text-owa-slate'}"
         >${p}</span
       >`;
+};
 
 /* ---------------------------------------------------------------- botones */
 
@@ -249,3 +252,7 @@ export const olaCentrada = (fill = '#fff') => html`
 
 /** Aviso de dato pendiente de confirmación por OWA. */
 export const pendiente = (texto) => html`<p class="mt-4 text-xs text-owa-slate/80">${texto}</p>`;
+
+/** Miles con punto, como se escriben acá: 63706 -> 63.706. Los puntajes de
+    clubes llegan a seis cifras y sin separador se leen como un número solo. */
+export const numero = (n) => new Intl.NumberFormat('es-AR').format(n);
