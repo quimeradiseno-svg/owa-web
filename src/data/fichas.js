@@ -332,15 +332,14 @@ export const FICHAS = {
       {
         rotulo: 'arena Knock Out Swim',
         torneo: 'CIRCUITO OWA',
-        km: 'A confirmar',
+        km: '2 × 350 m',
         nota: 'Prueba por invitación. Un cupo por género cada 5 inscriptos',
         cats: 'Por género',
       },
       {
         rotulo: 'Kids',
         torneo: 'CIRCUITO OWA',
-        // OWA todavía no pasó la distancia.
-        km: 'A confirmar',
+        km: '350 m',
         nota: 'Prueba gratuita',
         cats: 'Participativo · No competitivo',
       },
