@@ -36,9 +36,13 @@ function resolver(path) {
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let primerPintado = true;
+// Última ruta efectivamente pintada. Sirve para distinguir un popstate real
+// (cambió la ruta) de uno disparado sólo por un cambio de hash.
+let rutaPintada = null;
 
 async function pintar(path, { scroll = true } = {}) {
   const pathname = path.split('?')[0];
+  rutaPintada = pathname;
   const hallada = resolver(pathname) || resolver('/404');
   if (!hallada) return;
 
@@ -93,10 +97,22 @@ export function arrancar(el, onChange) {
     if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
     const url = new URL(a.href, location.origin);
     if (url.origin !== location.origin) return;
+    // Ancla dentro de la misma página: no es una navegación. Sin esta salida
+    // el router le hacía preventDefault y después `ir()` cortaba por ser el
+    // mismo pathname, así que el click no hacía absolutamente nada. Lo deja
+    // pasar al scroll nativo, que ya es suave por `scroll-behavior` en el CSS.
+    if (url.hash && url.pathname === location.pathname) return;
     e.preventDefault();
     ir(url.pathname + url.search);
   });
 
-  window.addEventListener('popstate', () => pintar(location.pathname, { scroll: false }));
+  // Chrome dispara popstate también cuando sólo cambia el hash. Sin este
+  // corte, tocar un ancla de la misma página repintaba la vista entera: el
+  // navegador reemplazaba el nodo destino justo antes de saltar hacia él y el
+  // scroll se perdía en silencio. Se repinta sólo si cambió la ruta.
+  window.addEventListener('popstate', () => {
+    if (location.pathname === rutaPintada) return;
+    pintar(location.pathname, { scroll: false });
+  });
   pintar(location.pathname);
 }
