@@ -302,6 +302,22 @@ export const FICHAS = {
     // Ramallo: la vista lo tenía fijo y ahora lo lee de acá.
     rio: 'Uruguay',
 
+    // Un formulario por jornada, como San Pedro: LBC (Liebig a Colón) es el
+    // Grand Prix del día 1 y CLN el Circuito del día 2. Los dos links los
+    // pasó OWA.
+    inscripcion: {
+      'GRAND PRIX': 'https://cronometrajeinstantaneo.com/inscripciones/liebig-colon-lbc-gp-owa-2627',
+      'CIRCUITO OWA': 'https://cronometrajeinstantaneo.com/inscripciones/open-water-colon-cln-circuito-owa-2627',
+    },
+    // Mismo patrón /resultados/<slug>/participantes que San Pedro y Luján.
+    // Verificadas: las dos responden con su "Listado de participantes".
+    startingList: {
+      'GRAND PRIX':
+        'https://cronometrajeinstantaneo.com/resultados/liebig-colon-lbc-gp-owa-2627/participantes?orden=categoria',
+      'CIRCUITO OWA':
+        'https://cronometrajeinstantaneo.com/resultados/open-water-colon-cln-circuito-owa-2627/participantes?orden=categoria',
+    },
+
     distancias: [
       {
         rotulo: 'Larga',
@@ -462,6 +478,144 @@ export const FICHAS = {
       { t: 'Productos de auspiciantes' },
     ],
   },
+  pinamar: {
+    sedeBarra: 'Balneario Cocodrilo, Pinamar',
+    sedeCiudad: 'Pinamar, Buenos Aires, Argentina',
+
+    // Las dos distancias no puntúan para ningún campeonato: Pinamar es un
+    // evento especial. Por eso el torneo dice "ESPECIAL" y no hay puntaje.
+    distancias: [
+      {
+        rotulo: 'Larga',
+        torneo: 'ESPECIAL',
+        km: '3,5 km',
+        nota: 'Distancia principal del evento',
+        cats: CATS_COMPLETAS,
+      },
+      {
+        rotulo: 'Corta',
+        torneo: 'ESPECIAL',
+        km: '1,8 km',
+        nota: 'Ideal para una primera vez en el mar',
+        cats: CATS_COMPLETAS,
+      },
+      {
+        rotulo: 'Wave Relay',
+        km: '4 × 50 m',
+        nota: 'Participan los equipos con mayor cantidad de inscriptos',
+      },
+      {
+        // La clínica no es una distancia, pero comparte la fila porque es
+        // parte de lo que incluye la inscripción. Lo que se destaca es que
+        // no se paga aparte.
+        rotulo: 'Clínica',
+        km: 'Gratuita',
+        nota: 'Lectura e ingreso al mar: aprendé a filtrar para entrar de modo eficiente. Para todos los inscriptos',
+      },
+    ],
+
+    recorridos: [
+      {
+        id: 'pnr-35k',
+        torneo: 'ESPECIAL',
+        titulo: '3,5 km',
+        largada: 'Kota Beach',
+        llegada: 'Cocodrilo Beach',
+        // Propia, en vez de la frase de río que usan San Pedro y Colón.
+        desc: 'Recorrido punto a punto pasando la segunda rompiente.',
+        mapas: [
+          {
+            slug: 'mapa-pnr-35',
+            alt: 'Mapa del recorrido de 3,5 km sobre la costa de Pinamar, con la largada al norte y la llegada en el balneario Cocodrilo',
+          },
+        ],
+        ficha: [
+          ['Fecha', 'Sábado 16 de enero de 2027'],
+          ['Horario de largada', '09:00 hs'],
+          ['Distancia', '3,5 km · recorrido punto a punto'],
+          ['Cupos disponibles', '200 nadadores'],
+          ['Tiempo estimado', 'Entre 40 minutos y 2 horas'],
+          ['Tiempo límite', '2 h 20 min'],
+          ['Condiciones del agua', 'Corriente a favor'],
+          ['Uso de neopreno', 'Optativo · categoría única'],
+          ['Requisitos', '14 años cumplidos'],
+          ['Premiación', PREMIACION],
+          ['Premiación con neopreno', PREMIACION_NEOPRENE],
+          // Dato propio del mar: si la deriva va al sur, la largada se muda.
+          ['Cambio de largada por deriva sur', 'Calypso Beach'],
+        ],
+      },
+      {
+        id: 'pnr-18k',
+        torneo: 'ESPECIAL',
+        titulo: '1,8 km',
+        largada: 'CR Beach',
+        llegada: 'Cocodrilo Beach',
+        desc: 'Recorrido punto a punto pasando la segunda rompiente.',
+        mapas: [
+          {
+            slug: 'mapa-pnr-18',
+            alt: 'Mapa del recorrido de 1,8 km sobre la costa de Pinamar, con la largada al norte y la llegada en el balneario Cocodrilo',
+          },
+        ],
+        ficha: [
+          ['Fecha', 'Sábado 16 de enero de 2027'],
+          ['Horario de largada', '09:30 hs'],
+          ['Distancia', '1,8 km · recorrido punto a punto'],
+          ['Cupos disponibles', '200 nadadores'],
+          ['Tiempo estimado', 'Entre 25 y 60 minutos'],
+          ['Tiempo límite', '1 h 30 min'],
+          ['Condiciones del agua', 'Corriente a favor'],
+          ['Uso de neopreno', 'Optativo · categoría única'],
+          ['Requisitos', '14 años cumplidos'],
+          ['Premiación', PREMIACION],
+          ['Premiación con neopreno', PREMIACION_NEOPRENE],
+          ['Cambio de largada por deriva sur', 'Av. Bunge'],
+        ],
+      },
+    ],
+
+    cronogramas: [
+      {
+        torneo: 'ESPECIAL',
+        aviso: 'No se realizan inscripciones durante el evento.',
+        dias: [
+          {
+            fecha: 'Viernes 15 de enero',
+            lugar: 'Balneario Cocodrilo',
+            items: [
+              {
+                hora: '15:00 a 17:30',
+                t: 'Entrega de kits',
+                d: 'Recepción de aptos médicos y firma de deslindes.',
+              },
+              {
+                hora: '18:00',
+                t: 'Clínica "Lectura e ingreso al mar"',
+                d: 'Teoría y práctica. Gratuita para inscriptos.',
+              },
+            ],
+          },
+          {
+            fecha: 'Sábado 16 de enero',
+            lugar: 'Día del evento · Balneario Cocodrilo',
+            items: [
+              { hora: '07:00', t: 'Acreditaciones', d: 'Numeración, retiro de kit y certificados. Ambas distancias.' },
+              { hora: '08:00', t: 'Reunión técnica · 3,5 km', d: '' },
+              { hora: '08:10', t: 'Traslado a la largada · 3,5 km', d: '' },
+              { hora: '08:35', t: 'Reunión técnica · 1,8 km', d: '' },
+              { hora: '08:45', t: 'Traslado a la largada · 1,8 km', d: '' },
+              { hora: '09:00', t: 'Largada · 3,5 km', d: 'Puntual.', destacado: true },
+              { hora: '09:30', t: 'Largada · 1,8 km', d: 'Al paso de los punteros de 3,5 km.', destacado: true },
+              { hora: '12:00', t: 'Inicio prueba Wave Relay', d: '', destacado: true },
+              { hora: '12:30', t: 'Premiación', d: '' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
 };
 
 export const fichaDe = (slug) => FICHAS[slug] || null;
