@@ -427,11 +427,14 @@ const jornadas = (e, f) => {
                         // Cada oración en su renglón: seguidas, la condición
                         // se leía como continuación del titular en negrita y
                         // se perdía justamente lo que hay que hacer.
+                        // Interlineado ajustado (snug) y no relaxed: son dos
+                        // frases cortas dentro de un recuadro, con el aire de
+                        // lectura corrida el bloque se estiraba de más.
                         return html`<p
-                          class="mt-3 rounded-owa-md border border-white/20 bg-white/10 p-3.5 text-[13px] leading-relaxed text-white backdrop-blur-sm"
+                          class="mt-3 rounded-owa-md border border-white/20 bg-white/10 px-3.5 py-3 text-[13px] leading-snug text-white backdrop-blur-sm"
                         >
                           <span class="block font-bold">${titular}</span>${resto
-                            ? html`<span class="mt-1 block">${resto}</span>`
+                            ? html`<span class="mt-0.5 block">${resto}</span>`
                             : ''}
                         </p>`;
                       })()
