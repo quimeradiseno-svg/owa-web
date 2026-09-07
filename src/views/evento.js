@@ -4,7 +4,6 @@ import { porSlug, ESTADOS, linkInscripcion, sinIngreso } from '../data/eventos.j
 import { fichaDe } from '../data/fichas.js';
 import { carrusel, montarCarruseles } from '../components/carrusel.js';
 import { EVENTO_FICHA } from '../data/madres.js';
-import { RESULTADOS } from '../data/rankings.js';
 import {
   eyebrow,
   chipEstado,
@@ -108,7 +107,9 @@ const corrienteDe = (r) => {
   const agua = (r.ficha.find(([k]) => k === 'Condiciones del agua') || [])[1] || '';
   if (/en contra/i.test(agua)) return 'En contra';
   if (/a favor/i.test(agua)) return 'A favor';
-  return 'Variable';
+  // Sin dato no se afirma nada: antes caía en "Variable", que era una
+  // condición del agua que OWA nunca dijo. El casillero se omite.
+  return '';
 };
 
 // "core" corre Grand Prix y Circuito el mismo fin de semana: volver a
@@ -134,13 +135,6 @@ function distanciasDe(e) {
     { km: 'CORTA', torneo: 'ESPECIAL', desc: 'Distancia de participación.', cats: 'Por edad' },
   ];
 }
-
-const podios = () =>
-  ['1K · CABALLEROS', '1K · DAMAS', '5K · CABALLEROS', '5K · DAMAS'].map((t) => {
-    const [dist, genero] = t.split(' · ');
-    const src = RESULTADOS.filter((r) => (genero === 'DAMAS' ? r.sexo === 'F' : r.sexo === 'M'));
-    return { dist, genero, rows: src.slice(0, 3) };
-  });
 
 /* ------------------------------------------------------------- fragmentos */
 
@@ -509,29 +503,10 @@ const resultadosBloque = (e) => {
   return html`
     <div>
       <h3 class="mb-6.5 text-[clamp(1.625rem,3.2vw,2.625rem)] text-owa-navy">Podios de esta edición</h3>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
-        ${podios().map(
-          (pd) => html`
-            <article class="reveal rounded-owa-lg border border-owa-line p-6">
-              <div class="flex items-baseline justify-between gap-2.5">
-                <h4 class="font-display text-[1.625rem] font-black text-owa-navy">${pd.dist}</h4>
-                <span class="text-[11px] tracking-[0.12em] text-owa-slate">${pd.genero}</span>
-              </div>
-              <ol>
-                ${pd.rows.map(
-                  (r, i) => html`
-                    <li class="grid grid-cols-[1.625rem_1fr_auto] items-center gap-3 border-t border-owa-sand py-3">
-                      ${posicion(i + 1)}
-                      <span class="truncate font-display text-sm font-bold text-owa-navy">${r.nombre}</span>
-                      <span data-nums class="font-display text-[13px] font-black text-owa-slate">${r.tiempo}</span>
-                    </li>
-                  `
-                )}
-              </ol>
-            </article>
-          `
-        )}
-      </div>
+      <p class="max-w-[70ch] text-[15px] leading-relaxed text-owa-slate">
+        Los podios de la fecha se cargan al cierre de la carrera. Mientras tanto, los resultados completos están en la
+        plataforma de cronometraje.
+      </p>
       <div class="mt-6">${btnBorde('Ver tabla completa', '/resultados')}</div>
       ${e.historial
         ? html`
@@ -557,6 +532,12 @@ export function render(ctx) {
   const esChallenge = e.tipo === 'challenge';
   const [volverHref, volverLabel] = VUELVE_A[e.tipo];
   const f = fichaDe(e.slug);
+
+  // EXPERIMENTO (Pinamar) — Distancias en blanco en vez de navy. Sin jornadas
+  // el hero cae directo sobre esa sección, y dos azules seguidos no dejaban
+  // respirar: el hero cierra en navy y la sección era del mismo navy.
+  // Se aplica a las carreras sin jornadas; para volver atrás, dejarlo en false.
+  const invertido = !e.jornadas?.length && !esChallenge;
 
   return toHTML(html`
     <section class="relative flex min-h-[66svh] items-end overflow-hidden bg-owa-abyss">
@@ -601,8 +582,7 @@ export function render(ctx) {
              así que en eventos con jornadas esto LA REEMPLAZA en vez de
              sumarse — eventos sin jornadas (challenge, especiales) siguen
              mostrando la fecha simple, que es todo lo que tienen. -->
-        ${e.jornadas?.length
-          ? (() => {
+        ${(() => {
               // Acá sólo van las distancias que puntúan (Media/Corta):
               // Las pruebas de arena y las de menores quedan afuera de la
               // pastilla del banner — siguen completas en la tarjeta de
@@ -618,6 +598,34 @@ export function render(ctx) {
               >`;
               const PILL =
                 'inline-flex flex-wrap items-center gap-2.5 rounded-full border border-owa-cyan/60 px-4.5 py-2.5 font-display text-[13px] font-black tracking-[0.02em]';
+
+              // Sin jornadas pero con fecha propia (los especiales, como
+              // Pinamar): misma pastilla que el resto, con la fecha y las
+              // distancias. Antes caía a un renglón de texto suelto y el
+              // banner no se parecía al de las demás carreras.
+              // Los Challenge quedan afuera a propósito: no tienen una fecha
+              // sino una ventana ("DIC 2026 – MAR 2027"), que no entra en
+              // este formato.
+              if (!e.jornadas?.length) {
+                if (!e.anio) {
+                  return html`<p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
+                    ${e.fechaLarga}
+                  </p>`;
+                }
+                const ds = (f?.distancias || []).filter((d) => !esArena(d) && !esKids(d) && d.torneo);
+                return html`
+                  <div class="mt-5 flex flex-wrap gap-3">
+                    <span class="${PILL}">
+                      <span data-nums class="text-[15px] text-owa-cyan">${e.fechaCorta} ${e.anio.slice(-2)}</span>
+                      ${ds.length
+                        ? html`${sep}<span data-nums class="text-white"
+                              >${ds.map((d) => distCorta(d.km)).join(' · ')}</span
+                            >`
+                        : ''}
+                    </span>
+                  </div>
+                `;
+              }
               // Luján corre las dos jornadas el mismo día: dos pastillas
               // repetían la fecha idéntica. Va una sola, con la fecha adelante
               // y los dos torneos con sus distancias detrás.
@@ -649,10 +657,7 @@ export function render(ctx) {
                       )}
                 </div>
               `;
-            })()
-          : html`<p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
-              ${e.fechaLarga}
-            </p>`}
+            })()}
 
         <!-- La sede completa (predio + ciudad) reemplaza a la ciudad sola:
              sedeBarra ya trae el predio ("Camping Club América, San Pedro");
@@ -669,21 +674,37 @@ export function render(ctx) {
     <!-- Misma ola que separa el hero de home, pero apuntando para abajo (girada
          180°, la forma es simétrica así que da lo mismo que un flip vertical):
          acá el blanco entra desde arriba, no sube desde abajo. -->
-    ${e.jornadas?.length
-      ? html`<div class="relative z-2 -mt-13 rotate-180 bg-white">${olaCentrada('#211e5f')}</div>`
-      : ''}
+    <!-- La ola va en todas las carreras menos los Challenge. Los especiales
+         con ficha cargada (Pinamar) mostraban en su lugar la barra de datos, y
+         repetía lo que el hero ya dice: fecha, sede y estado. Los Challenge sí
+         la conservan, porque no tienen distancias ni recorridos donde apoyar
+         esos datos. -->
+    ${esChallenge
+      ? ''
+      : (() => {
+          // La ola dibuja el borde de abajo del hero contra lo que sigue. Con
+          // jornadas viene la sección blanca de "Días del evento"; sin ellas,
+          // Distancias, que en el esquema invertido también es blanca. En los
+          // dos casos la ola cae sobre blanco.
+          return html`<div class="relative z-2 -mt-13 rotate-180 bg-white">${olaCentrada('#211e5f')}</div>`;
+        })()}
 
-    ${e.jornadas?.length ? '' : barraDatos(e, esChallenge, f)} ${raceState === 'vivo' ? bandaVivo() : ''}
+    ${esChallenge ? barraDatos(e, esChallenge, f) : ''} ${raceState === 'vivo' ? bandaVivo() : ''}
     ${e.tipo === 'core' ? jornadas(e, f) : esChallenge ? requisitos() : ''}
 
     <!-- distancias -->
     <!-- EXPERIMENTO — fondo navy en vez de blanco: a probar junto con el
          cambio inverso en "jornadas" (esa pasa a blanco). Si no convence,
          alcanza con volver este bloque y el de arriba a como estaban. -->
-    <section class="bg-owa-navy px-0 pt-20 pb-16" aria-labelledby="h-distancias">
+    <section class="${invertido ? 'bg-white' : 'bg-owa-navy'} px-0 pt-20 pb-16" aria-labelledby="h-distancias">
       <div class="u-shell">
       <div class="flex items-center gap-3">
-        <h2 id="h-distancias" class="font-display text-[clamp(1.125rem,2vw,1.5rem)] font-black tracking-[0.04em] text-owa-sky uppercase">
+        <h2
+          id="h-distancias"
+          class="font-display text-[clamp(1.125rem,2vw,1.5rem)] font-black tracking-[0.04em] uppercase ${invertido
+            ? 'text-owa-blue'
+            : 'text-owa-sky'}"
+        >
           Distancias y categorías
         </h2>
       </div>
@@ -697,7 +718,11 @@ export function render(ctx) {
                  (Puntaje + Categorías vs. una descripción con ícono) y en un
                  tinte de fondo apenas distinto, no en jerarquía tipográfica. -->
             <ul
-              class="mt-6 grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-[1.08fr_1.08fr_1.08fr_0.92fr_0.92fr]"
+              class="mt-6 grid grid-cols-2 gap-3.5 sm:grid-cols-3 ${f.distancias.length === 5
+                ? 'xl:grid-cols-[1.08fr_1.08fr_1.08fr_0.92fr_0.92fr]'
+                : f.distancias.length === 4
+                  ? 'xl:grid-cols-4'
+                  : 'xl:grid-cols-3'}"
               data-stagger
             >
               ${f.distancias.map((d) => {
@@ -706,14 +731,18 @@ export function render(ctx) {
                 // La sigla de la carrera dice más que el rótulo interno
                 // (Larga/Media/Corta): VOB es el Grand Prix, SPD el Circuito.
                 const siglaCard = principal
-                  ? e.jornadas?.find((j) => j.torneo === d.torneo)?.sigla || d.torneo
+                  ? e.jornadas?.find((j) => j.torneo === d.torneo)?.sigla || e.sigla || d.torneo
                   : conArena
                     ? nombreArena(d)
                     : d.rotulo;
                 return html`
                   <li
                     class="reveal u-lift-sm flex flex-col rounded-owa-lg p-6 transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)] ${principal
-                      ? 'bg-white'
+                      ? // Sobre fondo blanco una tarjeta blanca desaparece: ahí
+                        // lleva borde. Sobre navy se recorta sola.
+                        invertido
+                        ? 'border border-owa-line bg-white'
+                        : 'bg-white'
                       : 'bg-owa-mist'}"
                   >
                     <div class="flex items-center gap-2.5">
@@ -799,12 +828,22 @@ export function render(ctx) {
       ? (() => {
           const activoId = f.recorridos.find((x) => x.id === recorridoActivo)?.id || f.recorridos[0].id;
           const activo = f.recorridos.find((x) => x.id === activoId);
-          const nombreTorneo = (t) => (t === 'GRAND PRIX' ? 'Grand Prix' : 'Circuito OWA');
+          // Los especiales no corren ningún torneo: su "torneo" es ESPECIAL y
+          // hay que decirlo así. Antes cualquier cosa que no fuera Grand Prix
+          // se etiquetaba "Circuito OWA", y Pinamar aparecía como si puntuara.
+          const NOMBRE_TORNEO = { 'GRAND PRIX': 'Grand Prix', 'CIRCUITO OWA': 'Circuito OWA', ESPECIAL: 'Especial' };
+          const nombreTorneo = (t) => NOMBRE_TORNEO[t] || t;
           // En mobile los tres tabs no entran en una fila con el nombre largo
           // del torneo (155px cada uno sobre 335 disponibles). La abreviatura
           // es la misma que ya usan los filtros del calendario y del home.
-          const abrevTorneo = (t) => (t === 'GRAND PRIX' ? 'GP' : 'Circ');
+          const abrevTorneo = (t) => (t === 'GRAND PRIX' ? 'GP' : t === 'CIRCUITO OWA' ? 'Circ' : nombreTorneo(t));
           const siglaTorneo = (t) => e.jornadas?.find((j) => j.torneo === t)?.sigla || '';
+
+          // La ficha técnica al costado del mapa lleva fondo blanco propio en
+          // vez de heredar el de la sección. Antes era transparente y, con el
+          // esquema invertido, quedaba navy sobre navy: el título literalmente
+          // desaparecía. Con fondo propio la tarjeta se sostiene sola sobre
+          // cualquier sección y no hay que duplicar cada color de texto.
 
           // La fecha de la arena Super Sprint no está cargada aparte: corre el
           // mismo día que el resto del Circuito, así que se toma de ahí.
@@ -817,7 +856,7 @@ export function render(ctx) {
           // cabecera que el resto, pero con lo poco que sí hay en vez de
           // fabricar horarios o condiciones que nadie cargó.
           const panelSinMapa = (r) => html`
-            <div class="reveal mt-3.5 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
+            <div class="reveal mt-3.5 overflow-hidden rounded-owa-lg border border-owa-line bg-white" data-visible>
               <div class="grid lg:grid-cols-[1.5fr_1fr]">
                 <div class="flex min-h-64 items-center justify-center bg-owa-mist p-8 lg:border-r lg:border-owa-line">
                   <div class="max-w-[30ch] text-center">
@@ -841,7 +880,10 @@ export function render(ctx) {
             </div>
           `;
 
-          const dato_ = (nombreIcono, etiqueta, valor) => html`
+          const dato_ = (nombreIcono, etiqueta, valor) =>
+            !valor
+              ? ''
+              : html`
             <div class="flex items-center gap-2.5 px-4 py-3.5">
               ${icono(nombreIcono, 'size-4.5 shrink-0 text-owa-blue')}
               <span class="min-w-0">
@@ -885,7 +927,7 @@ export function render(ctx) {
                 : '';
 
             return html`
-              <div class="reveal mt-3.5 overflow-hidden rounded-owa-lg border border-owa-line" data-visible>
+              <div class="reveal mt-3.5 overflow-hidden rounded-owa-lg border border-owa-line bg-white" data-visible>
                 <div class="grid lg:grid-cols-[1.5fr_1fr]">
                   <div class="reveal-clip flex overflow-hidden bg-owa-mist lg:border-r lg:border-owa-line" data-visible>
                     ${carrusel(r.id, r.mapas, { sizes: '(min-width: 1024px) 60vw, 100vw' })}
@@ -904,9 +946,11 @@ export function render(ctx) {
                     <p class="mt-1 text-sm font-bold text-owa-slate">${r.subtitulo || 'Punto a punto'}</p>
                     <!-- El río sale de la ficha: estaba fijo en "Paraná", que
                          vale para San Pedro y Ramallo pero no para Colón, que
-                         corre sobre el Uruguay. -->
+                         corre sobre el Uruguay. Y un recorrido puede traer su
+                         propia descripción: Pinamar corre en el mar, donde la
+                         frase de "río, desde X hasta Y" no aplica. -->
                     <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">
-                      Recorrido punto a punto sobre el río ${f?.rio || 'Paraná'}, desde ${r.largada} hasta ${r.llegada}.
+                      ${r.desc || `Recorrido punto a punto sobre el río ${f?.rio || 'Paraná'}, desde ${r.largada} hasta ${r.llegada}.`}
                     </p>
 
                     <!-- Sin repetir lo que ya está en la franja de abajo (largada,
@@ -918,6 +962,10 @@ export function render(ctx) {
                       ${filaResumen('reloj', 'Tiempo límite', dato('Tiempo límite'))}
                       ${filaResumen('trofeo', 'Puntaje OWA', puntaje?.[1])}
                       ${filaLarga('documento', 'Requisitos', dato('Requisitos'))}
+                      <!-- Sólo en el mar: si la deriva va al sur, la largada se
+                           corre de playa. Es un dato que cambia a dónde hay que
+                           presentarse, así que no puede quedar afuera. -->
+                      ${filaLarga('pin', 'Cambio de largada por deriva sur', dato('Cambio de largada por deriva sur'))}
                       ${filaLarga('podio', 'Premiación', dato('Premiación'))}
                       ${filaLarga('podio', 'Premiación con neopreno', dato('Premiación con neopreno'))}
                     </dl>
@@ -934,7 +982,8 @@ export function render(ctx) {
           };
 
           return html`
-            <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorridos">
+            <section class="px-0 pt-10 pb-20" aria-labelledby="h-recorridos">
+              <div class="u-shell">
               ${eyebrow('Recorridos')}
               <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Elegí tu distancia</h2>
 
@@ -963,6 +1012,7 @@ export function render(ctx) {
               </div>
 
               ${activo.mapas?.length ? panelRecorrido(activo) : panelSinMapa(activo)}
+              </div>
             </section>
           `;
         })()
@@ -1048,7 +1098,8 @@ export function render(ctx) {
 
               const torneoActivo = cronogramas[cronogramaSel.torneo] || cronogramas[0];
               const diaActivo = torneoActivo.dias[cronogramaSel.dia] || torneoActivo.dias[0];
-              const nombreTorneoOWA = (t) => (t === 'GRAND PRIX' ? 'Grand Prix OWA' : 'Circuito OWA');
+              const nombreTorneoOWA = (t) =>
+                t === 'GRAND PRIX' ? 'Grand Prix OWA' : t === 'CIRCUITO OWA' ? 'Circuito OWA' : 'Cronograma';
               // Mismo resumen de distancias que la pastilla del banner, más
               // "· Kid" en Circuito (no lleva `torneo` propio en los datos
               // porque no puntúa, pero corre ese mismo fin de semana).
@@ -1109,7 +1160,15 @@ export function render(ctx) {
                      pestañas por fecha (como estaba antes) confundía porque
                      el sábado le pertenece a los dos a la vez, por motivos
                      distintos. -->
-                <div class="mt-6.5 flex flex-wrap gap-2.5" role="tablist" aria-label="Torneo">
+                <!-- Con un solo cronograma el selector de torneo es un botón
+                     que no elige nada: Pinamar es un especial y no reparte la
+                     jornada entre Grand Prix y Circuito. Se muestra sólo
+                     cuando hay más de uno. -->
+                <div
+                  class="mt-6.5 flex-wrap gap-2.5 ${cronogramas.length > 1 ? 'flex' : 'hidden'}"
+                  role="tablist"
+                  aria-label="Torneo"
+                >
                   ${cronogramas.map(
                     (c, i) => html`
                       <button
