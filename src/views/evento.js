@@ -162,8 +162,11 @@ const esKids = (d) => /^kids?$/i.test(d.rotulo || '');
 /** Un valor todavía sin confirmar por OWA, para no mostrarlo pegado a otro. */
 const sinDato = (v) => !v || /^a confirmar$/i.test(String(v).trim());
 
-/** La prueba lleva el nombre del sponsor al final: "Super Sprint by arena". */
-const nombreArena = (d) => `${d.rotulo.replace(/^arena /, '')} by arena`;
+/** El nombre de la prueba, sin el prefijo que la marca como patrocinada.
+    Antes cerraba con "by arena" y el rótulo quedaba larguísimo: en la tarjeta
+    de Colón "Knock Out Swim by arena 2 × 350 m" empujaba las pastillas a tres
+    líneas. El sponsor sigue nombrado en el reglamento de cada fecha. */
+const nombreArena = (d) => d.rotulo.replace(/^arena /, '');
 
 const MES_CORTO = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
