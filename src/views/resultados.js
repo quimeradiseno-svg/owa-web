@@ -530,12 +530,12 @@ const comoSeCalcula = () => {
 /** Nivel 2 de navegación. A propósito NO usa las mismas pestañas del nivel 1:
     es un segmented control —una sola pista con la opción activa rellena— para
     que se lea como un filtro de la sección y no como otra sección. */
-// Nivel 2. Mismo criterio que el nivel 1: nada de scroll horizontal, las
-// cuatro opciones a la vista. Envuelven en vez de cortarse. Siguen siendo
-// píldoras sobre blanco, así que no se confunden con las pestañas del hero
-// aunque en móvil las dos ocupen dos filas.
+// Nivel 2: mismo criterio que el nivel 1, una fila que corre con el dedo.
+// Siguen siendo píldoras sobre blanco, así que no se confunden con las
+// pestañas del hero. Los rótulos cortos de móvil hacen que entren casi todas
+// sin correr nada.
 const barraVistas = () => html`
-  <div class="flex flex-wrap gap-2 sm:gap-2.5" role="group" aria-label="Vista del ranking">
+  <div class="flex snap-x gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Vista del ranking" data-scroller>
     ${VISTAS.map(
       ([label, v, corto]) => html`
         <button
@@ -543,7 +543,7 @@ const barraVistas = () => html`
           data-vista="${v}"
           aria-pressed="${s.vista === v ? 'true' : 'false'}"
           aria-label="${label}"
-          class="u-press cursor-pointer rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${s.vista ===
+          class="u-press shrink-0 snap-start cursor-pointer rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${s.vista ===
           v
             ? 'border-owa-navy bg-owa-navy text-white'
             : 'border-owa-line bg-white text-owa-slate hover:border-owa-navy hover:text-owa-navy'}"
@@ -565,17 +565,17 @@ const panel = () => {
 };
 
 const barraTabs = () => html`
-  <!-- Nivel 1. En desktop son pestañas ancladas al borde inferior del hero,
-       con la activa "abriéndose" sobre el panel blanco.
-       En pantalla chica esa metáfora no entra: las cuatro en una fila obligan
-       a scrollear, la elegida queda cortada contra el borde y la tira se lee
-       como algo roto. Ahí pasan a grilla —las cuatro visibles, sin scroll— y
-       pierden el anclaje (esquinas redondeadas completas), porque una grilla
-       de dos filas no se puede "pegar" al panel. -->
+  <!-- Nivel 1: pestañas ancladas al borde inferior del hero, con la activa
+       "abriéndose" sobre el panel blanco. En pantalla chica no entran las
+       cuatro, así que la tira corre con el dedo en una sola fila (apilarlas
+       rompe el anclaje: una grilla de dos filas no se puede pegar al panel).
+       El scroll lo acomoda traerAlaVista() en mount: al repintarse la tira
+       vuelve a scrollLeft 0 y la elegida quedaba tapada contra el borde. -->
   <div
-    class="mt-8 grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:flex lg:flex-wrap lg:gap-1"
+    class="mt-8 flex snap-x gap-1 overflow-x-auto lg:flex-wrap lg:overflow-visible"
     role="tablist"
     aria-label="Secciones de resultados"
+    data-scroller
   >
     ${TABS.map(
       ([label, v]) => html`
@@ -584,7 +584,7 @@ const barraTabs = () => html`
           role="tab"
           data-tab="${v}"
           aria-selected="${s.tab === v ? 'true' : 'false'}"
-          class="u-press cursor-pointer rounded-owa-md px-3 py-3 text-center font-display text-[11px] leading-tight font-black tracking-[0.06em] transition-colors duration-200 ease-out lg:rounded-b-none lg:px-5.5 lg:py-3.5 lg:text-xs lg:tracking-[0.08em] lg:whitespace-nowrap ${s.tab ===
+          class="u-press shrink-0 snap-start cursor-pointer rounded-t-owa-md px-3 py-3.5 font-display text-xs font-black tracking-[0.08em] whitespace-nowrap transition-colors duration-200 ease-out sm:px-5.5 ${s.tab ===
           v
             ? 'bg-white text-owa-navy'
             : 'bg-white/10 text-white/75 hover:bg-white/16 hover:text-white'}"
@@ -642,14 +642,36 @@ export function render(ctx) {
   `);
 }
 
+/** Corre la tira lo justo para que la opción elegida se vea entera.
+    Las dos barras se repintan en cada cambio, y al repintarse el scroll vuelve
+    a cero: si la elegida vivía más a la derecha quedaba tapada contra el
+    borde, que es lo que hacía parecer que no había pasado nada al tocarla.
+    Sólo toca el scrollLeft del contenedor, nunca el de la página. Salto
+    directo y no animado: el elemento tiene que estar puesto antes de que el
+    dedo se levante. */
+function traerAlaVista(tira) {
+  if (!tira || tira.scrollWidth <= tira.clientWidth) return;
+  const activo = tira.querySelector('[aria-selected="true"], [aria-pressed="true"]');
+  if (!activo) return;
+  const c = tira.getBoundingClientRect();
+  const a = activo.getBoundingClientRect();
+  // Deja un respiro al costado, así se ve que la tira sigue y se puede correr.
+  const margen = 20;
+  if (a.left < c.left + margen) tira.scrollLeft += a.left - c.left - margen;
+  else if (a.right > c.right - margen) tira.scrollLeft += a.right - c.right + margen;
+}
+
 export function mount(root) {
   const cont = root.querySelector('[data-panel]');
   const tabs = root.querySelector('[data-tabs]');
+
+  const acomodarTiras = () => root.querySelectorAll('[data-scroller]').forEach(traerAlaVista);
 
   const repintar = ({ foco } = {}) => {
     cont.innerHTML = toHTML(panel());
     tabs.innerHTML = toHTML(barraTabs());
     cont.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
+    acomodarTiras();
     if (foco) {
       const el = cont.querySelector(foco);
       el?.focus();
@@ -737,5 +759,14 @@ export function mount(root) {
     clearTimeout(t);
     t = setTimeout(() => repintar({ foco: '[data-q]' }), 180);
   });
+
+  // Al entrar directo con ?tab=equipos la pestaña activa es la última y arranca
+  // fuera de la pantalla: hay que acomodar la tira ya en el primer pintado.
+  acomodarTiras();
+  // Y otra vez cuando termina de cargar Vito Wide. Con la tipografía de
+  // reemplazo los rótulos miden menos, la tira todavía no desborda y por eso
+  // la primera pasada no corrige nada; al cambiar la fuente crecen y la
+  // pestaña activa se va del borde.
+  document.fonts?.ready.then(acomodarTiras);
 }
 
