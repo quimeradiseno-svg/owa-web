@@ -1,7 +1,8 @@
 import { html, raw } from '../lib/html.js';
 import { foto } from '../lib/img.js';
 import { sinIngreso, ESTADOS } from '../data/eventos.js';
-import { modalidadesDe, chipEstado, olaTarjeta } from './ui.js';
+import { modalidadesDe, modalidadesTarjeta, chipEstado, olaTarjeta } from './ui.js';
+import { icono } from './iconos.js';
 
 /** "14 Y 15 NOV" -> { dia: "14–15", mes: "NOV 2026" } */
 export function fechaBadge(e) {
@@ -56,8 +57,12 @@ export function tarjetaEvento(e, { sizes = '(min-width: 1024px) 25vw, (min-width
         >
         <p class="mt-3 font-display text-[11px] font-bold tracking-[0.2em] text-owa-sky">${e.sigla}</p>
         <h3 class="mt-2 text-[clamp(1.625rem,2.6vw,2.125rem)] leading-[0.94]">${e.corto}</h3>
-        <p class="mt-2.5 text-[13px] text-owa-line">${e.sede}</p>
-        <p class="mt-4 mb-7 flex flex-wrap gap-1.5">${modalidadesDe(e, { oscuro: true })}</p>
+        <!-- El pin va en cyan y el texto se mantiene en el gris claro: si los
+             dos fueran del mismo color el ícono pesaría igual que el dato. -->
+        <p class="mt-2.5 flex items-center gap-1.5 text-[13px] text-owa-line">
+          <span class="shrink-0 text-owa-cyan">${icono('pin', 'size-4 u-pin-rebote')}</span>${e.sede}
+        </p>
+        <p class="mt-4 mb-7 flex flex-wrap gap-1.5">${modalidadesTarjeta(e)}</p>
 
         <span class="mt-auto flex items-center justify-between gap-2.5 border-t border-white/18 pt-5.5">
           <span class="font-display text-xs font-black tracking-[0.08em]">${sinIngreso(e) ? 'FECHA A CONFIRMAR' : 'VER DETALLES'}</span>
@@ -157,12 +162,15 @@ export function tarjetaTravel(t) {
     `estado` se puede apagar donde el chip no aporta: en Challenge no hay fecha
     de inscripción, así que "PRÓXIMAMENTE" sólo agregaría ruido.
     `destacado` agrega una pastilla debajo de la sublínea: la usa Primeros
-    pasos para la distancia recomendada de cada fecha. */
-export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '' }) {
+    pasos para la distancia recomendada de cada fecha.
+    `id` la vuelve destino de ancla (las mini-tarjetas de distancia de Grand
+    Prix bajan hasta acá). El scroll-mt compensa el header sticky de 69px. */
+export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '', id = '' }) {
   return html`
     <${sinIngreso(e) ? 'div' : 'a'}
       ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
-      class="reveal u-lift-sm group overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+      ${raw(id ? `id="${id}"` : '')}
+      class="reveal u-lift-sm group scroll-mt-24 overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
     >
       <div class="relative h-35 bg-owa-abyss">
         ${foto({

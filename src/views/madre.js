@@ -117,6 +117,106 @@ const bloqueDatos = (key, m, fechas) => {
     resaltar en cyan sólo la parte que importa: el monto en Grand Prix, el
     destino en Circuito. `href` es opcional — sólo Circuito lo usa, porque su
     premio (Swim GP Portugal) sí tiene una página adonde ir. */
+/** EXPERIMENTO (Grand Prix) — arquitectura alternativa.
+    Las distancias, agrupadas por sede en vez de listadas en filas. Conserva la
+    relación real sede → distancia; no las agrupa en categorías genéricas.
+    OJO: en Grand Prix cada sede corre UNA sola distancia (8, 18, 12 y 10 km),
+    así que cada tarjeta muestra un número. Circuito sí tiene dos por fecha. */
+// Para no dejar el "cuatro" del copy escrito a mano: si algún día el torneo
+// suma o pierde una sede, el texto acompaña. Más allá de nueve vuelve al número.
+const PALABRA = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+const enPalabras = (n) => PALABRA[n] ?? String(n);
+
+const bloqueDistanciasPorFecha = (key) => {
+  const sedes = EVENTOS.filter((e) => e.tipo === 'core');
+  const n = sedes.length;
+  return html`
+    <div class="rounded-owa-lg bg-owa-mist p-7.5">
+      <h3 class="font-display text-[17px] font-black text-owa-navy">Las ${n} fechas del Grand Prix</h3>
+      <p class="mt-1.5 text-sm text-owa-slate">
+        ${`${enPalabras(n)[0].toUpperCase()}${enPalabras(n).slice(1)}`} sedes, ${enPalabras(n)} distancias. Elegí tu desafío.
+      </p>
+      <ul class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        ${sedes.map((e) => {
+          const kms = key === 'grand-prix' ? [e.distancias.gp] : e.distancias.circuito;
+          // La mini-tarjeta no manda a la ficha: baja hasta la tarjeta de esa
+          // sede en el calendario de abajo, que es la que sí decide entrar.
+          // Duplicar el link a /carrera competía con el CTA real.
+          return html`
+            <li class="contents">
+              <a
+                href="#fecha-${e.slug}"
+                class="u-lift-sm group flex flex-col items-center rounded-owa-md bg-white px-3 py-5 text-center transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+              >
+                <span class="text-owa-blue">${icono('ondas', 'size-6')}</span>
+                <span class="mt-3 font-display text-[11px] leading-tight font-black tracking-[0.06em] text-owa-navy uppercase">
+                  ${e.corto}
+                </span>
+                <span class="mt-3 grid gap-1">
+                  ${kms.map(
+                    (num) =>
+                      html`<span data-nums class="block font-display text-lg leading-none font-black text-owa-blue">${km(num)}</span>`
+                  )}
+                </span>
+                <span class="mt-3 font-display text-[11px] font-bold tracking-[0.06em] text-owa-blue">
+                  Ver fecha
+                  <span class="inline-block transition-transform duration-200 ease-out group-hover:translate-y-0.5" aria-hidden="true">↓</span>
+                </span>
+              </a>
+            </li>
+          `;
+        })}
+      </ul>
+    </div>
+  `;
+};
+
+/** EXPERIMENTO (Grand Prix) — el sistema de puntaje deja de ser una caja
+    lateral y pasa a franja de ancho completo, con los criterios en fila.
+    Usa exactamente los mismos `cajaItems` que la caja original: no se copian
+    las reglas de Circuito, que tiene una quinta propia (puntos por especiales). */
+const bloquePuntaje = (key, m) => html`
+  <section class="u-shell pt-16">
+    <div class="rounded-owa-lg bg-owa-mist px-7.5 py-10 sm:px-10">
+      <!-- Los CTA van arriba, al lado del título: abajo y centrados quedaban
+           sueltos, colgando de la fila de criterios. -->
+      <div class="flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+        <div>
+          ${eyebrow(m.cajaTitulo)}
+          <h2 class="mt-3 text-[clamp(1.5rem,2.8vw,2.125rem)] leading-[1]">¿Cómo sumás puntos?</h2>
+          <p class="mt-2.5 text-sm text-owa-slate">Cada nadador suma puntos en cada fecha según distintos criterios.</p>
+        </div>
+        <div class="flex w-full flex-wrap gap-2.5 sm:w-auto">
+          ${btnPrimarioChico(m.cajaCta, CTA_DESTINO[key], 'w-full justify-center sm:w-auto')}
+          ${m.reglamento
+            ? html`<a
+                href="${m.reglamento}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn u-press u-nudge w-full justify-center sm:w-auto h-auto min-h-0 gap-2.5 border-2 border-owa-navy bg-transparent px-4.5 py-3 font-display text-[12px] font-black tracking-[0.06em] text-owa-navy hover:bg-owa-navy hover:text-white"
+                >REGLAMENTO <span class="u-nudge-arrow" aria-hidden="true">↗</span></a
+              >`
+            : ''}
+        </div>
+      </div>
+
+      <!-- Una columna por criterio: Grand Prix tiene 4, Circuito 5. El grid se
+           arma con la cantidad real para no dejar un hueco al final. -->
+      <ul class="mt-8 grid gap-x-6 gap-y-8 sm:grid-cols-2 ${m.cajaItems.length === 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}">
+        ${m.cajaItems.map(
+          (i) => html`
+            <li class="text-center sm:border-l sm:border-owa-navy/12 sm:px-5 sm:first:border-l-0">
+              ${i.i ? html`<span class="inline-block text-owa-blue">${icono(i.i, 'size-7')}</span>` : ''}
+              <p class="mt-3 font-display text-[13px] leading-tight font-black tracking-[0.05em] text-owa-navy uppercase">${i.t}</p>
+              <p class="mt-2 text-sm leading-relaxed text-owa-slate">${raw(i.d)}</p>
+            </li>
+          `
+        )}
+      </ul>
+    </div>
+  </section>
+`;
+
 const bloquePremio = (p) => html`
   <section class="u-shell pt-14">
     <div class="reveal flex flex-col items-start gap-5 rounded-owa-lg bg-owa-navy p-7 sm:flex-row sm:items-center sm:p-8">
@@ -242,6 +342,12 @@ export function render(ctx) {
 
   const fechas = fechasDe(key);
 
+  // EXPERIMENTO (Grand Prix) — arquitectura alternativa: distancias por sede a
+  // la derecha, puntaje a lo ancho, y el premio después del calendario.
+  // Circuito queda con el orden actual a propósito, para poder comparar las
+  // dos. Para volver atrás, dejar esto en false.
+  const nuevoOrden = key === 'grand-prix';
+
   return toHTML(html`
     <section class="relative overflow-hidden bg-owa-navy px-0 pt-18 pb-16 text-white">
       <!-- La foto se desvanece hacia la izquierda con una máscara: sin ella el
@@ -279,22 +385,26 @@ export function render(ctx) {
       ${olaSuperior('#fff')}
     </section>
 
-    <div class="u-shell grid gap-12 pt-18 lg:grid-cols-2">
+    <div class="u-shell grid gap-12 pt-18 ${nuevoOrden ? 'lg:grid-cols-[43fr_57fr]' : 'lg:grid-cols-2'}">
       <!-- Padding derecho sólo en desktop: mete las distancias hacia adentro
            en vez de dejarlas pegadas al borde de la columna. -->
-      <div class="lg:pr-20">
+      <div class="${nuevoOrden ? '' : 'lg:pr-20'}">
         ${eyebrow(m.bloque1Kicker)}
         <h2 class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.5rem)] leading-[0.98]">${m.bloque1Titulo}</h2>
         <!-- bloque1Texto puede ser un string o varios párrafos. -->
         <div class="mt-4.5 grid max-w-[62ch] gap-3.5 text-base leading-[1.75] text-owa-slate">
           ${[].concat(m.bloque1Texto).map((t) => html`<p>${t}</p>`)}
         </div>
-        <!-- Cada madre llena la columna con el dato que le falta a sus tarjetas. -->
-        ${DIST[key] ? (conResumen(key) ? bloqueDatos(key, m, fechas) : bloqueDistancias(key)) : ''} ${key === 'challenge' ? bloqueTravesias() : ''}
-        ${key === 'especiales' ? bloqueEscenarios() : ''}
+        <!-- Cada madre llena la columna con el dato que le falta a sus tarjetas.
+             Con el orden nuevo las distancias se van a la columna derecha, así
+             que acá queda sólo el texto. -->
+        ${nuevoOrden ? '' : DIST[key] ? (conResumen(key) ? bloqueDatos(key, m, fechas) : bloqueDistancias(key)) : ''}
+        ${key === 'challenge' ? bloqueTravesias() : ''} ${key === 'especiales' ? bloqueEscenarios() : ''}
       </div>
 
-      <div class="rounded-owa-lg bg-owa-mist p-7.5 pt-12 pl-9 pr-9 lg:pr-24">
+      ${nuevoOrden
+        ? bloqueDistanciasPorFecha(key)
+        : html`<div class="rounded-owa-lg bg-owa-mist p-7.5 pt-12 pl-9 pr-9 lg:pr-24">
         <h3 class="font-display text-[17px] font-black text-owa-navy">${m.cajaTitulo}</h3>
         <ul class="mt-4">
           ${m.cajaItems.map((i) =>
@@ -335,23 +445,36 @@ export function render(ctx) {
               >`
             : ''}
         </div>
-      </div>
+      </div>`}
     </div>
 
-    ${m.premio ? bloquePremio(m.premio) : ''}
+    <!-- Orden nuevo: puntaje a lo ancho después de la introducción, y el premio
+         recién después del calendario — la recompensa se muestra cuando el
+         nadador ya vio dónde y cuándo compite. -->
+    ${nuevoOrden ? bloquePuntaje(key, m) : ''} ${nuevoOrden ? '' : m.premio ? bloquePremio(m.premio) : ''}
 
-    <section class="u-shell pt-16 pb-24" aria-labelledby="h-fechas">
+    <section class="u-shell pt-16 ${nuevoOrden ? 'pb-4' : 'pb-24'}" aria-labelledby="h-fechas">
       <h2 id="h-fechas" class="u-eyebrow text-owa-blue">${m.listaKicker}</h2>
       <!-- Challenge tiene 3 desafíos, no 4 como el resto de las madres: con
            lg:grid-cols-4 quedaba un cuarto lugar vacío como si faltara algo.
            Pinneado a esta categoría a propósito, no a "cuando hay 3 items". -->
       <div class="mt-6 grid gap-4 sm:grid-cols-2 ${key === 'challenge' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'}" data-stagger>
         ${fechas.map((f) =>
-          tarjetaFecha(f.e, { orden: f.orden, linea: f.linea, sublinea: f.sublinea, estado: key !== 'challenge', pill: f.pill })
+          tarjetaFecha(f.e, {
+            orden: f.orden,
+            linea: f.linea,
+            sublinea: f.sublinea,
+            estado: key !== 'challenge',
+            pill: f.pill,
+            // Destino de las mini-tarjetas de arriba en Grand Prix. No molesta
+            // en las otras madres: es sólo un id sobre la tarjeta.
+            id: `fecha-${f.e.slug}`,
+          })
         )}
       </div>
     </section>
 
+    ${nuevoOrden ? html`<div class="pb-20">${m.premio ? bloquePremio(m.premio) : ''}</div>` : ''}
     ${m.banner ? bannerCTA(m.banner) : ''}
   `);
 }

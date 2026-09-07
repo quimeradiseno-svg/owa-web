@@ -210,6 +210,33 @@
   pointer-events: auto;
 }
 
+/* ------------------------------------------------------- íconos animados
+   Misma técnica que usan las librerías de "animated icons": no se anima el
+   ícono entero sino una transformación corta disparada por el hover del
+   contenedor. Acá lo hace CSS sobre nuestros propios SVG, sin dependencias.
+   El pin de las tarjetas de carrera rebota cuando el mouse entra a la tarjeta;
+   `.group` es el contenedor que ya marca Tailwind en tarjeta-evento.js. */
+.group:hover .u-pin-rebote {
+  animation: owa-pin-rebote 520ms var(--ease-out);
+}
+@keyframes owa-pin-rebote {
+  0% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(0);
+  }
+  80% {
+    transform: translateY(-1.5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 /* ----------------------------------------------------------- estado en vivo */
 .live-dot {
   animation: owa-pulse 1.6s var(--ease-in-out) infinite;
@@ -286,6 +313,9 @@
   .hero-rule {
     animation: none;
     transform: scaleX(1);
+  }
+  .group:hover .u-pin-rebote {
+    animation: none;
   }
   .hero-in,
   .ficha-in {

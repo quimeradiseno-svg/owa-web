@@ -66,6 +66,26 @@ export const modalidadesDe = (e, opts) => {
   return chipModalidad('EVENTO ESPECIAL', opts);
 };
 
+/** Modalidades de la tarjeta grande: mismos rótulos que `modalidadesDe`, pero
+    en filete blanco en vez de pastilla rellena. Sin color de fondo los dos
+    torneos pesan igual y no compiten con el chip de estado ni con el cyan del
+    botón; la tarjeta queda más limpia.
+    Va aparte y no dentro de chipModalidad porque este tratamiento es sólo de
+    la tarjeta: en el calendario y en la ficha de carrera las pastillas siguen
+    rellenas, que es donde el color ayuda a distinguirlas de un vistazo. */
+// Esquina apenas redondeada (8px sobre 29px de alto): se lee como recuadro y
+// no como píldora, que es lo que diferencia estas dos del chip de estado.
+const chipFilete = (label) => html`<span
+  class="inline-block whitespace-nowrap rounded-lg border border-white/55 px-3 py-1.5 font-display text-[10px] font-black tracking-[0.12em] text-white"
+  >${label}</span
+>`;
+
+export const modalidadesTarjeta = (e) => {
+  if (e.tipo === 'core') return join([chipFilete('GRAND PRIX'), chipFilete('CIRCUITO OWA')], ' ');
+  if (e.tipo === 'challenge') return chipFilete(`CHALLENGE · ${e.km}`);
+  return chipFilete('EVENTO ESPECIAL');
+};
+
 /* -------------------------------------------------------------- posiciones */
 
 // El oro sobre blanco da 1.5:1: como número de posición es ilegible. En vez de
