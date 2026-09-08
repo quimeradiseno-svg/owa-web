@@ -117,28 +117,29 @@ const bloqueDatos = (key, m, fechas) => {
     resaltar en cyan sólo la parte que importa: el monto en Grand Prix, el
     destino en Circuito. `href` es opcional — sólo Circuito lo usa, porque su
     premio (Swim GP Portugal) sí tiene una página adonde ir. */
-/** EXPERIMENTO (Grand Prix) — arquitectura alternativa.
-    Las distancias, agrupadas por sede en vez de listadas en filas. Conserva la
-    relación real sede → distancia; no las agrupa en categorías genéricas.
+/** Las distancias de los dos torneos puntuables, agrupadas por sede en vez de
+    listadas en filas. Conserva la relación real sede → distancia; no las
+    agrupa en categorías genéricas.
     OJO: en Grand Prix cada sede corre UNA sola distancia (8, 18, 12 y 10 km),
-    así que cada tarjeta muestra un número. Circuito sí tiene dos por fecha. */
-// Para no dejar el "cuatro" del copy escrito a mano: si algún día el torneo
-// suma o pierde una sede, el texto acompaña. Más allá de nueve vuelve al número.
-const PALABRA = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-const enPalabras = (n) => PALABRA[n] ?? String(n);
-
+    así que cada tarjeta muestra un número. Circuito tiene dos por fecha. */
 const bloqueDistanciasPorFecha = (key) => {
   const sedes = EVENTOS.filter((e) => e.tipo === 'core');
   const n = sedes.length;
+  const nombreTorneo = key === 'grand-prix' ? 'Grand Prix' : 'Circuito OWA';
   return html`
     <div class="rounded-owa-lg bg-owa-mist p-7.5">
-      <h3 class="font-display text-[17px] font-black text-owa-navy">Las ${n} fechas del Grand Prix</h3>
-      <p class="mt-1.5 text-sm text-owa-slate">
-        ${`${enPalabras(n)[0].toUpperCase()}${enPalabras(n).slice(1)}`} sedes, ${enPalabras(n)} distancias. Elegí tu desafío.
-      </p>
+      <h3 class="font-display text-[17px] font-black text-owa-navy">Las ${n} fechas del ${nombreTorneo}</h3>
       <ul class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         ${sedes.map((e) => {
           const kms = key === 'grand-prix' ? [e.distancias.gp] : e.distancias.circuito;
+          // La sigla de la fecha (LJN, SPD…) en vez del ícono de ondas: es el
+          // mismo código que ya lleva la tarjeta de esa sede en el calendario
+          // de abajo, y acá identifica más que un ícono genérico repetido
+          // cuatro veces. San Pedro y Colón tienen una sigla por torneo (VOB
+          // el Grand Prix, SPD el Circuito) — la de `e.sigla` a secas viene
+          // combinada ("VOB · SPD") y mostraría siempre las dos.
+          const torneo = key === 'grand-prix' ? 'GRAND PRIX' : 'CIRCUITO OWA';
+          const sigla = e.jornadas?.find((j) => j.torneo === torneo)?.sigla || e.sigla;
           // La mini-tarjeta no manda a la ficha: baja hasta la tarjeta de esa
           // sede en el calendario de abajo, que es la que sí decide entrar.
           // Duplicar el link a /carrera competía con el CTA real.
@@ -146,10 +147,10 @@ const bloqueDistanciasPorFecha = (key) => {
             <li class="contents">
               <a
                 href="#fecha-${e.slug}"
-                class="u-lift-sm group flex flex-col items-center rounded-owa-md bg-white px-3 py-5 text-center transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
+                class="u-lift-sm group flex flex-col items-center rounded-owa-md border-2 border-transparent bg-white px-3 py-5 text-center transition-colors duration-200 ease-out hover:border-owa-cyan"
               >
-                <span class="text-owa-blue">${icono('ondas', 'size-6')}</span>
-                <span class="mt-3 font-display text-[11px] leading-tight font-black tracking-[0.06em] text-owa-navy uppercase">
+                <span class="font-display text-[15px] font-black tracking-[0.08em] text-owa-blue">${sigla}</span>
+                <span class="mt-0.5 font-display text-[11px] leading-tight font-black tracking-[0.06em] text-owa-navy uppercase">
                   ${e.corto}
                 </span>
                 <span class="mt-3 grid gap-1">
@@ -171,10 +172,11 @@ const bloqueDistanciasPorFecha = (key) => {
   `;
 };
 
-/** EXPERIMENTO (Grand Prix) — el sistema de puntaje deja de ser una caja
-    lateral y pasa a franja de ancho completo, con los criterios en fila.
-    Usa exactamente los mismos `cajaItems` que la caja original: no se copian
-    las reglas de Circuito, que tiene una quinta propia (puntos por especiales). */
+/** El sistema de puntaje deja de ser una caja lateral y pasa a franja de
+    ancho completo, con los criterios en fila. Usa `cajaItems` tal como lo
+    define cada torneo en madres.js: Circuito trae una quinta regla propia
+    (puntos por especiales) que Grand Prix no tiene, y no hay que duplicarla
+    acá — sale sola de los datos. */
 const bloquePuntaje = (key, m) => html`
   <section class="u-shell pt-16">
     <div class="rounded-owa-lg bg-owa-mist px-7.5 py-10 sm:px-10">
@@ -342,11 +344,12 @@ export function render(ctx) {
 
   const fechas = fechasDe(key);
 
-  // EXPERIMENTO (Grand Prix) — arquitectura alternativa: distancias por sede a
-  // la derecha, puntaje a lo ancho, y el premio después del calendario.
-  // Circuito queda con el orden actual a propósito, para poder comparar las
-  // dos. Para volver atrás, dejar esto en false.
-  const nuevoOrden = key === 'grand-prix';
+  // Arquitectura de los dos torneos puntuables: distancias por sede a la
+  // derecha, puntaje a lo ancho, y el premio después del calendario. Nació
+  // como experimento sólo en Grand Prix (para poder comparar contra el orden
+  // viejo) y ya se confirmó para los dos. Especiales y Challenge no entran:
+  // no tienen puntaje ni una distancia fija por sede.
+  const nuevoOrden = key === 'grand-prix' || key === 'circuito';
 
   return toHTML(html`
     <section class="relative overflow-hidden bg-owa-navy px-0 pt-18 pb-16 text-white">
