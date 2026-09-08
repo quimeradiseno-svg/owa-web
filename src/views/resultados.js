@@ -18,16 +18,13 @@ const TABS = [
   ['CAMPEONATO POR EQUIPOS', 'equipos'],
 ];
 
-// El tercer valor es el rótulo de pantalla chica. Con el nombre completo cada
-// píldora mide más de la mitad del ancho y las cuatro caen una por fila, con
-// anchos distintos: se lee desprolijo. Acortadas entran de a dos. No se pierde
-// nada: el título de la tarjeta de abajo dice igual "Ranking general
-// masculino".
+// Sólo separa por género: la categoría ya la elige el selector "Categoría" de
+// la toolbar, que filtra sobre cualquiera de las dos. Antes había cuatro
+// vistas (general/categorías × masculino/femenino) y las dos de categorías
+// duplicaban exactamente lo que ese selector ya resuelve.
 const VISTAS = [
   ['GENERAL MASCULINO', 'gen-m', 'MASCULINO'],
   ['GENERAL FEMENINO', 'gen-f', 'FEMENINO'],
-  ['CATEGORÍAS MASCULINAS', 'cat-m', 'CAT. MASCULINAS'],
-  ['CATEGORÍAS FEMENINAS', 'cat-f', 'CAT. FEMENINAS'],
 ];
 
 // Filas por página. El Circuito masculino tiene más de 500 nadadores: en una
@@ -45,15 +42,12 @@ const s = {
   pagina: 1,
 };
 
-const sexoDe = (v) => (v === 'gen-f' || v === 'cat-f' ? 'F' : 'M');
-const esPorCategoria = (v) => v === 'cat-m' || v === 'cat-f';
+const sexoDe = (v) => (v === 'gen-f' ? 'F' : 'M');
 
 // Título de la tabla según la vista, para encabezar la tarjeta del ranking.
 const TITULOS = {
   'gen-m': 'Ranking general masculino',
   'gen-f': 'Ranking general femenino',
-  'cat-m': 'Ranking por categorías · masculino',
-  'cat-f': 'Ranking por categorías · femenino',
 };
 
 /* --------------------------------------------------------------- controles */
@@ -238,7 +232,6 @@ const panelCarrera = () =>
 
 function tablaNadadores() {
   const lista = RANKING[s.tab]?.[sexoDe(s.vista)] ?? [];
-  const porCat = esPorCategoria(s.vista);
   const q = s.q.trim().toLowerCase();
 
   // Las dos listas de opciones salen de la tabla que se está mirando, no del
@@ -253,18 +246,22 @@ function tablaNadadores() {
     .filter((r) => !q || r.nombre.toLowerCase().includes(q) || r.club.toLowerCase().includes(q));
 
   const filas = filtradas.slice((s.pagina - 1) * PAGINA, s.pagina * PAGINA);
-  // Con una categoría elegida el puesto que importa es el de esa categoría,
-  // no el general: es la tabla de esa categoría, no un recorte de la general.
-  const puestoDe = (r) => (porCat && s.cat !== 'TODAS' ? r.posCat : r.pos);
+  // Con una categoría elegida (por el selector de la toolbar) el puesto que
+  // importa es el de esa categoría, no el general: es la tabla de esa
+  // categoría, no un recorte de la general. Sin categoría elegida, general.
+  const puestoDe = (r) => (s.cat !== 'TODAS' ? r.posCat : r.pos);
   // La barra se mide contra el puntero de lo que se está mirando, así que al
   // filtrar por club o categoría la escala se reajusta a esa tabla.
   const tope = Math.max(1, ...filtradas.map((r) => r.puntos));
 
   // El recuento en bold: es el dato que cambia al filtrar, la temporada no.
+  // La categoría elegida se nombra acá y no en el título de la tarjeta: sin
+  // esto, con el puesto ya mostrando la posición dentro de la categoría
+  // (arriba), no quedaba dicho en ningún lado CUÁL categoría es esa.
   const detalle = html`<strong class="font-bold text-owa-navy"
       >${numero(filtradas.length)} ${filtradas.length === 1 ? 'nadador' : 'nadadores'}</strong
     >
-    · Clasificación final ${TEMPORADA}`;
+    ${s.cat !== 'TODAS' ? html`· ${s.cat}` : ''} · Clasificación final ${TEMPORADA}`;
 
   return html`
     <div class="rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-8">
