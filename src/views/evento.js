@@ -693,11 +693,30 @@ export function render(ctx) {
     ${esChallenge
       ? ''
       : (() => {
-          // La ola dibuja el borde de abajo del hero contra lo que sigue. Con
-          // jornadas viene la sección blanca de "Días del evento"; sin ellas,
-          // Distancias, que en el esquema invertido también es blanca. En los
-          // dos casos la ola cae sobre blanco.
-          return html`<div class="relative z-2 -mt-13 rotate-180 bg-white">${olaCentrada('#211e5f')}</div>`;
+          // Exactamente la misma ola del hero del home, sin diferencias.
+          //
+          // Antes iba girada 180° y en navy, y las dos cosas estaban mal:
+          // girada, el pico quedaba angosto y con dos alas a los costados que
+          // no tienen foto que mostrar (la foto termina 52px más arriba), así
+          // que había que rellenarlas de algún color y siempre se leía como
+          // una mancha ajena. Y en navy no se veía: es un bulto ancho y poco
+          // profundo, pintado del mismo tono que la foto ya oscurecida por el
+          // scrim — a pantalla completa se aplanaba hasta parecer una línea
+          // recta.
+          // En blanco sí contrasta contra la foto, que es lo que hace legible
+          // a la del home. Y el blanco es además el color correcto: abajo
+          // siempre sigue una sección blanca (Días del evento con jornadas,
+          // Distancias sin ellas), así que el relleno empalma con lo que
+          // viene y el borde inferior del trazo —una recta a lo ancho de todo
+          // el viewBox, siempre en y=52— no deja ningún hueco que tapar.
+          return html`<div class="relative z-2 -mt-13">
+            ${olaCentrada('#fff')}
+            <!-- Guarda de subpíxel: con el zoom de Windows al 125%/150% el
+                 borde antialiaseado del SVG puede dejar asomar un hilo de la
+                 sección blanca de después, aunque en CSS las dos midan
+                 exactamente lo mismo (mismo caso que la ola del home). -->
+            <div class="absolute inset-x-0 bottom-0 h-1 translate-y-px bg-white" aria-hidden="true"></div>
+          </div>`;
         })()}
 
     ${esChallenge ? barraDatos(e, esChallenge, f) : ''} ${raceState === 'vivo' ? bandaVivo() : ''}
