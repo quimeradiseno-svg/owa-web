@@ -1,15 +1,15 @@
 import { html, toHTML, stagger } from '../lib/html.js';
-import { foto, fondo, fondoVideo, montarFondoVideo } from '../lib/img.js';
+import { foto, fondo, fondoVideo, montarFondoVideo, avatarFoto } from '../lib/img.js';
 import { PUNTUABLES, ESPECIALES, CHALLENGES } from '../data/eventos.js';
 import { TRAVEL, RACE_TRAVEL_AGENDA } from '../data/travel.js';
 import { MODALIDADES } from '../data/madres.js';
 import { DESTACADOS, CLUBES, TEMPORADA } from '../data/ranking-destacados.js';
+import { FOTOS_NADADOR, FOTOS_CLUB } from '../data/ranking-fotos.js';
 import { tarjetaEvento, tarjetaEspecial, tarjetaChallenge } from '../components/tarjeta-evento.js';
 import { icono } from '../components/iconos.js';
 import {
   eyebrow,
   tituloSeccion,
-  btnAccent,
   btnAccentGrande,
   btnBlanco,
   btnBorde,
@@ -37,19 +37,27 @@ const PANELES = [
   { id: 'circ', label: 'CIRCUITO OWA', torneo: 'circuito' },
 ];
 
-// Avatar placeholder hasta que OWA mande la foto real de cada nadador: mismo
-// círculo en toda la sección, para que no se lea como "roto" ni finjan ser
-// una foto real de alguien que no es. `oscuro` lo adapta a la tarjeta navy de
-// clubes (mismo criterio que el resto de la marca sobre fondo oscuro).
-// La variante oscura lleva vidrio (borde + blur) en vez de un relleno sólido:
-// sin eso se leía como un botón celeste, no como un placeholder de logo.
-const avatar = (clase, oscuro = false) =>
-  html`<span
+// Círculo de la fila de ranking. Con foto (`slug`) muestra la cara del
+// nadador o el logo del club, real; sin ella cae al placeholder de siempre —
+// mismo círculo en toda la sección, para que no se lea como "roto" ni finjan
+// ser alguien que no es. Sólo hay fotos para los primeros 3 de cada columna
+// (src/data/ranking-fotos.js, lo único que mandó OWA); el resto sigue con el
+// ícono. `oscuro` lo adapta a la tarjeta navy de clubes (mismo criterio que
+// el resto de la marca sobre fondo oscuro): la variante oscura del
+// placeholder lleva vidrio (borde + blur) en vez de un relleno sólido, sin
+// eso se leía como un botón celeste y no como un placeholder de logo.
+const avatar = (clase, oscuro = false, slug = '', alt = '') => {
+  if (slug)
+    return html`<span class="block ${clase} shrink-0 overflow-hidden rounded-full border ${oscuro ? 'border-white/25' : 'border-owa-line'}"
+      >${avatarFoto({ slug, alt, className: 'block h-full w-full object-cover' })}</span
+    >`;
+  return html`<span
     class="grid ${clase} shrink-0 place-items-center rounded-full ${oscuro
       ? 'border border-white/14 bg-white/10 text-white/45 backdrop-blur'
       : 'bg-owa-mist text-owa-blue'}"
     >${icono('persona', 'size-1/2')}</span
   >`;
+};
 
 // Número de posición "suelto", sin chapita: grande y en degradé del color de
 // cada metal, tal como lo pidió el mockup de referencia.
@@ -91,7 +99,7 @@ const columnaGenero = (panel, sexo) => {
               ${rows.map(
                 (r) => html`
                   <li class="flex items-center gap-3.5 border-b border-owa-sand py-3.5 last:border-0">
-                    ${numeroPos(r.pos)} ${avatar('size-15')}
+                    ${numeroPos(r.pos)} ${avatar('size-15', false, FOTOS_NADADOR[r.nombre], r.nombre)}
                     <span class="min-w-0 flex-1">
                       <span class="block truncate font-display text-lg font-bold text-owa-navy">${r.nombre}</span>
                       <span data-nums class="mt-0.5 block text-sm font-bold text-owa-blue">${numero(r.puntos)} pts</span>
@@ -163,7 +171,7 @@ function panelClubes() {
           ${clubes.map(
             (c) => html`
               <li class="flex items-center gap-3.5 border-t border-white/12 py-4 first:border-0 first:pt-0">
-                ${numeroPos(c.pos, true)} ${avatar('size-15', true)}
+                ${numeroPos(c.pos, true)} ${avatar('size-15', true, FOTOS_CLUB[c.nombre], c.nombre)}
                 <span class="min-w-0 flex-1">
                   <span class="block font-display text-lg leading-tight font-bold">${c.nombre}</span>
                   <span data-nums class="mt-1 block text-sm font-bold text-owa-sky">${numero(c.puntos)} pts</span>
@@ -409,7 +417,17 @@ export function render() {
       </a>
     </section>
 
-    <div class="relative z-2 -mt-13">${olaCentrada('#fff')}</div>
+    <!-- Con el zoom de Windows al 125%/150% (no es un múltiplo entero de
+         píxel), Chrome antialiasea el borde inferior del SVG contra un fondo
+         transparente y deja asomar una línea clara del navy de atrás justo en
+         la costura con la sección blanca de abajo — aunque en CSS las dos
+         midan exactamente lo mismo. La franja de abajo tapa esa costura a
+         propósito: sólo cubre blanco sobre blanco, invisible en cualquier
+         zoom. -->
+    <div class="relative z-2 -mt-13">
+      ${olaCentrada('#fff')}
+      <div class="absolute inset-x-0 bottom-0 h-1 translate-y-px bg-white" aria-hidden="true"></div>
+    </div>
 
     <!-- ------------------------------------------------- eventos puntuables -->
     <!-- scroll-mt para que el header sticky no tape el título al bajar desde
@@ -535,34 +553,24 @@ export function render() {
     <!-- ------------------------------------------------------------- rankings -->
     <section class="bg-white px-0 py-22" aria-labelledby="h-rankings">
       <div class="u-shell">
-        <div class="mb-9">
-          <!-- "Rankings en vivo" hasta que arranque 26/27 sería mentira: lo que
-               se muestra es la temporada anterior ya cerrada. Vuelve a ser en
-               vivo con la primera fecha, el 31 de octubre en Luján. -->
-          ${eyebrow(`Ranking ${TEMPORADA} · final`)}
-          <h2 id="h-rankings" class="u-h2 mt-3.5">
-            In aqua veritas<br />aqua autem nos unit
-          </h2>
+        <!-- CTA de vuelta al lado del título, como en el resto de las
+             secciones del home (Eventos puntuables, Especiales, Challenge,
+             Travel): se había probado como cierre de sección en un banner
+             aparte y no se sostuvo. -->
+        <div class="mb-9 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <!-- "Rankings en vivo" hasta que arranque 26/27 sería mentira: lo que
+                 se muestra es la temporada anterior ya cerrada. Vuelve a ser en
+                 vivo con la primera fecha, el 31 de octubre en Luján. -->
+            ${eyebrow(`Ranking ${TEMPORADA} · final`)}
+            <h2 id="h-rankings" class="u-h2 mt-3.5">
+              In aqua veritas<br />aqua autem nos unit
+            </h2>
+          </div>
+          ${linkFuerte('Ver rankings completos', '/resultados')}
         </div>
 
         <div class="grid gap-4.5 lg:grid-cols-[1.7fr_1fr]" data-stagger>${panelRanking()} ${panelClubes()}</div>
-
-        <!-- El CTA "Ver rankings completos" vivía arriba, al lado del título;
-             se movió acá (en el lugar de "Cómo funciona el ranking") porque
-             tiene más sentido como cierre de la sección que como header. -->
-        <div class="reveal relative mt-4.5 overflow-hidden rounded-owa-lg bg-owa-navy">
-          ${fondo({ slug: 'circuito-grupo', alt: '', opacity: 0.35 })}
-          <div class="relative flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
-            <div class="flex items-center gap-5">
-              <img src="/brand/owa-iso-cyan.svg" alt="" class="size-14 shrink-0" aria-hidden="true" />
-              <div>
-                <h3 class="text-[clamp(1.375rem,2.6vw,1.875rem)] leading-[0.98] text-white">Cada brazada suma</h3>
-                <p class="mt-1.5 text-sm text-owa-line">Viví cada fecha. Sumá puntos. Dejá tu huella.</p>
-              </div>
-            </div>
-            ${btnAccent('VER RANKINGS COMPLETOS', '/resultados')}
-          </div>
-        </div>
       </div>
     </section>
 

@@ -36,6 +36,26 @@ export function foto({ slug, alt, sizes = '100vw', className = '', imgClass = ''
   `;
 }
 
+/** Avatar chico (foto de nadador, logo de club): un solo `<img>`, sin
+    `<picture>`. `foto()` asume que existen los tres anchos de WIDTHS porque
+    el material fuente del sitio siempre arranca en ~1250px; los recortes de
+    avatar salen de fotos de podio mucho más chicas (300–800px), así que abajo
+    de 480px scripts/images.mjs no genera avif/webp — pedirle el srcset normal
+    a esas fotos apuntaría a archivos que no existen. Un solo jpg alcanza de
+    sobra para un círculo de 60px. */
+export function avatarFoto({ slug, alt, className = '' }) {
+  const meta = LQIP[slug];
+  if (!meta) throw new Error(`Falta la foto "${slug}" — corré npm run images`);
+  return html`<img
+    src="/img/${slug}.jpg"
+    alt="${alt}"
+    loading="lazy"
+    decoding="async"
+    class="img-fade ${className}"
+    style="background-image:url('${meta.d}');background-size:cover;background-position:center"
+  />`;
+}
+
 /** Foto de fondo a sangre, con la clase de deriva opcional del hero. */
 export function fondo({ slug, alt = '', opacity = 0.62, drift = false, priority = false, sizes = '100vw' }) {
   return html`

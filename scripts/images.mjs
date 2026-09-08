@@ -109,6 +109,34 @@ const PHOTOS = {
   // con la ruta completa en vez de una clave del índice.
   'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',
   'tv-hero': 'Fotos/banner-poster/travel-poster.jpg',
+  // --- Ranking del home: nadadores y clubes destacados de la 2025/26 ------
+  // Fotos de podio que pasó OWA (Fotos/Ranking), recortadas a un cuadrado
+  // apoyado arriba: en fotos de podio la cara siempre cae en el tercio
+  // superior, así que `alto` (ancho/alto original) alcanza sin tocar `top`.
+  // Sirven sólo para el avatar circular de /: no van a la ficha de nadador,
+  // que no existe.
+  'rk-arias': { foto: 'Fotos/Ranking/arias.PNG', recorte: { alto: 0.8556 } },
+  'rk-arjona': { foto: 'Fotos/Ranking/arjona.PNG', recorte: { alto: 0.8447 } },
+  'rk-frida': { foto: 'Fotos/Ranking/frida.PNG', recorte: { alto: 0.8809 } },
+  'rk-permikin': { foto: 'Fotos/Ranking/Permikin.PNG', recorte: { alto: 0.9399 } },
+  // Recorte ajustado a la cara y no al ancho completo: con `alto: 0.75` (el
+  // cuadrado tomando todo el ancho) la nadadora quedaba chica en el medio del
+  // círculo, con medio metro de banderas arriba. Este achica el cuadrado al
+  // entorno de la cara y lo centra ahí.
+  'rk-tamara-salvano': {
+    foto: 'Fotos/Ranking/Tamara Salvano.JPEG',
+    recorte: { left: 0.2831, top: 0.1569, ancho: 0.5333, alto: 0.4 },
+  },
+  'rk-mariana-diaz': { foto: 'Fotos/Ranking/mariana.PNG', recorte: { alto: 0.8746 } },
+  'rk-ianicelli': { foto: 'Fotos/Ranking/Ianicelli.JPEG', recorte: { alto: 0.6664 } },
+  'rk-lamon': { foto: 'Fotos/Ranking/Lamon.JPEG', recorte: { alto: 0.6664 } },
+  'rk-elosegui': { foto: 'Fotos/Ranking/elosegui.JPEG', recorte: { alto: 0.7059 } },
+  'rk-bongianino': { foto: 'Fotos/Ranking/Bongianino.JPEG', recorte: { alto: 0.6664 } },
+  'rk-claudia-fernandez': { foto: 'Fotos/Ranking/Claudia Fernández.JPEG', recorte: { alto: 0.6278 } },
+  // Logos de club: ya son prácticamente cuadrados, sin recorte.
+  'rk-villaluro': 'Fotos/Ranking/villaluro.JPEG',
+  'rk-blackteam': 'Fotos/Ranking/blackteam.PNG',
+  'rk-bragado': { foto: 'Fotos/Ranking/bragado.PNG', recorte: { left: 0.0578, ancho: 0.8844 } },
 };
 
 const index = {};
