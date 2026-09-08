@@ -23,20 +23,36 @@ export const tituloSeccion = (volanta, titulo, tono = 'blue') => html`
 
 /* ------------------------------------------------------------------ chips */
 
+// Las cinco modalidades como UNA familia: rectángulo de esquina suave y fondo
+// en tinte claro, cada una con su matiz pero todas del mismo peso.
+//
+// Antes convivían tres tratamientos distintos (Grand Prix en cyan sólido,
+// Circuito y Challenge en owa-mist, Especiales en owa-sand, Travel en filete
+// dorado) y dos de esos fondos eran EXACTAMENTE los mismos que usan los chips
+// de estado del calendario: owa-mist es "PRÓXIMAMENTE" y owa-sand es "A
+// CONFIRMAR"/"SOLD OUT". En una misma tarjeta no se distinguía qué era
+// modalidad y qué era estado.
+//
+// Ahora lo que separa las dos familias es la FORMA: modalidad = rectángulo
+// sin punto, estado = píldora con punto de color. El matiz de cada modalidad
+// sigue al de la leyenda del mini calendario, así el puntito del día y el tag
+// de la tarjeta hablan el mismo idioma.
+const TONO_MODALIDAD = [
+  [/^GRAND PRIX/, 'bg-owa-cyan/15 text-owa-deep'],
+  [/^CIRCUITO/, 'bg-owa-blue/10 text-owa-blue'],
+  [/^(EVENTO )?ESPECIAL/, 'bg-owa-sky/25 text-owa-navy'],
+  [/^CHALLENGE/, 'bg-owa-navy/10 text-owa-navy'],
+  [/^TRAVEL/, 'bg-owa-gold/25 text-owa-navy'],
+];
+
 export function chipModalidad(label, { oscuro = false } = {}) {
-  const esGP = label.startsWith('GRAND PRIX');
-  const esEspecial = label.startsWith('EVENTO ESPECIAL');
-  const tono = esGP
-    ? 'bg-owa-cyan text-owa-deep'
-    : esEspecial
-      ? oscuro
-        ? 'border border-white/35 text-owa-line'
-        : 'bg-owa-sand text-owa-slate'
-      : oscuro
-        ? 'bg-white text-owa-blue'
-        : 'bg-owa-mist text-owa-blue';
+  // Sobre fondo oscuro los cinco tintes claros se apagan igual, así que ahí
+  // van todos en filete blanco: la forma sigue diciendo "modalidad".
+  const tono = oscuro
+    ? 'border border-white/35 text-owa-line'
+    : (TONO_MODALIDAD.find(([re]) => re.test(label)) || [])[1] || 'bg-owa-mist text-owa-blue';
   return html`<span
-    class="inline-block whitespace-nowrap rounded-full px-2.5 py-1 font-display text-[10px] font-black tracking-[0.12em] ${tono}"
+    class="inline-block whitespace-nowrap rounded-lg px-2.5 py-1 font-display text-[10px] font-black tracking-[0.12em] ${tono}"
     >${label}</span
   >`;
 }

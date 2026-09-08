@@ -73,19 +73,6 @@ const normalizarTravel = (t) => ({
 
 const TODOS_LOS_EVENTOS = [...ALL, ...TRAVEL.map(normalizarTravel)];
 
-/* ---------------------------------------------------------------- resumen */
-
-// Los tres números del hero salen de los datos: si entra una fecha nueva, se
-// actualizan solos.
-const RESUMEN = {
-  carreras: ALL.length,
-  destinos: new Set(ALL.map((e) => e.sedeCorta || e.sede)).size,
-  // Grand Prix, Circuito OWA, Especiales y Challenge: las cuatro páginas madre.
-  // No se llaman "circuitos" porque circuitos hay dos (Grand Prix y Circuito
-  // OWA); los otros dos no puntúan.
-  modalidades: 4,
-};
-
 /* ------------------------------------------------------------------ estado */
 
 const MODALIDADES = [
@@ -206,8 +193,12 @@ function agrupar(lista) {
 
 // El estado nunca se apoya sólo en el color: siempre lleva su texto, y el punto
 // es un refuerzo. Sin verde en la paleta de OWA, "abierta" usa el cyan de marca.
+// "Abierta" va en cyan sólido y no en tinte al 15%: ese tinte es ahora el del
+// tag GRAND PRIX, y con los dos en la misma tarjeta se confundían. De paso, la
+// inscripción abierta es la única acción real de la fila y gana el peso que le
+// corresponde. Los otros dos estados quedan en neutro, que es lo que son.
 const TONO_ESTADO = {
-  abierta: ['bg-owa-cyan', 'text-owa-deep', 'bg-owa-cyan/15'],
+  abierta: ['bg-owa-deep', 'text-owa-deep', 'bg-owa-cyan'],
   proximamente: ['bg-owa-sky', 'text-owa-navy', 'bg-owa-mist'],
   'a-confirmar': ['bg-owa-gray', 'text-owa-slate', 'bg-owa-sand'],
   cerrada: ['bg-owa-gray', 'text-owa-slate', 'bg-owa-sand'],
@@ -340,7 +331,7 @@ function tarjeta(e) {
               <span class="shrink-0 text-owa-cyan">${icono('pin', 'size-4')}</span>${e.sede}
             </p>
             <p class="mt-2.5 flex flex-wrap gap-1.5">
-              ${travel ? '' : torneo ? chipModalidad(torneo) : modalidadesDe(e)}
+              ${travel ? chipModalidad('TRAVEL') : torneo ? chipModalidad(torneo) : modalidadesDe(e)}
             </p>
             ${e.nota ? html`<p class="mt-2 text-[11px] text-owa-slate">${e.nota}</p>` : ''}
           </div>
@@ -565,59 +556,42 @@ const buscador = () => html`
 
 /* ------------------------------------------------------------------ vista */
 
-const datoResumen = (n, label, ico) => html`
-  <li class="flex items-center gap-3">
-    <span class="grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-owa-cyan">${icono(ico, 'size-5')}</span>
-    <span class="leading-tight">
-      <span data-nums class="block font-display text-[1.375rem] font-black text-white">${n}</span>
-      <span class="block text-[11px] tracking-[0.12em] text-owa-line uppercase">${label}</span>
-    </span>
-  </li>
-`;
-
 export function render() {
   return toHTML(html`
     <section class="relative overflow-hidden bg-owa-navy px-0 pt-14 pb-11 text-white">
       <!-- La foto se desvanece hacia la izquierda con una máscara, igual que en
            las páginas madre: sin ella el borde del bloque corta el navy con una
-           línea vertical muy visible. Debajo de lg no entra y no se muestra. -->
+           línea vertical muy visible. Debajo de lg no entra y no se muestra.
+           Mismas proporciones que ese patrón (56% de ancho, máscara al 52%,
+           opacity-45 en la propia foto) y no las que tenía antes (50%/58%,
+           más un velo aparte hasta 96% de navy): ese velo extra existía para
+           que el resumen de temporada se leyera encima del agua, y al sacar
+           el resumen se quedó sin motivo — la foto quedaba casi toda tapada. -->
       <div
-        class="absolute inset-y-0 right-0 hidden w-[50%] lg:block"
+        class="absolute inset-y-0 right-0 hidden w-[56%] lg:block"
         aria-hidden="true"
-        style="mask-image:linear-gradient(90deg,transparent 0%,#000 58%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 58%)"
+        style="mask-image:linear-gradient(90deg,transparent 0%,#000 52%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 52%)"
       >
         ${foto({
           slug: 'lbc-crawl',
           alt: '',
-          sizes: '50vw',
+          sizes: '56vw',
           priority: true,
           className: 'block h-full w-full',
-          imgClass: 'h-full w-full object-cover',
+          imgClass: 'h-full w-full object-cover opacity-45',
         })}
-        <!-- El resumen de temporada cae justo sobre el agua, que es la zona más
-             clara de la foto. Este velo oscurece el borde derecho para que los
-             números se lean, y deja el centro despejado. -->
-        <div class="absolute inset-0 bg-linear-to-l from-owa-navy/96 via-owa-navy/60 to-transparent"></div>
       </div>
 
-      <div class="u-shell relative grid gap-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-        <div>
-          <!-- Misma escala que los heros de PDA y Primeros pasos. La utilidad
-               u-h1 llega hasta 5.75rem y esta era la única página de sección
-               que la usaba, así que quedaba mucho más grande que sus hermanas. -->
-          <h1 class="text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.9]">
-            Calendario<br />2026/<span class="text-owa-cyan">27</span>
-          </h1>
-          <p class="mt-5 max-w-[46ch] text-[15px] leading-relaxed text-owa-line">
-            Todas las fechas de la temporada. Las inscripciones se realizan desde la plataforma de cada carrera.
-          </p>
-        </div>
-        <!-- Resumen de temporada: los tres números salen de los datos. -->
-        <ul class="flex flex-wrap gap-x-8 gap-y-4 lg:flex-col lg:gap-4">
-          ${datoResumen(RESUMEN.carreras, 'Carreras', 'bandera')}
-          ${datoResumen(RESUMEN.destinos, 'Destinos', 'pin')}
-          ${datoResumen(RESUMEN.modalidades, 'Modalidades', 'trofeo')}
-        </ul>
+      <div class="u-shell relative">
+        <!-- Misma escala que los heros de PDA y Primeros pasos. La utilidad
+             u-h1 llega hasta 5.75rem y esta era la única página de sección
+             que la usaba, así que quedaba mucho más grande que sus hermanas. -->
+        <h1 class="text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.9]">
+          Calendario<br />2026/<span class="text-owa-cyan">27</span>
+        </h1>
+        <p class="mt-5 max-w-[46ch] text-[15px] leading-relaxed text-owa-line">
+          Todas las fechas de la temporada. Las inscripciones se realizan desde la plataforma de cada carrera.
+        </p>
       </div>
     </section>
 
