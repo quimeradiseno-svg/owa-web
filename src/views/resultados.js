@@ -2,7 +2,9 @@ import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
 import { TEMPORADA, FECHAS, CATEGORIAS, RANKING, EQUIPOS } from '../data/ranking-2526.js';
 import { MADRES } from '../data/madres.js';
+import { TEMPORADAS, TEMPORADA_ACTUAL, destacada, restante, fechaCorta } from '../data/resultados-historicos.js';
 import { posicion, numero, eyebrow } from '../components/ui.js';
+import { icono } from '../components/iconos.js';
 
 export const titulo = 'Resultados & Rankings';
 export const descripcion =
@@ -12,7 +14,7 @@ export const descripcion =
 // juntos— así que va como pestaña propia y no como una vista dentro de cada
 // torneo: colgarlo de un torneo daría a entender que hay uno por competencia.
 const TABS = [
-  ['RESULTADOS POR CARRERA', 'carrera'],
+  ['RESULTADOS POR TEMPORADA', 'temporadas'],
   ['RANKING GRAND PRIX', 'grand-prix'],
   ['RANKING CIRCUITO OWA', 'circuito'],
   ['CAMPEONATO POR EQUIPOS', 'equipos'],
@@ -40,6 +42,7 @@ const s = {
   q: '',
   sel: null,
   pagina: 1,
+  temporada: TEMPORADAS[0]?.id,
 };
 
 const sexoDe = (v) => (v === 'gen-f' ? 'F' : 'M');
@@ -222,11 +225,270 @@ const barraPuntos = (puntos, tope) => html`
 
 /* --------------------------------------------- pestaña 1 · por carrera */
 
-// Los resultados carrera por carrera hoy viven en Cronometraje Instantáneo y
-// OWA todavía está definiendo cómo se muestran acá. Hasta entonces la pestaña
-// existe pero no inventa una tabla.
-const panelCarrera = () =>
-  vacio('Estamos preparando esta sección. Los resultados de cada fecha se publican al cierre de la carrera.');
+// Los resultados carrera por carrera viven en Cronometraje Instantáneo: acá se
+// enlazan, no se replican. Arriba, la fecha que se viene (o su resultado, ya
+// corrida); abajo, el archivo por temporada.
+
+/* Acento por competencia. La franja es decoración y puede ir en cian; el
+   rótulo de texto no, que sobre blanco el cian queda en 2.6:1 — ahí va el
+   azul profundo. Mismos colores de familia que los chips del resto del sitio. */
+const ACENTO = {
+  'GRAND PRIX': { franja: 'bg-owa-cyan', rotulo: 'text-owa-deep', borde: 'hover:border-owa-cyan' },
+  CIRCUITO: { franja: 'bg-owa-blue', rotulo: 'text-owa-blue', borde: 'hover:border-owa-blue' },
+  ESPECIAL: { franja: 'bg-owa-sky', rotulo: 'text-owa-navy', borde: 'hover:border-owa-sky' },
+};
+
+const acentoDe = (torneo = '') =>
+  /^CIRCUITO/.test(torneo) ? ACENTO.CIRCUITO : /ESPECIAL/.test(torneo) ? ACENTO.ESPECIAL : ACENTO['GRAND PRIX'];
+
+/** Fila compacta, para las temporadas ya cerradas. Una temporada completa son
+    doce carreras o más, y con la tarjeta grande de la temporada en curso el
+    archivo se vuelve un scroll interminable. Acá todo entra en un renglón —
+    barra de color, sigla, nombre y el botón a la derecha— y la fecha pasa a
+    ser el dato de apoyo, no el titular: lo que se viene a buscar es el
+    resultado, no cuándo fue. */
+const filaCompacta = (c) => {
+  const a = acentoDe(c.torneo);
+  return html`
+    <li
+      class="group flex items-stretch overflow-hidden rounded-owa-md border border-owa-line bg-white transition-colors duration-200 ${c.url
+        ? a.borde
+        : 'opacity-65'}"
+    >
+      <span class="w-1 shrink-0 ${a.franja}" aria-hidden="true"></span>
+      <div class="flex flex-1 flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-3.5 sm:px-5">
+        <p class="w-14 shrink-0 font-display text-[17px] leading-none font-black text-owa-navy">${c.sigla}</p>
+        <div class="min-w-0 flex-1">
+          <p class="font-display text-[14px] leading-tight font-black text-owa-navy">${c.nombre}</p>
+          <p class="mt-1 text-[11px] font-bold tracking-[0.08em] text-owa-slate uppercase">
+            ${[c.torneo, c.etapa, c.sede.split('·')[0].trim(), fechaCorta(c.fecha) || c.fecha].filter(Boolean).join(' · ')}
+          </p>
+        </div>
+        ${c.url
+          ? html`
+              <a
+                href="${c.url}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="u-nudge inline-flex shrink-0 items-center gap-2 font-display text-[12px] font-black tracking-[0.08em] text-owa-blue uppercase hover:underline"
+              >
+                Ver resultados <span class="u-nudge-arrow" aria-hidden="true">↗</span>
+              </a>
+            `
+          : html`
+              <span class="shrink-0 rounded-full bg-owa-sand px-3 py-1.5 text-[10px] font-black tracking-[0.12em] text-owa-slate uppercase">
+                Sin publicar
+              </span>
+            `}
+      </div>
+    </li>
+  `;
+};
+
+/** El contador de la fecha que viene. Va aparte porque se recalcula en el
+    cliente al montar: el HTML prerenderizado se escribe una vez, en el build,
+    y sin esto mostraría los días que faltaban ese día para siempre.
+    Devuelve '' si la carrera no tiene fecha exacta confirmada. */
+/** Una caja del reloj: horas, minutos o segundos. */
+const casilla = (valor, rotulo) => html`
+  <div class="text-center">
+    <p data-nums class="rounded-owa-md bg-white/10 px-2.5 py-2 font-display text-[19px] leading-none font-black tabular-nums">
+      ${String(valor).padStart(2, '0')}
+    </p>
+    <p class="mt-1.5 text-[9px] font-bold tracking-[0.12em] text-white/55 uppercase">${rotulo}</p>
+  </div>
+`;
+
+/** La cuenta regresiva. Los días mandan —es el dato que se busca de un
+    vistazo— y el reloj va abajo, en cajas, corriendo segundo a segundo.
+    Sin hora de largada confirmada se muestran sólo los días: el reloj
+    contaría hacia una medianoche en la que no larga nadie. */
+const contador = (iso, hora = '') => {
+  const r = restante(iso, hora);
+  if (!r) return '';
+  if (r.pasado)
+    return html`<p class="font-display text-[clamp(1.75rem,4vw,2.5rem)] leading-none font-black text-owa-cyan">
+      ¡ES HOY!
+    </p>`;
+
+  return html`
+    <p class="text-[11px] font-bold tracking-[0.16em] text-white/60 uppercase">Faltan</p>
+    <p data-nums class="mt-1 font-display text-[clamp(2.75rem,7vw,4rem)] leading-[0.85] font-black text-owa-cyan">
+      ${r.dias}
+    </p>
+    <p class="mt-1 text-[13px] font-black tracking-[0.14em] text-white/85 uppercase">
+      ${r.dias === 1 ? 'día' : 'días'}
+    </p>
+    ${hora
+      ? html`<div class="mt-4 flex items-start gap-1.5">
+          ${casilla(r.horas, 'horas')}
+          <span class="pt-1.5 font-display text-[17px] font-black text-white/40">:</span>
+          ${casilla(r.minutos, 'minutos')}
+          <span class="pt-1.5 font-display text-[17px] font-black text-white/40">:</span>
+          ${casilla(r.segundos, 'segundos')}
+        </div>`
+      : ''}
+  `;
+};
+
+/* Los logos de torneo sólo existen en versión para fondo oscuro (los cuatro
+   archivos de /brand tienen los trazos en blanco o casi blanco), así que se
+   usan únicamente acá, sobre el navy de la tarjeta destacada. En las filas
+   del listado, que son blancas, el torneo va como chip de texto. */
+const LOGO_TORNEO = { gp: '/brand/owa-grandprix-s.svg', circuito: '/brand/owa-circuito-s.svg' };
+
+const logosDe = (torneo = '') => {
+  // El combinado va primero: "GRAND PRIX Y CIRCUITO" también empieza con
+  // "GRAND PRIX" y si no se chequea antes se lleva un solo logo.
+  if (/^GRAND PRIX Y CIRCUITO/.test(torneo)) return [['Grand Prix', LOGO_TORNEO.gp], ['Circuito OWA', LOGO_TORNEO.circuito]];
+  if (/^GRAND PRIX/.test(torneo)) return [['Grand Prix', LOGO_TORNEO.gp]];
+  if (/^CIRCUITO/.test(torneo)) return [['Circuito OWA', LOGO_TORNEO.circuito]];
+  return [];
+};
+
+/** Tarjeta destacada. Dos caras según el momento de la temporada: la fecha
+    que viene con su cuenta regresiva, o el último resultado publicado. */
+const CTA_DESTACADO =
+  'u-press inline-flex items-center gap-2.5 rounded-full bg-owa-cyan px-6 py-3.5 font-display text-[13px] font-black tracking-[0.06em] text-owa-deep uppercase hover:bg-owa-sky';
+
+const tarjetaDestacada = ({ modo, evento: e, carreras = [] }) => {
+  const logos = logosDe(e.torneo);
+  const proxima = modo === 'proxima';
+  // "31 OCT 2026" -> ['31','OCT','2026'], para el bloque de fecha aparte.
+  const [dia, mes, anio] = (fechaCorta(e.fecha) || '').split(' ');
+
+  return html`
+    <article class="relative overflow-hidden rounded-owa-lg bg-owa-navy text-white shadow-[var(--shadow-card)]">
+      <!-- La foto de la sede entra por la derecha y se funde con el navy. En
+           pantalla chica no hay lugar para una banda lateral, así que pasa a
+           fondo de toda la tarjeta bajo un velo casi opaco: se intuye el
+           lugar sin pelearle legibilidad al texto. -->
+      ${e.foto
+        ? html`<div class="absolute inset-y-0 right-0 w-full lg:w-[42%]" aria-hidden="true">
+            ${foto({
+              slug: e.foto,
+              alt: '',
+              sizes: '(min-width: 1024px) 42vw, 100vw',
+              className: 'block h-full w-full',
+              imgClass: 'h-full w-full object-cover',
+            })}
+            <div
+              class="absolute inset-0 bg-owa-navy/88 lg:bg-linear-to-r lg:from-owa-navy lg:via-owa-navy/55 lg:to-owa-navy/10"
+            ></div>
+          </div>`
+        : ''}
+
+      <div
+        class="relative grid gap-x-9 gap-y-7 p-7 sm:p-9 lg:grid-cols-[auto_minmax(0,1fr)_auto_auto] lg:items-center lg:gap-x-10"
+      >
+        <!-- fecha -->
+        <div class="lg:border-e lg:border-white/15 lg:pe-10">
+          <p data-nums class="font-display text-[clamp(2.5rem,6vw,3.5rem)] leading-[0.8] font-black">${dia}</p>
+          <p class="font-display text-[clamp(1.125rem,2.6vw,1.5rem)] leading-none font-black">${mes}</p>
+          <p data-nums class="mt-1.5 font-display text-[15px] leading-none font-black text-white/45">${anio}</p>
+        </div>
+
+        <!-- identidad -->
+        <div class="min-w-0 lg:border-e lg:border-white/15 lg:pe-10">
+          <p class="text-[11px] font-bold tracking-[0.16em] text-owa-cyan uppercase">
+            ${proxima ? 'Próxima fecha' : 'Resultados de la fecha'}
+          </p>
+          <h2 class="mt-2 font-display text-[clamp(1.5rem,3.4vw,2.375rem)] leading-[0.95] font-black uppercase">
+            ${e.nombre}
+          </h2>
+
+          <!-- Predio y ciudad en la misma línea: uno completa al otro y
+               separarlos en dos renglones sólo alargaba la tarjeta sin
+               agregar nada que no se leyera junto. El predio manda en blanco
+               y bold, la ciudad queda atrás en el mismo tono discreto que
+               tenía antes. -->
+          <p class="mt-3.5 flex items-start gap-2 text-[15px] leading-snug">
+            <span class="mt-px shrink-0 text-owa-cyan">${icono('pin', 'size-4.5')}</span>
+            <span>
+              ${e.predio ? html`<span class="font-bold text-white">${e.predio}</span> · ` : ''}
+              <span class="text-[13px] text-white/60">${e.sede}</span>
+            </span>
+          </p>
+
+          ${logos.length
+            ? html`<div class="mt-5 flex flex-wrap items-center gap-6">
+                ${logos.map(([nombre, src]) => html`<img src="${src}" alt="${nombre}" class="h-9 w-auto" />`)}
+              </div>`
+            : ''}
+        </div>
+
+        <!-- contador: se re-escribe en mount() y late segundo a segundo, así
+             que el atributo lleva fecha y hora para poder recalcularlo sin
+             repintar la tarjeta entera. -->
+        ${proxima && e.fechaISO
+          ? html`<div data-contador="${e.fechaISO}" data-hora="${e.hora || ''}">${contador(e.fechaISO, e.hora)}</div>`
+          : html`<div></div>`}
+
+        <!-- cta -->
+        <div class="lg:text-right">
+          ${proxima
+            ? html`
+                <a href="/carrera/${e.slug}" class="${CTA_DESTACADO}">Ver carrera →</a>
+              `
+            : html`
+                <!-- Una fecha puntuable publica dos tablas, así que puede
+                     haber dos botones: cada uno dice de qué competencia es.
+                     Con una sola tabla el rótulo sobra y el botón va derecho
+                     al grano. -->
+                <div class="flex flex-wrap gap-3 lg:justify-end">
+                  ${carreras.map(
+                    (c) => html`
+                      <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="${CTA_DESTACADO}">
+                        ${carreras.length > 1 ? `Resultados ${c.sigla}` : 'Ver resultados completos'} ↗
+                      </a>
+                    `
+                  )}
+                </div>
+              `}
+        </div>
+      </div>
+    </article>
+`;
+};
+
+/** Nivel 3: resultados por carrera. Arriba, la tarjeta destacada; debajo, un
+    selector de temporada —mismo patrón que barraVistas— con el listado
+    completo de esa temporada. */
+const panelCarrera = () => {
+  // El selector manda sobre todo lo que sigue, así que va primero. La
+  // temporada en curso está siempre y viene abierta, aunque todavía no tenga
+  // resultados: su contenido es la fecha que se viene. Las cerradas entran
+  // sólo si tienen algo cargado — una píldora vacía es un callejón sin salida.
+  const visibles = TEMPORADAS.filter((t) => t.enCurso || t.carreras.length);
+  const temporadaActiva = visibles.find((t) => t.id === s.temporada) ?? visibles[0];
+  if (!temporadaActiva)
+    return vacio('Estamos preparando esta sección. Los resultados de cada fecha se publican al cierre de la carrera.');
+
+  const dest = temporadaActiva.enCurso ? destacada() : null;
+
+  return html`
+    <div>
+      <!-- No va como pestaña nueva del nivel 1, que en móvil ya corre con el
+           dedo. -->
+      <div class="flex snap-x gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Temporada" data-scroller>
+        ${visibles.map((t) => pastillaFiltro(t.label, temporadaActiva.id === t.id, `data-temporada="${t.id}"`, { viva: t.enCurso }))}
+      </div>
+
+      <!-- La temporada en curso abre con la fecha que se viene en tarjeta
+           grande, y debajo lo que ya se corrió. Las cerradas van directo al
+           listado: son doce carreras o más por temporada y en tarjetas serían
+           un scroll sin fin. -->
+      ${dest ? html`<div class="mt-6">${tarjetaDestacada(dest)}</div>` : ''}
+      ${temporadaActiva.carreras.length
+        ? html`<ul class="mt-6 grid gap-3">${temporadaActiva.carreras.map(filaCompacta)}</ul>`
+        : dest
+          ? ''
+          : html`<div class="mt-6">
+              ${vacio(`Todavía no cargamos las carreras de la temporada ${temporadaActiva.label}.`)}
+            </div>`}
+    </div>
+  `;
+};
 
 /* ------------------------------------------------ pestañas 2/3 · rankings */
 
@@ -531,29 +793,52 @@ const comoSeCalcula = () => {
 // Siguen siendo píldoras sobre blanco, así que no se confunden con las
 // pestañas del hero. Los rótulos cortos de móvil hacen que entren casi todas
 // sin correr nada.
+/** Píldora de filtro: borde, Lato y la elegida rellena. La comparten la barra
+    de vistas del ranking y el selector de temporadas — son el mismo tipo de
+    control dentro de la página, así que tienen que verse igual.
+
+    `viva` marca la temporada en curso: el punto que late —el mismo `live-dot`
+    del chip EN VIVO, que ya trae su apagado con prefers-reduced-motion— más
+    el cian de marca. Se distingue por color y por ese punto, no por grosor:
+    de Lato sólo se cargan la 400 y la 700, así que pedir más peso no traería
+    otra tipografía sino el bold sintético que inventa el navegador. Y el cian
+    va de fondo o de borde, nunca de texto: sobre blanco mide 2.6:1 y no
+    llegaría a AA. El tamaño queda igual al del resto para que la tira no se
+    desalinee — el punto ya dice cuál es la de ahora. */
+const pastillaFiltro = (label, activo, attrs = '', { corto = '', viva = false } = {}) => html`
+  <button
+    type="button"
+    ${raw(attrs)}
+    aria-pressed="${activo ? 'true' : 'false'}"
+    ${raw(corto ? `aria-label="${label}"` : '')}
+    class="u-press inline-flex shrink-0 snap-start cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${viva
+      ? activo
+        ? 'border-owa-cyan bg-owa-cyan text-owa-deep'
+        : 'border-owa-cyan bg-white text-owa-deep hover:bg-owa-cyan/12'
+      : activo
+        ? 'border-owa-navy bg-owa-navy text-white'
+        : 'border-owa-line bg-white text-owa-slate hover:border-owa-navy hover:text-owa-navy'}"
+  >
+    ${viva
+      ? html`<span
+          class="live-dot size-1.5 shrink-0 rounded-full ${activo ? 'bg-owa-deep' : 'bg-owa-cyan'}"
+          aria-hidden="true"
+        ></span>`
+      : ''}
+    <!-- Con rótulo corto el visible cambia por ancho, y el aria-label de
+         arriba mantiene el nombre completo para lectores de pantalla. -->
+    ${corto ? html`<span class="sm:hidden">${corto}</span><span class="hidden sm:inline">${label}</span>` : label}
+  </button>
+`;
+
 const barraVistas = () => html`
   <div class="flex snap-x gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Vista del ranking" data-scroller>
-    ${VISTAS.map(
-      ([label, v, corto]) => html`
-        <button
-          type="button"
-          data-vista="${v}"
-          aria-pressed="${s.vista === v ? 'true' : 'false'}"
-          aria-label="${label}"
-          class="u-press shrink-0 snap-start cursor-pointer rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${s.vista ===
-          v
-            ? 'border-owa-navy bg-owa-navy text-white'
-            : 'border-owa-line bg-white text-owa-slate hover:border-owa-navy hover:text-owa-navy'}"
-        >
-          <span class="sm:hidden">${corto}</span><span class="hidden sm:inline">${label}</span>
-        </button>
-      `
-    )}
+    ${VISTAS.map(([label, v, corto]) => pastillaFiltro(label, s.vista === v, `data-vista="${v}"`, { corto }))}
   </div>
 `;
 
 const panel = () => {
-  if (s.tab === 'carrera') return panelCarrera();
+  if (s.tab === 'temporadas') return panelCarrera();
   if (s.tab === 'equipos') return html`${tablaEquipos()}`;
   return html`
     <div class="mb-6">${barraVistas()}</div>
@@ -569,7 +854,7 @@ const barraTabs = () => html`
        El scroll lo acomoda traerAlaVista() en mount: al repintarse la tira
        vuelve a scrollLeft 0 y la elegida quedaba tapada contra el borde. -->
   <div
-    class="mt-8 flex snap-x gap-1 overflow-x-auto lg:flex-wrap lg:overflow-visible"
+    class="mt-6 flex snap-x gap-1 overflow-x-auto lg:flex-wrap lg:overflow-visible"
     role="tablist"
     aria-label="Secciones de resultados"
     data-scroller
@@ -581,7 +866,7 @@ const barraTabs = () => html`
           role="tab"
           data-tab="${v}"
           aria-selected="${s.tab === v ? 'true' : 'false'}"
-          class="u-press shrink-0 snap-start cursor-pointer rounded-t-owa-md px-3 py-3.5 font-display text-xs font-black tracking-[0.08em] whitespace-nowrap transition-colors duration-200 ease-out sm:px-5.5 ${s.tab ===
+          class="u-press shrink-0 snap-start cursor-pointer rounded-t-owa-md px-3 py-3 font-display text-[11px] font-black tracking-[0.03em] whitespace-nowrap transition-colors duration-200 ease-out sm:px-4 ${s.tab ===
           v
             ? 'bg-white text-owa-navy'
             : 'bg-white/10 text-white/75 hover:bg-white/16 hover:text-white'}"
@@ -616,21 +901,19 @@ export function render(ctx) {
         <div class="absolute inset-0 bg-linear-to-t from-owa-navy via-owa-navy/20 to-transparent"></div>
       </div>
 
-      <div class="u-shell relative pt-13">
+      <!-- Hero corto: son cuatro pestañas de rótulo largo y con una bajada
+           arriba quedaban demasiado abajo, empujando el contenido fuera de la
+           primera pantalla. La bajada ("la temporada empieza el 31 de octubre
+           en Luján") salió porque la tarjeta de la pestaña abierta ya lo dice,
+           con la fecha y los días que faltan. -->
+      <div class="u-shell relative pt-10">
         <!-- Volanta arriba del titular, como en el resto de los heros del
              sitio (PDA, Primeros pasos, las páginas madre). -->
-        ${eyebrow(`Temporada ${TEMPORADA} · Clasificación final`, 'sky')}
+        ${eyebrow(`Temporada ${TEMPORADA_ACTUAL}`, 'sky')}
         <!-- Sin <br>: en una línea en desktop, y en pantallas donde no entra
              corta solo. Techo un punto más bajo (3.25rem) porque el titular
              ahora mide el doble de ancho. -->
-        <h1 class="mt-4 text-[clamp(2.125rem,4vw,3.25rem)] leading-[0.9]">Resultados &amp; rankings</h1>
-        <!-- Una línea sola, para que no pese más que el titular. La segunda
-             oración ("hasta entonces se muestran las posiciones finales de la
-             temporada anterior") salió porque la volanta de arriba ya dice
-             TEMPORADA 2025/26 · CLASIFICACIÓN FINAL: repetía el mismo dato. -->
-        <p class="mt-5 max-w-[64ch] text-[15px] leading-relaxed text-owa-line/85">
-          La temporada 2026/27 empieza el 31 de octubre en Luján.
-        </p>
+        <h1 class="mt-3.5 text-[clamp(2.125rem,4vw,3.25rem)] leading-[0.9]">Resultados &amp; rankings</h1>
         <div data-tabs>${barraTabs()}</div>
       </div>
     </section>
@@ -664,11 +947,31 @@ export function mount(root) {
 
   const acomodarTiras = () => root.querySelectorAll('[data-scroller]').forEach(traerAlaVista);
 
+  // El HTML que llega prerenderizado trae el tiempo que faltaba el momento
+  // del build. Se recalcula acá, con el reloj del visitante.
+  const ponerAlDia = () =>
+    root.querySelectorAll('[data-contador]').forEach((el) => {
+      el.innerHTML = toHTML(contador(el.dataset.contador, el.dataset.hora));
+    });
+
+  // Con hora de largada el reloj tiene segundero: sin este intervalo se
+  // quedaría clavado en el número que trajo el último repintado, que puede
+  // ser de varios minutos atrás. El router no llama a un unmount cuando
+  // cambia de vista —reemplaza el nodo y listo—, así que el intervalo se
+  // corta solo apenas nota que `root` ya no cuelga del documento: sin esto
+  // cada visita a /resultados dejaría un temporizador corriendo para
+  // siempre, encima del de la visita anterior.
+  const reloj = setInterval(() => {
+    if (!root.isConnected) return clearInterval(reloj);
+    ponerAlDia();
+  }, 1000);
+
   const repintar = ({ foco } = {}) => {
     cont.innerHTML = toHTML(panel());
     tabs.innerHTML = toHTML(barraTabs());
     cont.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
     acomodarTiras();
+    ponerAlDia();
     if (foco) {
       const el = cont.querySelector(foco);
       el?.focus();
@@ -689,6 +992,13 @@ export function mount(root) {
       s.club = 'TODOS';
       s.pagina = 1;
       history.replaceState({}, '', `/resultados?tab=${s.tab}`);
+      return repintar();
+    }
+
+    const temporada = e.target.closest('[data-temporada]');
+    if (temporada) {
+      if (temporada.dataset.temporada === s.temporada) return;
+      s.temporada = temporada.dataset.temporada;
       return repintar();
     }
 
@@ -760,6 +1070,7 @@ export function mount(root) {
   // Al entrar directo con ?tab=equipos la pestaña activa es la última y arranca
   // fuera de la pantalla: hay que acomodar la tira ya en el primer pintado.
   acomodarTiras();
+  ponerAlDia();
   // Y otra vez cuando termina de cargar Vito Wide. Con la tipografía de
   // reemplazo los rótulos miden menos, la tira todavía no desborda y por eso
   // la primera pasada no corrige nada; al cambiar la fuente crecen y la
