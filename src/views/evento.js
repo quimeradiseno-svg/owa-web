@@ -538,13 +538,27 @@ function bloqueSponsors(e) {
     </a>
   `;
 
+  // Casilleros vacíos, sin logo: van después de los reales para dar la idea
+  // de que el carrusel tiene lugar para más marcas y no que estas dos son
+  // todo lo que va a haber. Van fijos en cada copia del track —no rotan ni
+  // cambian— así que sólo hace falta borrarlos cuando OWA cierre el próximo
+  // sponsor y haya un logo real para poner en su lugar.
+  const casillero = () => html`
+    <div class="size-24 shrink-0 rounded-owa-md border border-dashed border-owa-line/70" aria-hidden="true"></div>
+  `;
+  const CASILLEROS_VACIOS = 3;
+
+  const tira = () => html`
+    ${sponsors.map(logo)}${Array.from({ length: CASILLEROS_VACIOS }, casillero)}
+  `;
+
   return html`
     <section class="u-shell py-14" aria-labelledby="h-sponsors">
       <p id="h-sponsors" class="text-center text-[11px] font-bold tracking-[0.16em] text-owa-slate uppercase">Con el apoyo de</p>
       <div class="u-marquee-pausa mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
-        <div class="u-marquee-track flex w-max items-center gap-16" style="--marquee-s:${Math.max(14, sponsors.length * 7)}s">
-          <div class="flex shrink-0 items-center gap-16">${sponsors.map(logo)}</div>
-          <div class="flex shrink-0 items-center gap-16" aria-hidden="true">${sponsors.map(logo)}</div>
+        <div class="u-marquee-track flex w-max items-center gap-9" style="--marquee-s:${Math.max(14, (sponsors.length + CASILLEROS_VACIOS) * 5)}s">
+          <div class="flex shrink-0 items-center gap-9">${tira()}</div>
+          <div class="flex shrink-0 items-center gap-9" aria-hidden="true">${tira()}</div>
         </div>
       </div>
     </section>
