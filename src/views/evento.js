@@ -570,6 +570,47 @@ function bloqueSponsors(e) {
   `;
 }
 
+/** Galería de fotos de la sede/edición anterior, sobre fondo blanco — hoy
+    sólo Cruce del Nahuel la tiene cargada (`e.galeria`, ver eventos.js), pero
+    cualquier carrera con fotos propias puede sumarla con el mismo campo.
+
+    Mosaico irregular: la marcada `grande` ocupa 2×2 y el resto entra pareja
+    de a una celda, cuatro por fila desde sm. La altura de fila es fija
+    (`grid-auto-rows`) en vez de un aspect-ratio por foto: es lo que permite
+    que la grande mida exactamente el doble sin depender de qué proporción
+    traiga cada archivo. */
+function galeriaBloque(e) {
+  const fotos = e.galeria;
+  if (!fotos?.length) return '';
+
+  return html`
+    <section class="u-shell py-16" aria-labelledby="h-galeria">
+      ${eyebrow('La sede')}
+      <h2 id="h-galeria" class="mt-3.5 u-h2 text-owa-navy">Galería</h2>
+      <div
+        class="mt-7 grid grid-cols-2 gap-3.5 [grid-auto-rows:140px] sm:grid-cols-4 sm:gap-4 sm:[grid-auto-rows:170px] lg:[grid-auto-rows:200px]"
+        data-stagger
+      >
+        ${fotos.map(
+          (g) => html`
+            <div
+              class="reveal-clip overflow-hidden rounded-owa-lg bg-owa-mist ${g.grande ? 'col-span-2 row-span-2' : ''}"
+            >
+              ${foto({
+                slug: g.slug,
+                alt: g.alt,
+                sizes: g.grande ? '(min-width: 1024px) 50vw, 100vw' : '(min-width: 1024px) 25vw, 50vw',
+                className: 'block h-full w-full',
+                imgClass: 'h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-105',
+              })}
+            </div>
+          `
+        )}
+      </div>
+    </section>
+  `;
+}
+
 // Sólo se llama con raceState === 'finalizada' (ver render): antes de
 // correrse la carrera esta sección no se muestra.
 const resultadosBloque = (e) => {
@@ -614,17 +655,45 @@ export function render(ctx) {
   const invertido = !e.jornadas?.length && !esChallenge;
 
   return toHTML(html`
-    <section class="relative flex min-h-[66svh] items-end overflow-hidden bg-owa-abyss">
+    <!-- Hero más bajo: con min-h en 66svh y pt-28 arriba del contenido, el
+         cielo de la foto ocupaba media pantalla antes de llegar a nada
+         legible. El contenido sigue anclado abajo (items-end); lo que baja
+         es cuánto aire hay por encima suyo. -->
+    <section class="relative flex min-h-[50svh] items-end overflow-hidden bg-owa-abyss">
       ${fondo({ slug: e.img, alt: '', opacity: 0.88, priority: true })}
       <div class="u-hero-scrim-sm absolute inset-0"></div>
 
-      <div class="u-shell relative pt-28 pb-20 text-white">
+      <div class="u-shell relative pt-14 pb-20 text-white">
         <a
           href="${volverHref}"
           class="u-nudge inline-flex items-center gap-2 font-display text-xs font-bold tracking-[0.12em] text-owa-sky transition-colors hover:text-owa-cyan"
         >
           <span class="u-nudge-arrow inline-block rotate-180" aria-hidden="true">→</span> ${volverLabel}
         </a>
+
+        <!-- Logo institucional invitado (hoy sólo el Museo Malvinas, en Cruce
+             del Nahuel — mismo dato que ya usa la mini-tarjeta del calendario,
+             ver tarjeta-evento.js). Va en blanco con drop-shadow porque cae
+             sobre una foto y no siempre hay un velo oscuro debajo; el nombre
+             de la institución es texto real y no el alt de la imagen, que
+             queda decorativo para no anunciarse dos veces. -->
+        ${e.logo
+          ? html`
+              <div class="mt-6 flex items-center gap-3">
+                <img
+                  src="${e.logo.src}"
+                  alt=""
+                  loading="eager"
+                  decoding="async"
+                  class="h-10 w-auto sm:h-12 [filter:drop-shadow(0_1px_3px_rgb(7_12_40/0.55))]"
+                />
+                <p class="text-[11px] leading-tight font-bold tracking-[0.1em] text-owa-line/80 uppercase">
+                  Sede anfitriona<br />
+                  <span class="text-[13px] tracking-[0.04em] text-white">${e.logo.alt}</span>
+                </p>
+              </div>
+            `
+          : ''}
 
         <p class="mt-6.5 flex flex-wrap items-center gap-2.5">
           ${e.sigla
@@ -798,10 +867,72 @@ export function render(ctx) {
             ? 'text-owa-blue'
             : 'text-owa-sky'}"
         >
-          Distancias y categorías
+          ${f?.distancias?.length === 1 ? 'Distancia y categoría' : 'Distancias y categorías'}
         </h2>
       </div>
-      ${f?.distancias
+      ${f?.distancias?.length === 1
+        ? (() => {
+            // Única distancia (hoy sólo Cruce del Nahuel): la grilla de
+            // tarjetas está pensada para 3-5 pruebas y con una sola queda un
+            // cuadrado solo, flotando. Acá va como franja horizontal — el
+            // número manda a la izquierda y los datos de la ficha técnica
+            // (mismo recorrido, por torneo) se leen en una sola línea a la
+            // derecha, sin repetir la tarjeta de "Recorridos" de más abajo.
+            const d = f.distancias[0];
+            const r = f.recorridos?.find((x) => x.torneo === d.torneo) || f.recorridos?.[0];
+            const dato = (k) => (r?.ficha?.find(([kk]) => kk === k) || [])[1];
+            const tono = invertido ? 'text-owa-navy' : 'text-white';
+            const tonoSuave = invertido ? 'text-owa-slate' : 'text-owa-line/80';
+            const tonoIcono = invertido ? 'text-owa-blue' : 'text-owa-cyan';
+
+            const item = (nombreIcono, etiqueta, valor) =>
+              !valor
+                ? ''
+                : html`
+                    <div class="flex items-start gap-2.5 sm:pl-5 sm:first:pl-0">
+                      ${icono(nombreIcono, `mt-0.5 size-4.5 shrink-0 ${tonoIcono}`)}
+                      <span class="min-w-0">
+                        <span class="block font-display text-[10px] font-bold tracking-[0.1em] uppercase ${tonoSuave}">${etiqueta}</span>
+                        <span class="block text-[13px] leading-snug font-bold ${tono}">${valor}</span>
+                      </span>
+                    </div>
+                  `;
+
+            return html`
+              <div
+                class="reveal mt-6 flex flex-col gap-6 rounded-owa-lg p-6 sm:p-7 lg:flex-row lg:items-center lg:gap-10 ${invertido
+                  ? 'border border-owa-line bg-white'
+                  : 'border border-white/12 bg-white/6'}"
+              >
+                <div class="shrink-0">
+                  <div>${chipModalidad(d.torneo, { oscuro: !invertido })}</div>
+                  <p data-nums class="mt-3 font-display text-[clamp(2.5rem,5vw,3.5rem)] leading-[0.85] font-black ${tono}">
+                    ${d.km}
+                  </p>
+                  ${d.nota ? html`<p class="mt-2 max-w-[24ch] text-[12px] leading-snug ${tonoSuave}">${d.nota}</p>` : ''}
+                </div>
+
+                <div class="hidden w-px self-stretch ${invertido ? 'bg-owa-line' : 'bg-white/15'} lg:block" aria-hidden="true"></div>
+
+                <!-- La línea divisoria entre bloques sólo entra desde sm:, que
+                     es donde la grilla pasa a una sola fila (grid-cols-4): en
+                     mobile (2×2) un divide-x de Tailwind pondría también un
+                     borde a la izquierda del tercer ítem, que abre la
+                     segunda fila y no tiene nada de qué separarse ahí. -->
+                <div
+                  class="grid flex-1 grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-6 sm:divide-x ${invertido
+                    ? 'sm:divide-owa-line'
+                    : 'sm:divide-white/15'}"
+                >
+                  ${item('persona', 'Categoría', d.cats)}
+                  ${item('cupo', 'Cupo', dato('Cupos disponibles'))}
+                  ${item('reloj', 'Tiempo estimado', dato('Tiempo estimado'))}
+                  ${item('documento', 'Requisitos', dato('Requisitos'))}
+                </div>
+              </div>
+            `;
+          })()
+        : f?.distancias
         ? html`
             <!-- Cinco distancias, una sola fila desde xl. Antes las tres que
                  puntúan (Larga/Media/Corta) achicaban número y tarjeta para
@@ -1074,37 +1205,51 @@ export function render(ctx) {
             `;
           };
 
+          // Una sola distancia (Cruce del Nahuel): no hay entre qué elegir,
+          // así que la pestaña de selección desaparece — quedaba un tab
+          // único que no hacía nada al tocarlo. Mismo título que usa el
+          // camino sin ficha de abajo ("Recorrido X"), para no inventar otro.
+          const unSoloRecorrido = f.recorridos.length === 1;
+
           return html`
             <section class="px-0 pt-10 pb-20" aria-labelledby="h-recorridos">
               <div class="u-shell">
-              ${eyebrow('Recorridos')}
-              <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Elegí tu distancia</h2>
+              ${eyebrow(unSoloRecorrido ? 'Recorrido' : 'Recorridos')}
+              <h2 id="h-recorridos" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">
+                ${unSoloRecorrido ? e.corto : 'Elegí tu distancia'}
+              </h2>
 
-              <div class="mt-6 flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia">
-                ${f.recorridos.map(
-                  (x) => html`
-                    <button
-                      type="button"
-                      role="tab"
-                      data-recorrido-tab="${x.id}"
-                      aria-selected="${x.id === activoId ? 'true' : 'false'}"
-                      class="u-press flex flex-col items-start gap-0.5 rounded-owa-md border px-3 py-2 text-left transition-colors duration-200 sm:px-4.5 sm:py-2.5 ${x.id ===
-                      activoId
-                        ? 'border-owa-blue bg-owa-blue text-white'
-                        : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
-                    >
-                      <span class="font-display text-sm font-black">${x.titulo}</span>
-                      <span class="text-[11px] font-bold tracking-[0.04em] whitespace-nowrap uppercase ${x.id === activoId ? 'text-owa-line' : 'text-owa-slate'}">
-                        <span class="${x.id === activoId ? 'text-owa-cyan' : 'text-owa-blue'}">${siglaTorneo(x.torneo)}</span> ·
-                        <span class="sm:hidden">${abrevTorneo(x.torneo)}</span>
-                        <span class="hidden sm:inline">${nombreTorneo(x.torneo)}</span></span
-                      >
-                    </button>
-                  `
-                )}
+              ${unSoloRecorrido
+                ? ''
+                : html`
+                    <div class="mt-6 flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia">
+                      ${f.recorridos.map(
+                        (x) => html`
+                          <button
+                            type="button"
+                            role="tab"
+                            data-recorrido-tab="${x.id}"
+                            aria-selected="${x.id === activoId ? 'true' : 'false'}"
+                            class="u-press flex flex-col items-start gap-0.5 rounded-owa-md border px-3 py-2 text-left transition-colors duration-200 sm:px-4.5 sm:py-2.5 ${x.id ===
+                            activoId
+                              ? 'border-owa-blue bg-owa-blue text-white'
+                              : 'border-owa-line text-owa-navy hover:border-owa-blue/50'}"
+                          >
+                            <span class="font-display text-sm font-black">${x.titulo}</span>
+                            <span class="text-[11px] font-bold tracking-[0.04em] whitespace-nowrap uppercase ${x.id === activoId ? 'text-owa-line' : 'text-owa-slate'}">
+                              <span class="${x.id === activoId ? 'text-owa-cyan' : 'text-owa-blue'}">${siglaTorneo(x.torneo)}</span> ·
+                              <span class="sm:hidden">${abrevTorneo(x.torneo)}</span>
+                              <span class="hidden sm:inline">${nombreTorneo(x.torneo)}</span></span
+                            >
+                          </button>
+                        `
+                      )}
+                    </div>
+                  `}
+
+              <div class="${unSoloRecorrido ? 'mt-6' : ''}">
+                ${activo.mapas?.length ? panelRecorrido(activo) : panelSinMapa(activo)}
               </div>
-
-              ${activo.mapas?.length ? panelRecorrido(activo) : panelSinMapa(activo)}
               </div>
             </section>
           `;
@@ -1112,7 +1257,7 @@ export function render(ctx) {
       : html`
           <section class="u-shell pt-10 pb-20" aria-labelledby="h-recorrido">
             ${eyebrow('Recorrido')}
-            <h2 id="h-recorrido" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">Recorrido ${e.corto}</h2>
+            <h2 id="h-recorrido" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)]">${e.corto}</h2>
             <!-- Con mapa cargado se muestra; si no, el aviso de que falta -->
             ${f?.mapa
               ? html`<div class="reveal-clip mt-5.5 overflow-hidden rounded-owa-lg bg-owa-mist">
@@ -1420,6 +1565,7 @@ export function render(ctx) {
       : ''}
 
     ${bloqueSponsors(e)}
+    ${galeriaBloque(e)}
 
     <!-- cta final -->
     <!-- Las carreras cierran promocionando los beneficios de la comunidad. Los

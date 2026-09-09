@@ -122,6 +122,22 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-pinamar',
+    // Galería de la ficha, sobre fondo blanco antes del banner de
+    // beneficios. Nueve fotos reales de ediciones anteriores en la playa de
+    // Pinamar. Igual criterio que Cruce del Nahuel: `grande` abre el
+    // mosaico ocupando el doble de espacio, el resto entra pareja de a 4 por
+    // fila (8 chicas + 1 grande cierran justo un rectángulo de 4×3).
+    galeria: [
+      { slug: 'pnr-galeria-1', grande: true, alt: 'Nadadores corriendo hacia el mar en la largada, en la playa de Pinamar' },
+      { slug: 'pnr-galeria-2', alt: 'Nadador con traje de neopreno arena corriendo por la orilla, con una tabla de rescate detrás' },
+      { slug: 'pnr-galeria-3', alt: 'Nadadores saliendo a correr bajo el arco de arena y OWA en la playa' },
+      { slug: 'pnr-galeria-4', alt: 'Nadador corriendo hacia la llegada bajo el arco de arena, de espaldas' },
+      { slug: 'pnr-galeria-5', alt: 'Dos nadadores saliendo del mar entre olas, sonriendo' },
+      { slug: 'pnr-galeria-6', alt: 'Nadadora corriendo hacia el agua junto a una boya de arena, con otro nadador detrás' },
+      { slug: 'pnr-galeria-7', alt: 'Grupo de nadadores caminando entre las dunas hacia la playa' },
+      { slug: 'pnr-galeria-8', alt: 'Nadadores metiéndose al mar entre olas grandes' },
+      { slug: 'pnr-galeria-9', alt: 'Nadadores cruzando una ola rompiente en el mar de Pinamar' },
+    ],
   },
   {
     slug: 'cruce-del-nahuel',
@@ -143,6 +159,30 @@ export const EVENTOS = [
     // sobre el cielo de esta foto el blanco mide 1.99:1.
     logo: { src: '/brand/museo-malvinas-blanco.webp', alt: 'Museo Malvinas, Antártida y Atlántico Sur' },
     velo: true,
+    // Galería de la ficha, sobre fondo blanco antes del banner de
+    // beneficios. Nueve de la selección oficial de la edición 2025, con el
+    // crédito del Museo Malvinas horneado por el fotógrafo — es la sede
+    // anfitriona acreditando su propia foto, no algo que recortar. Se
+    // dejaron afuera las fotos de la banda militar y las de la bandera de
+    // Malvinas: son de otro momento del evento, no del agua.
+    // `grande` marca la que abre el mosaico ocupando el doble de espacio; el
+    // resto entra pareja de a 4 por fila — 8 chicas + 1 grande cierran
+    // justo un rectángulo de 4×3, sin fila suelta al final.
+    galeria: [
+      {
+        slug: 'nhl-galeria-1',
+        grande: true,
+        alt: 'Nadadores esperando la largada, de espaldas, con las montañas de Bariloche al fondo',
+      },
+      { slug: 'nhl-galeria-2', alt: 'Nadadores cruzando el lago Nahuel Huapi al atardecer, con la cordillera de fondo' },
+      { slug: 'nhl-galeria-3', alt: 'Nadador saliendo del agua a contraluz, en el atardecer sobre el lago Nahuel Huapi' },
+      { slug: 'nhl-galeria-4', alt: 'Grupo de nadadores acompañados por lanchas de seguridad, con las montañas de Bariloche de fondo' },
+      { slug: 'nhl-galeria-5', alt: 'Nadadores en el cruce, con la cadena montañosa y el lago detrás' },
+      { slug: 'nhl-galeria-6', alt: 'Lanchas de apoyo sobre el lago Nahuel Huapi, con la cordillera en el horizonte' },
+      { slug: 'nhl-galeria-7', alt: 'Nadadores ingresando al agua antes de la largada, con una lancha de apoyo cerca de la costa' },
+      { slug: 'nhl-galeria-8', alt: 'Grupo de nadadores en pleno cruce, con las montañas de Bariloche de fondo' },
+      { slug: 'nhl-galeria-9', alt: 'Tripulantes de una lancha de OWA acompañando el cruce, con la cordillera al frente' },
+    ],
   },
   {
     slug: 'vuelta-a-la-huemul',

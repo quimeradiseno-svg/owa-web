@@ -48,6 +48,19 @@ const PHOTOS = {
   'ev-san-pedro': 'SPD/08_CARRERA_CAMPO_BOYAS',
   'ev-ramallo': 'SPD/09_CARRERA_BRAZADA_COLORES',
   'ev-pinamar': 'Fotos/PNR/DSC_0207.jpg',
+  // Galería de la ficha de Pinamar. Se deja afuera la que ya usa 'ev-pinamar'
+  // (no repetir la misma foto), las posadas bajo el arco (retrato personal,
+  // no acción de carrera) y la del podio 2024 (nombra un equipo y un sponsor
+  // — Golden Haus — que hoy no está en sponsors.js).
+  'pnr-galeria-1': 'Fotos/PNR/DSC_7732.JPG',
+  'pnr-galeria-2': 'Fotos/PNR/OWA PINAMAR-3328.jpg',
+  'pnr-galeria-3': 'Fotos/PNR/OWA PINAMAR-3302.jpg',
+  'pnr-galeria-4': 'Fotos/PNR/OWA PINAMAR-3212.jpg',
+  'pnr-galeria-5': 'Fotos/PNR/DSC_0634.jpg',
+  'pnr-galeria-6': 'Fotos/PNR/OWA PINAMAR-3343.jpg',
+  'pnr-galeria-7': 'Fotos/PNR/OWA PINAMAR-45.jpg',
+  'pnr-galeria-8': 'Fotos/PNR/DSC_7741.JPG',
+  'pnr-galeria-9': 'Fotos/PNR/DSC_0283.jpg',
   // Eventos especiales de Bariloche/San Pedro: fotos reales de cada uno
   // (antes eran genéricas de SPD/VOB).
   'ev-nahuel': 'Fotos/NHL/JCR-3240.jpg',
@@ -107,6 +120,21 @@ const PHOTOS = {
   'mapa-cln-25k': 'Fotos/CLN/MAPA-COLON-25.jpg',
   // Cruce del Nahuel: única distancia, cruzando el lago de punta a punta.
   'mapa-nhl-8k': 'Fotos/NHL/nhl1.jpg',
+  // Galería de la ficha: seis de la selección oficial de la edición 2025,
+  // todas con el logo NHL y el crédito del Museo Malvinas horneados por el
+  // fotógrafo — se dejan así, es la marca de la propia sede anfitriona, no
+  // la de un tercero a recortar. Se dejaron afuera las fotos con la bandera
+  // de Malvinas (tema aparte, no son del agua) y los dos aéreos, que no son
+  // de esta carpeta.
+  'nhl-galeria-1': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3227.jpg',
+  'nhl-galeria-2': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-1531.jpg',
+  'nhl-galeria-3': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-1583.jpg',
+  'nhl-galeria-4': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3206.jpg',
+  'nhl-galeria-5': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3208.jpg',
+  'nhl-galeria-6': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3147.jpg',
+  'nhl-galeria-7': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3220.jpg',
+  'nhl-galeria-8': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3211.jpg',
+  'nhl-galeria-9': 'Fotos/NHL/Seleccion NHL 2025-20260824T225500Z-1-001/Seleccion NHL 2025/JCR-3158.jpg',
   // poster del video del hero — vive fuera de SPD/VOB, así que se referencia
   // con la ruta completa en vez de una clave del índice.
   'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',
