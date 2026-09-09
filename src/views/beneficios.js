@@ -140,7 +140,10 @@ export function render(ctx) {
   const bs = beneficiosDe(e.slug);
 
   return toHTML(html`
-    <section class="relative bg-owa-navy px-0 pt-14 pb-20 text-white">
+    <!-- Hero corto: es una página secundaria a la que se llega desde un CTA,
+         no una landing propia — no necesita el mismo peso que el hero de la
+         ficha de la carrera. -->
+    <section class="relative bg-owa-navy px-0 pt-10 pb-12 text-white">
       ${olaSuperior('#fff')}
       <div class="u-shell relative">
         <a
@@ -149,9 +152,9 @@ export function render(ctx) {
         >
           <span class="u-nudge-arrow inline-block rotate-180" aria-hidden="true">→</span> ${e.nombre.toUpperCase()}
         </a>
-        <div class="mt-4">${eyebrow(e.sigla, 'sky')}</div>
-        <h1 class="mt-3.5 text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.9]">Beneficios</h1>
-        <p class="mt-5 max-w-[54ch] text-[17px] leading-relaxed text-owa-line">
+        <div class="mt-3">${eyebrow(e.sigla, 'sky')}</div>
+        <h1 class="mt-2.5 text-[clamp(1.875rem,3.6vw,2.75rem)] leading-[0.95]">Beneficios</h1>
+        <p class="mt-3 max-w-[54ch] text-[15px] leading-relaxed text-owa-line">
           <!-- No dice "exclusivo para inscriptos": el código está a la vista de
                cualquiera que abra la página. Si OWA quiere que sea realmente
                exclusivo, hay que mandarlo por mail y acá sólo anunciarlo. -->
