@@ -10,26 +10,36 @@
 // de sponsors de la ficha, sin duplicar.
 import { MARCAS } from './sponsors.js';
 
-/** Un beneficio con `codigo` en blanco se muestra igual, pero avisando que el
+/** El 20% OFF de Nexalba es, por ahora, el mismo beneficio para todas las
+    carreras que lo tienen — de ahí la función en vez de un objeto suelto: da
+    un objeto nuevo por carrera (para no compartir referencia entre ellas) y
+    el día que una fecha necesite su propio código o su propio texto, se
+    corta de acá y se escribe aparte sin tocar a las demás.
+
+    Un beneficio con `codigo` en blanco se muestra igual, pero avisando que el
     código todavía no está — nunca con un placeholder tipo "XXXXXXX", que en
     la página en vivo se lee como un error. */
+const nexalba20 = () => ({
+  id: 'nexalba-20-off',
+  etiqueta: 'Beneficio para inscriptos',
+  marca: MARCAS.nexalba,
+  // El número manda: es lo primero que se lee de la tarjeta.
+  destacado: '20%',
+  unidad: 'OFF',
+  titulo: 'En toda la web de Nexalba',
+  detalle: 'Para cualquier persona inscripta a la carrera.',
+  // Pendiente: OWA todavía no pasó el código. Con el valor real acá, la
+  // tarjeta lo muestra en el recuadro con el botón de copiar.
+  codigo: '',
+  href: MARCAS.nexalba.href,
+});
+
 export const BENEFICIOS = {
-  colon: [
-    {
-      id: 'nexalba-20-off',
-      etiqueta: 'Beneficio para inscriptos',
-      marca: MARCAS.nexalba,
-      // El número manda: es lo primero que se lee de la tarjeta.
-      destacado: '20%',
-      unidad: 'OFF',
-      titulo: 'En toda la web de Nexalba',
-      detalle: 'Para cualquier persona inscripta a la carrera.',
-      // Pendiente: OWA todavía no pasó el código. Con el valor real acá, la
-      // tarjeta lo muestra en el recuadro con el botón de copiar.
-      codigo: '',
-      href: MARCAS.nexalba.href,
-    },
-  ],
+  lujan: [nexalba20()],
+  colon: [nexalba20()],
+  // Se van sumando el resto de las carreras a medida que OWA cierre cada
+  // acuerdo — algunas van a compartir el de Nexalba, otras van a traer el
+  // suyo propio.
 };
 
 export const beneficiosDe = (slug) => BENEFICIOS[slug] || [];
