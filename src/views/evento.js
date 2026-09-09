@@ -543,8 +543,13 @@ function bloqueSponsors(e) {
   // todo lo que va a haber. Van fijos en cada copia del track —no rotan ni
   // cambian— así que sólo hace falta borrarlos cuando OWA cierre el próximo
   // sponsor y haya un logo real para poner en su lugar.
+  // border-owa-line ya es un gris muy pálido (#e4e6e3): con opacidad
+  // reducida encima, un trazo punteado de 1px prácticamente desaparecía
+  // contra el blanco. Va a color completo, y con un fondo apenas teñido
+  // (owa-sand) para que se lea como un casillero y no como un cuadrado
+  // recortado del layout por error.
   const casillero = () => html`
-    <div class="size-24 shrink-0 rounded-owa-md border border-dashed border-owa-line/70" aria-hidden="true"></div>
+    <div class="size-24 shrink-0 rounded-owa-md border-2 border-dashed border-owa-line bg-owa-sand/60" aria-hidden="true"></div>
   `;
   const CASILLEROS_VACIOS = 3;
 
