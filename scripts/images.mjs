@@ -105,6 +105,8 @@ const PHOTOS = {
   'mapa-cln-10k': 'Fotos/CLN/MAPA-COLON-10.jpg',
   'mapa-cln-5k': 'Fotos/CLN/MAPA-COLON-5.jpg',
   'mapa-cln-25k': 'Fotos/CLN/MAPA-COLON-25.jpg',
+  // Cruce del Nahuel: única distancia, cruzando el lago de punta a punta.
+  'mapa-nhl-8k': 'Fotos/NHL/nhl1.jpg',
   // poster del video del hero — vive fuera de SPD/VOB, así que se referencia
   // con la ruta completa en vez de una clave del índice.
   'hero-drone': 'Fotos/banner-poster/hero-drone-poster.jpg',

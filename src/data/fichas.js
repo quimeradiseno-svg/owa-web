@@ -615,6 +615,104 @@ export const FICHAS = {
     ],
   },
 
+  'cruce-del-nahuel': {
+    sedeBarra: 'Museo Malvinas Antártida y Atlántico Sur, San Carlos de Bariloche',
+    sedeCiudad: 'San Carlos de Bariloche, Río Negro, Argentina',
+
+    // Especial: no puntúa para ningún campeonato, por eso el torneo dice
+    // "ESPECIAL" y no hay fila de puntaje.
+    distancias: [
+      {
+        rotulo: 'Larga',
+        torneo: 'ESPECIAL',
+        km: '8 km',
+        nota: 'Única distancia del evento',
+        cats: CATS_COMPLETAS,
+      },
+    ],
+
+    recorridos: [
+      {
+        id: 'nhl-8k',
+        torneo: 'ESPECIAL',
+        titulo: '8 km',
+        largada: 'Playa del Arroyo Castilla',
+        llegada: 'Museo Malvinas del Atlántico Sur',
+        // Propia, en vez de la frase de río que usan San Pedro y Colón: acá
+        // se cruza un lago de punta a punta, no se nada punto a punto sobre
+        // un río.
+        desc: 'Recorrido punto a punto cruzando el lago Nahuel Huapi.',
+        mapas: [
+          {
+            slug: 'mapa-nhl-8k',
+            alt: 'Mapa del recorrido de 8 km cruzando el lago Nahuel Huapi, con la largada en Playa del Arroyo Castilla y la llegada en el Museo Malvinas del Atlántico Sur',
+          },
+        ],
+        ficha: [
+          // La fecha real depende de cuál de los tres días del período
+          // ventana se confirme (ver el aviso del cronograma): "A confirmar"
+          // y no una fecha puntual, para no inventar cuál de los tres es.
+          ['Fecha', 'A confirmar'],
+          ['Distancia', '8 km · recorrido punto a punto'],
+          ['Cupos disponibles', '50 nadadores'],
+          ['Tiempo estimado', 'Entre 2 h 20 min y 3 h 30 min'],
+          ['Tiempo límite', '3 h 30 min'],
+          ['Condiciones del agua', 'Sin corriente, con orientación de ola variable por viento'],
+          ['Uso de neopreno', 'Obligatorio'],
+          ['Requisitos', '14 años cumplidos y acreditar 1.000 m nadados en menos de 22 minutos'],
+          // Propia y no la constante PREMIACION genérica: acá el desempate
+          // por categoría es cada 10 años, no cada 5.
+          ['Premiación', 'Generales 1 al 5 por género. 1, 2 y 3 por categoría cada 10 años'],
+        ],
+      },
+    ],
+
+    cronogramas: [
+      {
+        torneo: 'ESPECIAL',
+        // Modalidad de período ventana: no hay un cronograma con fechas fijas
+        // como en las demás carreras, sino un día previo y un día de
+        // competencia que se ubican dentro de la ventana según el clima.
+        aviso:
+          'Modalidad de período ventana: la fecha definitiva se confirma unos días antes según el pronóstico y la autorización de Prefectura Naval Argentina. El cronograma se ajusta automáticamente al día elegido dentro del 16, 17 o 18 de febrero de 2027.',
+        dias: [
+          {
+            fecha: 'Día previo a la competencia',
+            lugar: 'Museo Malvinas Antártida y Atlántico Sur, San Carlos de Bariloche',
+            items: [
+              { hora: '14:00 a 16:00', t: 'Acreditaciones, entrega de kits y verificación médica', d: '' },
+              { hora: '16:00', t: 'Charla técnica obligatoria', d: 'Para todos los/las participantes.' },
+              { hora: '16:30', t: 'Visita guiada al museo', d: '' },
+            ],
+          },
+          {
+            fecha: 'Día de la competencia',
+            lugar: 'Playa Museo / Puerto San Carlos → Arroyo Castilla',
+            items: [
+              {
+                hora: '08:00',
+                t: 'Embarque y traslado',
+                d: 'En Playa Museo o Puerto San Carlos, hacia el punto de partida.',
+              },
+              {
+                hora: '08:30',
+                t: 'Largada · Grupo Lento',
+                d: 'Desde Playa del Arroyo Castilla (Neuquén).',
+                destacado: true,
+              },
+              { hora: '08:40', t: 'Largada · Grupo Rápido', d: '', destacado: true },
+              {
+                hora: '12:45',
+                t: 'Ceremonia de premiación',
+                d: 'Aproximada, en el Museo Malvinas Antártida y Atlántico Sur.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
 };
 
 export const fichaDe = (slug) => FICHAS[slug] || null;
