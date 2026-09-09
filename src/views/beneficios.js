@@ -1,7 +1,7 @@
 import { html, toHTML, stagger } from '../lib/html.js';
 import { porSlug } from '../data/eventos.js';
 import { beneficiosDe } from '../data/beneficios.js';
-import { eyebrow, olaSuperior, btnAccent, btnBorde } from '../components/ui.js';
+import { eyebrow, olaSuperior, btnAccent } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 import { grafo, migas } from '../lib/schema.js';
 
@@ -171,11 +171,6 @@ export function render(ctx) {
               Cuando OWA cierre un beneficio para esta carrera, aparece acá.
             </p>
           `}
-
-      <!-- Cierre: el paso siguiente real es inscribirse, y eso vive en la
-           ficha de la carrera — Colón tiene dos formularios (uno por jornada),
-           así que mandar a uno solo desde acá sería elegir por el nadador. -->
-      <div class="mt-10">${btnBorde(`Ver ${e.nombre}`, `/carrera/${e.slug}`)}</div>
     </section>
   `);
 }
