@@ -1,0 +1,202 @@
+import { html, toHTML, stagger } from '../lib/html.js';
+import { porSlug } from '../data/eventos.js';
+import { beneficiosDe } from '../data/beneficios.js';
+import { eyebrow, olaSuperior, btnAccent, btnBorde } from '../components/ui.js';
+import { icono } from '../components/iconos.js';
+import { grafo, migas } from '../lib/schema.js';
+
+/* Beneficios de UNA carrera: lo que gana quien se inscribe a esa fecha.
+   Es una página por carrera y no una general porque el acuerdo con cada marca
+   se cierra fecha por fecha (ver src/data/beneficios.js). */
+
+const carreraDe = (ctx) => porSlug(ctx.params.slug);
+
+export const titulo = (ctx) => {
+  const e = carreraDe(ctx);
+  return e ? `Beneficios · ${e.nombre}` : 'Beneficios';
+};
+
+export const descripcion = (ctx) => {
+  const e = carreraDe(ctx);
+  if (!e) return '';
+  const bs = beneficiosDe(e.slug);
+  if (!bs.length) return '';
+  // Se arma con los beneficios reales cargados, no con una plantilla.
+  const lista = bs.map((b) => `${b.destacado} ${b.unidad} en ${b.marca.nombre}`).join('. ');
+  return `Beneficios para quienes se inscriben a ${e.nombre}: ${lista}.`;
+};
+
+// Sin beneficios cargados la página existe (el link directo sigue andando)
+// pero no se indexa: no se llega desde ningún lado y no tiene contenido
+// propio que ofrecer.
+export const noindex = (ctx) => {
+  const e = carreraDe(ctx);
+  return !e || !beneficiosDe(e.slug).length;
+};
+
+export const schema = (ctx) => {
+  const e = carreraDe(ctx);
+  if (!e) return null;
+  return grafo(
+    migas([
+      ['Calendario', '/calendario'],
+      [e.nombre, `/carrera/${e.slug}`],
+      ['Beneficios', `/carrera/${e.slug}/beneficios`],
+    ])
+  );
+};
+
+/* ------------------------------------------------------------------ código */
+
+/** El código va en un recuadro aparte y con botón de copiar: es un dato que
+    se usa copiándolo en otra web, no leyéndolo. Sin código todavía se dice
+    así, en vez de mostrar un placeholder que en vivo se lee como un error. */
+const bloqueCodigo = (b) =>
+  b.codigo
+    ? html`
+        <div class="flex flex-wrap items-center gap-3">
+          <p class="flex items-center gap-3 rounded-owa-md border border-dashed border-owa-blue/40 bg-owa-mist/60 px-5 py-3.5">
+            <span class="text-[10px] font-bold tracking-[0.16em] text-owa-slate uppercase">Código</span>
+            <span data-nums class="font-display text-[17px] font-black tracking-[0.14em] text-owa-navy">${b.codigo}</span>
+          </p>
+          <button
+            type="button"
+            data-copiar="${b.codigo}"
+            class="u-press cursor-pointer rounded-full border-2 border-owa-navy px-5 py-3 font-display text-[12px] font-black tracking-[0.06em] text-owa-navy uppercase transition-colors duration-200 hover:bg-owa-navy hover:text-white"
+          >
+            Copiar
+          </button>
+        </div>
+      `
+    : html`
+        <p class="flex items-center gap-3 rounded-owa-md border border-dashed border-owa-line bg-owa-sand px-5 py-3.5">
+          <span class="shrink-0 text-owa-slate">${icono('reloj', 'size-4.5')}</span>
+          <span class="text-[13px] leading-relaxed text-owa-slate">
+            <strong class="font-bold text-owa-navy">El código todavía no está publicado.</strong> Aparece acá apenas OWA
+            lo confirme.
+          </span>
+        </p>
+      `;
+
+/* ---------------------------------------------------------------- tarjeta */
+
+const tarjeta = (b) => html`
+  <article class="reveal rounded-owa-lg border border-owa-line bg-white p-7 shadow-[var(--shadow-card)] sm:p-9">
+    <div class="flex flex-wrap items-start justify-between gap-5">
+      <p class="text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">${b.etiqueta}</p>
+      <!-- El logo de la marca arriba a la derecha: el beneficio es de ella,
+           no de OWA, y eso tiene que quedar claro de una. -->
+      <a
+        href="${b.marca.href}"
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        class="u-press flex h-9 shrink-0 items-center"
+        aria-label="${b.marca.nombre} (se abre en una pestaña nueva)"
+      >
+        <img src="${b.marca.logoClaro}" alt="${b.marca.nombre}" loading="lazy" decoding="async" class="${b.marca.alto} w-auto object-contain" />
+      </a>
+    </div>
+
+    <!-- El número es lo que se lee primero, con la unidad al lado y no debajo:
+         "20%" solo no dice nada, "20% OFF" sí. -->
+    <p class="mt-6 flex items-baseline gap-2.5">
+      <span data-nums class="font-display text-[clamp(3rem,8vw,4.5rem)] leading-[0.85] font-black text-owa-blue">${b.destacado}</span>
+      <span class="font-display text-[clamp(1.25rem,3vw,1.75rem)] leading-none font-black tracking-[0.04em] text-owa-navy">${b.unidad}</span>
+    </p>
+
+    <h2 class="mt-4 font-display text-[clamp(1.125rem,2.2vw,1.5rem)] leading-tight font-black text-owa-navy">${b.titulo}</h2>
+    <p class="mt-2 text-[15px] leading-relaxed text-owa-slate">${b.detalle}</p>
+
+    <div class="mt-7 flex flex-wrap items-center gap-4">
+      ${bloqueCodigo(b)}
+      <a
+        href="${b.href}"
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        class="u-nudge inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-blue uppercase hover:underline"
+      >
+        Ir a ${b.marca.nombre} <span class="u-nudge-arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </article>
+`;
+
+/* ------------------------------------------------------------------ vista */
+
+export function render(ctx) {
+  const e = carreraDe(ctx);
+
+  if (!e)
+    return toHTML(html`
+      <section class="u-shell py-24">
+        <h1 class="text-[clamp(1.875rem,4vw,3rem)] text-owa-navy">Carrera no encontrada</h1>
+        <p class="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-owa-slate">
+          El enlace no corresponde a ninguna fecha del calendario.
+        </p>
+        <div class="mt-7">${btnAccent('Ver el calendario', '/calendario')}</div>
+      </section>
+    `);
+
+  const bs = beneficiosDe(e.slug);
+
+  return toHTML(html`
+    <section class="relative bg-owa-navy px-0 pt-14 pb-20 text-white">
+      ${olaSuperior('#fff')}
+      <div class="u-shell relative">
+        <a
+          href="/carrera/${e.slug}"
+          class="u-nudge inline-flex items-center gap-2 font-display text-xs font-bold tracking-[0.12em] text-owa-sky transition-colors hover:text-owa-cyan"
+        >
+          <span class="u-nudge-arrow inline-block rotate-180" aria-hidden="true">→</span> ${e.nombre.toUpperCase()}
+        </a>
+        <div class="mt-4">${eyebrow(e.sigla, 'sky')}</div>
+        <h1 class="mt-3.5 text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.9]">Beneficios</h1>
+        <p class="mt-5 max-w-[54ch] text-[17px] leading-relaxed text-owa-line">
+          <!-- No dice "exclusivo para inscriptos": el código está a la vista de
+               cualquiera que abra la página. Si OWA quiere que sea realmente
+               exclusivo, hay que mandarlo por mail y acá sólo anunciarlo. -->
+          ${bs.length
+            ? 'Beneficios propios de esta fecha, para todas las personas inscriptas.'
+            : 'Todavía no hay beneficios cargados para esta fecha.'}
+        </p>
+      </div>
+    </section>
+
+    <section class="u-shell py-16" aria-labelledby="h-beneficios">
+      <h2 id="h-beneficios" class="sr-only">Beneficios de ${e.nombre}</h2>
+      ${bs.length
+        ? html`<div class="grid gap-4.5" data-stagger>${bs.map(tarjeta)}</div>`
+        : html`
+            <p class="rounded-owa-lg border border-dashed border-owa-line px-6 py-14 text-center text-owa-slate">
+              Cuando OWA cierre un beneficio para esta carrera, aparece acá.
+            </p>
+          `}
+
+      <!-- Cierre: el paso siguiente real es inscribirse, y eso vive en la
+           ficha de la carrera — Colón tiene dos formularios (uno por jornada),
+           así que mandar a uno solo desde acá sería elegir por el nadador. -->
+      <div class="mt-10">${btnBorde(`Ver ${e.nombre}`, `/carrera/${e.slug}`)}</div>
+    </section>
+  `);
+}
+
+export function mount(root) {
+  root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
+
+  root.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest('[data-copiar]');
+    if (!btn) return;
+    const original = btn.textContent.trim();
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copiar);
+      btn.textContent = '¡Copiado!';
+    } catch {
+      // Sin permiso de portapapeles (o sin HTTPS) el código igual está a la
+      // vista: se avisa en vez de dejar el botón como si no hubiera pasado nada.
+      btn.textContent = 'Copialo a mano';
+    }
+    setTimeout(() => {
+      btn.textContent = original;
+    }, 2000);
+  });
+}

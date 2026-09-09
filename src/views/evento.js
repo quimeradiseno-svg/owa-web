@@ -2,6 +2,8 @@ import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto, fondo } from '../lib/img.js';
 import { porSlug, ESTADOS, linkInscripcion, sinIngreso } from '../data/eventos.js';
 import { fichaDe } from '../data/fichas.js';
+import { sponsorsDe } from '../data/sponsors.js';
+import { beneficiosDe } from '../data/beneficios.js';
 import { carrusel, montarCarruseles } from '../components/carrusel.js';
 import { EVENTO_FICHA } from '../data/madres.js';
 import {
@@ -62,14 +64,12 @@ export const schema = (ctx) => {
   return grafo(eventoDeportivo(e), migas([[seccion, volverHref], [e.nombre, `/carrera/${e.slug}`]]));
 };
 
-// Destino del CTA de cierre. OWA todavía no definió si va a haber UNA página de
-// beneficios para toda la comunidad o una por carrera, así que la resolución
-// recibe el evento y sirve para las dos formas:
-//   general   -> return '/beneficios';
-//   por fecha -> return `/carrera/${e.slug}/beneficios`;
-// Mientras devuelva vacío el CTA se muestra pero NO navega: es un span inerte,
-// no un link. Ojo: no publicar las fichas de carrera con esto sin definir.
-const beneficiosHref = (e) => ''; // eslint-disable-line no-unused-vars
+// Destino del CTA de cierre. Los beneficios son por carrera —el acuerdo con
+// cada marca se cierra fecha por fecha—, así que cada una tiene su propia
+// página y sólo la abre si tiene algo cargado en src/data/beneficios.js.
+// Sin beneficios el CTA se muestra pero NO navega: es un span inerte, no un
+// link, así la ficha no manda a una página vacía.
+const beneficiosHref = (e) => (beneficiosDe(e.slug).length ? `/carrera/${e.slug}/beneficios` : '');
 
 // Gemelo visual de btnAccent mientras no hay destino. Comparte las clases para
 // que lo que se revisa sea el botón final, pero sin href no es un link y los
@@ -508,6 +508,49 @@ const requisitos = () => html`
   </section>
 `;
 
+/** Zócalo de sponsors de la carrera: una tira de logos que se desplaza sola
+    (u-marquee-track, en motion.css) y no compite por atención con nada — va
+    justo antes del banner de "Beneficios Comunidad OWA", que es el cierre
+    real de la página. Cada logo linkea al sitio del sponsor en una pestaña
+    nueva.
+    El track dibuja los logos dos veces seguidas: la segunda copia (marcada
+    aria-hidden) es la que permite el loop continuo sin salto visible, y en
+    prefers-reduced-motion se oculta sola (ver motion.css) dejando una fila
+    fija con los logos reales. Se pinta sólo cuando la carrera tiene sponsors
+    cargados — hoy las 4 sedes puntuables, se va completando por carrera. */
+function bloqueSponsors(e) {
+  const sponsors = sponsorsDe(e.slug);
+  if (!sponsors.length) return '';
+
+  // El carril (h-11 fijo) es el mismo para todos los logos, así quedan
+  // alineados sobre la misma línea de base; el alto real del logo adentro es
+  // el que declara cada uno en sponsors.js (ver el comentario ahí sobre por
+  // qué arena y Nexalba no pueden compartir la misma altura de imagen).
+  const logo = (s) => html`
+    <a
+      href="${s.href}"
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      class="u-press flex h-11 shrink-0 items-center justify-center opacity-70 grayscale transition-[opacity,filter] duration-200 hover:opacity-100 hover:grayscale-0"
+      aria-label="${s.nombre} (se abre en una pestaña nueva)"
+    >
+      <img src="${s.logoClaro}" alt="${s.nombre}" loading="lazy" decoding="async" class="${s.alto} w-auto object-contain" />
+    </a>
+  `;
+
+  return html`
+    <section class="u-shell py-14" aria-labelledby="h-sponsors">
+      <p id="h-sponsors" class="text-center text-[11px] font-bold tracking-[0.16em] text-owa-slate uppercase">Con el apoyo de</p>
+      <div class="u-marquee-pausa mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+        <div class="u-marquee-track flex w-max items-center gap-16" style="--marquee-s:${Math.max(14, sponsors.length * 7)}s">
+          <div class="flex shrink-0 items-center gap-16">${sponsors.map(logo)}</div>
+          <div class="flex shrink-0 items-center gap-16" aria-hidden="true">${sponsors.map(logo)}</div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 // Sólo se llama con raceState === 'finalizada' (ver render): antes de
 // correrse la carrera esta sección no se muestra.
 const resultadosBloque = (e) => {
@@ -543,6 +586,7 @@ export function render(ctx) {
   const esChallenge = e.tipo === 'challenge';
   const [volverHref, volverLabel] = VUELVE_A[e.tipo];
   const f = fichaDe(e.slug);
+  const beneficios = beneficiosHref(e);
 
   // EXPERIMENTO (Pinamar) — Distancias en blanco en vez de navy. Sin jornadas
   // el hero cae directo sobre esa sección, y dos azules seguidos no dejaban
@@ -1356,6 +1400,8 @@ export function render(ctx) {
         `
       : ''}
 
+    ${bloqueSponsors(e)}
+
     <!-- cta final -->
     <!-- Las carreras cierran promocionando los beneficios de la comunidad. Los
          Challenge conservan su CTA de postulación: ese mail es el único camino
@@ -1365,19 +1411,24 @@ export function render(ctx) {
            la bajada terminaba en una columna de cinco líneas al lado del botón. -->
       <div class="u-shell flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div class="min-w-0 sm:flex-1">
+          <!-- Con beneficios cargados el título nombra la fecha, que es lo que
+               realmente hay del otro lado del botón; sin ellos queda el mensaje
+               genérico de comunidad, que no promete nada que no exista. -->
           <p class="font-display text-[clamp(1.625rem,3.4vw,2.75rem)] leading-none font-black uppercase">
-            ${esChallenge ? 'Postulate a este desafío' : 'Beneficios Comunidad OWA'}
+            ${esChallenge ? 'Postulate a este desafío' : beneficios ? 'Beneficios de esta fecha' : 'Beneficios Comunidad OWA'}
           </p>
           <p class="mt-2.5 text-[15px] text-white/80">
             ${esChallenge
               ? 'La organización responde cada postulación por mail.'
-              : 'Ser parte de la comunidad OWA tiene sus ventajas.'}
+              : beneficios
+                ? 'Inscribirte a esta carrera tiene sus ventajas.'
+                : 'Ser parte de la comunidad OWA tiene sus ventajas.'}
           </p>
         </div>
         ${esChallenge
           ? btnAccent('Postularme', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla)
-          : beneficiosHref(e)
-            ? btnAccent('Ver beneficios', beneficiosHref(e), 'shrink-0')
+          : beneficios
+            ? btnAccent('Ver beneficios', beneficios, 'shrink-0')
             : ctaSinDestino('Ver beneficios')}
       </div>
     </section>

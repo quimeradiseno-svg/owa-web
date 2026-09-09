@@ -26,6 +26,7 @@ definir('/circuito', () => import('./views/madre.js'));
 definir('/especiales', () => import('./views/madre.js'));
 definir('/challenge', () => import('./views/madre.js'));
 definir('/carrera/:slug', () => import('./views/evento.js'));
+definir('/carrera/:slug/beneficios', () => import('./views/beneficios.js'));
 definir('/resultados', () => import('./views/resultados.js'));
 definir('/travel', () => import('./views/travel.js'));
 definir('/primeros-pasos', () => import('./views/primeros-pasos.js'));

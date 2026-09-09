@@ -10,6 +10,7 @@
 import { writeFile } from 'node:fs/promises';
 import { ORIGEN, INDEXABLE } from '../src/data/sitio.js';
 import { ALL, sinIngreso } from '../src/data/eventos.js';
+import { CON_BENEFICIOS } from '../src/data/beneficios.js';
 
 const OUT = 'dist';
 
@@ -47,9 +48,18 @@ const entrada = ([ruta, prioridad, frecuencia]) =>
 // una página huérfana.
 const carreras = ALL.filter((e) => !sinIngreso(e)).map((e) => [`/carrera/${e.slug}`, e.tipo === 'core' ? 0.9 : 0.7, 'monthly']);
 
+// Beneficios de las carreras que tienen alguno cargado. Cambian cuando OWA
+// cierra un acuerdo nuevo, no cuando cambia la carrera, así que van con su
+// propia frecuencia. Se filtran contra `carreras` para no ofrecer beneficios
+// de una fecha que todavía no está en el sitemap.
+const publicadas = new Set(carreras.map(([ruta]) => ruta));
+const beneficios = CON_BENEFICIOS.map((slug) => `/carrera/${slug}`)
+  .filter((ruta) => publicadas.has(ruta))
+  .map((ruta) => [`${ruta}/beneficios`, 0.6, 'monthly']);
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...FIJAS, ...carreras].map(entrada).join('\n')}
+${[...FIJAS, ...carreras, ...beneficios].map(entrada).join('\n')}
 </urlset>
 `;
 
@@ -69,5 +79,5 @@ Disallow: /
 await writeFile(`${OUT}/sitemap.xml`, sitemap, 'utf8');
 await writeFile(`${OUT}/robots.txt`, robots, 'utf8');
 
-console.log(`sitemap.xml  ${FIJAS.length + carreras.length} URLs`);
+console.log(`sitemap.xml  ${FIJAS.length + carreras.length + beneficios.length} URLs`);
 console.log(`robots.txt   ${INDEXABLE ? 'indexable' : 'bloqueado (dominio provisorio)'}`);

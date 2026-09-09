@@ -22,6 +22,7 @@ import { volverArriba } from '../src/components/volver-arriba.js';
 import { datosDe } from '../src/lib/meta.js';
 import { INDEXABLE, SITIO } from '../src/data/sitio.js';
 import { ALL } from '../src/data/eventos.js';
+import { CON_BENEFICIOS } from '../src/data/beneficios.js';
 
 const OUT = 'dist';
 
@@ -35,6 +36,7 @@ const VISTAS = {
   primerosPasos: () => import('../src/views/primeros-pasos.js'),
   pda: () => import('../src/views/pda.js'),
   reglamentos: () => import('../src/views/reglamentos.js'),
+  beneficios: () => import('../src/views/beneficios.js'),
   noEncontrada: () => import('../src/views/no-encontrada.js'),
 };
 
@@ -53,6 +55,10 @@ const RUTAS = [
   ['/reglamentos', 'reglamentos'],
   ['/404', 'noEncontrada'],
   ...ALL.map((e) => [`/carrera/${e.slug}`, 'evento', { slug: e.slug }]),
+  // Sólo las carreras que tienen beneficios cargados: la vista existe para
+  // cualquier slug, pero prerenderizar las vacías dejaría en dist/ decenas de
+  // páginas sin contenido que WhatsApp igual previsualizaría.
+  ...CON_BENEFICIOS.map((slug) => [`/carrera/${slug}/beneficios`, 'beneficios', { slug }]),
 ];
 
 const esc = (s) =>

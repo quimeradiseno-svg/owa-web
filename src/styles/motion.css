@@ -210,6 +210,27 @@
   pointer-events: auto;
 }
 
+/* --------------------------------------------------------- zócalo sponsors
+   Tira de logos que se desplaza sola, sin JS: el track dibuja los logos DOS
+   veces seguidas y se anima de 0% a -50% de su propio ancho — como las dos
+   mitades son idénticas, el salto de vuelta a 0% es invisible y el loop
+   queda perfecto. La velocidad depende del ancho real del track (más logos,
+   vuelta más larga a igual velocidad aparente) por eso la duración se fija
+   por JS en style="--marquee-s" y no acá.
+   Pausa al pasar el mouse: son links a otros sitios, y perseguir un logo en
+   movimiento para hacer click es molesto. */
+.u-marquee-track {
+  animation: owa-marquee var(--marquee-s, 20s) linear infinite;
+}
+.u-marquee-pausa:hover .u-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes owa-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* ------------------------------------------------------- íconos animados
    Misma técnica que usan las librerías de "animated icons": no se anima el
    ícono entero sino una transformación corta disparada por el hover del
@@ -332,8 +353,16 @@
     transform: scaleX(1);
   }
   .u-cue-flecha,
-  .group:hover .u-pin-rebote {
+  .group:hover .u-pin-rebote,
+  .u-marquee-track {
     animation: none;
+  }
+  /* Sin animación el track quedaría mostrando los logos duplicados dos veces
+     seguidas, en fila estática: se oculta la segunda mitad (marcada
+     aria-hidden porque es sólo la copia para el loop) y queda una fila
+     simple, quieta. */
+  .u-marquee-track [aria-hidden='true'] {
+    display: none;
   }
   .hero-in,
   .ficha-in {
