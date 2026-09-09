@@ -372,8 +372,14 @@ const tarjetaDestacada = ({ modo, evento: e, carreras = [] }) => {
               className: 'block h-full w-full',
               imgClass: 'h-full w-full object-cover',
             })}
+            <!-- El color plano de mobile y el degradado de desktop son dos
+                 propiedades CSS distintas (background-color vs
+                 background-image) y se pintan una sobre otra: sin apagar el
+                 color en lg, quedaba de fondo detrás del degradado y la foto
+                 no se llegaba a ver del otro lado — el bug que hizo que en
+                 desktop "casi no se vea". lg:bg-owa-navy/0 lo apaga. -->
             <div
-              class="absolute inset-0 bg-owa-navy/88 lg:bg-linear-to-r lg:from-owa-navy lg:via-owa-navy/55 lg:to-owa-navy/10"
+              class="absolute inset-0 bg-owa-navy/88 lg:bg-owa-navy/0 lg:bg-linear-to-r lg:from-owa-navy lg:via-owa-navy/55 lg:to-owa-navy/10"
             ></div>
           </div>`
         : ''}
