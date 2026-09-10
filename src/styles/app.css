@@ -354,3 +354,19 @@
     linear-gradient(90deg, rgb(13 16 48 / 0.75) 0%, rgb(13 16 48 / 0.48) 38%, rgb(13 16 48 / 0.04) 65%, transparent 100%),
     linear-gradient(180deg, rgb(13 16 48 / 0.04) 0%, rgb(13 16 48 / 0.03) 40%, rgb(33 30 95 / 0.55) 82%, rgb(33 30 95 / 1) 100%);
 }
+
+/* Heros de Challenge: la foto de la travesía tiene que verse. Sólo se
+   oscurece la franja izquierda (donde vive el titular y la vuelta atrás). El
+   pie NO cierra en navy sólido: se deja apenas teñido para que la ola —que es
+   navy— se recorte como una silueta nítida sobre la foto y no se funda con
+   ella. El centro y la derecha de la imagen quedan casi limpios. */
+@utility u-hero-scrim-foto {
+  background:
+    /* Izquierda: sostiene el titular y la vuelta atrás. */
+    linear-gradient(95deg, rgb(13 16 48 / 0.62) 0%, rgb(13 16 48 / 0.3) 26%, rgb(13 16 48 / 0.04) 50%, transparent 70%),
+    /* Arriba: un toque, para que la volanta se lea sobre fotos con cielo o
+       bosque claro (Blest a Villa Tacul). */
+    linear-gradient(180deg, rgb(13 16 48 / 0.3) 0%, rgb(13 16 48 / 0) 24%),
+    /* Abajo: sólo un tinte, para no fundir la ola con un cierre negro. */
+    linear-gradient(180deg, transparent 0%, transparent 60%, rgb(33 30 95 / 0.12) 82%, rgb(33 30 95 / 0.38) 100%);
+}

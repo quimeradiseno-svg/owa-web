@@ -4,6 +4,10 @@ import { html, raw } from '../lib/html.js';
    del footer, para que todo el sistema se lea con el mismo peso. Son SVG
    dibujados, no glifos unicode ni emoji. */
 const TRAZOS = {
+  // Nadador de crol sobre la línea de agua: cabeza, brazo/torso en diagonal y
+  // dos ondas debajo.
+  nadador:
+    '<circle cx="8" cy="7.5" r="2"/><path d="m4 13 4.5-2.2 3.2 1.9 3-1.4 4.3 1.1"/><path d="M3 17.5q3-2.6 6 0t6 0 6 0"/>',
   // Rendimiento: copa de premiacion.
   trofeo: '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 5.5H4.5A2.5 2.5 0 0 0 7 10"/><path d="M17 5.5h2.5A2.5 2.5 0 0 1 17 10"/><path d="M12 14v4"/><path d="M8.5 20h7"/>',
   // Distancia: dos ondas separadas por la linea de superficie.

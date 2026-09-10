@@ -475,38 +475,155 @@ const jornadas = (e, f) => {
 `;
 };
 
-const requisitos = () => html`
-  <section class="bg-owa-navy px-0 py-19 text-white" aria-labelledby="h-admision">
+// Postulación a un Challenge por WhatsApp, con el mensaje ya redactado. Mismo
+// número que el pie del sitio (ver footer.js).
+const waPostulacion = (e) =>
+  'https://wa.me/5491125543112?text=' +
+  encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`);
+
+// Sección "No se inscribe: se postula" de los Challenge. Va sobre blanco: en
+// esas fichas la banda anterior (Distancias) es navy, así que ésta invierte.
+const requisitos = (e) => html`
+  <section class="bg-white px-0 py-19 text-owa-navy" aria-labelledby="h-admision">
     <div class="u-shell grid gap-12 lg:grid-cols-2">
       <div>
-        ${eyebrow('Admisión', 'sky')}
-        <h2 id="h-admision" class="mt-3.5 text-[clamp(1.625rem,3.4vw,2.625rem)] leading-[0.96]">
+        ${eyebrow('Admisión')}
+        <h2 id="h-admision" class="mt-3.5 text-[clamp(1.625rem,3.4vw,2.625rem)] leading-[0.96] text-owa-navy">
           No se inscribe:<br />se postula
         </h2>
-        <p class="mt-4 max-w-[58ch] text-base leading-[1.75] text-owa-line">
-          Los Challenge son de ultradistancia y tienen cupo limitado. La postulación se hace por mail y la organización
+        <p class="mt-4 max-w-[58ch] text-base leading-[1.75] text-owa-slate">
+          Los Challenge son de ultradistancia y tienen cupo limitado. La postulación se hace por WhatsApp y la organización
           evalúa antecedentes en aguas abiertas antes de confirmar.
         </p>
         <div class="mt-6.5">
-          ${btnAccent('Postularme por mail', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20OWA%20Challenge')}
+          ${btnPrimario('Postularme', waPostulacion(e), '', 'target="_blank" rel="noopener noreferrer"')}
         </div>
       </div>
-      <div class="rounded-owa-lg border border-white/13 bg-white/6 p-7.5">
-        <h3 class="mb-2 font-display text-[17px] font-black">Requisitos</h3>
-        <ul>
-          ${EVENTO_FICHA.requisitos.map(
-            (r) => html`
-              <li class="flex gap-3 border-t border-white/12 py-3">
-                <span class="font-display font-black text-owa-cyan" aria-hidden="true">·</span>
-                <span class="text-sm leading-relaxed text-owa-line">${r}</span>
-              </li>
-            `
-          )}
+      <div class="rounded-owa-lg border border-owa-sky/40 bg-owa-sky/15 p-7.5 sm:p-8">
+        <h3 class="font-display text-[15px] font-black tracking-[0.04em] text-owa-navy uppercase">Requisitos para postular</h3>
+        <ul class="mt-6 space-y-5">
+          ${(e?.requisitos || EVENTO_FICHA.requisitos)
+            .map((r) => (typeof r === 'string' ? { icono: 'info', t: r, d: '' } : r))
+            .map(
+              (r) => html`
+                <li class="flex items-start gap-4">
+                  <span class="grid size-12 shrink-0 place-items-center rounded-full bg-owa-blue/10 text-owa-blue">
+                    ${icono(r.icono || 'info', 'size-6')}
+                  </span>
+                  <div class="min-w-0 pt-0.5">
+                    <p class="font-sans text-[15px] font-bold text-owa-navy">${r.t}</p>
+                    ${r.d ? html`<p class="mt-0.5 text-[13px] leading-relaxed text-owa-slate">${r.d}</p>` : ''}
+                  </div>
+                </li>
+              `
+            )}
         </ul>
       </div>
     </div>
   </section>
 `;
+
+/** Banderita del país (ISO-3) como SVG chico: se lee igual en todos los
+    sistemas, a diferencia de los emoji de bandera (Windows los muestra como
+    dos letras). Se van sumando países a medida que aparecen. */
+const BANDERAS = {
+  ARG: '<rect width="18" height="12" fill="#fff"/><rect width="18" height="4" fill="#75aadb"/><rect y="8" width="18" height="4" fill="#75aadb"/><circle cx="9" cy="6" r="1.5" fill="#f6b40e"/>',
+  BRA: '<rect width="18" height="12" fill="#009c3b"/><path d="M9 1.4 16.4 6 9 10.6 1.6 6Z" fill="#ffdf00"/><circle cx="9" cy="6" r="2.3" fill="#002776"/>',
+  URY: '<rect width="18" height="12" fill="#fff"/><g fill="#0038a8"><rect y="2.67" width="18" height="1.33"/><rect y="5.33" width="18" height="1.33"/><rect y="8" width="18" height="1.33"/><rect y="10.67" width="18" height="1.33"/></g><rect width="6.67" height="6.67" fill="#fff"/><circle cx="3.33" cy="3.33" r="1.4" fill="#fcd116"/>',
+  CHL: '<rect width="18" height="12" fill="#fff"/><rect y="6" width="18" height="6" fill="#d52b1e"/><rect width="6" height="6" fill="#0039a6"/><circle cx="3" cy="3" r="1.4" fill="#fff"/>',
+  ESP: '<rect width="18" height="12" fill="#c60b1e"/><rect y="3" width="18" height="6" fill="#ffc400"/>',
+};
+const bandera = (iso) =>
+  BANDERAS[iso]
+    ? html`<svg viewBox="0 0 18 12" class="h-3 w-[18px] shrink-0 rounded-[2px] ring-1 ring-owa-navy/15" aria-hidden="true">${raw(
+        BANDERAS[iso]
+      )}</svg>`
+    : '';
+
+/** Reseña histórica de un Challenge: cruces registrados agrupados por fecha,
+    con nadador, banderita, uso de neopreno y tiempo. Si el evento define
+    `triple`, va a la derecha; si no, la lista de fechas se reparte en dos. */
+const resenaHistorica = (e) => {
+  const r = e.resena;
+  const unidad = r.unidad || 'nadadores';
+  const bloque = (b) => html`
+    <div class="rounded-owa-lg border border-owa-line bg-white p-6 shadow-[var(--shadow-card)] sm:p-7">
+      <div class="flex items-center justify-between gap-3">
+        <h3 class="font-display text-[13px] font-black tracking-[0.04em] text-owa-navy uppercase">${b.fecha}</h3>
+        <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-owa-sky/20 px-2.5 py-1 text-[11px] font-bold tracking-[0.02em] text-owa-blue">
+          ${icono('equipo', 'size-3.5')} ${b.cruces.length} ${unidad}
+        </span>
+      </div>
+      <ul class="mt-4 divide-y divide-owa-sand">
+        ${b.cruces.map(
+          (c) => html`
+            <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-3">
+              <span class="flex min-w-0 items-center gap-2.5">
+                ${bandera(c.pais)}
+                <span class="font-sans text-[15px] font-bold text-owa-navy">${c.nadador}</span>
+                <span class="text-[13px] text-owa-slate">${c.neopreno ? 'con neopreno' : 'sin neopreno'}</span>
+              </span>
+              <span data-nums class="font-display text-[15px] font-black text-owa-blue">${c.tiempo}</span>
+            </li>
+          `
+        )}
+      </ul>
+    </div>
+  `;
+
+  return html`
+  <section class="bg-white px-0 py-19 text-owa-navy" aria-labelledby="h-resena">
+    <div class="u-shell grid gap-12 ${e.triple ? 'lg:grid-cols-[1.5fr_1fr]' : ''}">
+      <div>
+        ${eyebrow('Antecedentes')}
+        <h2 id="h-resena" class="mt-3.5 text-[clamp(1.625rem,3.4vw,2.625rem)] leading-[0.96] text-owa-navy">
+          ${r.titulo}
+        </h2>
+        ${r.bajada ? html`<p class="mt-4 max-w-[52ch] text-base leading-[1.75] text-owa-slate">${r.bajada}</p>` : ''}
+
+        <div class="mt-7 grid items-start gap-5 ${e.triple ? '' : 'sm:grid-cols-2'}">
+          ${r.bloques.map(bloque)}
+        </div>
+      </div>
+
+      ${e.triple
+        ? html`
+            <div class="lg:pt-2">
+              ${eyebrow('Forma parte de')}
+              <div class="mt-4 rounded-owa-lg border border-owa-line bg-owa-sand p-7.5">
+                ${e.triple.logo
+                  ? html`<img
+                      src="${e.triple.logo}"
+                      alt="${e.triple.nombre}"
+                      loading="lazy"
+                      decoding="async"
+                      class="h-20 w-auto sm:h-24"
+                    />`
+                  : html`<p class="font-display text-[clamp(1.375rem,2.4vw,1.75rem)] font-black text-owa-navy uppercase">
+                      ${e.triple.nombre}
+                    </p>`}
+                <p class="mt-3 text-[13px] leading-relaxed text-owa-slate">
+                  Este cruce integra la Triple Corona de aguas abiertas de OWA.
+                </p>
+                ${e.triple.href
+                  ? html`<a
+                      href="${e.triple.href}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="u-nudge mt-4 inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.06em] text-owa-blue uppercase"
+                    >
+                      Ver la Triple Corona
+                      <span class="u-nudge-arrow inline-block" aria-hidden="true">→</span>
+                    </a>`
+                  : ''}
+              </div>
+            </div>
+          `
+        : ''}
+    </div>
+  </section>
+`;
+};
 
 /** Zócalo de sponsors de la carrera: una tira de logos que se desplaza sola
     (u-marquee-track, en motion.css) y no compite por atención con nada — va
@@ -662,9 +779,18 @@ export function render(ctx) {
          cielo de la foto ocupaba media pantalla antes de llegar a nada
          legible. El contenido sigue anclado abajo (items-end); lo que baja
          es cuánto aire hay por encima suyo. -->
-    <section class="relative flex min-h-[50svh] items-end overflow-hidden bg-owa-abyss">
-      ${fondo({ slug: e.img, alt: '', opacity: 0.88, priority: true })}
-      <div class="u-hero-scrim-sm absolute inset-0"></div>
+    <section class="relative flex ${esChallenge ? 'min-h-[42svh]' : 'min-h-[50svh]'} items-end overflow-hidden bg-owa-abyss">
+      ${fondo({
+        slug: e.img,
+        alt: '',
+        opacity: esChallenge ? 1 : 0.88,
+        priority: true,
+        imgPos: esChallenge ? e.heroPos || '' : '',
+      })}
+      <!-- Los Challenge usan un velo más liviano: la foto de la travesía es
+           el argumento del hero, así que sólo se oscurece la columna del
+           texto y el pie (donde apoya la ola), no la foto entera. -->
+      <div class="${esChallenge ? 'u-hero-scrim-foto' : 'u-hero-scrim-sm'} absolute inset-0"></div>
 
       <!-- Mismo sello que ya lleva la mini-tarjeta del calendario (10 años de
            la Vuelta a la Huemul, ver tarjeta-evento.js) — acá en la ficha
@@ -679,7 +805,11 @@ export function render(ctx) {
           />`
         : ''}
 
-      <div class="u-shell relative pt-14 pb-20 text-white">
+      <div
+        class="u-shell relative text-white ${esChallenge
+          ? 'pt-8 pb-16 [&_h1]:[text-shadow:0_2px_16px_rgb(7_12_40/0.55)] [&_p]:[text-shadow:0_1px_10px_rgb(7_12_40/0.6)] [&>a]:[text-shadow:0_1px_10px_rgb(7_12_40/0.6)]'
+          : 'pt-14 pb-20'}"
+      >
         <a
           href="${volverHref}"
           class="u-nudge inline-flex items-center gap-2 font-display text-xs font-bold tracking-[0.12em] text-owa-sky transition-colors hover:text-owa-cyan"
@@ -718,11 +848,19 @@ export function render(ctx) {
                 >${e.sigla.replace(/\s*·\s*/g, ' / ')}</span
               >`
             : ''}
-          ${raceState === 'vivo' ? chipVivo() : chipEstado(raceState === 'finalizada' ? 'cerrada' : e.estado, { oscuro: true })}
+          ${raceState === 'vivo'
+            ? chipVivo()
+            : esChallenge
+              ? ''
+              : chipEstado(raceState === 'finalizada' ? 'cerrada' : e.estado, { oscuro: true })}
         </p>
 
-        <h1 class="mt-5 text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]">
-          ${e.nombre}${e.sponsor === 'arena'
+        <h1
+          class="mt-5 leading-[0.9] ${esChallenge
+            ? 'text-[clamp(2.25rem,5.6vw,5rem)]'
+            : 'text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]'}"
+        >
+          ${e.tipo === 'challenge' ? e.nombre.split('·').pop().trim() : e.nombre}${e.sponsor === 'arena'
             ? html`<span class="ml-4 inline-flex items-center gap-2.5 align-middle normal-case">
                 <span class="font-display text-[clamp(0.8125rem,1.5vw,1.0625rem)] font-bold tracking-[0.04em] text-owa-line/80">by</span>
                 <!-- El logo de arena sólo existe en negro; se invierte a blanco
@@ -767,9 +905,22 @@ export function render(ctx) {
               // este formato.
               if (!e.jornadas?.length) {
                 if (!e.anio) {
-                  return html`<p class="mt-5 font-display text-[clamp(0.875rem,1.6vw,1.1875rem)] font-bold tracking-[0.08em] text-owa-sky">
-                    ${e.fechaLarga}
-                  </p>`;
+                  // Challenge (y cualquier especial sin año): la ventana o
+                  // condición de largada va en la misma pastilla de borde
+                  // redondeado que la fecha del resto de las carreras. Texto en
+                  // Lato blanco; la palabra "Challenge", en Vito Black.
+                  return html`<div class="mt-5 flex flex-wrap gap-3">
+                    <span
+                      class="inline-block rounded-full border border-owa-cyan/60 px-5 py-2.5 font-sans text-[15px] font-bold tracking-[0.01em] text-white sm:text-[17px]"
+                      >${e.fechaLarga
+                        .split(/(Challenge)/)
+                        .map((p) =>
+                          p === 'Challenge'
+                            ? html`<span class="font-display font-black tracking-[0.04em]">${p}</span>`
+                            : p
+                        )}</span
+                    >
+                  </div>`;
                 }
                 const ds = (f?.distancias || []).filter((d) => !esArena(d) && !esKids(d) && d.torneo);
                 return html`
@@ -833,14 +984,13 @@ export function render(ctx) {
     <!-- Misma ola que separa el hero de home, pero apuntando para abajo (girada
          180°, la forma es simétrica así que da lo mismo que un flip vertical):
          acá el blanco entra desde arriba, no sube desde abajo. -->
-    <!-- La ola va en todas las carreras menos los Challenge. Los especiales
-         con ficha cargada (Pinamar) mostraban en su lugar la barra de datos, y
-         repetía lo que el hero ya dice: fecha, sede y estado. Los Challenge sí
-         la conservan, porque no tienen distancias ni recorridos donde apoyar
-         esos datos. -->
-    ${esChallenge
-      ? ''
-      : (() => {
+    <!-- La ola separa el hero de la primera sección en todas las carreras,
+         Challenge incluidos. El relleno toma el color de la sección que sigue:
+         blanco en el calendario/especiales (Días del evento, Distancias) y
+         navy en los Challenge, donde la primera banda es azul. -->
+    ${(() => {
+          const olaFill = esChallenge ? 'var(--color-owa-navy)' : '#fff';
+          const olaGuard = esChallenge ? 'bg-owa-navy' : 'bg-white';
           // Exactamente la misma ola del hero del home, sin diferencias.
           //
           // Antes iba girada 180° y en navy, y las dos cosas estaban mal:
@@ -858,23 +1008,23 @@ export function render(ctx) {
           // viene y el borde inferior del trazo —una recta a lo ancho de todo
           // el viewBox, siempre en y=52— no deja ningún hueco que tapar.
           return html`<div class="relative z-2 -mt-13">
-            ${olaCentrada('#fff')}
+            ${olaCentrada(olaFill)}
             <!-- Guarda de subpíxel: con el zoom de Windows al 125%/150% el
                  borde antialiaseado del SVG puede dejar asomar un hilo de la
-                 sección blanca de después, aunque en CSS las dos midan
-                 exactamente lo mismo (mismo caso que la ola del home). -->
-            <div class="absolute inset-x-0 bottom-0 h-1 translate-y-px bg-white" aria-hidden="true"></div>
+                 sección de después, aunque en CSS las dos midan exactamente lo
+                 mismo (mismo caso que la ola del home). -->
+            <div class="absolute inset-x-0 bottom-0 h-1 translate-y-px ${olaGuard}" aria-hidden="true"></div>
           </div>`;
         })()}
 
-    ${esChallenge ? barraDatos(e, esChallenge, f) : ''} ${raceState === 'vivo' ? bandaVivo() : ''}
-    ${e.tipo === 'core' ? jornadas(e, f) : esChallenge ? requisitos() : ''}
+    ${raceState === 'vivo' ? bandaVivo() : ''}
+    ${e.tipo === 'core' ? jornadas(e, f) : ''}
 
     <!-- distancias -->
     <!-- EXPERIMENTO — fondo navy en vez de blanco: a probar junto con el
          cambio inverso en "jornadas" (esa pasa a blanco). Si no convence,
          alcanza con volver este bloque y el de arriba a como estaban. -->
-    <section class="${invertido ? 'bg-white' : 'bg-owa-navy'} px-0 pt-20 pb-16" aria-labelledby="h-distancias">
+    <section class="${invertido ? 'bg-white' : 'bg-owa-navy'} px-0 ${esChallenge ? 'pt-10' : 'pt-20'} pb-16" aria-labelledby="h-distancias">
       <div class="u-shell">
       <div class="flex items-center gap-3">
         <h2
@@ -1038,6 +1188,46 @@ export function render(ctx) {
               })}
             </ul>
           `
+        : esChallenge && e.distancia
+        ? (() => {
+            const d = e.distancia;
+            return html`
+              <div
+                class="reveal mt-6 flex flex-col gap-6 rounded-owa-lg border border-white/12 bg-white/6 p-6 sm:p-7 lg:flex-row lg:items-center lg:gap-10"
+              >
+                <div class="shrink-0">
+                  <div>${chipModalidad(d.torneo, { oscuro: true })}</div>
+                  <p data-nums class="mt-3 font-display text-[clamp(2.5rem,5vw,3.5rem)] leading-[0.85] font-black text-white">
+                    ${d.km}
+                  </p>
+                </div>
+                <div class="hidden w-px self-stretch bg-white/15 lg:block" aria-hidden="true"></div>
+                <div class="flex-1 space-y-4">
+                  <p class="flex items-start gap-2.5">
+                    ${icono('pin', 'mt-0.5 size-4.5 shrink-0 text-owa-cyan')}
+                    <span class="min-w-0">
+                      <span class="block font-display text-[10px] font-bold tracking-[0.1em] text-owa-line/80 uppercase">Recorrido</span>
+                      <span class="block text-[14px] leading-snug text-owa-line/95">${d.desc}</span>
+                    </span>
+                  </p>
+                  <p class="flex items-start gap-2.5">
+                    ${icono('persona', 'mt-0.5 size-4.5 shrink-0 text-owa-cyan')}
+                    <span class="min-w-0">
+                      <span class="block font-display text-[10px] font-bold tracking-[0.1em] text-owa-line/80 uppercase">Categorías</span>
+                      <span class="block text-[14px] leading-snug font-bold text-white">${d.cats}</span>
+                    </span>
+                  </p>
+                </div>
+                <img
+                  src="/brand/challenge-dorado.svg"
+                  alt="OWA Challenge"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-20 w-auto shrink-0 self-center sm:h-24 lg:h-28"
+                />
+              </div>
+            `;
+          })()
         : html`
             <div class="mt-5.5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               ${distanciasDe(e).map(
@@ -1061,10 +1251,37 @@ export function render(ctx) {
       </div>
     </section>
 
+    <!-- Admisión / postulación: en los Challenge va después de las distancias -->
+    ${esChallenge ? requisitos(e) : ''}
+
     <!-- recorridos: una sola sección, todas las distancias como tabs. Cada
          tab lleva el torneo como subtítulo (Grand Prix / Circuito OWA) para
-         que nunca haga falta adivinar a qué competencia pertenece un mapa. -->
-    ${f?.recorridos
+         que nunca haga falta adivinar a qué competencia pertenece un mapa.
+         Los Challenge no tienen distancias ni tabs: sólo el mapa del cruce,
+         cuando está cargado. -->
+    ${esChallenge
+      ? (e.recorridoMapa
+          ? html`
+              <section class="bg-owa-navy px-0 pt-14 pb-20 text-white" aria-labelledby="h-recorrido">
+                <div class="u-shell">
+                ${eyebrow('Recorrido', 'sky')}
+                <h2 id="h-recorrido" class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.625rem)] text-white">
+                  ${e.nombre.split('·').pop().trim()}
+                </h2>
+                <div class="reveal-clip mt-5.5 overflow-hidden rounded-owa-lg bg-owa-abyss">
+                  ${foto({
+                    slug: e.recorridoMapa.slug,
+                    alt: e.recorridoMapa.alt,
+                    sizes: '(min-width: 1280px) 1216px, 100vw',
+                    className: 'block w-full',
+                    imgClass: 'w-full',
+                  })}
+                </div>
+                </div>
+              </section>
+            `
+          : '')
+      : f?.recorridos
       ? (() => {
           const activoId = f.recorridos.find((x) => x.id === recorridoActivo)?.id || f.recorridos[0].id;
           const activo = f.recorridos.find((x) => x.id === activoId);
@@ -1297,7 +1514,8 @@ export function render(ctx) {
           </section>
         `}
 
-    <!-- cronograma -->
+    <!-- cronograma — los Challenge no tienen operativo de día de carrera -->
+    ${esChallenge ? '' : html`
     <section class="bg-owa-mist px-0 py-20" aria-labelledby="h-cronograma">
       <div class="u-shell">
         ${eyebrow('Minuto a minuto')}
@@ -1520,8 +1738,75 @@ export function render(ctx) {
             `}
       </div>
     </section>
+    `}
 
-    <!-- reglamento + kit -->
+    <!-- Fiscalización + video de contexto (hoy sólo el Cruce del Río de la
+         Plata). Va después de las distancias del Challenge, en lugar del
+         cronograma que esas travesías no tienen. -->
+    ${esChallenge && (e.fiscalizacion || e.video)
+      ? html`
+          <section class="bg-white px-0 py-19 text-owa-navy" aria-labelledby="h-contexto">
+            <div class="u-shell grid gap-12 lg:grid-cols-2 lg:items-center">
+              <div>
+                ${eyebrow('Fiscalización')}
+                ${e.fiscalizacion
+                  ? html`
+                      ${e.fiscalizacion.logo
+                        ? html`<img
+                            src="${e.fiscalizacion.logo}"
+                            alt="${e.fiscalizacion.nombre}"
+                            loading="lazy"
+                            decoding="async"
+                            class="mt-4 h-16 w-auto sm:h-20"
+                          />`
+                        : ''}
+                      <h2 id="h-contexto" class="mt-3.5 text-[clamp(1.625rem,3.4vw,2.625rem)] leading-[0.96] text-owa-navy">
+                        Fiscalización a cargo de ${e.fiscalizacion.nombre}
+                      </h2>
+                      <p class="mt-4 max-w-[52ch] text-base leading-[1.75] text-owa-slate">
+                        La ${e.fiscalizacion.nombre} controla la seguridad y la validez del cruce.
+                      </p>
+                      <a
+                        href="${e.fiscalizacion.href}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="u-nudge mt-6 inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.06em] text-owa-blue uppercase"
+                      >
+                        ${e.fiscalizacion.href.replace(/^https?:\/\//, '')}
+                        <span class="u-nudge-arrow inline-block" aria-hidden="true">→</span>
+                      </a>
+                    `
+                  : ''}
+              </div>
+              ${e.video
+                ? html`
+                    <div>
+                      <p class="font-display text-[15px] font-bold text-owa-navy">${e.video.titulo}</p>
+                      <div class="mt-3.5 aspect-video overflow-hidden rounded-owa-lg border border-owa-line bg-black">
+                        <iframe
+                          class="h-full w-full"
+                          src="https://www.youtube-nocookie.com/embed/${e.video.id}"
+                          title="${e.video.titulo}"
+                          loading="lazy"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowfullscreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  `
+                : ''}
+            </div>
+          </section>
+        `
+      : ''}
+
+    <!-- Reseña histórica + Triple Corona (hoy sólo Blest a Villa Tacul). Ocupa
+         el lugar de la sección de fiscalización/video. -->
+    ${esChallenge && e.resena ? resenaHistorica(e) : ''}
+
+    <!-- reglamento + kit — fuera de los Challenge, que no tienen kit -->
+    ${esChallenge ? '' : html`
     <section class="u-shell pt-12 pb-20" aria-labelledby="h-reglamento">
       <div class="grid gap-4.5 lg:grid-cols-2">
         <div class="reveal rounded-owa-lg bg-owa-mist p-8" data-visible>
@@ -1579,6 +1864,7 @@ export function render(ctx) {
         </div>
       </div>
     </section>
+    `}
 
     <!-- resultados: sólo una vez que hay podio real que mostrar. Antes de
          correrse no suma nada acá — ya está el link a Resultados en el nav. -->
@@ -1592,7 +1878,8 @@ export function render(ctx) {
       : ''}
 
     ${bloqueSponsors(e)}
-    ${galeriaBloque(e)}
+    <!-- En los Challenge la galería va después del CTA de postulación -->
+    ${esChallenge ? '' : galeriaBloque(e)}
 
     <!-- cta final -->
     <!-- Las carreras cierran promocionando los beneficios de la comunidad. Los
@@ -1611,19 +1898,21 @@ export function render(ctx) {
           </p>
           <p class="mt-2.5 text-[15px] text-white/80">
             ${esChallenge
-              ? 'La organización responde cada postulación por mail.'
+              ? 'La organización responde cada postulación por WhatsApp.'
               : beneficios
                 ? 'Inscribirte a esta carrera tiene sus ventajas.'
                 : 'Ser parte de la comunidad OWA tiene sus ventajas.'}
           </p>
         </div>
         ${esChallenge
-          ? btnAccent('Postularme', 'mailto:info@owa.com.ar?subject=Postulaci%C3%B3n%20' + e.sigla)
+          ? btnAccent('Postularme', waPostulacion(e), '', 'target="_blank" rel="noopener noreferrer"')
           : beneficios
             ? btnAccent('Ver beneficios', beneficios, 'shrink-0')
             : ctaSinDestino('Ver beneficios')}
       </div>
     </section>
+
+    ${esChallenge ? galeriaBloque(e) : ''}
   `);
 }
 

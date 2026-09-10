@@ -299,21 +299,62 @@ export const CHALLENGES = [
     sede: 'Colonia a Punta Lara',
     sedeCorta: 'PUNTA LARA',
     tipo: 'challenge',
-    fechaCorta: 'DIC 2026 – MAR 2027',
+    fechaCorta: 'DIC – ABR',
     anio: '',
-    ventana: 'Diciembre 2026 – Marzo 2027',
-    fechaLarga: 'Ventana de cruce: diciembre 2026 a marzo 2027',
+    ventana: 'Diciembre a abril',
+    fechaLarga: 'Ventanas de cruce: diciembre a abril',
     nota: '',
     estado: 'proximamente',
     km: '40 km',
     img: 'ev-rdp40',
+    // La nadadora con la boya está abajo y a la izquierda del cuadro: el
+    // recorte la corre hacia el centro-derecha del hero, donde queda espacio
+    // libre debajo del titular.
+    heroPos: 'object-[34%_58%]',
+    // El cruce lo fiscaliza la Asociación Civil Náutica Río de la Plata.
+    fiscalizacion: { nombre: 'ACNRP', href: 'https://www.acnrp.com', logo: '/brand/acnrp-logo.webp' },
+    // Video de contexto histórico del cruce (embed sin cookies).
+    video: { id: '64q-LL9XFNw', titulo: 'Conocé la historia de este cruce centenario' },
+    // Distancia única del challenge, con su descripción y categorías propias.
+    distancia: {
+      km: '40 km',
+      torneo: 'CHALLENGE',
+      desc: 'Colonia a Punta Lara. Travesía con embarcación de apoyo logístico.',
+      cats: 'Solo Swim y Relay de 2 a 6 participantes',
+    },
+    // Requisitos propios: el apoyo lo pone la organización, así que no se pide
+    // embarcación propia como en el resto de los Challenge.
+    requisitos: [
+      { icono: 'nadador', t: 'Experiencia comprobable', d: 'Antecedentes verificables en aguas abiertas.' },
+      { icono: 'documento', t: 'Apto médico vigente', d: 'Certificado médico específico para ultradistancia.' },
+      { icono: 'equipo', t: 'Confirmación de la organización', d: 'El cupo se asigna luego de evaluar la postulación.' },
+    ],
+    recorridoMapa: {
+      slug: 'mapa-rdp',
+      alt: 'Mapa del cruce del Río de la Plata, de Colonia (Uruguay) a Punta Lara (Argentina)',
+    },
+    galeria: [
+      { slug: 'rdp-galeria-1', grande: true, alt: 'Vista aérea del Río de la Plata en la zona del cruce' },
+      { slug: 'rdp-galeria-2', alt: 'Nadador durante el cruce del Río de la Plata' },
+      { slug: 'rdp-galeria-3', alt: 'Nadador acompañado por la embarcación de apoyo en el Río de la Plata' },
+      { slug: 'rdp-galeria-4', alt: 'Nadador en pleno cruce del Río de la Plata' },
+      { slug: 'rdp-galeria-5', alt: 'Brazada de un nadador en las aguas del Río de la Plata' },
+      { slug: 'rdp-galeria-6', alt: 'Nadador y embarcación de apoyo durante la travesía' },
+      { slug: 'rdp-galeria-7', alt: 'Nadador del cruce del Río de la Plata visto de cerca' },
+      { slug: 'rdp-galeria-8', alt: 'Nadador avanzando en el Río de la Plata con la costa de fondo' },
+      { slug: 'rdp-galeria-9', alt: 'Nadador durante la travesía del Río de la Plata' },
+      { slug: 'rdp-galeria-10', alt: 'Nadador y embarcación de apoyo en el cruce del Río de la Plata' },
+      { slug: 'rdp-galeria-11', alt: 'Nadador en aguas abiertas del Río de la Plata' },
+      { slug: 'rdp-galeria-12', alt: 'Nadador durante el cruce, con la lancha de apoyo al lado' },
+      { slug: 'rdp-galeria-13', alt: 'Nadador avanzando en el Río de la Plata' },
+    ],
   },
   {
     slug: 'snp70',
     sigla: 'SNP',
     nombre: 'SNP · San Nicolás a San Pedro',
     corto: 'SNP',
-    sede: 'San Nicolás a San Pedro',
+    sede: 'San Pedro · Buenos Aires',
     sedeCorta: 'SAN PEDRO',
     tipo: 'challenge',
     fechaCorta: 'A CONFIRMAR',
@@ -324,13 +365,72 @@ export const CHALLENGES = [
     estado: 'proximamente',
     km: '70 km',
     img: 'ev-snp70',
+    // El nadador con la boya está abajo y al centro: se baja el recorte para
+    // que se lo vea en el hero.
+    heroPos: 'object-[45%_64%]',
+    distancia: {
+      km: '70 km',
+      torneo: 'CHALLENGE',
+      desc: '70 km de nado por el Paraná, desde San Nicolás de los Arroyos a San Pedro, Buenos Aires.',
+      cats: 'Solo Swim y Relay de 2 a 6 participantes',
+    },
+    requisitos: [
+      { icono: 'nadador', t: 'Experiencia comprobable', d: 'Antecedentes verificables en aguas abiertas.' },
+      { icono: 'documento', t: 'Apto médico vigente', d: 'Certificado médico específico para ultradistancia.' },
+      { icono: 'equipo', t: 'Confirmación de la organización', d: 'El cupo se asigna luego de evaluar la postulación.' },
+    ],
+    recorridoMapa: {
+      slug: 'mapa-snp',
+      alt: 'Mapa del cruce de San Nicolás de los Arroyos a San Pedro por el río Paraná',
+    },
+    resena: {
+      titulo: 'Raidistas del Paraná',
+      bajada: 'Nadadores que completaron el cruce de San Nicolás a San Pedro.',
+      unidad: 'raidistas',
+      bloques: [
+        {
+          fecha: '17 de abril de 2023',
+          cruces: [
+            { nadador: 'Marcio Junqueira', pais: 'BRA', neopreno: false, tiempo: '11 h 18 min' },
+            { nadador: 'Lorenzo Raggio', pais: 'ARG', neopreno: true, tiempo: '10 h 42 min' },
+            { nadador: 'Tomás Larocca', pais: 'ARG', neopreno: true, tiempo: '11 h 30 min' },
+            { nadador: 'Mariana Díaz', pais: 'ARG', neopreno: true, tiempo: '11 h 32 min' },
+            { nadador: 'Machu Pereyra', pais: 'ARG', neopreno: true, tiempo: '11 h 49 min' },
+            { nadador: "Julieta O'Connor", pais: 'ARG', neopreno: true, tiempo: '12 h 23 min' },
+          ],
+        },
+        {
+          fecha: '13 de noviembre de 2024',
+          cruces: [
+            { nadador: 'Tobías Breme', pais: 'ARG', neopreno: true, tiempo: '13 h 39 min' },
+            { nadador: 'Luis Sufid', pais: 'ARG', neopreno: false, tiempo: '13 h 47 min' },
+            { nadador: 'Damián Wachowicz', pais: 'ARG', neopreno: false, tiempo: '13 h 48 min' },
+          ],
+        },
+      ],
+    },
+    galeria: [
+      { slug: 'snp-galeria-1', grande: true, alt: 'Nadador en el río Paraná durante el cruce de San Nicolás a San Pedro' },
+      { slug: 'snp-galeria-2', alt: 'Nadador y embarcación de apoyo en el río Paraná' },
+      { slug: 'snp-galeria-3', alt: 'Nadador cruzando el Paraná al amanecer' },
+      { slug: 'snp-galeria-4', alt: 'Brazada de un nadador en las aguas del río Paraná' },
+      { slug: 'snp-galeria-5', alt: 'Nadador acompañado por la lancha de apoyo en el Paraná' },
+      { slug: 'snp-galeria-6', alt: 'Nadador en pleno cruce del río Paraná' },
+      { slug: 'snp-galeria-7', alt: 'Nadador y equipo de apoyo durante la travesía' },
+      { slug: 'snp-galeria-8', alt: 'Nadador avanzando por el Paraná con la costa de fondo' },
+      { slug: 'snp-galeria-9', alt: 'Nadador del cruce San Nicolás a San Pedro visto de cerca' },
+      { slug: 'snp-galeria-10', alt: 'Embarcación de apoyo siguiendo al nadador en el Paraná' },
+      { slug: 'snp-galeria-11', alt: 'Nadador durante la larga travesía del Paraná' },
+      { slug: 'snp-galeria-12', alt: 'Nadador entrando al agua antes de la largada en San Nicolás' },
+      { slug: 'snp-galeria-13', alt: 'Nadador en el río Paraná camino a San Pedro' },
+    ],
   },
   {
     slug: 'bvt21',
     sigla: 'BVT',
     nombre: 'BVT · Blest a Villa Tacul',
     corto: 'BVT',
-    sede: 'Blest a Villa Tacul · Lago Nahuel Huapi',
+    sede: 'Bariloche · Río Negro',
     sedeCorta: 'BARILOCHE',
     tipo: 'challenge',
     fechaCorta: 'FEB 2027',
@@ -342,6 +442,69 @@ export const CHALLENGES = [
     estado: 'proximamente',
     km: '21 km',
     img: 'ev-bvt21',
+    // Los nadadores con las boyas están en el tercio inferior: se baja el
+    // recorte para que queden a la vista en el hero.
+    heroPos: 'object-[50%_66%]',
+    distancia: {
+      km: '21 km',
+      torneo: 'CHALLENGE',
+      desc: 'Largada en el brazo Blest y llegada en Villa Tacul, Bariloche, Río Negro.',
+      cats: 'Solo Swim y Relay de 2 a 6 participantes',
+    },
+    // Mismos requisitos que el resto de los Challenge con apoyo de la
+    // organización (ver rdp40).
+    requisitos: [
+      { icono: 'nadador', t: 'Experiencia comprobable', d: 'Antecedentes verificables en aguas abiertas.' },
+      { icono: 'documento', t: 'Apto médico vigente', d: 'Certificado médico específico para ultradistancia.' },
+      { icono: 'equipo', t: 'Confirmación de la organización', d: 'El cupo se asigna luego de evaluar la postulación.' },
+    ],
+    recorridoMapa: {
+      slug: 'mapa-bvt',
+      alt: 'Mapa del cruce del brazo Blest a Villa Tacul, lago Nahuel Huapi',
+    },
+    // En lugar de fiscalización + video: reseña histórica de cruces + la Triple
+    // Corona. `triple.href` queda pendiente de que OWA pase el enlace.
+    triple: { nombre: 'Triple Corona', href: '', logo: '' },
+    resena: {
+      titulo: 'Reseña histórica',
+      bajada: 'Cruces registrados del brazo Blest a Villa Tacul.',
+      bloques: [
+        {
+          fecha: '21 de febrero de 2023',
+          cruces: [
+            { nadador: 'Sergio Salomone', pais: 'ARG', neopreno: false, tiempo: '7 h 26 min' },
+            { nadador: 'Gastón Pagniez', pais: 'ARG', neopreno: true, tiempo: '6 h 28 min' },
+            { nadador: 'Mariano Mortara', pais: 'ARG', neopreno: true, tiempo: '6 h 30 min' },
+            { nadador: 'Tomás Larocca', pais: 'ARG', neopreno: true, tiempo: '7 h 21 min' },
+            { nadador: 'Joaquina Dalmazzo', pais: 'ARG', neopreno: true, tiempo: '7 h 25 min' },
+          ],
+        },
+        {
+          fecha: '18 de febrero de 2025',
+          cruces: [
+            { nadador: 'Benicio Raggio', pais: 'ARG', neopreno: true, tiempo: '6 h 20 min' },
+            { nadador: 'Diego Suárez', pais: 'ARG', neopreno: true, tiempo: '6 h 48 min' },
+            { nadador: "Julieta O'Connor", pais: 'ARG', neopreno: true, tiempo: '7 h 2 min' },
+            { nadador: 'Mariana Díaz', pais: 'ARG', neopreno: true, tiempo: '7 h 11 min' },
+          ],
+        },
+      ],
+    },
+    galeria: [
+      { slug: 'bvt-galeria-1', grande: true, alt: 'Nadadores en el lago Nahuel Huapi durante el cruce Blest a Villa Tacul' },
+      { slug: 'bvt-galeria-2', alt: 'Nadador cruzando el lago Nahuel Huapi con la cordillera de fondo' },
+      { slug: 'bvt-galeria-3', alt: 'Nadador acompañado por una embarcación de apoyo en el Nahuel Huapi' },
+      { slug: 'bvt-galeria-4', alt: 'Nadador en pleno cruce del lago, con las montañas detrás' },
+      { slug: 'bvt-galeria-5', alt: 'Nadador del cruce Blest a Villa Tacul en aguas abiertas' },
+      { slug: 'bvt-galeria-6', alt: 'Nadador y lancha de apoyo sobre el lago Nahuel Huapi' },
+      { slug: 'bvt-galeria-7', alt: 'Nadador durante la travesía del brazo Blest' },
+      { slug: 'bvt-galeria-8', alt: 'Nadador llegando a Villa Tacul' },
+      { slug: 'bvt-galeria-9', alt: 'Largada del cruce en el brazo Blest' },
+      { slug: 'bvt-galeria-10', alt: 'Nadadores y kayaks de apoyo en el lago Nahuel Huapi' },
+      { slug: 'bvt-galeria-11', alt: 'Cruce del lago Nahuel Huapi con la costa de Bariloche de fondo' },
+      { slug: 'bvt-galeria-12', alt: 'Nadador entrando al agua antes de la largada' },
+      { slug: 'bvt-galeria-13', alt: 'Nadador en la travesía Blest a Villa Tacul' },
+    ],
   },
 ];
 

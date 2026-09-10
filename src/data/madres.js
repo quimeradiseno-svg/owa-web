@@ -235,11 +235,13 @@ export const TRAVEL_INCLUYE = [
 
 // Contenido fijo de la ficha de evento, común a todas las carreras.
 export const EVENTO_FICHA = {
+  // Cada requisito: ícono + título corto + detalle. Es el placeholder genérico
+  // de los Challenge; cada ficha puede pisarlo con su propia lista (ver rdp40).
   requisitos: [
-    'Antecedentes verificables en aguas abiertas.',
-    'Apto médico específico para ultradistancia.',
-    'Equipo de apoyo propio (kayak o embarcación).',
-    'Confirmación de cupo por parte de la organización.',
+    { icono: 'nadador', t: 'Experiencia comprobable', d: 'Antecedentes verificables en aguas abiertas.' },
+    { icono: 'documento', t: 'Apto médico vigente', d: 'Certificado médico específico para ultradistancia.' },
+    { icono: 'equipo', t: 'Equipo de apoyo propio', d: 'Kayak o embarcación para acompañar el nado.' },
+    { icono: 'escudo', t: 'Confirmación de la organización', d: 'El cupo se asigna luego de evaluar la postulación.' },
   ],
   kit: [
     { t: 'Gorra oficial', d: 'Incluida' },

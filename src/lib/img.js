@@ -56,8 +56,10 @@ export function avatarFoto({ slug, alt, className = '' }) {
   />`;
 }
 
-/** Foto de fondo a sangre, con la clase de deriva opcional del hero. */
-export function fondo({ slug, alt = '', opacity = 0.62, drift = false, priority = false, sizes = '100vw' }) {
+/** Foto de fondo a sangre, con la clase de deriva opcional del hero.
+    `imgPos` es una utilidad de object-position (p. ej. `object-[50%_66%]`) para
+    encuadrar el recorte del hero cuando el sujeto no está centrado. */
+export function fondo({ slug, alt = '', opacity = 0.62, drift = false, priority = false, sizes = '100vw', imgPos = '' }) {
   return html`
     <div class="absolute inset-0 overflow-hidden" aria-hidden="${alt ? 'false' : 'true'}">
       <div class="absolute inset-0 ${drift ? 'hero-drift' : ''}">
@@ -67,7 +69,7 @@ export function fondo({ slug, alt = '', opacity = 0.62, drift = false, priority 
           sizes,
           priority,
           className: 'block h-full w-full',
-          imgClass: `h-full w-full object-cover`,
+          imgClass: `h-full w-full object-cover ${imgPos}`,
         })}
       </div>
       <div class="absolute inset-0 bg-owa-abyss" style="opacity:${1 - opacity}"></div>

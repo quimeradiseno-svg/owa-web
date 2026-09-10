@@ -137,8 +137,10 @@ const BASE_BLANCO = `${BASE_LAYOUT} text-[14px] font-display font-black`;
 // principal del hero (necesita destacar más que un btnAccent normal de 13px).
 const BASE_ACCENT_GRANDE = `${BASE_LAYOUT} text-[15px] font-display font-black`;
 
-export const btnAccent = (label, href, extra = '') =>
-  html`<a href="${href}" class="${BASE} bg-owa-cyan px-7 py-4 text-owa-deep hover:bg-owa-sky ${extra}">${label} ${FLECHA}</a>`;
+// `attrs` (string crudo) para casos puntuales como target="_blank" en enlaces
+// externos; por defecto vacío, así el resto de las llamadas no cambia.
+export const btnAccent = (label, href, extra = '', attrs = '') =>
+  html`<a href="${href}" ${raw(attrs)} class="${BASE} bg-owa-cyan px-7 py-4 text-owa-deep hover:bg-owa-sky ${extra}">${label} ${FLECHA}</a>`;
 
 export const btnAccentGrande = (label, href, extra = '') =>
   html`<a href="${href}" class="${BASE_ACCENT_GRANDE} bg-owa-cyan px-7 py-4 text-owa-deep hover:bg-owa-sky ${extra}">${label} ${FLECHA}</a>`;
@@ -146,8 +148,8 @@ export const btnAccentGrande = (label, href, extra = '') =>
 export const btnBlanco = (label, href, extra = '') =>
   html`<a href="${href}" class="${BASE_BLANCO} bg-white px-7 py-4 text-owa-navy hover:bg-owa-mist ${extra}">${label} ${FLECHA}</a>`;
 
-export const btnPrimario = (label, href, extra = '') =>
-  html`<a href="${href}" class="${BASE} bg-owa-blue px-6 py-3.5 text-white hover:bg-owa-navy ${extra}">${label} ${FLECHA}</a>`;
+export const btnPrimario = (label, href, extra = '', attrs = '') =>
+  html`<a href="${href}" ${raw(attrs)} class="${BASE} bg-owa-blue px-6 py-3.5 text-white hover:bg-owa-navy ${extra}">${label} ${FLECHA}</a>`;
 
 // Variante compacta del primario: un punto menos de fuente y menos padding.
 // La usa la caja de puntaje de las madres, donde tienen que entrar dos
