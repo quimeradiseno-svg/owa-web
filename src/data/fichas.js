@@ -6,6 +6,11 @@
 
 const CATS_COMPLETAS = 'Género · Edades · Neopreno';
 
+// La Vuelta a la Huemul es con neopreno obligatorio para todos los que
+// compiten: no hay categoría "sin neopreno" que distinguir, así que no se
+// repite acá (a diferencia de CATS_COMPLETAS, que sí distingue esa opción).
+const CATS_VHU = 'Género · Edades';
+
 // Se repiten idénticas en las tres distancias.
 const PREMIACION = 'Generales 1 al 5 por género. 1 al 3 por categorías cada 5 años, por género';
 const PREMIACION_NEOPRENE = 'Generales 1 al 3 por género';
@@ -613,6 +618,14 @@ export const FICHAS = {
         ],
       },
     ],
+
+    kit: [
+      { t: 'Gorra oficial', d: 'Incluida' },
+      { t: 'Chip de cronometraje', d: 'Incluido' },
+      { t: 'Numeración', d: 'Incluida' },
+      { t: 'Medalla finisher', d: 'Incluida' },
+      { t: 'Regalo OWA', d: 'Incluido' },
+    ],
   },
 
   'cruce-del-nahuel': {
@@ -710,6 +723,216 @@ export const FICHAS = {
           },
         ],
       },
+    ],
+  },
+
+  'vuelta-a-la-huemul': {
+    // Sin la provincia acá: la línea de sede la arma el propio render pegando
+    // sedeBarra + el resto de sedeCiudad (provincia, país) — repetirla acá
+    // duplicaba "Río Negro" en el pie del hero.
+    sedeBarra: 'Playa Bonita · Lago Nahuel Huapi',
+    sedeCiudad: 'San Carlos de Bariloche, Río Negro, Argentina',
+
+    // Tres distancias que puntúan para el propio circuito del evento (no para
+    // Grand Prix ni Circuito OWA, por eso torneo: 'ESPECIAL' en las tres) más
+    // dos prueblas de participación —Super Sprint y Kids— sin torneo asignado:
+    // así quedan afuera de la pastilla de distancias del hero y del podio,
+    // igual que Kids y OWA Relay en Luján.
+    distancias: [
+      { rotulo: 'Larga', torneo: 'ESPECIAL', km: '6,5 km', nota: 'Una vuelta a la isla Huemul.', cats: CATS_VHU },
+      { rotulo: 'Media', torneo: 'ESPECIAL', km: '3 km', nota: 'Dos vueltas al circuito boyado.', cats: CATS_VHU },
+      { rotulo: 'Corta', torneo: 'ESPECIAL', km: '1,5 km', nota: 'Una vuelta al circuito boyado.', cats: CATS_VHU },
+      { rotulo: 'Super Sprint', km: '500 m', cats: 'Participativo · No competitivo' },
+      { rotulo: 'Kids', km: '200 m', cats: 'Participativo · No competitivo' },
+    ],
+
+    recorridos: [
+      {
+        id: 'vhu-6-5k',
+        torneo: 'ESPECIAL',
+        titulo: '6,5 km',
+        largada: 'Playa Bonita',
+        llegada: 'Playa Bonita',
+        desc: 'Bordea la isla Huemul en una vuelta completa, con largada y llegada en Playa Bonita.',
+        mapas: [
+          { slug: 'mapa-vhu-6-5k', alt: 'Mapa del recorrido de 6,5 km, con una vuelta completa a la isla Huemul' },
+        ],
+        // Cupos, tiempo estimado/límite, condiciones del agua, requisitos y
+        // premiación: pendientes de que OWA los confirme. Sólo va lo que sí
+        // está confirmado (fecha, distancia y que el neopreno es obligatorio).
+        ficha: [
+          ['Fecha', 'Sábado 20 de febrero de 2027'],
+          ['Distancia', '6,5 km · una vuelta a la isla Huemul'],
+          ['Uso de neopreno', 'Obligatorio'],
+        ],
+      },
+      {
+        id: 'vhu-3k',
+        torneo: 'ESPECIAL',
+        titulo: '3 km',
+        largada: 'Playa Bonita',
+        llegada: 'Playa Bonita',
+        desc: 'Dos vueltas a un circuito boyado frente a Playa Bonita.',
+        mapas: [{ slug: 'mapa-vhu-3k', alt: 'Mapa del recorrido de 3 km, dos vueltas a un circuito boyado' }],
+        ficha: [
+          ['Fecha', 'Sábado 20 de febrero de 2027'],
+          ['Distancia', '3 km · dos vueltas al circuito boyado'],
+          ['Uso de neopreno', 'Obligatorio'],
+        ],
+      },
+      {
+        id: 'vhu-1-5k',
+        torneo: 'ESPECIAL',
+        titulo: '1,5 km',
+        largada: 'Playa Bonita',
+        llegada: 'Playa Bonita',
+        desc: 'Una vuelta a un circuito boyado frente a Playa Bonita.',
+        mapas: [{ slug: 'mapa-vhu-1-5k', alt: 'Mapa del recorrido de 1,5 km, una vuelta a un circuito boyado' }],
+        ficha: [
+          ['Fecha', 'Sábado 20 de febrero de 2027'],
+          ['Distancia', '1,5 km · una vuelta al circuito boyado'],
+          ['Uso de neopreno', 'Obligatorio'],
+        ],
+      },
+    ],
+
+    cronogramas: [
+      {
+        torneo: 'ESPECIAL',
+        dias: [
+          {
+            fecha: 'Viernes 19 de febrero',
+            lugar: 'Kuntzmann, Av. Ezequiel Bustillo 7966',
+            items: [
+              {
+                hora: '13:00 a 16:00',
+                t: 'Entrega de kits',
+                d: 'Recepción de aptos médicos y firma de deslindes. No se realizan inscripciones este día.',
+              },
+            ],
+          },
+          {
+            fecha: 'Sábado 20 de febrero · Día del evento',
+            lugar: 'Playa Bonita, debajo del Apart del Lago. Ingreso por Playa Pública.',
+            items: [
+              { hora: '07:45', t: 'Recepción de nadadores 6,5 km', d: '' },
+              { hora: '08:45', t: 'Charla técnica 6,5 km', d: '' },
+              { hora: '08:55', t: 'Largada 6,5 km · Grupo lento', d: '', destacado: true },
+              { hora: '09:00', t: 'Largada 6,5 km', d: '', destacado: true },
+              { hora: '09:30', t: 'Recepción de nadadores 1,5 km, 3 km y Kids', d: '' },
+              { hora: '11:45', t: 'Charla técnica 3 km y 1,5 km', d: '' },
+              { hora: '12:00', t: 'Largada 3 km', d: '', destacado: true },
+              { hora: '12:10', t: 'Largada 1,5 km', d: '', destacado: true },
+              { hora: '13:30', t: 'Largada Super Sprint', d: '', destacado: true },
+              { hora: '13:40', t: 'Largada Kids', d: '', destacado: true },
+              { hora: '14:15', t: 'Premiación', d: '' },
+            ],
+          },
+        ],
+      },
+    ],
+
+    kit: [
+      { t: 'Gorra oficial', d: 'Incluida' },
+      { t: 'Chip de cronometraje', d: 'Incluido' },
+      { t: 'Numeración', d: 'Incluida' },
+      { t: 'Medalla finisher', d: 'Incluida' },
+      { t: 'Regalo OWA', d: 'Incluido' },
+    ],
+  },
+
+  // Cierre de temporada del Circuito OWA, en la misma sede que San Pedro pero
+  // sin las pruebas complementarias (arena Super Sprint y Kid): acá son dos
+  // distancias, punto.
+  'maraton-acuatica-san-pedro': {
+    sedeBarra: 'Camping Club América, San Pedro',
+    sedeCiudad: 'San Pedro, Buenos Aires, Argentina',
+
+    distancias: [
+      { rotulo: 'Larga', torneo: 'ESPECIAL', km: '7 km', nota: 'Distancia larga de la Maratón.', cats: CATS_COMPLETAS },
+      { rotulo: 'Corta', torneo: 'ESPECIAL', km: '4 km', nota: 'Distancia corta de la Maratón.', cats: CATS_COMPLETAS },
+    ],
+
+    // Mismos recorridos que corre el Circuito OWA en San Pedro (mismos mapas,
+    // misma largada y llegada): es el mismo río, no una carrera distinta.
+    recorridos: [
+      {
+        id: 'maraton-7k',
+        torneo: 'ESPECIAL',
+        titulo: '7 km',
+        largada: 'Apart',
+        llegada: 'San Pedro',
+        mapas: [{ slug: 'mapa-spd-7k', alt: 'Mapa del recorrido de 7 km, desde el apart hasta la llegada' }],
+        ficha: [
+          ['Fecha', 'Sábado 10 de abril de 2027'],
+          ['Horario de largada', '10:30 hs'],
+          ['Distancia', '7 km · recorrido punto a punto'],
+          ['Uso de neopreno', 'Optativo'],
+        ],
+      },
+      {
+        id: 'maraton-4k',
+        torneo: 'ESPECIAL',
+        titulo: '4 km',
+        largada: 'Cantando',
+        llegada: 'San Pedro',
+        mapas: [{ slug: 'mapa-spd-4k', alt: 'Mapa del recorrido de 4 km, desde Cantando hasta la llegada' }],
+        ficha: [
+          ['Fecha', 'Sábado 10 de abril de 2027'],
+          ['Horario de largada', '12:30 hs'],
+          ['Distancia', '4 km · recorrido punto a punto'],
+          ['Uso de neopreno', 'Optativo'],
+        ],
+      },
+    ],
+
+    // Calco del cronograma del domingo de San Pedro (mismos horarios), corrido
+    // un día para atrás — viernes de entrega de kits, sábado de carrera— y sin
+    // los bloques de arena Super Sprint y Kid, que esta fecha no tiene.
+    cronogramas: [
+      {
+        torneo: 'ESPECIAL',
+        aviso: 'No se realizan inscripciones presenciales durante el evento.',
+        dias: [
+          {
+            fecha: 'Viernes 9 de abril',
+            lugar: 'Camping América · San Pedro',
+            items: [
+              {
+                hora: '17:00 a 19:00',
+                t: 'Entrega de kits',
+                d: 'Aptos médicos y firma de deslindes. Para las dos pruebas: 7 km y 4 km.',
+              },
+            ],
+          },
+          {
+            fecha: 'Sábado 10 de abril',
+            lugar: 'Día del evento',
+            items: [
+              { hora: '07:45', zona: 'Zona de acreditación', t: 'Entrega de kits · 7 km', d: 'Aptos médicos, deslindes y numeración.' },
+              { hora: '09:30', zona: 'Zona central', t: 'Charla técnica obligatoria · 7 km', d: '' },
+              { hora: '09:40', t: 'Partida de micros', d: 'Hacia el punto de largada de 7 km.' },
+              { hora: '09:50', zona: 'Zona de acreditación', t: 'Entrega de kits · 4 km', d: 'Aptos médicos, deslindes y numeración.' },
+              { hora: '10:00', zona: 'Zona de largada 7 km', t: 'Acreditación final', d: 'Checklist.' },
+              { hora: '10:20', t: 'Largada grupo 1 · 7 km', d: 'Ritmo lento. Puntual.' },
+              { hora: '10:30', t: 'Largada grupo general · 7 km', d: 'Puntual.', destacado: true },
+              { hora: '12:00', zona: 'Zona central', t: 'Charla técnica obligatoria · 4 km', d: '' },
+              { hora: '12:10', t: 'Partida de micros', d: 'Hacia el punto de largada de 4 km.' },
+              { hora: '12:20', zona: 'Zona de largada 4 km', t: 'Acreditación final', d: 'Checklist.' },
+              { hora: '12:30', t: 'Largada única · 4 km', d: 'Puntual.', destacado: true },
+              { hora: '15:00', t: 'Ceremonia de premiación general', d: 'Camping América.' },
+            ],
+          },
+        ],
+      },
+    ],
+
+    kit: [
+      { t: 'Gorra oficial', d: 'Incluida' },
+      { t: 'Chip de cronometraje', d: 'Incluido' },
+      { t: 'Numeración', d: 'Incluida' },
+      { t: 'Medalla finisher', d: 'Incluida' },
+      { t: 'Regalo OWA', d: 'Incluido' },
     ],
   },
 

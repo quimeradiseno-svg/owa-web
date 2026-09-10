@@ -153,9 +153,11 @@ export const MUCHO_MAS_QUE_NADAR = {
   ],
 };
 
-/** Agenda 2027 de Race Travel. Capri–Nápoli ya tiene cupos abiertos para
-    equipos Relay; Portugal y Mykonos todavía no tienen fecha ni foto
-    confirmadas por OWA — quedan "próximamente" hasta que las manden. */
+/** Agenda 2027 de Race Travel, en el orden en que se muestran (Capri–Nápoli,
+    Mykonos, Portugal). Capri–Nápoli ya tiene cupos abiertos para equipos
+    Relay. Mykonos ya tiene fecha confirmada por OWA pero el paquete todavía
+    no está armado; Portugal ni siquiera tiene fecha — las dos quedan
+    "próximamente" hasta que OWA cierre el resto de los datos. */
 export const RACE_TRAVEL_AGENDA = [
   {
     slug: 'capri-napoli',
@@ -171,6 +173,23 @@ export const RACE_TRAVEL_AGENDA = [
     cta: true,
   },
   {
+    slug: 'swim-gp-mykonos',
+    destino: 'Swim GP Mykonos',
+    pais: 'Grecia',
+    // Fecha confirmada por OWA; el paquete (sede, cupos, precio) todavía no
+    // está armado, así que sigue en "próximamente" pese a tener día cierto.
+    fecha: '29 y 30 de mayo de 2027',
+    estado: 'proximamente',
+    chip: 'PRÓXIMAMENTE',
+    // Foto de referencia del destino, no de la carrera: todavía no tiene
+    // sede ni paquete confirmados.
+    img: 'tv-mykonos',
+    resumen: 'Aguas abiertas y competencia en uno de los destinos más atractivos del Mediterráneo.',
+    nota: 'Próximamente más información.',
+    notaIcono: 'reloj',
+    cta: false,
+  },
+  {
     slug: 'swim-gp-portugal',
     destino: 'Swim GP',
     pais: 'Portugal',
@@ -181,20 +200,6 @@ export const RACE_TRAVEL_AGENDA = [
     // tiene fecha ni sede confirmadas.
     img: 'tv-portugal',
     resumen: 'Una nueva carrera, un nuevo destino y un grupo OWA viajando para competir.',
-    nota: 'Próximamente más información.',
-    notaIcono: 'reloj',
-    cta: false,
-  },
-  {
-    slug: 'swim-gp-mykonos',
-    destino: 'Swim GP Mykonos',
-    pais: 'Grecia',
-    fecha: 'Octubre 2027',
-    estado: 'proximamente',
-    chip: 'PRÓXIMAMENTE',
-    // Ídem: foto de referencia del destino, no de la carrera.
-    img: 'tv-mykonos',
-    resumen: 'Aguas abiertas y competencia en uno de los destinos más atractivos del Mediterráneo.',
     nota: 'Próximamente más información.',
     notaIcono: 'reloj',
     cta: false,

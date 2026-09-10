@@ -206,17 +206,52 @@ export const TEMPORADAS = [
         etapa: 'Fecha 1',
         url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-de-obligado-vob-gp-owa/filtros',
       },
-      // El resto de la 25/26 (SPD, LBC, PNR, NHL, VHU, ISC, CLN, PAD) está
-      // pendiente: en el sitio viejo esos botones apuntan todos al link de
-      // San Pedro por error. Ver mensaje a OWA.
+      {
+        sigla: 'SPD',
+        nombre: 'San Pedro',
+        // OWA pasó esta edición como "2025 diciembre", pero su propia página
+        // de resultados la publica el 30 de noviembre. Va la fecha de la
+        // página hasta que confirmen cuál de las dos es.
+        fecha: '30 de noviembre de 2025',
+        sede: 'San Pedro · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Fecha 1',
+        url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro-spd-circuito-owa-2526/filtros',
+      },
+      {
+        sigla: 'PNR',
+        nombre: 'Open Water Pinamar',
+        fecha: '17 de enero de 2026',
+        sede: 'Pinamar · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Fecha 3',
+        url: 'https://cronometrajeinstantaneo.com/resultados/pinamar-pnr-circuito-owa-2526/filtros',
+      },
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        fecha: '21 de febrero de 2026',
+        sede: 'Bariloche · Río Negro',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Fecha 4',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-vhu-circuito-owa-2526/filtros',
+      },
+      {
+        sigla: 'PAD',
+        nombre: 'Puerto Alto Delta',
+        fecha: '12 de abril de 2026',
+        sede: 'Villa Paranacito · Entre Ríos',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Fecha final',
+        url: 'https://cronometrajeinstantaneo.com/resultados/puerto-alto-delta-pad-circuito-owa-2526-final/filtros',
+      },
+      // Falta LBC (Liebig a Colón, 13/12/2025). El link está en la página
+      // vieja de OWA pero todavía no lo confirmaron en la lista que mandaron.
     ],
   },
   {
     id: '24-25',
     label: '2024/25',
-    // Cargada desde la página de resultados de owa.com.ar, que para esta
-    // temporada sí tiene los links completos y correctos. Falta que OWA los
-    // confirme uno por uno antes de publicar.
     carreras: [
       {
         sigla: 'SPD',
@@ -253,7 +288,7 @@ export const TEMPORADAS = [
         sede: 'Pinamar · Buenos Aires',
         torneo: 'CIRCUITO OWA',
         etapa: 'Etapa 3',
-        url: 'https://cronometrajeinstantaneo.com/resultados/etapa-pinamar-pnr/generales',
+        url: 'https://cronometrajeinstantaneo.com/resultados/etapa-pinamar-pnr/filtros',
       },
       {
         sigla: 'CDM',
@@ -271,7 +306,7 @@ export const TEMPORADAS = [
         sede: 'Bariloche · Río Negro',
         torneo: 'CIRCUITO OWA',
         etapa: 'Etapa 5',
-        url: 'https://cronometrajeinstantaneo.com/resultados/etapa-vuelta-a-la-huemul-vhu/generales',
+        url: 'https://cronometrajeinstantaneo.com/resultados/etapa-vuelta-a-la-huemul-vhu/filtros',
       },
       {
         sigla: 'ISC',
@@ -295,9 +330,7 @@ export const TEMPORADAS = [
         sigla: 'PAD',
         nombre: 'Puerto Alto Delta',
         fecha: '6 de abril de 2025',
-        // Pendiente: la sede no está publicada en la página de OWA y no se
-        // deduce del nombre. Confirmar antes de publicar.
-        sede: '',
+        sede: 'Villa Paranacito · Entre Ríos',
         torneo: 'GRAND PRIX y CIRCUITO OWA',
         etapa: '',
         url: 'https://cronometrajeinstantaneo.com/resultados/etapa-final-puerto-alto-delta-pad/filtros',
@@ -309,6 +342,16 @@ export const TEMPORADAS = [
     label: '2023/24',
     carreras: [
       {
+        sigla: 'SPD',
+        nombre: 'San Pedro',
+        // OWA pasó el mes, no el día.
+        fecha: 'Noviembre de 2023',
+        sede: 'San Pedro · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 2',
+        url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro-spd-etapa-2-circuito-owa-2324/filtros',
+      },
+      {
         sigla: 'VOB',
         nombre: 'Vuelta de Obligado',
         // Pendiente: el sitio viejo no publica la fecha exacta de esta
@@ -319,12 +362,44 @@ export const TEMPORADAS = [
         etapa: 'Etapa 3',
         url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-de-obligado-vob-etapa-3-circuito-owa-2324/filtros',
       },
+      {
+        sigla: 'PNR',
+        nombre: 'Open Water Pinamar',
+        // OWA la listó sólo como "2024". Por el número de etapa cae en enero,
+        // pero la fecha exacta queda pendiente de confirmación.
+        fecha: '2024',
+        sede: 'Pinamar · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 5',
+        url: 'https://cronometrajeinstantaneo.com/resultados/pinamar-pnr-etapa-5-circuito-owa-2324/filtros',
+      },
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        // Ídem: OWA la listó sólo como "2024".
+        fecha: '2024',
+        sede: 'Bariloche · Río Negro',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 7',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-vhu-etapa-7-circuito-owa-2324/filtros',
+      },
+      // Falta PAD 2024: el link que mandó OWA apunta al panel de
+      // administración de Cronometraje (admin…/inicio), no a un resultado.
     ],
   },
   {
     id: '22-23',
     label: '2022/23',
     carreras: [
+      {
+        sigla: 'SPD',
+        nombre: 'San Pedro',
+        fecha: '5 de noviembre de 2022',
+        sede: 'San Pedro · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 2',
+        url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro---etapa-2---circuito-owa-2223/filtros',
+      },
       {
         sigla: 'VOB',
         nombre: 'Vuelta de Obligado 20k',
@@ -334,12 +409,59 @@ export const TEMPORADAS = [
         etapa: 'Etapa 3',
         url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-de-obligado-2022---vob20k---fecha-3/filtros',
       },
+      {
+        sigla: 'PNR',
+        nombre: 'Open Water Pinamar',
+        fecha: '17 de diciembre de 2022',
+        sede: 'Pinamar · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 5',
+        url: 'https://cronometrajeinstantaneo.com/resultados/pinamar---etapa-5---circuito-owa-2223/filtros',
+      },
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        fecha: '25 de febrero de 2023',
+        sede: 'Bariloche · Río Negro',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 7',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-etapa-7-circuito-owa-2223/filtros',
+      },
+      {
+        sigla: 'PAD',
+        nombre: 'Puerto Alto Delta',
+        fecha: '19 de marzo de 2023',
+        sede: 'Villa Paranacito · Entre Ríos',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 8',
+        url: 'https://cronometrajeinstantaneo.com/resultados/puerto-alto-delta-etapa-8-circuito-owa-2223/filtros',
+      },
+      {
+        sigla: 'SPD',
+        nombre: 'San Pedro',
+        // Segunda vez de San Pedro en la misma temporada: abrió la 22/23 en
+        // noviembre y la cerró en abril. OWA pasó el mes, no el día.
+        fecha: 'Abril de 2023',
+        sede: 'San Pedro · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa final',
+        url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro-etapa-final-circuito-owa-2223/filtros',
+      },
     ],
   },
   {
     id: '21-22',
     label: '2021/22',
     carreras: [
+      {
+        sigla: 'SPD',
+        nombre: 'San Pedro',
+        fecha: '6 de noviembre de 2021',
+        sede: 'San Pedro · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 1',
+        url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro/filtros',
+      },
       {
         sigla: 'VOB',
         nombre: 'Vuelta de Obligado 20k',
@@ -349,9 +471,139 @@ export const TEMPORADAS = [
         etapa: 'Etapa 2',
         url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-de-obligado-20k/filtros',
       },
+      {
+        sigla: 'PNR',
+        nombre: 'Open Water Pinamar',
+        fecha: '19 de diciembre de 2021',
+        sede: 'Pinamar · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 3',
+        url: 'https://cronometrajeinstantaneo.com/resultados/open-water-pinamar/filtros',
+      },
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        fecha: '26 de febrero de 2022',
+        sede: 'Bariloche · Río Negro',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 5',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-2022/filtros',
+      },
+      {
+        sigla: 'PAD',
+        nombre: 'Puerto Alto Delta',
+        fecha: '20 de marzo de 2022',
+        sede: 'Villa Paranacito · Entre Ríos',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 6',
+        url: 'https://cronometrajeinstantaneo.com/resultados/puerto-alto-delta-2022/filtros',
+      },
+      {
+        sigla: 'SPD',
+        nombre: 'San Pedro',
+        // Igual que en la 22/23: San Pedro abrió y cerró la temporada.
+        fecha: '10 de abril de 2022',
+        sede: 'San Pedro · Buenos Aires',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa final',
+        url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro-2022/filtros',
+      },
+    ],
+  },
+  {
+    id: '20-21',
+    label: '2020/21',
+    carreras: [
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        fecha: '27 de febrero de 2021',
+        sede: 'Bariloche · Río Negro',
+        torneo: 'CIRCUITO OWA',
+        etapa: '',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-2021/filtros',
+      },
+    ],
+  },
+  {
+    id: '19-20',
+    label: '2019/20',
+    carreras: [
+      {
+        sigla: 'PAD',
+        nombre: 'Puerto Alto Delta',
+        fecha: '8 de diciembre de 2019',
+        sede: 'Villa Paranacito · Entre Ríos',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 2',
+        url: 'https://cronometrajeinstantaneo.com/resultados/etapa-2---puerto-alto-delta/filtros',
+      },
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        fecha: '29 de febrero de 2020',
+        sede: 'Bariloche · Río Negro',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 3',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-2020/filtros',
+      },
+    ],
+  },
+  {
+    id: '18-19',
+    label: '2018/19',
+    carreras: [
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul',
+        fecha: '2 de marzo de 2019',
+        sede: 'Bariloche · Río Negro',
+        // Sin torneo: en esas ediciones la Huemul todavía no puntuaba para
+        // ningún campeonato, se corría suelta.
+        torneo: '',
+        etapa: '',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul--2019/filtros',
+      },
+    ],
+  },
+  {
+    id: '17-18',
+    label: '2017/18',
+    carreras: [
+      {
+        sigla: 'VHU',
+        nombre: 'Vuelta a la Huemul Sailfish',
+        fecha: '3 de marzo de 2018',
+        sede: 'Bariloche · Río Negro',
+        torneo: '',
+        etapa: '',
+        url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-sailfish/filtros',
+      },
     ],
   },
 ];
+
+/** Todas las ediciones de una carrera, de la más nueva a la más vieja.
+
+    Es el mismo dato que arma el listado por temporada de /resultados, leído
+    al revés: OWA lleva su archivo por carrera ("la Huemul tiene nueve
+    ediciones") y el nadador que entra a una ficha se pregunta lo mismo. Con
+    una sola fuente las dos vistas no se pueden contradecir.
+
+    Recibe varias siglas porque una fecha puede correr dos competencias con
+    nombre propio: la ficha de San Pedro es la casa de VOB y de SPD. */
+export const edicionesDe = (siglas) => {
+  const busco = new Set([].concat(siglas).filter(Boolean));
+  return TEMPORADAS.flatMap((t) =>
+    t.carreras
+      .filter((c) => busco.has(c.sigla) && c.url)
+      // Dentro de la temporada las carreras van de la más vieja a la más
+      // nueva; acá se listan al revés, así que se dan vuelta también adentro.
+      .slice()
+      .reverse()
+      .map((c) => ({ ...c, temporada: t.label }))
+  );
+};
 
 /** Qué va en la tarjeta destacada, arriba de todo.
 

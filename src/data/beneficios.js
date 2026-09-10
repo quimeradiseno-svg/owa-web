@@ -37,6 +37,7 @@ const nexalba20 = () => ({
 export const BENEFICIOS = {
   lujan: [nexalba20()],
   colon: [nexalba20()],
+  'san-pedro': [nexalba20()],
   // Se van sumando el resto de las carreras a medida que OWA cierre cada
   // acuerdo — algunas van a compartir el de Nexalba, otras van a traer el
   // suyo propio.

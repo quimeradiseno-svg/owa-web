@@ -82,7 +82,9 @@ function tarjetaSalida(t) {
 
 /** Card de "Agenda 2027". Capri-Nápoli tiene fotos reales de la propia
     carrera; Portugal y Mykonos todavía no (van con foto de referencia del
-    destino, en escala de grises: no fingen ser la carrera todavía). */
+    destino). En color, no en escala de grises: el chip "PRÓXIMAMENTE" ya
+    dice que no está disponible, y apagar la foto encima era pisar el mismo
+    mensaje dos veces. */
 function tarjetaAgenda(r) {
   const activa = r.estado === 'abierta';
   return html`
@@ -97,7 +99,7 @@ function tarjetaAgenda(r) {
           alt: activa ? `Nadadores en ${r.destino}, ${r.pais}` : '',
           sizes: '(min-width: 640px) 33vw, 100vw',
           className: 'block h-full w-full',
-          imgClass: `h-full w-full object-cover ${activa ? '' : 'grayscale'}`,
+          imgClass: 'h-full w-full object-cover',
         })}
         <p class="absolute top-3.5 left-3.5">${chipViaje(r.chip)}</p>
       </div>

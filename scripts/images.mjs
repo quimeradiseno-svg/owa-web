@@ -120,6 +120,21 @@ const PHOTOS = {
   'mapa-cln-25k': 'Fotos/CLN/MAPA-COLON-25.jpg',
   // Cruce del Nahuel: única distancia, cruzando el lago de punta a punta.
   'mapa-nhl-8k': 'Fotos/NHL/nhl1.jpg',
+  // mpa3.5.jpg y mpa1.5.jpg: nombres de archivo tal como los pasó OWA — el
+  // "3.5" del segundo es un resabio de una versión anterior del mapa, la
+  // credencial que trae encima dice 3 KM (así lo confirmó OWA por escrito).
+  'mapa-vhu-6-5k': 'Fotos/VHU/mapa6.5.jpg',
+  'mapa-vhu-3k': 'Fotos/VHU/mpa3.5.jpg',
+  'mapa-vhu-1-5k': 'Fotos/VHU/mpa1.5.jpg',
+  'vhu-galeria-1': 'Fotos/VHU/DSC_5619.JPG',
+  'vhu-galeria-2': 'Fotos/VHU/02_PREVIA_LAGO_AMANECER_4278.jpg',
+  'vhu-galeria-3': 'Fotos/VHU/03_PREVIA_GRUPO_4297.jpg',
+  'vhu-galeria-4': 'Fotos/VHU/05_PREVIA_MULTITUD_4320.jpg',
+  'vhu-galeria-5': 'Fotos/VHU/06_AGUA_SELFIE_4396.jpg',
+  'vhu-galeria-6': 'Fotos/VHU/DSC_4451.JPG',
+  'vhu-galeria-7': 'Fotos/VHU/DSC_4908.JPG',
+  'vhu-galeria-8': 'Fotos/VHU/DSC_5586.JPG',
+  'vhu-galeria-9': 'Fotos/VHU/isla.png',
   // Galería de la ficha: seis de la selección oficial de la edición 2025,
   // todas con el logo NHL y el crédito del Museo Malvinas horneados por el
   // fotógrafo — se dejan así, es la marca de la propia sede anfitriona, no

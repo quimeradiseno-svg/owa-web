@@ -579,6 +579,9 @@ function bloqueSponsors(e) {
     (`grid-auto-rows`) en vez de un aspect-ratio por foto: es lo que permite
     que la grande mida exactamente el doble sin depender de qué proporción
     traiga cada archivo. */
+/** Las siglas que corren en esta fecha. Un evento con dos jornadas tiene una
+    por jornada (San Pedro es VOB el sábado y SPD el domingo); el campo
+    `e.sigla` de esos trae las dos juntas ("VOB · SPD") y no sirve para buscar. */
 function galeriaBloque(e) {
   const fotos = e.galeria;
   if (!fotos?.length) return '';
@@ -662,6 +665,19 @@ export function render(ctx) {
     <section class="relative flex min-h-[50svh] items-end overflow-hidden bg-owa-abyss">
       ${fondo({ slug: e.img, alt: '', opacity: 0.88, priority: true })}
       <div class="u-hero-scrim-sm absolute inset-0"></div>
+
+      <!-- Mismo sello que ya lleva la mini-tarjeta del calendario (10 años de
+           la Vuelta a la Huemul, ver tarjeta-evento.js) — acá en la ficha
+           propia de la carrera, arriba a la derecha de la foto. -->
+      ${e.sello
+        ? html`<img
+            src="${e.sello.src}"
+            alt="${e.sello.alt}"
+            loading="eager"
+            decoding="async"
+            class="absolute top-5 right-5 z-10 size-20 sm:top-7 sm:right-7 sm:size-28 [filter:drop-shadow(0_1px_3px_rgb(7_12_40/0.45))]"
+          />`
+        : ''}
 
       <div class="u-shell relative pt-14 pb-20 text-white">
         <a
@@ -1527,12 +1543,23 @@ export function render(ctx) {
           ${f?.kit
             ? html`
                 <ul class="mt-4.5">
-                  ${f.kit.map(
-                    (k) => html`
-                      <li class="border-t border-owa-sand py-3 text-sm text-owa-navy">
-                        ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-slate">*</span>` : ''}
-                      </li>
-                    `
+                  ${f.kit.map((k) =>
+                    // Con `d` (San Pedro, Ramallo y Colón no lo cargan) se
+                    // muestra el estado de cada ítem —Incluido, A confirmar—
+                    // igual que el placeholder genérico de abajo; sin `d`
+                    // sigue como lista simple de nombres.
+                    k.d
+                      ? html`
+                          <li class="flex items-baseline justify-between gap-3.5 border-t border-owa-sand py-3 text-sm">
+                            <span class="text-owa-slate">${k.t}</span>
+                            <span class="text-right font-display text-[13px] font-bold text-owa-navy">${k.d}</span>
+                          </li>
+                        `
+                      : html`
+                          <li class="border-t border-owa-sand py-3 text-sm text-owa-navy">
+                            ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-slate">*</span>` : ''}
+                          </li>
+                        `
                   )}
                 </ul>
                 ${f.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-slate">* ${f.kitNota}</p>` : ''}

@@ -201,6 +201,26 @@ export const EVENTOS = [
     img: 'ev-huemul',
     // Décima edición de la travesía.
     sello: { src: '/brand/sello-10-anios.webp', alt: '10 años de la Vuelta a la Huemul' },
+    // Galería de la ficha, mismo criterio que Cruce del Nahuel y Pinamar:
+    // `grande` abre el mosaico ocupando el doble de espacio, el resto entra
+    // pareja de a 4 por fila (8 chicas + 1 grande cierran un rectángulo de
+    // 4×3 sin fila suelta). Se dejó afuera la foto con el arco de Golden
+    // Haus (sponsor de una edición anterior, no está en sponsors.js).
+    galeria: [
+      {
+        slug: 'vhu-galeria-1',
+        grande: true,
+        alt: 'Nadadores cruzando el lago Nahuel Huapi con la isla Huemul de fondo',
+      },
+      { slug: 'vhu-galeria-2', alt: 'Boyas de largada al amanecer sobre el lago Nahuel Huapi' },
+      { slug: 'vhu-galeria-3', alt: 'Nadadores reunidos en la costa antes de la largada, con el lago de fondo' },
+      { slug: 'vhu-galeria-4', alt: 'Grupo de nadadores con gorra y antiparras esperando la largada' },
+      { slug: 'vhu-galeria-5', alt: 'Nadadores entrando al agua antes de la largada' },
+      { slug: 'vhu-galeria-6', alt: 'Nadadores acompañados por un kayak de seguridad, con las montañas de fondo' },
+      { slug: 'vhu-galeria-7', alt: 'Nadador rodeando una boya de largada en el lago Nahuel Huapi' },
+      { slug: 'vhu-galeria-8', alt: 'Nadador llegando a la meta bajo el arco de OWA' },
+      { slug: 'vhu-galeria-9', alt: 'Vista de la isla Huemul desde el lago Nahuel Huapi' },
+    ],
   },
   {
     slug: 'colon',
