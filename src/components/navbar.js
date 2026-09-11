@@ -1,20 +1,25 @@
 import { html, toHTML } from '../lib/html.js';
 
+// El tercer valor es la ruta que marca el link como activo (data-nav), sólo
+// necesario cuando el href lleva query string: RESULTADOS entra siempre en
+// "Resultados por temporada" y ahí en la temporada en curso, pero el
+// indicador y el aria-current tienen que seguir reconociendo /resultados
+// sin importar la query.
 const LINKS = [
   ['HOME', '/'],
   ['GRAND PRIX', '/grand-prix'],
   ['CIRCUITO', '/circuito'],
   ['ESPECIALES', '/especiales'],
   ['CHALLENGE', '/challenge'],
-  ['RESULTADOS', '/resultados'],
+  ['RESULTADOS', '/resultados?tab=temporadas', '/resultados'],
   ['TRAVEL', '/travel'],
   ['PDA', '/pda'],
 ];
 
-const item = (label, href, extra = '') => html`
+const item = (label, href, extra = '', nav = href) => html`
   <a
     href="${href}"
-    data-nav="${href}"
+    data-nav="${nav}"
     class="whitespace-nowrap font-body text-[13px] font-bold tracking-[0.09em] text-white/90 transition-colors duration-200 hover:text-owa-cyan aria-[current=page]:text-owa-cyan ${extra}"
     >${label}</a
   >
@@ -29,7 +34,7 @@ export function navbar() {
         </a>
 
         <nav class="relative hidden flex-1 items-center justify-end gap-5 lg:flex" aria-label="Principal">
-          ${LINKS.map(([l, h]) => item(l, h, 'py-1'))}
+          ${LINKS.map(([l, h, nav]) => item(l, h, 'py-1', nav))}
           <span class="nav-indicator" data-hidden aria-hidden="true"></span>
         </nav>
 
@@ -62,10 +67,10 @@ export function navbar() {
       >
         <nav class="u-shell grid gap-1 py-4" aria-label="Principal (móvil)">
           ${LINKS.map(
-            ([l, h]) => html`
+            ([l, h, nav = h]) => html`
               <a
                 href="${h}"
-                data-nav="${h}"
+                data-nav="${nav}"
                 class="rounded-2xl px-4 py-3 font-body text-[15px] font-bold tracking-[0.09em] text-white/90 transition-colors hover:bg-white/8 aria-[current=page]:bg-white/10 aria-[current=page]:text-owa-cyan"
                 >${l}</a
               >
