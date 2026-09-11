@@ -301,7 +301,10 @@ const jornadas = (e, f) => {
   <section class="bg-white px-0 pt-10 pb-20" aria-labelledby="h-jornadas">
     <div class="u-shell">
       ${eyebrow(unSoloDia ? 'Dos campeonatos, una misma jornada' : 'Dos jornadas, un fin de semana')}
-      <h2 id="h-jornadas" class="mt-3.5 u-h2 text-owa-navy">${unSoloDia ? 'Día del evento' : 'Días del evento'}</h2>
+      <!-- Un punto por debajo de u-h2 (el título compartido del resto de las
+           secciones): a ese tamaño se sentía grande al lado de las tarjetas,
+           que ya traen su propia sigla grande abajo. -->
+      <h2 id="h-jornadas" class="mt-3.5 text-[clamp(1.75rem,3.8vw,3rem)] text-owa-navy">${unSoloDia ? 'Día del evento' : 'Días del evento'}</h2>
 
       <!-- EXPERIMENTO — estilo "afiche de Instagram": cinta de fecha, sigla
            gigante, bajada y pastillas de dato, en vez de la jerarquía
@@ -366,7 +369,7 @@ const jornadas = (e, f) => {
 
                 <p
                   data-nums
-                  class="mt-6 font-display text-[clamp(4rem,9vw,6rem)] leading-[0.82] font-black uppercase ${gp ? 'text-owa-electric' : 'text-owa-cyan'}"
+                  class="mt-6 font-display text-[clamp(3.25rem,7.5vw,5rem)] leading-[0.82] font-black uppercase ${gp ? 'text-owa-electric' : 'text-owa-cyan'}"
                 >
                   ${j.sigla}
                 </p>
@@ -475,11 +478,13 @@ const jornadas = (e, f) => {
 `;
 };
 
-// Postulación a un Challenge por WhatsApp, con el mensaje ya redactado. Mismo
-// número que el pie del sitio (ver footer.js).
+// Postulación a un Challenge. Por default va a WhatsApp con el mensaje ya
+// redactado (mismo número que el pie del sitio, ver footer.js); un evento con
+// `postulacionEmail` (hoy sólo RDP) va por mail a esa casilla en cambio.
 const waPostulacion = (e) =>
-  'https://wa.me/5491125543112?text=' +
-  encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`);
+  e.postulacionEmail
+    ? `mailto:${e.postulacionEmail}?subject=${encodeURIComponent(`Postulación — ${e.nombre}`)}&body=${encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`)}`
+    : 'https://wa.me/5491125543112?text=' + encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`);
 
 // Sección "No se inscribe: se postula" de los Challenge. Va sobre blanco: en
 // esas fichas la banda anterior (Distancias) es navy, así que ésta invierte.
@@ -590,14 +595,14 @@ const resenaHistorica = (e) => {
         ? html`
             <div class="lg:pt-2">
               ${eyebrow('Forma parte de')}
-              <div class="mt-4 rounded-owa-lg border border-owa-line bg-owa-sand p-7.5">
+              <div class="mt-4 rounded-owa-lg border border-owa-line bg-white p-7.5">
                 ${e.triple.logo
                   ? html`<img
                       src="${e.triple.logo}"
                       alt="${e.triple.nombre}"
                       loading="lazy"
                       decoding="async"
-                      class="h-20 w-auto sm:h-24"
+                      class="w-48 h-auto sm:w-56"
                     />`
                   : html`<p class="font-display text-[clamp(1.375rem,2.4vw,1.75rem)] font-black text-owa-navy uppercase">
                       ${e.triple.nombre}
@@ -711,10 +716,13 @@ function galeriaBloque(e) {
         class="mt-7 grid grid-cols-2 gap-3.5 [grid-auto-rows:140px] sm:grid-cols-4 sm:gap-4 sm:[grid-auto-rows:170px] lg:[grid-auto-rows:200px]"
         data-stagger
       >
+        <!-- Puntas menos redondas que el resto de las tarjetas del sitio
+             (rounded-owa-md, 16px, en vez de rounded-owa-lg, 28px) — se
+             probó primero sólo en RDP y de ahí pasó a todas las galerías. -->
         ${fotos.map(
           (g) => html`
             <div
-              class="reveal-clip overflow-hidden rounded-owa-lg bg-owa-mist ${g.grande ? 'col-span-2 row-span-2' : ''}"
+              class="reveal-clip overflow-hidden rounded-owa-md bg-owa-mist ${g.grande ? 'col-span-2 row-span-2' : ''}"
             >
               ${foto({
                 slug: g.slug,
@@ -764,6 +772,31 @@ export function render(ctx) {
   if (!e) return '<div class="u-shell py-40"><h1>Carrera no encontrada</h1></div>';
 
   const esChallenge = e.tipo === 'challenge';
+  // Sólo para el tamaño del título del hero: el calendario (Grand Prix +
+  // Circuito) y los especiales quedaban con la escala grande original y el
+  // titular se sentía desproporcionado. Los tres tipos achican, sin tocar
+  // nada más del layout de cada uno (alto de hero, velo, secciones) que
+  // sigue su propio camino. El calendario queda un escalón por encima de
+  // Challenge/especiales y no en la misma escala: son las 4 fechas
+  // puntuables, el tipo de carrera con más peso del sitio, y a la escala de
+  // Challenge se sentían chicas.
+  const heroTituloChico = true;
+  const heroTituloTam = e.tipo === 'core' ? 'text-[clamp(2.375rem,6.3vw,5.75rem)]' : 'text-[clamp(2.25rem,5.6vw,5rem)]';
+  // Los especiales van forzados a dos líneas y no al ancho libre: con el
+  // título más chico ("mismo tamaño que Challenge", arriba) algunos entraban
+  // en una sola línea y el hero perdía la silueta de dos renglones que tiene
+  // el resto del sitio. Por default cae sola la última palabra ("Open
+  // Water" / "Pinamar"), pero el corte se ajusta con `e.heroCorte` —número
+  // de palabras del final que van al segundo renglón— cuando ese reparto no
+  // cae bien: "Maratón Acuática San Pedro" quiere "San Pedro" junto abajo
+  // (heroCorte: 2) y "Cruce del Nahuel" entra entero en una línea
+  // (heroCorte: 0).
+  const tituloDosLineas = (nombre, corte = 1) => {
+    const palabras = nombre.trim().split(/\s+/);
+    if (corte <= 0 || palabras.length <= corte) return nombre;
+    const ultimas = palabras.splice(palabras.length - corte, corte);
+    return html`${palabras.join(' ')}<br />${ultimas.join(' ')}`;
+  };
   const [volverHref, volverLabel] = VUELVE_A[e.tipo];
   const f = fichaDe(e.slug);
   const beneficios = beneficiosHref(e);
@@ -779,7 +812,7 @@ export function render(ctx) {
          cielo de la foto ocupaba media pantalla antes de llegar a nada
          legible. El contenido sigue anclado abajo (items-end); lo que baja
          es cuánto aire hay por encima suyo. -->
-    <section class="relative flex ${esChallenge ? 'min-h-[42svh]' : 'min-h-[50svh]'} items-end overflow-hidden bg-owa-abyss">
+    <section class="relative flex ${heroTituloChico ? 'min-h-[42svh]' : 'min-h-[50svh]'} items-end overflow-hidden bg-owa-abyss">
       ${fondo({
         slug: e.img,
         alt: '',
@@ -798,21 +831,23 @@ export function render(ctx) {
            libre de texto (el título y la ficha viven abajo a la izquierda).
            Versión en blanco —trazo y letras blancas, centro transparente—
            en vez del navy original: contra fotos de agua y montaña el navy
-           se perdía; en blanco resalta sin importar qué haya detrás. -->
+           se perdía; en blanco resalta sin importar qué haya detrás.
+           u-sello-late lo hace "respirar" apenas (ver motion.css), para que
+           se note con la vista de reojo sin robarle protagonismo al título. -->
       ${e.sello
         ? html`<img
-            src="${e.sello.src}"
+            src="${e.sello.srcHero || e.sello.src}"
             alt="${e.sello.alt}"
             loading="eager"
             decoding="async"
-            class="absolute right-6 bottom-8 z-10 size-28 [filter:drop-shadow(0_2px_10px_rgb(7_12_40/0.5))] sm:right-10 sm:bottom-10 sm:size-40 lg:size-48"
+            class="u-sello-late absolute right-6 bottom-8 z-10 size-28 [filter:drop-shadow(0_2px_10px_rgb(7_12_40/0.5))] sm:right-10 sm:bottom-10 sm:size-40 lg:size-48"
           />`
         : ''}
 
       <div
-        class="u-shell relative text-white ${esChallenge
-          ? 'pt-8 pb-16 [&_h1]:[text-shadow:0_2px_16px_rgb(7_12_40/0.55)] [&_p]:[text-shadow:0_1px_10px_rgb(7_12_40/0.6)] [&>a]:[text-shadow:0_1px_10px_rgb(7_12_40/0.6)]'
-          : 'pt-14 pb-20'}"
+        class="u-shell relative text-white ${heroTituloChico ? 'pt-8 pb-16' : 'pt-14 pb-20'} ${esChallenge
+          ? '[&_h1]:[text-shadow:0_2px_16px_rgb(7_12_40/0.55)] [&_p]:[text-shadow:0_1px_10px_rgb(7_12_40/0.6)] [&>a]:[text-shadow:0_1px_10px_rgb(7_12_40/0.6)]'
+          : ''}"
       >
         <a
           href="${volverHref}"
@@ -860,11 +895,13 @@ export function render(ctx) {
         </p>
 
         <h1
-          class="mt-5 leading-[0.9] ${esChallenge
-            ? 'text-[clamp(2.25rem,5.6vw,5rem)]'
-            : 'text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.88]'}"
+          class="mt-5 leading-[0.9] ${heroTituloTam}"
         >
-          ${e.tipo === 'challenge' ? e.nombre.split('·').pop().trim() : e.nombre}${e.sponsor === 'arena'
+          ${e.tipo === 'challenge'
+            ? e.nombre.split('·').pop().trim()
+            : e.tipo === 'especial'
+              ? tituloDosLineas(e.nombre, e.heroCorte ?? 1)
+              : e.nombre}${e.sponsor === 'arena'
             ? html`<span class="ml-4 inline-flex items-center gap-2.5 align-middle normal-case">
                 <span class="font-display text-[clamp(0.8125rem,1.5vw,1.0625rem)] font-bold tracking-[0.04em] text-owa-line/80">by</span>
                 <!-- El logo de arena sólo existe en negro; se invierte a blanco
@@ -912,15 +949,19 @@ export function render(ctx) {
                   // Challenge (y cualquier especial sin año): la ventana o
                   // condición de largada va en la misma pastilla de borde
                   // redondeado que la fecha del resto de las carreras. Texto en
-                  // Lato blanco; la palabra "Challenge", en Vito Black.
+                  // Lato blanco, con la parte que importa en Vito Black
+                  // mayúscula: la palabra "Challenge" cuando aparece, o —con
+                  // un rótulo tipo "Ventanas de cruce: diciembre a abril"— lo
+                  // que va después de los dos puntos.
+                  const [, rotulo, resto] = /^(.*:\s*)(.+)$/.exec(e.fechaLarga) || [null, '', e.fechaLarga];
                   return html`<div class="mt-5 flex flex-wrap gap-3">
                     <span
                       class="inline-block rounded-full border border-owa-cyan/60 px-5 py-2.5 font-sans text-[15px] font-bold tracking-[0.01em] text-white sm:text-[17px]"
-                      >${e.fechaLarga
+                      >${rotulo}${resto
                         .split(/(Challenge)/)
                         .map((p) =>
-                          p === 'Challenge'
-                            ? html`<span class="font-display font-black tracking-[0.04em]">${p}</span>`
+                          p === 'Challenge' || (rotulo && p === resto)
+                            ? html`<span class="font-display font-black tracking-[0.04em] uppercase">${p}</span>`
                             : p
                         )}</span
                     >
@@ -1033,7 +1074,7 @@ export function render(ctx) {
       <div class="flex items-center gap-3">
         <h2
           id="h-distancias"
-          class="font-display text-[clamp(1.125rem,2vw,1.5rem)] font-black tracking-[0.04em] uppercase ${invertido
+          class="font-display ${esChallenge ? 'text-[clamp(0.9375rem,1.6vw,1.1875rem)]' : 'text-[clamp(1.125rem,2vw,1.5rem)]'} font-black tracking-[0.04em] uppercase ${invertido
             ? 'text-owa-blue'
             : 'text-owa-sky'}"
         >
@@ -1222,6 +1263,17 @@ export function render(ctx) {
                     </span>
                   </p>
                 </div>
+                <!-- Las tres travesías Challenge (RDP, BVT, SNP) integran la
+                     Triple Corona Sudamericana — va acá con su propia rayita,
+                     como un segundo sello aparte del logo de Challenge. -->
+                <img
+                  src="/brand/triple-corona.webp"
+                  alt="Triple Corona Sudamericana"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-20 w-auto shrink-0 self-center sm:h-24 lg:h-28"
+                />
+                <div class="hidden w-px self-stretch bg-white/15 lg:block" aria-hidden="true"></div>
                 <img
                   src="/brand/challenge-dorado.svg"
                   alt="OWA Challenge"
@@ -1404,7 +1456,14 @@ export function render(ctx) {
                       </p>
                     </div>
                     <h3 class="mt-2.5 font-display text-2xl font-black text-owa-navy">${r.titulo}</h3>
-                    <p class="mt-1 text-sm font-bold text-owa-slate">${r.subtitulo || 'Punto a punto'}</p>
+                    <!-- "Punto a punto" es el default porque la mayoría de los
+                         recorridos lo son, pero no todos: un circuito
+                         boyado con largada y llegada en el mismo lugar (VHU)
+                         no lo es, y ahí subtitulo: '' lo saca del todo en
+                         vez de mentir. -->
+                    ${r.subtitulo !== ''
+                      ? html`<p class="mt-1 text-sm font-bold text-owa-slate">${r.subtitulo || 'Punto a punto'}</p>`
+                      : ''}
                     <!-- El río sale de la ficha: estaba fijo en "Paraná", que
                          vale para San Pedro y Ramallo pero no para Colón, que
                          corre sobre el Uruguay. Y un recorrido puede traer su
@@ -1785,7 +1844,7 @@ export function render(ctx) {
               ${e.video
                 ? html`
                     <div>
-                      <p class="font-display text-[15px] font-bold text-owa-navy">${e.video.titulo}</p>
+                      <p class="font-display text-[15px] font-bold text-owa-navy uppercase">${e.video.titulo}</p>
                       <div class="mt-3.5 aspect-video overflow-hidden rounded-owa-lg border border-owa-line bg-black">
                         <iframe
                           class="h-full w-full"

@@ -145,6 +145,9 @@ const PHOTOS = {
   // Portugal. "myconos.jpg", pese a vivir en la carpeta de Capri Nápoli, es
   // Mykonos (Pequeña Venecia): quedó mezclada ahí en el envío de OWA.
   'tv-capri-napoli': 'Fotos/TRAVEL/Fotos Capri Napoli/2021-15_orig.jpg',
+  // Home: hover de la tarjeta "OWA Travel" en "Cinco formas de entrar al
+  // agua". Drone del grupo nadando en fila frente a la lancha de apoyo.
+  'tv-capri-grupo': 'Fotos/TRAVEL/Fotos Capri Napoli/2019b-20_orig.jpg',
   // Home: nadadores frente a los Faraglioni, foto distinta a la del recorrido
   // de /travel para no repetir la misma imagen en dos lugares cercanos.
   'tv-capri-faraglioni': 'Fotos/TRAVEL/capri.png',

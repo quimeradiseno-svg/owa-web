@@ -34,10 +34,33 @@ const nexalba20 = () => ({
   href: MARCAS.nexalba.href,
 });
 
+// Endorphin no es un sponsor del zócalo (por eso su logo no vive en MARCAS,
+// de sponsors.js): es un servicio propio para esta tarjeta de beneficios.
+// Sin número de la fecha ni destacado/unidad como Nexalba —Endorphin no es un
+// descuento, es una lista de servicios— así que esta tarjeta usa `lista` en
+// vez de `destacado`/`unidad`/`codigo`; ver tarjetaServicio() en
+// views/beneficios.js.
+const endorphinKinesio = () => ({
+  id: 'endorphin-kinesio',
+  etiqueta: 'Beneficio para inscriptos',
+  marca: { nombre: 'Endorphin', logoClaro: '/brand/endorphin-logo.webp', alto: 'h-28 rounded-full', href: '' },
+  titulo: 'Atención kinésica para nadadores',
+  detalle:
+    'Endorphin va a estar presente en la carrera con atención kinésica especializada para nadadores, con descuentos exclusivos para inscriptos a OWA. Se puede señar el turno antes o acercarse directamente durante el evento.',
+  lista: [
+    'Masajes pre y post competencia',
+    'Kinesiotape',
+    'Ventosas',
+    'Descarga y recuperación muscular',
+    'Asesoramiento y atención al nadador',
+  ],
+  href: 'https://api.whatsapp.com/send/?phone=5491141658893&text=Hola+Gabriel+%EF%BF%BD+Llegu%C3%A9+desde+tu+perfil+y+me+gustar%C3%ADa+sacar+un+turno.+%C2%BFPodr%C3%ADas+brindarme+informaci%C3%B3n+y+disponibilidad%3F&type=phone_number&app_absent=0',
+});
+
 export const BENEFICIOS = {
-  lujan: [nexalba20()],
-  colon: [nexalba20()],
-  'san-pedro': [nexalba20()],
+  lujan: [nexalba20(), endorphinKinesio()],
+  colon: [nexalba20(), endorphinKinesio()],
+  'san-pedro': [nexalba20(), endorphinKinesio()],
   // Se van sumando el resto de las carreras a medida que OWA cierre cada
   // acuerdo — algunas van a compartir el de Nexalba, otras van a traer el
   // suyo propio.

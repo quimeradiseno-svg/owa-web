@@ -21,8 +21,10 @@ export const descripcion = (ctx) => {
   if (!e) return '';
   const bs = beneficiosDe(e.slug);
   if (!bs.length) return '';
-  // Se arma con los beneficios reales cargados, no con una plantilla.
-  const lista = bs.map((b) => `${b.destacado} ${b.unidad} en ${b.marca.nombre}`).join('. ');
+  // Se arma con los beneficios reales cargados, no con una plantilla. Los de
+  // servicio (Endorphin, sin destacado/unidad) van con su título en vez de
+  // un número.
+  const lista = bs.map((b) => (b.lista ? `${b.titulo} de ${b.marca.nombre}` : `${b.destacado} ${b.unidad} en ${b.marca.nombre}`)).join('. ');
   return `Beneficios para quienes se inscriben a ${e.nombre}: ${lista}.`;
 };
 
@@ -121,6 +123,77 @@ const tarjeta = (b) => html`
   </article>
 `;
 
+/** Variante para beneficios que son un servicio y no un descuento con código
+    (hoy sólo Endorphin): en vez del número gigante + botón de copiar, una
+    lista de qué incluye y un botón directo de contacto — acá WhatsApp, en
+    vez del link "Ir a [marca]" que abre la web de Nexalba/arena. */
+const tarjetaServicio = (b) => {
+  // El nombre de la marca, resaltado dentro del párrafo: bold y en su propio
+  // marrón (el de su isotipo), no el navy/blue del resto del sitio — es la
+  // única mención de "Endorphin" en todo el texto corrido y tiene que
+  // saltar igual que salta el logo al lado.
+  const detalle = b.detalle
+    .split(b.marca.nombre)
+    .flatMap((parte, i) => (i === 0 ? [parte] : [html`<strong class="font-bold text-[#6b4423]">${b.marca.nombre}</strong>`, parte]));
+
+  return html`
+    <article class="reveal flex h-full flex-col rounded-owa-lg border border-owa-line bg-white p-7 shadow-[var(--shadow-card)] sm:p-9">
+      <!-- Sin la etiqueta "Beneficio para inscriptos": acá el logo solo ya
+           dice de qué es la tarjeta, y sin la etiqueta al lado tiene margen
+           para crecer bastante más. Logo y título en la misma fila, no uno
+           debajo del otro: el título es corto y entra cómodo al lado. -->
+      <div class="flex items-center gap-5">
+        <img
+          src="${b.marca.logoClaro}"
+          alt="${b.marca.nombre}"
+          loading="lazy"
+          decoding="async"
+          class="${b.marca.alto} w-auto shrink-0"
+        />
+        <h2 class="font-display text-[clamp(1.25rem,2.6vw,1.75rem)] leading-tight font-black text-owa-navy">${b.titulo}</h2>
+      </div>
+      <p class="mt-3.5 max-w-[62ch] text-[15px] leading-snug text-owa-slate">${detalle}</p>
+
+      <!-- Leading más apretado (leading-none en vez del normal) y menos gap
+           entre filas: son cinco frases cortas, de una sola línea, y con el
+           interlineado por defecto la lista quedaba más alta de lo que
+           necesita — la tarjeta terminaba bastante más abajo que la de
+           Nexalba al lado. -->
+      <ul class="mt-3.5 grid gap-1.5 sm:grid-cols-2">
+        ${b.lista.map(
+          (item) => html`
+            <li class="flex items-start gap-2.5 text-[14px] leading-none text-owa-navy">
+              <span class="mt-1 size-1.5 shrink-0 rounded-full bg-owa-blue" aria-hidden="true"></span>${item}
+            </li>
+          `
+        )}
+      </ul>
+
+      <!-- mt-auto: empuja el botón al fondo de la tarjeta en vez de dejarlo
+           pegado a la lista, así las dos tarjetas terminan a la misma
+           altura (h-full arriba, más el grid que ya iguala la fila). -->
+      <div class="mt-auto pt-6">
+        ${b.href
+          ? html`<a
+              href="${b.href}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="u-nudge inline-flex items-center gap-2 font-display text-[13px] font-black tracking-[0.08em] text-owa-blue uppercase hover:underline"
+            >
+              Reservar por WhatsApp <span class="u-nudge-arrow" aria-hidden="true">↗</span>
+            </a>`
+          : html`<p class="flex items-center gap-3 rounded-owa-md border border-dashed border-owa-line bg-owa-sand px-5 py-3.5">
+              <span class="shrink-0 text-owa-slate">${icono('reloj', 'size-4.5')}</span>
+              <span class="text-[13px] leading-relaxed text-owa-slate">
+                <strong class="font-bold text-owa-navy">El contacto todavía no está publicado.</strong> Aparece acá apenas
+                OWA lo confirme.
+              </span>
+            </p>`}
+      </div>
+    </article>
+  `;
+};
+
 /* ------------------------------------------------------------------ vista */
 
 export function render(ctx) {
@@ -168,7 +241,7 @@ export function render(ctx) {
     <section class="u-shell py-16" aria-labelledby="h-beneficios">
       <h2 id="h-beneficios" class="sr-only">Beneficios de ${e.nombre}</h2>
       ${bs.length
-        ? html`<div class="grid gap-4.5" data-stagger>${bs.map(tarjeta)}</div>`
+        ? html`<div class="grid gap-4.5 lg:grid-cols-2" data-stagger>${bs.map((b) => (b.lista ? tarjetaServicio(b) : tarjeta(b)))}</div>`
         : html`
             <p class="rounded-owa-lg border border-dashed border-owa-line px-6 py-14 text-center text-owa-slate">
               Cuando OWA cierre un beneficio para esta carrera, aparece acá.

@@ -13,7 +13,9 @@ export function render() {
       ${olaSuperior('#fff')}
       <div class="u-shell relative">
         ${eyebrow('PDA', 'sky')}
-        <h1 class="mt-4 text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.9]">
+        <!-- Mismo escalón que las páginas madre (Grand Prix, Circuito,
+             Especiales, Challenge): 3.5rem de techo en vez de 4.25rem. -->
+        <h1 class="mt-4 text-[clamp(1.875rem,3.8vw,3.5rem)] leading-[0.9]">
           Programa Desarrollo<br />Aguas Abiertas
         </h1>
         <p class="mt-5.5 max-w-[56ch] text-[17px] leading-relaxed text-owa-line">

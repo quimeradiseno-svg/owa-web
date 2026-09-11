@@ -751,6 +751,9 @@ export const FICHAS = {
         id: 'vhu-6-5k',
         torneo: 'ESPECIAL',
         titulo: '6,5 km',
+        // No es punto a punto: larga y llega en el mismo lugar. Saca el
+        // subtítulo por defecto ("Punto a punto") y deja sólo `desc`.
+        subtitulo: '',
         largada: 'Playa Bonita',
         llegada: 'Playa Bonita',
         desc: 'Bordea la isla Huemul en una vuelta completa, con largada y llegada en Playa Bonita.',
@@ -770,6 +773,7 @@ export const FICHAS = {
         id: 'vhu-3k',
         torneo: 'ESPECIAL',
         titulo: '3 km',
+        subtitulo: '',
         largada: 'Playa Bonita',
         llegada: 'Playa Bonita',
         desc: 'Dos vueltas a un circuito boyado frente a Playa Bonita.',
@@ -784,6 +788,7 @@ export const FICHAS = {
         id: 'vhu-1-5k',
         torneo: 'ESPECIAL',
         titulo: '1,5 km',
+        subtitulo: '',
         largada: 'Playa Bonita',
         llegada: 'Playa Bonita',
         desc: 'Una vuelta a un circuito boyado frente a Playa Bonita.',

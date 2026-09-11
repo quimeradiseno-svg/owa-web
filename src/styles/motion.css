@@ -289,6 +289,24 @@
   }
 }
 
+/* --------------------------------------------------------- sello del hero
+   El sello (10 años, cierre de temporada) respira apenas, para que se note
+   con la vista de reojo y no compita con el título. Ciclo largo y
+   desplazamiento chico — es lo decorativo del hero, donde 300ms+ está
+   permitido (ver cabecera del archivo). */
+.u-sello-late {
+  animation: owa-sello-late 3.6s var(--ease-in-out) infinite;
+}
+@keyframes owa-sello-late {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* --------------------------------------------------------------- blur-up
    El LQIP va como background de la propia imagen; la foto real aparece encima
    con un fundido corto, así el salto de borroso a nítido no se ve como corte. */
@@ -390,6 +408,9 @@
   }
   .img-fade {
     transition-duration: 200ms;
+  }
+  .u-sello-late {
+    animation: none;
   }
   .live-dot {
     animation: none;

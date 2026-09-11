@@ -380,9 +380,12 @@ export function render(ctx) {
         <!-- 6vw/5.375rem quedaba enorme en notebook (1280-1536px): mismo
              ajuste que el título del hero del home, curva y techo más
              chicos para que en esas resoluciones lea como titular de
-             sección, no como cartel. -->
-        <h1 class="mt-4 text-[clamp(2.375rem,4.5vw,4.25rem)] leading-[0.9]">${m.titulo}</h1>
-        <p class="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-owa-line">${m.intro}</p>
+             sección, no como cartel. Un escalón más abajo todavía (3.5rem de
+             techo) para que las cuatro madres (Grand Prix, Circuito,
+             Especiales, Challenge) no compitan con el título de la carrera
+             que van a abrir. -->
+        <h1 class="mt-4 text-[clamp(2rem,3.8vw,3.5rem)] leading-[0.9]">${m.titulo}</h1>
+        <p class="mt-6 ${m.introAncho || 'max-w-[54ch]'} text-[17px] leading-relaxed text-owa-line">${m.intro}</p>
       </div>
 
       ${olaSuperior('#fff')}

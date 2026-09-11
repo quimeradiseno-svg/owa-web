@@ -67,7 +67,7 @@ export const MADRES = {
     kicker: 'TORNEO PUNTUABLE',
     titulo: 'CIRCUITO OWA',
     intro:
-      'Tu lugar para vivir las aguas abiertas. Distancias para distintos niveles, diferentes desafíos y una experiencia pensada para nadar, superarte y compartir el día con tu equipo, amigos y familia.',
+      'Un evento de aguas abiertas para todos los niveles, ideal para superarse y disfrutar en compañía de amigos, familia o equipo.',
     img: 'circuito-grupo',
     alt: 'Grupo de nadadores avanzando juntos en el río',
     // El premio del Circuito no es plata sino el viaje: por eso el destacado
@@ -125,6 +125,10 @@ export const MADRES = {
   especiales: {
     kicker: 'FUERA DE LOS TORNEOS',
     titulo: 'EVENTOS ESPECIALES',
+    // Más ancha que el resto de las madres (72ch en vez de 54ch): con el
+    // ancho por defecto esta bajada, más larga que las otras, caía en tres
+    // líneas.
+    introAncho: 'max-w-[72ch]',
     intro:
       'Experiencias fuera de los calendarios puntuables, elegidas por la singularidad de sus escenarios y por el desafío que propone cada recorrido.',
     img: 'esp-lago-amanecer',
@@ -205,7 +209,9 @@ export const MODALIDADES = [
     desc: 'Mar, lago y río fuera del torneo regular. No suman puntos al ranking.',
     cta: 'VER EVENTOS',
     href: '/especiales',
-    img: 'especiales-panoramica',
+    // Nadadores entrando a las olas en Pinamar (PNR/DSC_0283) — mismo archivo
+    // que ya usa la galería de Pinamar como 'pnr-galeria-9'.
+    img: 'pnr-galeria-9',
   },
   {
     titulo: 'OWA CHALLENGE',
@@ -220,7 +226,9 @@ export const MODALIDADES = [
     desc: 'Viajes grupales de nado: islas, snorkel y travesías fuera del calendario local.',
     cta: 'VER OWA TRAVEL',
     href: '/travel',
-    img: 'tv-isla-drone',
+    // Drone del grupo nadando en fila frente a la lancha, en Capri-Nápoli
+    // (Fotos/TRAVEL/Fotos Capri Napoli/2019b-20_orig.jpg).
+    img: 'tv-capri-grupo',
     // El isotipo propio de Travel: mismo círculo de marca pero con el avión.
     iso: '/brand/owa-travel-iso.svg',
   },

@@ -154,6 +154,9 @@ export const EVENTOS = [
     nota: 'Fecha a confirmar según condiciones',
     estado: 'proximamente',
     img: 'ev-nahuel',
+    // "Cruce del Nahuel" entra entero en una línea; sin esto el corte por
+    // defecto (última palabra sola) lo partía en "Cruce del" / "Nahuel".
+    heroCorte: 0,
     // Logo institucional invitado: el Museo Malvinas acompaña esta fecha. Va
     // en blanco porque se apoya sobre la foto de la tarjeta. Necesita velo:
     // sobre el cielo de esta foto el blanco mide 1.99:1.
@@ -199,8 +202,15 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-huemul',
-    // Décima edición de la travesía.
-    sello: { src: '/brand/sello-10-anios-blanco.webp', alt: '10 años de la Vuelta a la Huemul' },
+    // Décima edición de la travesía. `src` es el original (navy sobre
+    // blanco) para la mini-tarjeta del calendario/home, que ya tiene buen
+    // contraste ahí; `srcHero` es la versión en blanco que usa el hero de la
+    // ficha propia, donde el sello cae sobre foto y el navy se perdía.
+    sello: {
+      src: '/brand/sello-10-anios.webp',
+      srcHero: '/brand/sello-10-anios-blanco.webp',
+      alt: '10 años de la Vuelta a la Huemul',
+    },
     // Galería de la ficha, mismo criterio que Cruce del Nahuel y Pinamar:
     // `grande` abre el mosaico ocupando el doble de espacio, el resto entra
     // pareja de a 4 por fila (8 chicas + 1 grande cierran un rectángulo de
@@ -281,9 +291,17 @@ export const EVENTOS = [
     nota: '',
     estado: 'proximamente',
     img: 'ev-maraton',
+    // "San Pedro" cae junto en el segundo renglón; el corte por defecto
+    // (última palabra sola) dejaba "San" colgado arriba con "Pedro" solo.
+    heroCorte: 2,
     // Última fecha del calendario 26/27. El sello es cian y esta foto es agua
-    // con espuma: sin velo mide 1.44:1 y se pierde.
-    sello: { src: '/brand/sello-cierre-temporada-blanco.webp', alt: 'Cierre de temporada' },
+    // con espuma: sin velo mide 1.44:1 y se pierde. `srcHero` (blanco) es
+    // para el hero de la ficha propia — ver nota en VHU más arriba.
+    sello: {
+      src: '/brand/sello-cierre-temporada.webp',
+      srcHero: '/brand/sello-cierre-temporada-blanco.webp',
+      alt: 'Cierre de temporada',
+    },
     velo: true,
   },
 ];
@@ -307,6 +325,9 @@ export const CHALLENGES = [
     estado: 'proximamente',
     km: '40 km',
     img: 'ev-rdp40',
+    // Postulación por mail y no por WhatsApp, a diferencia de los otros dos
+    // Challenge.
+    postulacionEmail: 'info@owa.com.ar',
     // La nadadora con la boya está abajo y a la izquierda del cuadro: el
     // recorte la corre hacia el centro-derecha del hero, donde queda espacio
     // libre debajo del titular.
@@ -448,7 +469,7 @@ export const CHALLENGES = [
     distancia: {
       km: '21 km',
       torneo: 'CHALLENGE',
-      desc: 'Largada en el brazo Blest y llegada en Villa Tacul, Bariloche, Río Negro.',
+      desc: 'Largada en Puerto Blest y llegada en Villa Tacul, Bariloche, Río Negro.',
       cats: 'Solo Swim y Relay de 2 a 6 participantes',
     },
     // Mismos requisitos que el resto de los Challenge con apoyo de la
@@ -462,12 +483,13 @@ export const CHALLENGES = [
       slug: 'mapa-bvt',
       alt: 'Mapa del cruce del brazo Blest a Villa Tacul, lago Nahuel Huapi',
     },
-    // En lugar de fiscalización + video: reseña histórica de cruces + la Triple
-    // Corona. `triple.href` queda pendiente de que OWA pase el enlace.
-    triple: { nombre: 'Triple Corona', href: '', logo: '' },
+    // En lugar de fiscalización + video: reseña histórica de cruces. Sin
+    // `triple` (se sacó "Forma parte de"), la reseña ocupa el ancho entero y
+    // sus bloques de fecha van de a dos por fila (ver resenaHistorica en
+    // views/evento.js).
     resena: {
       titulo: 'Reseña histórica',
-      bajada: 'Cruces registrados del brazo Blest a Villa Tacul.',
+      bajada: 'Cruces registrados de Puerto Blest a Villa Tacul.',
       bloques: [
         {
           fecha: '21 de febrero de 2023',

@@ -3,6 +3,7 @@ import { foto } from '../lib/img.js';
 import { EVENTOS, ALL, MESES, ESTADOS, sinIngreso } from '../data/eventos.js';
 import { TRAVEL } from '../data/travel.js';
 import { fichaDe } from '../data/fichas.js';
+import { restante, diasHasta } from '../data/resultados-historicos.js';
 import { modalidadesDe, chipModalidad, pastilla } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 
@@ -84,7 +85,7 @@ const MODALIDADES = [
   ['TRAVEL', 'TRAVEL'],
 ];
 
-const s = { modalidad: 'TODAS', q: '', mes: 0 };
+const s = { modalidad: 'TODAS', q: '' };
 
 const TEXTO_MODALIDAD = {
   core: 'grand prix circuito owa puntuable',
@@ -115,6 +116,157 @@ const pasaBusqueda = (e) => {
 };
 
 const MES_ABR_A_LARGO = (ab) => MESES[ab] || ab;
+
+/* -------------------------------------------------------- próxima carrera */
+
+// Mismos filtros que usa el hero de la ficha para armar la pastilla de
+// distancias (ver evento.js): Kids y OWA Relay/arena no son competitivas y no
+// tienen lugar en una tarjeta de tres o cuatro chips.
+const esArena = (d) => /^arena /.test(d.rotulo || '');
+const esKids = (d) => /^kids?$/i.test(d.rotulo || '');
+const distCorta = (km) => km.replace(',', '.').toUpperCase().replace(/\s*KM$/, 'K').replace(/\s*M$/, 'M');
+
+// Misma búsqueda que largadaDe() en resultados-historicos.js, pero local: esa
+// no se exporta porque es un detalle interno de esa página.
+const horaLargadaDe = (slug) => {
+  for (const c of fichaDe(slug)?.cronogramas || [])
+    for (const d of c.dias || [])
+      for (const i of d.items || []) {
+        const m = i.destacado && /^(\d{2}):(\d{2})$/.exec(i.hora || '');
+        if (m) return `${m[1]}:${m[2]}`;
+      }
+  return '';
+};
+
+// Primer link de inscripción que encuentra la ficha, sin importar el torneo:
+// para la tarjeta destacada no hay un filtro de torneo activo que elegir.
+const primeraInscripcionDe = (slug) => Object.values(fichaDe(slug)?.inscripcion || {})[0] || null;
+
+/** La próxima fecha con día concreto y todavía por venir, de cualquier
+    modalidad — Travel incluido, es la misma agenda. Ignora las que sólo
+    tienen mes o ventana (un Challenge sin fecha exacta no puede tener cuenta
+    regresiva) y las que ya cerraron. */
+function proximaCarrera() {
+  const candidatas = TODOS_LOS_EVENTOS
+    .map((e) => {
+      const d = diasDe(e)[0];
+      if (!d) return null;
+      const iso = `${d.anio}-${String(d.mes).padStart(2, '0')}-${String(d.dia).padStart(2, '0')}`;
+      const falta = diasHasta(iso);
+      return falta === null || falta < 0 ? null : { e, iso, falta };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.falta - b.falta);
+  return candidatas[0] || null;
+}
+
+/** Una caja del reloj: horas, minutos o segundos. Mismo patrón que el
+    contador de /resultados, en versión clara para la tarjeta de la sidebar. */
+const casillaCuenta = (valor, rotulo) => html`
+  <div class="text-center">
+    <p data-nums class="rounded-md bg-white px-2 py-1.5 font-display text-[15px] leading-none font-black text-owa-navy tabular-nums">
+      ${String(valor).padStart(2, '0')}
+    </p>
+    <p class="mt-1 text-[8px] font-bold tracking-[0.1em] text-owa-slate uppercase">${rotulo}</p>
+  </div>
+`;
+
+/** La cuenta regresiva de la tarjeta destacada. Sin hora de largada muestra
+    sólo los días — igual criterio que /resultados: un reloj hacia la
+    medianoche sería un dato inventado. */
+const cuentaRegresiva = (iso, hora = '') => {
+  const r = restante(iso, hora);
+  if (!r) return '';
+  if (r.pasado)
+    return html`<p class="font-display text-[15px] font-black text-owa-blue">¡Es hoy!</p>`;
+
+  return html`
+    <div class="flex items-end gap-3.5">
+      <div>
+        <p class="text-[10px] font-bold tracking-[0.1em] text-owa-slate uppercase">Faltan</p>
+        <p data-nums class="font-display text-[2rem] leading-none font-black text-owa-blue">${r.dias}</p>
+        <p class="mt-0.5 text-[11px] font-bold tracking-[0.06em] text-owa-navy uppercase">${r.dias === 1 ? 'día' : 'días'}</p>
+      </div>
+      ${hora
+        ? html`<div class="flex items-end gap-1.5 pb-1">
+            ${casillaCuenta(r.horas, 'hs')}
+            <span class="pb-1.5 font-display text-[13px] font-black text-owa-slate">:</span>
+            ${casillaCuenta(r.minutos, 'min')}
+            <span class="pb-1.5 font-display text-[13px] font-black text-owa-slate">:</span>
+            ${casillaCuenta(r.segundos, 'seg')}
+          </div>`
+        : ''}
+    </div>
+  `;
+};
+
+/** Tarjeta destacada de la sidebar: la próxima fecha del calendario, con
+    foto, cuenta regresiva y el botón de inscripción cuando ya está abierta. */
+const proximaCarreraCard = () => {
+  const prox = proximaCarrera();
+  if (!prox) return '';
+  const { e, iso } = prox;
+  const hora = horaLargadaDe(e.slug);
+  const travel = e.tipo === 'travel';
+  const href = travel ? '/travel' : `/carrera/${e.slug}`;
+  const inscripcionUrl = travel ? null : primeraInscripcionDe(e.slug);
+  const f = travel ? null : fichaDe(e.slug);
+  const chips = (f?.distancias || [])
+    .filter((d) => d.torneo && !esArena(d) && !esKids(d))
+    .map((d) => distCorta(d.km));
+
+  const d = diasDe(e)[0];
+  const semana = DIA_ABR[new Date(d.anio, d.mes - 1, d.dia).getDay()];
+
+  return html`
+    <div class="overflow-hidden rounded-owa-lg border border-owa-sky/40 bg-owa-sky/12">
+      <p class="flex items-center gap-2 px-5 pt-4 font-display text-[11px] font-black tracking-[0.1em] text-owa-blue uppercase">
+        ${icono('reloj', 'size-3.5')} Próxima carrera
+      </p>
+      <a href="${href}" class="mt-3 block h-32 overflow-hidden bg-owa-abyss">
+        ${foto({
+          slug: e.img,
+          alt: '',
+          sizes: '19rem',
+          className: 'block h-full w-full',
+          imgClass: 'h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-105',
+        })}
+      </a>
+      <div class="p-5">
+        <p data-nums class="font-display text-[12px] font-black tracking-[0.08em] text-owa-slate uppercase">
+          ${semana} ${d.dia} ${MES_ABR[d.mes - 1]} ${d.anio}
+        </p>
+        <a href="${href}" class="mt-1 block">
+          <h3 class="text-[19px] leading-tight text-owa-navy">${e.nombre}</h3>
+        </a>
+        <p class="mt-1.5 flex items-center gap-1.5 text-[12px] text-owa-slate">
+          <span class="shrink-0 text-owa-cyan">${icono('pin', 'size-3.5')}</span>${e.sede}
+        </p>
+        ${chips.length
+          ? html`<p class="mt-3 flex flex-wrap gap-2">
+              ${chips.map(
+                (c) => html`<span class="rounded-full bg-white px-3 py-1.5 font-display text-[12px] font-black text-owa-navy">${c}</span>`
+              )}
+            </p>`
+          : ''}
+
+        <!-- Va siempre a la ficha propia de la carrera, no directo a
+             Cronometraje: la inscripción real se hace ahí adentro, junto con
+             el resto de la info (distancias, cronograma, kit). -->
+        <a
+          href="${href}"
+          class="u-press u-nudge mt-4 flex items-center justify-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-[13px] font-black tracking-[0.04em] text-white uppercase hover:bg-owa-navy"
+          >${inscripcionUrl ? 'Inscribirme' : travel ? 'Ver viaje' : 'Ver carrera'}
+          <span class="u-nudge-arrow" aria-hidden="true">→</span></a
+        >
+
+        <div data-contador="${iso}" data-hora="${hora}" class="mt-4 border-t border-owa-line/60 pt-3.5">
+          ${cuentaRegresiva(iso, hora)}
+        </div>
+      </div>
+    </div>
+  `;
+};
 
 /* --------------------------------------------- expansión por torneo */
 
@@ -193,13 +345,15 @@ function agrupar(lista) {
 
 // El estado nunca se apoya sólo en el color: siempre lleva su texto, y el punto
 // es un refuerzo. Sin verde en la paleta de OWA, "abierta" usa el cyan de marca.
-// "Abierta" va en cyan sólido y no en tinte al 15%: ese tinte es ahora el del
-// tag GRAND PRIX, y con los dos en la misma tarjeta se confundían. De paso, la
-// inscripción abierta es la única acción real de la fila y gana el peso que le
-// corresponde. Los otros dos estados quedan en neutro, que es lo que son.
+// Va con filete y fondo apenas teñido —no relleno sólido— y el punto titila
+// (misma animación que .live-dot del chip EN VIVO): es la única fila con una
+// acción real pendiente, y ese parpadeo la señala sin gritar. "Próximamente"
+// va en navy y no en el celeste/cyan que tenía antes: de esa familia se
+// confundía a simple vista con "Inscripción abierta". Los otros dos estados
+// quedan en gris neutro, quietos, que es lo que son.
 const TONO_ESTADO = {
-  abierta: ['bg-owa-deep', 'text-owa-deep', 'bg-owa-cyan'],
-  proximamente: ['bg-owa-sky', 'text-owa-navy', 'bg-owa-mist'],
+  abierta: ['bg-owa-cyan live-dot', 'text-owa-blue', 'border border-owa-cyan bg-owa-cyan/10'],
+  proximamente: ['bg-owa-navy', 'text-owa-navy', 'border border-owa-navy/25 bg-owa-navy/5'],
   'a-confirmar': ['bg-owa-gray', 'text-owa-slate', 'bg-owa-sand'],
   cerrada: ['bg-owa-gray', 'text-owa-slate', 'bg-owa-sand'],
 };
@@ -207,10 +361,13 @@ const TONO_ESTADO = {
 const badgeEstado = (e) => {
   const [punto, texto, fondo] = TONO_ESTADO[e.estado] || TONO_ESTADO.proximamente;
   const label = e.tipo === 'travel' ? e.chip : ESTADOS[e.estado] || 'PRÓXIMAMENTE';
+  // El punto queda sólo para "abierta": ahí titila y señala la única fila
+  // con una acción real pendiente. En el resto de los estados no suma nada
+  // —no hay nada "vivo" que reforzar— y competía con ese parpadeo.
   return html`<span
     class="inline-flex items-center gap-2 rounded-full ${fondo} px-3 py-1.5 font-display text-[10px] font-black tracking-[0.1em] ${texto}"
   >
-    <span class="size-1.5 shrink-0 rounded-full ${punto}" aria-hidden="true"></span>${label}
+    ${e.estado === 'abierta' ? html`<span class="size-1.5 shrink-0 rounded-full ${punto}" aria-hidden="true"></span>` : ''}${label}
   </span>`;
 };
 
@@ -229,10 +386,16 @@ function bloqueFecha(e) {
       : m
         ? [MES_ABR_A_LARGO(m.ab).slice(0, 3), m.anio]
         : ['FECHA', 'A CONFIRMAR'];
+    // "A CONFIRMAR" es más largo que cualquier mes abreviado (VOB, DIC…) y al
+    // tamaño de esa segunda línea se salía del recuadro angosto (6rem): va un
+    // escalón más chico y sin el tracking ancho, sólo para ese texto.
+    const largo = texto[1].length > 4;
     return html`
       <p class="font-display leading-tight text-owa-slate">
         <span class="block text-[11px] font-bold tracking-[0.14em]">${texto[0]}</span>
-        <span class="mt-0.5 block text-[13px] font-black tracking-[0.06em]">${texto[1]}</span>
+        <span class="mt-0.5 block ${largo ? 'text-[10px] tracking-[0.02em]' : 'text-[13px] tracking-[0.06em]'} font-black"
+          >${texto[1]}</span
+        >
       </p>
     `;
   }
@@ -317,7 +480,11 @@ function tarjeta(e) {
             })}
           </div>
 
-          <div class="flex items-center gap-4 md:block md:rounded-owa-md md:border md:border-owa-line md:px-2 md:py-3.5 md:text-center">
+          <!-- En mobile, uno debajo del otro: al lado ("items-center gap-4"),
+               el pill del estado quedaba flotando a la altura del número
+               grande de la fecha —centrado contra un bloque de 4 líneas—, en
+               vez de leerse pegado a ella. -->
+          <div class="flex flex-col items-start gap-2.5 md:block md:rounded-owa-md md:border md:border-owa-line md:px-2 md:py-3.5 md:text-center">
             ${bloqueFecha(e)}
             <span class="md:hidden">${badgeEstado(e)}</span>
           </div>
@@ -345,6 +512,10 @@ function tarjeta(e) {
 
         <div class="flex items-center justify-between gap-3 md:w-52 md:flex-col md:items-end md:justify-center md:gap-3">
           <span class="hidden md:block">${badgeEstado(e)}</span>
+          <!-- Siempre un botón sólido, nunca un texto plano: antes sólo lo
+               llevaban las fechas con una acción "fuerte" (inscribirme,
+               postularme) y el resto se abría con un link de texto suelto,
+               que en la fila se sentía como una tarjeta a medio terminar. -->
           ${accion
             ? html`<a
                 href="${accion.url}"
@@ -354,11 +525,12 @@ function tarjeta(e) {
               >`
             : bloqueada
               ? ''
-              : html`<span
-                  class="hidden shrink-0 items-center gap-1.5 font-display text-[11px] font-bold tracking-[0.08em] text-owa-slate transition-colors duration-200 group-hover:text-owa-blue md:flex"
+              : html`<a
+                  href="${href}"
+                  class="u-press u-nudge w-full rounded-full bg-owa-blue px-5 py-2.5 text-center font-display text-[11px] font-black tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:bg-owa-navy"
                   >${travel ? 'VER VIAJE' : chal ? 'VER TRAVESÍA' : 'VER CARRERA'}
-                  <span class="transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">→</span>
-                </span>`}
+                  <span class="u-nudge-arrow" aria-hidden="true">→</span></a
+                >`}
         </div>
       </div>
     </li>
@@ -397,112 +569,69 @@ const lista = () => {
   `;
 };
 
-/* -------------------------------------------------------- mini calendario */
+/* ----------------------------------------------------------- ir a un mes */
 
-const COLOR_TIPO = { core: 'bg-owa-cyan', especial: 'bg-owa-sky', challenge: 'bg-owa-blue', travel: 'bg-owa-gold' };
-const LEYENDA = [
-  ['core', 'Puntuables'],
-  ['especial', 'Especiales'],
-  ['challenge', 'Challenge'],
-  ['travel', 'Travel'],
-];
-
-/** Meses de la temporada que tienen al menos un día concreto marcado. */
-const mesesConDias = () => {
+/** Un mes de la temporada con su conteo de fechas, para el salto rápido de
+    la sidebar. Sale de TODOS_LOS_EVENTOS —no de la lista filtrada— porque el
+    panorama de la temporada tiene que quedar igual sin importar qué filtro
+    esté puesto; el propio link ya no hace nada si ese mes no está en
+    pantalla (ver nota en cada <a>). Mismo `id` que arma agrupar(), así el
+    anchor apunta siempre al encabezado correcto. */
+function resumenMeses() {
   const mapa = new Map();
-  for (const e of TODOS_LOS_EVENTOS)
-    for (const d of diasDe(e)) {
-      const k = `${d.anio}-${d.mes}`;
-      if (!mapa.has(k)) mapa.set(k, { anio: d.anio, mes: d.mes, dias: new Map() });
-      const g = mapa.get(k);
-      if (!g.dias.has(d.dia)) g.dias.set(d.dia, []);
-      g.dias.get(d.dia).push(e);
-    }
-  return [...mapa.values()].sort((a, b) => a.anio * 12 + a.mes - (b.anio * 12 + b.mes));
-};
+  for (const e of TODOS_LOS_EVENTOS) {
+    const m = mesDe(e);
+    if (!m) continue;
+    const key = `${m.ab} ${m.anio}`;
+    if (!mapa.has(key))
+      mapa.set(key, {
+        key,
+        ab: m.ab,
+        anio: m.anio,
+        orden: ordenMes(m.ab, m.anio),
+        n: 0,
+        id: 'mes-' + key.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      });
+    mapa.get(key).n++;
+  }
+  return [...mapa.values()].sort((a, b) => a.orden - b.orden);
+}
 
-const MESES_CAL = mesesConDias();
-
-function miniCalendario() {
-  if (!MESES_CAL.length) return '';
-  // Un día sólo es clickeable si su evento está en la lista que se está
-  // viendo: con un filtro puesto, mandar a una tarjeta que no está en pantalla
-  // deja al usuario mirando la nada.
-  const enPantalla = new Set(filtrados().map((e) => e.slug));
-  const i = Math.max(0, Math.min(s.mes, MESES_CAL.length - 1));
-  const { anio, mes, dias } = MESES_CAL[i];
-
-  // Semana que arranca el lunes: getDay() da 0 para domingo.
-  const primero = (new Date(anio, mes - 1, 1).getDay() + 6) % 7;
-  const total = new Date(anio, mes, 0).getDate();
-  const celdas = [...Array(primero).fill(null), ...Array.from({ length: total }, (_, k) => k + 1)];
-
-  const flecha = (delta, etiqueta, glifo, habilitada) => html`
-    <button
-      type="button"
-      ${raw(habilitada ? `data-mes="${i + delta}"` : 'disabled')}
-      aria-label="${etiqueta}"
-      class="u-press grid size-8 shrink-0 place-items-center rounded-full font-display text-[13px] font-black transition-colors duration-200 ${habilitada
-        ? 'cursor-pointer text-owa-navy hover:bg-owa-mist'
-        : 'cursor-not-allowed bg-owa-sand text-owa-slate'}"
-    >
-      ${glifo}
-    </button>
-  `;
+function irAUnMes() {
+  const meses = resumenMeses();
+  if (!meses.length) return '';
+  // El mes de la próxima carrera es el que se resalta: es el dato que
+  // importa hoy, y no depende de ningún filtro puesto.
+  const prox = proximaCarrera();
+  const mesActivo = prox ? mesDe(prox.e) : null;
+  const idActivo = mesActivo ? `mes-${mesActivo.ab} ${mesActivo.anio}`.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '';
 
   return html`
     <div class="rounded-owa-md border border-owa-line p-4">
-      <div class="flex items-center justify-between gap-2">
-        ${flecha(-1, 'Mes anterior', '‹', i > 0)}
-        <p class="font-display text-[12px] font-black tracking-[0.1em] text-owa-navy uppercase">
-          ${MES_ABR_A_LARGO(MES_ABR[mes - 1])} ${anio}
-        </p>
-        ${flecha(1, 'Mes siguiente', '›', i < MESES_CAL.length - 1)}
-      </div>
-
-      <div class="mt-3.5 grid grid-cols-7 gap-1 text-center">
-        ${['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(
-          (d, k) => html`<span class="text-[10px] font-bold text-owa-slate" aria-hidden="true">${d}</span>`
-        )}
-        ${celdas.map((d) => {
-          if (d === null) return html`<span></span>`;
-          const evs = dias.get(d);
-          if (!evs)
-            return html`<span data-nums class="grid size-8 place-items-center text-[12px] text-owa-slate">${d}</span>`;
-          const nombres = evs.map((x) => x.nombre).join(', ');
-          const activo = evs.find((x) => enPantalla.has(x.slug));
-          const punto = html`<span
-            class="absolute bottom-0.5 size-1 rounded-full ${COLOR_TIPO[evs[0].tipo] || 'bg-owa-blue'}"
-            aria-hidden="true"
-          ></span>`;
-          if (!activo)
-            return html`<span
-              title="${nombres}"
-              class="relative grid size-8 place-items-center rounded-full bg-owa-sand font-display text-[12px] font-black text-owa-slate"
-              ><span data-nums>${d}</span>${punto}</span
-            >`;
-          return html`
+      <h2 class="font-display text-[12px] font-black tracking-[0.1em] text-owa-navy uppercase">Ir a un mes</h2>
+      <div class="mt-3.5 grid grid-cols-3 gap-2">
+        <!-- Ancla simple y no un botón con JS: el scroll suave ya lo da la
+             regla global de scroll-behavior (ver app.css) y así el link
+             sigue funcionando si el mes no está en pantalla —con un filtro
+             puesto que lo saca de la lista— en vez de fallar en silencio. -->
+        ${meses.map(
+          (m) => html`
             <a
-              href="#ev-${activo.slug}"
-              title="${nombres}"
-              aria-label="${d} de ${MES_ABR_A_LARGO(MES_ABR[mes - 1]).toLowerCase()}: ${nombres}"
-              class="u-press relative grid size-8 place-items-center rounded-full bg-owa-mist font-display text-[12px] font-black text-owa-navy transition-colors duration-200 hover:bg-owa-navy hover:text-white"
+              href="#${m.id}"
+              class="u-press rounded-owa-md border px-2 py-2.5 text-center transition-colors duration-200 ${m.id === idActivo
+                ? 'border-owa-navy bg-owa-navy text-white'
+                : 'border-owa-line text-owa-navy hover:border-owa-navy hover:bg-owa-mist/60'}"
             >
-              <span data-nums>${d}</span>${punto}
+              <span class="block font-display text-[11px] font-black tracking-[0.06em]">${m.ab}</span>
+              <span
+                data-nums
+                class="mt-1 block text-[10px] ${m.id === idActivo ? 'text-white/75' : 'text-owa-slate'}"
+                >${m.n} ${m.n === 1 ? 'carrera' : 'carreras'}</span
+              >
             </a>
-          `;
-        })}
-      </div>
-
-      <ul class="mt-4 flex flex-wrap gap-x-3.5 gap-y-1.5 border-t border-owa-line pt-3.5">
-        ${LEYENDA.map(
-          ([tipo, label]) => html`
-            <li class="flex items-center gap-1.5 text-[11px] text-owa-slate">
-              <span class="size-1.5 rounded-full ${COLOR_TIPO[tipo]}" aria-hidden="true"></span>${label}
-            </li>
           `
         )}
-      </ul>
+      </div>
     </div>
   `;
 }
@@ -511,19 +640,7 @@ function miniCalendario() {
 
 const sidebar = () => html`
   <div class="grid gap-4 lg:sticky lg:top-24">
-    ${miniCalendario()}
-
-    <div class="rounded-owa-md bg-owa-mist p-5">
-      <h2 class="font-display text-[14px] font-black text-owa-navy">¿Dudas sobre las inscripciones?</h2>
-      <p class="mt-2 text-[13px] leading-relaxed text-owa-slate">
-        Las inscripciones se realizan desde la plataforma externa de cada carrera.
-      </p>
-      <a
-        href="/primeros-pasos"
-        class="u-nudge mt-3.5 inline-flex items-center gap-1.5 font-display text-[12px] font-black tracking-[0.06em] text-owa-blue hover:underline"
-        >CÓMO INSCRIBIRME <span class="u-nudge-arrow" aria-hidden="true">→</span></a
-      >
-    </div>
+    ${proximaCarreraCard()} ${irAUnMes()}
   </div>
 `;
 
@@ -535,12 +652,15 @@ const barraFiltros = () => html`
   </div>
 `;
 
+// Mismo alto que las pastillas de la barra de filtros (py-2.5): antes
+// llevaba más padding vertical que ellas y quedaba más gruesa, aunque las dos
+// viven en la misma fila.
 const buscador = () => html`
   <label
-    class="flex min-w-0 items-center gap-3 rounded-full border border-owa-line bg-white px-5 py-3 transition-colors duration-200 focus-within:border-owa-navy lg:w-72"
+    class="flex min-w-0 items-center gap-3 rounded-full border border-owa-line bg-white px-5 py-2.5 transition-colors duration-200 focus-within:border-owa-navy lg:w-72"
   >
     <span class="sr-only">Buscar carrera o ciudad</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4.5 shrink-0 text-owa-slate">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 shrink-0 text-owa-slate">
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" stroke-linecap="round" />
     </svg>
@@ -549,7 +669,7 @@ const buscador = () => html`
       type="search"
       value="${s.q}"
       placeholder="Buscar carrera o ciudad..."
-      class="min-w-0 flex-1 bg-transparent text-[15px] text-owa-navy outline-none placeholder:text-owa-slate/70"
+      class="min-w-0 flex-1 bg-transparent text-[14px] text-owa-navy outline-none placeholder:text-owa-slate/70"
     />
   </label>
 `;
@@ -587,7 +707,7 @@ export function render() {
              u-h1 llega hasta 5.75rem y esta era la única página de sección
              que la usaba, así que quedaba mucho más grande que sus hermanas. -->
         <h1 class="text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.9]">
-          Calendario<br />2026/<span class="text-owa-cyan">27</span>
+          Calendario<br /><span class="text-owa-cyan">2026/27</span>
         </h1>
         <p class="mt-5 max-w-[46ch] text-[15px] leading-relaxed text-owa-line">
           Todas las fechas de la temporada. Las inscripciones se realizan desde la plataforma de cada carrera.
@@ -640,14 +760,6 @@ export function mount(root) {
       repintarFiltros();
       return repintarLista();
     }
-
-    const mes = e.target.closest('[data-mes]');
-    if (mes) {
-      s.mes = Number(mes.dataset.mes);
-      aside.innerHTML = toHTML(sidebar());
-      return;
-    }
-
   });
 
   let t;
@@ -657,4 +769,18 @@ export function mount(root) {
     clearTimeout(t);
     t = setTimeout(repintarLista, 160);
   });
+
+  // La cuenta regresiva de "Próxima carrera" late segundo a segundo. El HTML
+  // prerenderizado trae el tiempo que faltaba al momento del build, así que
+  // se recalcula acá con el reloj del visitante — mismo patrón que
+  // /resultados. Se corta solo cuando `root` deja de colgar del documento:
+  // el router reemplaza el nodo entero y no llama a un unmount.
+  const ponerAlDia = () =>
+    root.querySelectorAll('[data-contador]').forEach((el) => {
+      el.innerHTML = toHTML(cuentaRegresiva(el.dataset.contador, el.dataset.hora));
+    });
+  const reloj = setInterval(() => {
+    if (!root.isConnected) return clearInterval(reloj);
+    ponerAlDia();
+  }, 1000);
 }
