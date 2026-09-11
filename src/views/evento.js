@@ -794,20 +794,18 @@ export function render(ctx) {
 
       <!-- Mismo sello que ya lleva la mini-tarjeta del calendario (10 años de
            la Vuelta a la Huemul, ver tarjeta-evento.js) — acá en la ficha
-           propia de la carrera. Va arriba, en la franja de foto libre por
-           encima del título (el título ocupa casi todo el ancho, así que
-           centrarlo en toda la sección lo hacía pisar el texto); adentro de
-           esa franja se corrió hacia el centro y no pegado a la esquina,
-           donde el borde se lo comía y quedaba casi invisible. La sombra se
-           hace más marcada porque el fondo que le toca detrás no es siempre
-           claro (cielo en unas fotos, monte en otras). -->
+           propia de la carrera, abajo a la derecha, sobre el agua/cielo
+           libre de texto (el título y la ficha viven abajo a la izquierda).
+           Versión en blanco —trazo y letras blancas, centro transparente—
+           en vez del navy original: contra fotos de agua y montaña el navy
+           se perdía; en blanco resalta sin importar qué haya detrás. -->
       ${e.sello
         ? html`<img
             src="${e.sello.src}"
             alt="${e.sello.alt}"
             loading="eager"
             decoding="async"
-            class="absolute top-5 left-[63%] z-10 size-20 -translate-x-1/2 [filter:drop-shadow(0_2px_10px_rgb(7_12_40/0.55))] sm:top-7 sm:size-28"
+            class="absolute right-6 bottom-8 z-10 size-28 [filter:drop-shadow(0_2px_10px_rgb(7_12_40/0.5))] sm:right-10 sm:bottom-10 sm:size-40 lg:size-48"
           />`
         : ''}
 

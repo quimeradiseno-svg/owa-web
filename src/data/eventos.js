@@ -200,7 +200,7 @@ export const EVENTOS = [
     estado: 'proximamente',
     img: 'ev-huemul',
     // Décima edición de la travesía.
-    sello: { src: '/brand/sello-10-anios.webp', alt: '10 años de la Vuelta a la Huemul' },
+    sello: { src: '/brand/sello-10-anios-blanco.webp', alt: '10 años de la Vuelta a la Huemul' },
     // Galería de la ficha, mismo criterio que Cruce del Nahuel y Pinamar:
     // `grande` abre el mosaico ocupando el doble de espacio, el resto entra
     // pareja de a 4 por fila (8 chicas + 1 grande cierran un rectángulo de
@@ -283,7 +283,7 @@ export const EVENTOS = [
     img: 'ev-maraton',
     // Última fecha del calendario 26/27. El sello es cian y esta foto es agua
     // con espuma: sin velo mide 1.44:1 y se pierde.
-    sello: { src: '/brand/sello-cierre-temporada.webp', alt: 'Cierre de temporada' },
+    sello: { src: '/brand/sello-cierre-temporada-blanco.webp', alt: 'Cierre de temporada' },
     velo: true,
   },
 ];
