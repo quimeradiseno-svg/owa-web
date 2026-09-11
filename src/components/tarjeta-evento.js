@@ -164,15 +164,19 @@ export function tarjetaTravel(t) {
     `destacado` agrega una pastilla debajo de la sublínea: la usa Primeros
     pasos para la distancia recomendada de cada fecha.
     `id` la vuelve destino de ancla (las mini-tarjetas de distancia de Grand
-    Prix bajan hasta acá). El scroll-mt compensa el header sticky de 69px. */
-export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '', id = '' }) {
+    Prix bajan hasta acá). El scroll-mt compensa el header sticky de 69px.
+    `veloClaro` aclara el degradé de la foto: en Challenge la foto de la
+    travesía es el argumento de la tarjeta, no un fondo de apoyo como en el
+    resto de las madres, y con el velo original (hasta 80% de negro) se
+    perdía casi entera. */
+export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destacado = '', pill = '', id = '', veloClaro = false }) {
   return html`
     <${sinIngreso(e) ? 'div' : 'a'}
       ${raw(sinIngreso(e) ? '' : `href="/carrera/${e.slug}"`)}
       ${raw(id ? `id="${id}"` : '')}
       class="reveal u-lift-sm group scroll-mt-24 overflow-hidden rounded-owa-lg border border-owa-line bg-white transition-shadow duration-250 ease-out hover:shadow-[var(--shadow-elevated)]"
     >
-      <div class="relative h-35 bg-owa-abyss">
+      <div class="relative ${veloClaro ? 'h-52' : 'h-35'} bg-owa-abyss">
         ${foto({
           slug: e.img,
           alt: ALT[e.tipo](e),
@@ -180,10 +184,18 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destaca
           className: 'block h-full w-full',
           imgClass: 'h-full w-full object-cover',
         })}
-        <div class="absolute inset-0 bg-linear-to-b from-owa-abyss/10 to-owa-abyss/80"></div>
+        <!-- PRUEBA (sólo Challenge): radial en vez de lineal, pegado a la
+             esquina donde vive el texto (bottom-left) en vez de hundir toda
+             la franja inferior parejo — deja más foto limpia arriba a la
+             derecha. Mismo navy de marca (owa-abyss) en vez de negro puro. -->
+        <div
+          class="absolute inset-0 ${veloClaro
+            ? 'bg-[radial-gradient(circle_at_bottom_left,rgb(13_16_48/0.85)_0%,rgb(13_16_48/0.55)_25%,rgb(13_16_48/0.15)_50%,transparent_72%)]'
+            : 'bg-linear-to-b from-owa-abyss/10 to-owa-abyss/80'}"
+        ></div>
         <div class="absolute bottom-6 left-4.5 text-white">
-          <p class="font-display text-[11px] font-bold tracking-[0.16em] text-owa-sky">${orden}</p>
-          <h3 class="mt-1.5 text-xl leading-none">${e.corto}</h3>
+          <p class="font-display ${veloClaro ? 'text-sm' : 'text-[11px]'} font-bold tracking-[0.16em] text-owa-sky">${orden}</p>
+          <h3 class="mt-1.5 ${veloClaro ? 'text-3xl' : 'text-xl'} leading-none">${e.corto}</h3>
           <!-- La distancia va sobre la foto, pegada al nombre: es el dato
                que diferencia una fecha de otra dentro del mismo torneo. -->
           ${pill
@@ -198,8 +210,8 @@ export function tarjetaFecha(e, { orden, linea, sublinea, estado = true, destaca
       </div>
       <div class="p-5">
         ${estado ? chipEstado(e.estado) : ''}
-        <p class="${estado ? 'mt-3' : ''} font-display text-base font-black text-owa-navy">${linea}</p>
-        <p class="mt-1.5 text-[13px] text-owa-slate">${sublinea}</p>
+        <p class="${estado ? 'mt-3' : ''} font-display text-base font-black text-owa-navy ${veloClaro ? 'uppercase' : ''}">${linea}</p>
+        <p class="mt-1.5 text-[13px] text-owa-slate ${veloClaro ? 'font-bold' : ''}">${sublinea}</p>
         ${destacado
           ? html`<p
               class="mt-3 inline-flex items-center rounded-lg bg-owa-mist px-3.5 py-2 font-display text-[13px] font-black tracking-[0.04em] text-owa-blue uppercase"

@@ -1265,14 +1265,23 @@ export function render(ctx) {
                 </div>
                 <!-- Las tres travesías Challenge (RDP, BVT, SNP) integran la
                      Triple Corona Sudamericana — va acá con su propia rayita,
-                     como un segundo sello aparte del logo de Challenge. -->
-                <img
-                  src="/brand/triple-corona.webp"
-                  alt="Triple Corona Sudamericana"
-                  loading="lazy"
-                  decoding="async"
-                  class="h-20 w-auto shrink-0 self-center sm:h-24 lg:h-28"
-                />
+                     como un segundo sello aparte del logo de Challenge. Con
+                     link a la web oficial de la Triple Corona. -->
+                <a
+                  href="https://triplecoronasudamericana.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="u-press shrink-0 self-center"
+                  aria-label="Triple Corona Sudamericana (se abre en una pestaña nueva)"
+                >
+                  <img
+                    src="/brand/triple-corona.webp"
+                    alt="Triple Corona Sudamericana"
+                    loading="lazy"
+                    decoding="async"
+                    class="h-20 w-auto sm:h-24 lg:h-28"
+                  />
+                </a>
                 <div class="hidden w-px self-stretch bg-white/15 lg:block" aria-hidden="true"></div>
                 <img
                   src="/brand/challenge-dorado.svg"

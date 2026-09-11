@@ -319,7 +319,7 @@ export const CHALLENGES = [
     tipo: 'challenge',
     fechaCorta: 'DIC – ABR',
     anio: '',
-    ventana: 'Diciembre a abril',
+    ventana: 'Diciembre a Abril',
     fechaLarga: 'Ventanas de cruce: diciembre a abril',
     nota: '',
     estado: 'proximamente',

@@ -45,9 +45,12 @@ const conResumen = (key) => Boolean(MADRES[key]?.campeones);
 /** Cada madre arma su lista de fechas distinto. */
 function fechasDe(key) {
   if (key === 'especiales')
-    return EVENTOS.filter((e) => e.tipo === 'especial').map((e, i) => ({
+    return EVENTOS.filter((e) => e.tipo === 'especial').map((e) => ({
       e,
-      orden: String(i + 1).padStart(2, '0'),
+      // El escenario (LAGO/MAR/RÍO) en vez del número de orden: es el dato
+      // que bloqueEscenarios mostraba aparte y que ahora vive acá, arriba de
+      // la foto — "Dónde se corren" quedaba repetido con esto.
+      orden: e.escenario,
       linea: `${e.fechaCorta} ${e.anio}`,
       sublinea: e.nota || e.sede,
     }));
@@ -350,6 +353,14 @@ export function render(ctx) {
   // viejo) y ya se confirmó para los dos. Especiales y Challenge no entran:
   // no tienen puntaje ni una distancia fija por sede.
   const nuevoOrden = key === 'grand-prix' || key === 'circuito';
+  // Sólo Challenge, sólo la proporción de columnas: el texto manda más que la
+  // caja de admisión al lado, así que la izquierda crece y la derecha se
+  // achica en vez de partir el ancho a la mitad.
+  const esChallenge = key === 'challenge';
+  // Compacta la caja de la derecha (Admisión en Challenge, Cómo funcionan en
+  // Especiales): las dos venían con el padding grande pensado para cuando
+  // era la única columna de apoyo; ninguna de las dos necesita tanto aire.
+  const cajaCompacta = esChallenge || key === 'especiales';
 
   return toHTML(html`
     <section class="relative overflow-hidden bg-owa-navy px-0 pt-18 pb-16 text-white">
@@ -391,12 +402,12 @@ export function render(ctx) {
       ${olaSuperior('#fff')}
     </section>
 
-    <div class="u-shell grid gap-12 pt-18 ${nuevoOrden ? 'lg:grid-cols-[43fr_57fr]' : 'lg:grid-cols-2'}">
+    <div class="u-shell grid gap-12 pt-13 ${nuevoOrden ? 'lg:grid-cols-[43fr_57fr]' : esChallenge ? 'lg:grid-cols-[3fr_2fr]' : 'lg:grid-cols-2'}">
       <!-- Padding derecho sólo en desktop: mete las distancias hacia adentro
            en vez de dejarlas pegadas al borde de la columna. -->
       <div class="${nuevoOrden ? '' : 'lg:pr-20'}">
         ${eyebrow(m.bloque1Kicker)}
-        <h2 class="mt-3.5 text-[clamp(1.625rem,3.2vw,2.5rem)] leading-[0.98]">${m.bloque1Titulo}</h2>
+        <h2 class="mt-2 text-[clamp(1.625rem,3.2vw,2.5rem)] leading-[0.98]">${m.bloque1Titulo}</h2>
         <!-- bloque1Texto puede ser un string o varios párrafos. -->
         <div class="mt-4.5 grid max-w-[62ch] gap-3.5 text-base leading-[1.75] text-owa-slate">
           ${[].concat(m.bloque1Texto).map((t) => html`<p>${t}</p>`)}
@@ -405,14 +416,16 @@ export function render(ctx) {
              Con el orden nuevo las distancias se van a la columna derecha, así
              que acá queda sólo el texto. -->
         ${nuevoOrden ? '' : DIST[key] ? (conResumen(key) ? bloqueDatos(key, m, fechas) : bloqueDistancias(key)) : ''}
-        ${key === 'challenge' ? bloqueTravesias() : ''} ${key === 'especiales' ? bloqueEscenarios() : ''}
+        <!-- Ni Challenge (bloqueTravesias) ni Especiales (bloqueEscenarios)
+             llevan más su listado de apoyo acá: quedaba repetido con lo que
+             ya muestran las tarjetas de más abajo (sede/km, escenario). -->
       </div>
 
       ${nuevoOrden
         ? bloqueDistanciasPorFecha(key)
-        : html`<div class="rounded-owa-lg bg-owa-mist p-7.5 pt-12 pl-9 pr-9 lg:pr-24">
+        : html`<div class="rounded-owa-lg bg-owa-mist ${cajaCompacta ? 'p-6.5' : 'p-7.5 pt-12 pl-9 pr-9 lg:pr-24'}">
         <h3 class="font-display text-[17px] font-black text-owa-navy">${m.cajaTitulo}</h3>
-        <ul class="mt-4">
+        <ul class="${cajaCompacta ? 'mt-2' : 'mt-4'}">
           ${m.cajaItems.map((i) =>
             // Un ítem con nombre propio no necesita bullet: el título en Vito
             // Black hace de ancla y deja la regla escaneable de un vistazo.
@@ -424,19 +437,19 @@ export function render(ctx) {
                   </li>
                 `
               : html`
-                  <li class="flex gap-4 border-t border-owa-navy/12 py-3.5">
-                    ${i.i ? html`<span class="mt-0.5 shrink-0 text-owa-blue">${icono(i.i)}</span>` : ''}
+                  <li class="flex gap-4 border-t border-owa-navy/12 ${cajaCompacta ? 'py-2.5' : 'py-3.5'}">
+                    ${i.i ? html`<span class="mt-0.5 shrink-0 text-owa-blue">${icono(i.i, cajaCompacta ? 'size-5' : undefined)}</span>` : ''}
                     <span class="min-w-0">
                       <span class="block font-display text-[13px] font-black tracking-[0.05em] text-owa-navy uppercase"
                         >${i.t}</span
                       >
-                      <span class="mt-1.5 block text-sm leading-relaxed text-owa-slate">${raw(i.d)}</span>
+                      <span class="mt-1 block text-sm leading-snug text-owa-slate">${raw(i.d)}</span>
                     </span>
                   </li>
                 `
           )}
         </ul>
-        <div class="mt-5 flex flex-wrap gap-2">
+        <div class="${cajaCompacta ? 'mt-4' : 'mt-5'} flex flex-wrap gap-2">
           <!-- Ancho completo en mobile: el boton de daisyUI no encoge
                (flex-shrink 0) y etiquetas largas como "ESCRIBIR A LA
                ORGANIZACIÓN" se desbordaban de la caja. -->
@@ -459,8 +472,13 @@ export function render(ctx) {
          nadador ya vio dónde y cuándo compite. -->
     ${nuevoOrden ? bloquePuntaje(key, m) : ''} ${nuevoOrden ? '' : m.premio ? bloquePremio(m.premio) : ''}
 
-    <section class="u-shell pt-16 ${nuevoOrden ? 'pb-4' : 'pb-24'}" aria-labelledby="h-fechas">
-      <h2 id="h-fechas" class="u-eyebrow text-owa-blue">${m.listaKicker}</h2>
+    <section class="u-shell ${esChallenge ? 'pt-6' : 'pt-16'} ${nuevoOrden ? 'pb-4' : 'pb-24'}" aria-labelledby="h-fechas">
+      <h2
+        id="h-fechas"
+        class="${esChallenge ? 'font-display text-[clamp(0.875rem,1.2vw,1.0625rem)] font-black tracking-[0.05em]' : 'u-eyebrow'} text-owa-blue"
+      >
+        ${m.listaKicker}
+      </h2>
       <!-- Challenge tiene 3 desafíos, no 4 como el resto de las madres: con
            lg:grid-cols-4 quedaba un cuarto lugar vacío como si faltara algo.
            Pinneado a esta categoría a propósito, no a "cuando hay 3 items". -->
@@ -475,6 +493,9 @@ export function render(ctx) {
             // Destino de las mini-tarjetas de arriba en Grand Prix. No molesta
             // en las otras madres: es sólo un id sobre la tarjeta.
             id: `fecha-${f.e.slug}`,
+            // Sólo acá: en Challenge la foto de la travesía es lo que se
+            // viene a ver, no un fondo de apoyo.
+            veloClaro: key === 'challenge',
           })
         )}
       </div>
