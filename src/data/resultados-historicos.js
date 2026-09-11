@@ -209,14 +209,23 @@ export const TEMPORADAS = [
       {
         sigla: 'SPD',
         nombre: 'San Pedro',
-        // OWA pasó esta edición como "2025 diciembre", pero su propia página
-        // de resultados la publica el 30 de noviembre. Va la fecha de la
-        // página hasta que confirmen cuál de las dos es.
-        fecha: '30 de noviembre de 2025',
+        // La página de resultados dice noviembre, pero se corrió en diciembre:
+        // la fecha de noviembre se canceló por lluvia.
+        fecha: 'Diciembre de 2025',
         sede: 'San Pedro · Buenos Aires',
         torneo: 'CIRCUITO OWA',
         etapa: 'Fecha 1',
         url: 'https://cronometrajeinstantaneo.com/resultados/san-pedro-spd-circuito-owa-2526/filtros',
+      },
+      {
+        sigla: 'LBC',
+        nombre: 'Liebig a Colón',
+        fecha: '13 de diciembre de 2025',
+        sede: 'Colón · Entre Ríos',
+        // Las dos competencias en una sola tabla, como las publicó OWA.
+        torneo: 'GRAND PRIX y CIRCUITO OWA',
+        etapa: 'Fecha 2',
+        url: 'https://cronometrajeinstantaneo.com/resultados/liebig-colon-lbc-gp-circuito-owa-2526/filtros',
       },
       {
         sigla: 'PNR',
@@ -237,6 +246,29 @@ export const TEMPORADAS = [
         url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-vhu-circuito-owa-2526/filtros',
       },
       {
+        sigla: 'CLN',
+        nombre: 'Colón',
+        // Fecha exacta pendiente de confirmar con OWA.
+        fecha: '2026',
+        sede: 'Colón · Entre Ríos',
+        torneo: 'CIRCUITO OWA',
+        etapa: '',
+        url: 'https://cronometrajeinstantaneo.com/resultados/colon-cln-circuito-owa-2526/filtros',
+      },
+      {
+        // Iba a ser Isla Caraballo (ISC), pero terminó corriéndose como
+        // Liebig a Colón (LBC) — el link de resultados quedó con el nombre
+        // "isla-caraballo" aunque la carrera real fue la de Colón.
+        // Fecha exacta pendiente de confirmar con OWA.
+        sigla: 'LBC',
+        nombre: 'Liebig a Colón',
+        fecha: '2026',
+        sede: 'Colón · Entre Ríos',
+        torneo: 'GRAND PRIX',
+        etapa: '',
+        url: 'https://cronometrajeinstantaneo.com/resultados/isla-caraballo-isc-gp-owa-2526-final/filtros',
+      },
+      {
         sigla: 'PAD',
         nombre: 'Puerto Alto Delta',
         fecha: '12 de abril de 2026',
@@ -245,8 +277,6 @@ export const TEMPORADAS = [
         etapa: 'Fecha final',
         url: 'https://cronometrajeinstantaneo.com/resultados/puerto-alto-delta-pad-circuito-owa-2526-final/filtros',
       },
-      // Falta LBC (Liebig a Colón, 13/12/2025). El link está en la página
-      // vieja de OWA pero todavía no lo confirmaron en la lista que mandaron.
     ],
   },
   {
@@ -354,9 +384,7 @@ export const TEMPORADAS = [
       {
         sigla: 'VOB',
         nombre: 'Vuelta de Obligado',
-        // Pendiente: el sitio viejo no publica la fecha exacta de esta
-        // edición (el link estaba roto ahí). Confirmar con OWA.
-        fecha: '',
+        fecha: '5 de noviembre de 2023',
         sede: 'San Pedro · Buenos Aires',
         torneo: 'CIRCUITO OWA',
         etapa: 'Etapa 3',
@@ -365,9 +393,7 @@ export const TEMPORADAS = [
       {
         sigla: 'PNR',
         nombre: 'Open Water Pinamar',
-        // OWA la listó sólo como "2024". Por el número de etapa cae en enero,
-        // pero la fecha exacta queda pendiente de confirmación.
-        fecha: '2024',
+        fecha: 'Enero de 2024',
         sede: 'Pinamar · Buenos Aires',
         torneo: 'CIRCUITO OWA',
         etapa: 'Etapa 5',
@@ -376,15 +402,30 @@ export const TEMPORADAS = [
       {
         sigla: 'VHU',
         nombre: 'Vuelta a la Huemul',
-        // Ídem: OWA la listó sólo como "2024".
-        fecha: '2024',
+        fecha: 'Febrero de 2024',
         sede: 'Bariloche · Río Negro',
         torneo: 'CIRCUITO OWA',
         etapa: 'Etapa 7',
         url: 'https://cronometrajeinstantaneo.com/resultados/vuelta-a-la-huemul-vhu-etapa-7-circuito-owa-2324/filtros',
       },
-      // Falta PAD 2024: el link que mandó OWA apunta al panel de
-      // administración de Cronometraje (admin…/inicio), no a un resultado.
+      {
+        sigla: 'PAD',
+        nombre: 'Puerto Alto Delta',
+        fecha: '2024',
+        sede: 'Villa Paranacito · Entre Ríos',
+        torneo: 'CIRCUITO OWA',
+        etapa: 'Etapa 8',
+        url: 'https://cronometrajeinstantaneo.com/resultados/puerto-alto-delta-pad-etapa-8-circuito-owa-2324/filtros',
+      },
+      {
+        sigla: 'CLN',
+        nombre: 'Colón',
+        fecha: 'Abril de 2024',
+        sede: 'Colón · Entre Ríos',
+        torneo: 'GRAND PRIX y CIRCUITO OWA',
+        etapa: 'Etapa final',
+        url: 'https://cronometrajeinstantaneo.com/resultados/colon-open-water-cln-etapa-final-circuito-owa-2324/filtros',
+      },
     ],
   },
   {
