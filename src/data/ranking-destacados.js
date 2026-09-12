@@ -16,14 +16,14 @@ export const DESTACADOS = {
         "pos": 2,
         "nombre": "PERMIKIN Konstantin",
         "cat": "45 a 49",
-        "club": "River",
+        "club": "River Plate",
         "puntos": 3841
       },
       {
         "pos": 3,
         "nombre": "ARJONA Lautaro",
         "cat": "Hasta 19",
-        "club": "CMR",
+        "club": "Club Mendoza de Regatas",
         "puntos": 3797
       },
       {
@@ -46,7 +46,7 @@ export const DESTACADOS = {
         "pos": 1,
         "nombre": "TORIANO Frida",
         "cat": "Hasta 19",
-        "club": "",
+        "club": "Club Junín",
         "puntos": 3965
       },
       {
@@ -58,9 +58,9 @@ export const DESTACADOS = {
       },
       {
         "pos": 3,
-        "nombre": "DIAZ DEBAISIEUX Mariana",
+        "nombre": "DIAZ Mariana",
         "cat": "55 a 59",
-        "club": "TT Swim Team",
+        "club": "Nora Toledano Team",
         "puntos": 3533
       },
       {

@@ -76,11 +76,11 @@ export const FICHAS = {
     mapa: { slug: 'mapa-ljn', alt: 'Vista aérea de la laguna Cantera Aguas con el circuito de Luján marcado en rojo' },
 
     kit: [
-      { t: 'Remera del evento' },
-      { t: 'Gorra oficial' },
-      { t: 'Chip de cronometraje' },
-      { t: 'Numeración' },
-      { t: 'Medalla finisher' },
+      { t: 'Remera del evento', d: 'Incluida' },
+      { t: 'Gorra oficial', d: 'Incluida' },
+      { t: 'Chip de cronometraje', d: 'Incluido' },
+      { t: 'Numeración', d: 'Incluida' },
+      { t: 'Medalla finisher', d: 'Incluida' },
     ],
   },
 
@@ -293,9 +293,9 @@ export const FICHAS = {
     ],
 
     kit: [
-      { t: 'Remera OWA del evento' },
-      { t: 'Gorra de silicona arena' },
-      { t: 'Mochila kit' },
+      { t: 'Remera OWA del evento', d: 'Incluida' },
+      { t: 'Gorra de silicona arena', d: 'Incluida' },
+      { t: 'Mochila kit', d: 'Incluida' },
       { t: 'Productos de auspiciantes' },
     ],
   },
@@ -476,9 +476,9 @@ export const FICHAS = {
     ],
 
     kit: [
-      { t: 'Remera OWA del evento' },
-      { t: 'Gorra de silicona arena' },
-      { t: 'Mochila kit' },
+      { t: 'Remera OWA del evento', d: 'Incluida' },
+      { t: 'Gorra de silicona arena', d: 'Incluida' },
+      { t: 'Mochila kit', d: 'Incluida' },
       { t: 'Productos de auspiciantes' },
     ],
   },
@@ -723,6 +723,15 @@ export const FICHAS = {
           },
         ],
       },
+    ],
+
+    // Propio y no el placeholder genérico: acá no hay chip (el cronometraje
+    // es por app, no por chip físico) y la remera ya está confirmada.
+    kit: [
+      { t: 'Gorra oficial', d: 'Incluida' },
+      { t: 'Numeración', d: 'Incluida' },
+      { t: 'Medalla finisher', d: 'Incluida' },
+      { t: 'Remera del evento', d: 'Incluida' },
     ],
   },
 

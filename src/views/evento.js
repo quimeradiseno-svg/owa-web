@@ -478,6 +478,138 @@ const jornadas = (e, f) => {
 `;
 };
 
+// Ícono + microdescripción de cada ítem del kit, por palabra clave del texto:
+// son docenas de fichas con nombres libres (ver fichas.js) y no vale la pena
+// sumarles dos campos más a cada una. Cualquier ítem que no matchee cae en
+// "info" y sin bajada — sigue siendo válido, sólo más escueto.
+const KIT_INFO = [
+  ['remera', 'remera', 'Remera oficial del evento'],
+  ['gorra', 'gorra', 'Gorra oficial de la carrera'],
+  ['medalla', 'medalla', 'Para quienes completan la distancia'],
+  ['numeraci', 'numero', 'Tu identificación en la carrera'],
+  ['chip', 'reloj', 'Registra tu tiempo oficial'],
+  ['cronometraje', 'reloj', 'Registra tu tiempo oficial'],
+  ['mochila', 'valija', 'Para tenerlo todo a mano el día de la carrera'],
+];
+const kitInfoDe = (t = '') => {
+  const s = t.toLowerCase();
+  const fila = KIT_INFO.find(([clave]) => s.includes(clave));
+  return { icono: fila?.[1] || 'info', desc: fila?.[2] || '' };
+};
+
+// Estado del ítem: confirmado ("En tu kit", con el visto) o pendiente
+// ("A confirmar" y variantes, sin visto). Un solo texto para todo lo
+// confirmado en vez de "Incluida"/"Incluido" evita el problema de género de
+// cada sustantivo (gorra/chip/remera) sin tener que pisar el dato de origen.
+const estadoKit = (d) => {
+  if (!d) return null;
+  return /confirmar/i.test(d) ? { texto: d, ok: false } : { texto: 'En tu kit', ok: true };
+};
+
+// Fila del kit: ícono en círculo suave, nombre con más peso y su
+// microdescripción abajo, estado pegado al lado (no en el otro extremo de la
+// fila) para que el ojo no tenga que cruzar toda la columna. Es la versión
+// "showcase", para cuando hay foto o video del kit al lado (ver `compacta`
+// más abajo para el resto de las carreras).
+const filaKit = (k) => {
+  const { icono: ic, desc } = kitInfoDe(k.t);
+  const estado = estadoKit(k.d);
+  return html`
+    <li class="flex items-center gap-4 border-t border-owa-sand py-4">
+      <span class="grid size-11 shrink-0 place-items-center rounded-full bg-owa-sky/20 text-owa-blue">
+        ${icono(ic, 'size-5.5')}
+      </span>
+      <span class="min-w-0 flex-1">
+        <span class="block font-sans text-[15px] font-bold text-owa-navy"
+          >${k.t}${k.nota ? html`<span class="align-super text-[11px] font-normal text-owa-slate">*</span>` : ''}</span
+        >
+        ${desc ? html`<span class="mt-0.5 block truncate text-[13px] text-owa-slate">${desc}</span>` : ''}
+      </span>
+      ${estado
+        ? html`
+            <span
+              class="shrink-0 rounded-full px-3 py-1.5 text-[12px] font-bold whitespace-nowrap ${estado.ok
+                ? 'bg-owa-blue/10 text-owa-blue'
+                : 'bg-owa-sand text-owa-slate'}"
+            >
+              ${estado.ok ? '✓ ' : ''}${estado.texto}
+            </span>
+          `
+        : ''}
+    </li>
+  `;
+};
+
+// Fila compacta: mismo ícono e igual criterio de estado que la de arriba,
+// pero en una sola línea y sin microdescripción — para las carreras que
+// todavía no tienen foto ni video del kit (todas menos Cruce del Nahuel por
+// ahora). Cuando OWA mande esas fotos, esa carrera pasa a `filaKit` sola con
+// cargarle el campo `remera` en eventos.js.
+const filaKitCompacta = (k) => {
+  const { icono: ic } = kitInfoDe(k.t);
+  const estado = estadoKit(k.d);
+  return html`
+    <li class="flex items-center gap-3 border-t border-owa-sand py-2.5">
+      <span class="flex min-w-0 flex-1 items-center gap-2.5">
+        <span class="shrink-0 text-owa-blue">${icono(ic, 'size-4.5')}</span>
+        <span class="truncate text-sm text-owa-navy"
+          >${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-slate">*</span>` : ''}</span
+        >
+      </span>
+      ${estado
+        ? html`
+            <span class="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold whitespace-nowrap ${estado.ok ? 'bg-owa-blue/10 text-owa-blue' : 'bg-owa-sand text-owa-slate'}"
+              >${estado.ok ? '✓ ' : ''}${estado.texto}</span
+            >
+          `
+        : ''}
+    </li>
+  `;
+};
+
+// Lista de "Tu kit incluye". `compacta` es para las carreras sin foto/video
+// de kit al lado (ver más arriba): filas de una línea, sin descripción, para
+// no alargar la tarjeta cuando no hay nada visual que la acompañe. Ancho tope
+// en la versión showcase (no todo el ancho de la columna, que en desktop es
+// bien ancha y dispersaba nombre y estado). `f?.kit` es la propia de cada
+// ficha; sin ficha cae al placeholder genérico de EVENTO_FICHA.
+const kitLista = (f, { compacta = false } = {}) => html`
+  <ul class="mt-4.5 ${compacta ? '' : 'max-w-[600px]'}">
+    ${(f?.kit || EVENTO_FICHA.kit).map(compacta ? filaKitCompacta : filaKit)}
+  </ul>
+  ${f?.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-slate">* ${f.kitNota}</p>` : ''}
+`;
+
+// Foto/video de la remera dentro de la tarjeta del kit. Con `video` cargado
+// (hoy, Cruce del Nahuel) gira sola en loop, sin sonido, mostrando frente y
+// dorso; la foto de frente queda de poster mientras decodifica el primer
+// cuadro y es lo único que se ve con `prefers-reduced-motion`, donde
+// `montarVideoKit` directamente no la activa.
+const kitMedia = (remera) => html`
+  <div class="relative aspect-square overflow-hidden rounded-owa-md bg-owa-mist">
+    ${foto({
+      slug: remera.frente,
+      alt: remera.alt,
+      sizes: '(min-width: 1024px) 42vw, 100vw',
+      className: 'absolute inset-0 block h-full w-full',
+      imgClass: 'h-full w-full object-cover',
+    })}
+    ${remera.video
+      ? html`<video
+          data-kit-video
+          class="video-fade absolute inset-0 h-full w-full object-cover"
+          muted
+          loop
+          playsinline
+          preload="none"
+          aria-hidden="true"
+        >
+          <source data-src="${remera.video}" type="video/mp4" /></video
+        >`
+      : ''}
+  </div>
+`;
+
 // Postulación a un Challenge. Por default va a WhatsApp con el mensaje ya
 // redactado (mismo número que el pie del sitio, ver footer.js); un evento con
 // `postulacionEmail` (hoy sólo RDP) va por mail a esa casilla en cambio.
@@ -1877,8 +2009,60 @@ export function render(ctx) {
          el lugar de la sección de fiscalización/video. -->
     ${esChallenge && e.resena ? resenaHistorica(e) : ''}
 
-    <!-- reglamento + kit — fuera de los Challenge, que no tienen kit -->
-    ${esChallenge ? '' : html`
+    <!-- reglamento + kit — fuera de los Challenge, que no tienen kit.
+         Con remera cargada (hoy, Cruce del Nahuel) el kit se une con su
+         video/foto en una sola tarjeta y el reglamento pasa a franja de
+         ancho completo abajo; sin remera sigue el molde de siempre, las dos
+         cajas lado a lado. -->
+    ${esChallenge
+      ? ''
+      : e.remera
+        ? html`
+      <section class="u-shell pt-12 pb-8" aria-labelledby="h-kit">
+        <!-- 42/58: la foto no necesita más de un 42% del ancho de la tarjeta,
+             y a la inversa la columna de datos quedaba corta y el contenido
+             se sentía disperso. -->
+        <div class="reveal grid gap-8 rounded-owa-lg border border-owa-line bg-white p-7 sm:p-8 lg:grid-cols-[42fr_58fr]" data-visible>
+          ${kitMedia(e.remera)}
+          <div>
+            ${eyebrow('Kit del nadador')}
+            <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Tu kit incluye</h2>
+            ${kitLista(f)}
+            <!-- La remera es la protagonista de la foto/video de al lado, así
+                 que se separa del listado con su propio módulo en vez de
+                 seguir como continuación de la tabla. -->
+            <div class="mt-6 flex max-w-[600px] items-start gap-4 rounded-owa-md bg-owa-sky/12 p-5">
+              <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white text-owa-blue">
+                ${icono('remera', 'size-5.5')}
+              </span>
+              <div class="min-w-0">
+                <p class="font-display text-[13px] font-black tracking-[0.06em] text-owa-navy uppercase">
+                  ${e.remera.titulo || 'La remera del evento'}
+                </p>
+                <p class="mt-1.5 text-[14px] leading-relaxed text-owa-slate">${e.remera.bajada}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="u-shell pb-20">
+        <div
+          class="reveal flex flex-col items-start gap-5 rounded-owa-lg bg-owa-sky/15 p-7 sm:flex-row sm:items-center sm:justify-between sm:p-8"
+          data-visible
+        >
+          <div class="min-w-0">
+            ${eyebrow('Reglamento')}
+            <h2 class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Lo que hay que saber antes de largar</h2>
+            <p class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-owa-slate">
+              Neopreno, categorías, cortes de tiempo, causales de descalificación y protocolo de seguridad en el agua.
+            </p>
+          </div>
+          <div class="shrink-0">${btnPrimario('Ver reglamentos', '/reglamentos')}</div>
+        </div>
+      </section>
+    `
+        : html`
     <section class="u-shell pt-12 pb-20" aria-labelledby="h-reglamento">
       <div class="grid gap-4.5 lg:grid-cols-2">
         <div class="reveal rounded-owa-lg bg-owa-mist p-8" data-visible>
@@ -1896,43 +2080,8 @@ export function render(ctx) {
 
         <div class="reveal rounded-owa-lg border border-owa-line p-8" data-visible>
           ${eyebrow('Kit del nadador')}
-          <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Qué te llevás</h2>
-          ${f?.kit
-            ? html`
-                <ul class="mt-4.5">
-                  ${f.kit.map((k) =>
-                    // Con `d` (San Pedro, Ramallo y Colón no lo cargan) se
-                    // muestra el estado de cada ítem —Incluido, A confirmar—
-                    // igual que el placeholder genérico de abajo; sin `d`
-                    // sigue como lista simple de nombres.
-                    k.d
-                      ? html`
-                          <li class="flex items-baseline justify-between gap-3.5 border-t border-owa-sand py-3 text-sm">
-                            <span class="text-owa-slate">${k.t}</span>
-                            <span class="text-right font-display text-[13px] font-bold text-owa-navy">${k.d}</span>
-                          </li>
-                        `
-                      : html`
-                          <li class="border-t border-owa-sand py-3 text-sm text-owa-navy">
-                            ${k.t}${k.nota ? html`<span class="align-super text-[11px] text-owa-slate">*</span>` : ''}
-                          </li>
-                        `
-                  )}
-                </ul>
-                ${f.kitNota ? html`<p class="mt-3.5 text-[12px] text-owa-slate">* ${f.kitNota}</p>` : ''}
-              `
-            : html`
-                <dl class="mt-4.5">
-                  ${EVENTO_FICHA.kit.map(
-                    (k) => html`
-                      <div class="flex justify-between gap-3.5 border-t border-owa-sand py-3">
-                        <dt class="text-sm text-owa-slate">${k.t}</dt>
-                        <dd class="text-right font-display text-[13px] font-bold text-owa-navy">${k.d}</dd>
-                      </div>
-                    `
-                  )}
-                </dl>
-              `}
+          <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Tu kit incluye</h2>
+          ${kitLista(f, { compacta: true })}
         </div>
       </div>
     </section>
@@ -1988,9 +2137,23 @@ export function render(ctx) {
   `);
 }
 
+// Activa el <video> de la tarjeta del kit, salvo reduced-motion — mismo
+// criterio que `montarFondoVideo` en lib/img.js, pero sin el velo de opacidad
+// (acá el video va a la vista, no de fondo).
+function montarVideoKit(root) {
+  const video = root.querySelector('[data-kit-video]');
+  if (!video || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const source = video.querySelector('source[data-src]');
+  source.src = source.dataset.src;
+  video.addEventListener('canplaythrough', () => video.setAttribute('data-ready', ''), { once: true });
+  video.load();
+  video.play().catch(() => {});
+}
+
 export function mount(root, ctx) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarCarruseles(root);
+  montarVideoKit(root);
 
 
   const repintar = () => {

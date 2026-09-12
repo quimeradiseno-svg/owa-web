@@ -70,6 +70,16 @@ const TRAZOS = {
     '<path d="M9.5 3.5 6.5 5.3V19A1.5 1.5 0 0 0 8 20.5h2.5v-17z"/><path d="M14.5 3.5l3 1.8V19a1.5 1.5 0 0 1-1.5 1.5h-2.5v-17z"/><path d="M9.5 3.5 12 6l2.5-2.5"/><path d="M6.5 10.5h4"/><path d="M13.5 10.5h4"/>',
   // Seguridad: escudo con tilde.
   escudo: '<path d="M12 3 5 5.8v5.4c0 4.2 2.9 7.7 7 8.8 4.1-1.1 7-4.6 7-8.8V5.8z"/><path d="m9.1 11.8 2.2 2.2 3.7-4"/>',
+  // Kit — gorra: cúpula de gorra de natación sobre la línea de la cabeza.
+  gorra: '<path d="M4.5 15a7.5 7.5 0 0 1 15 0"/><path d="M3 15h18"/><path d="M12 7.5c1.5 0 2.7 1.8 2.9 4.2"/>',
+  // Kit — remera: silueta de remera con muescas de manga.
+  remera:
+    '<path d="M8.7 4 4.5 6.6l1.9 3 1.9-1v11h7.4v-11l1.9 1 1.9-3L15.3 4l-2 1.9c-.4-.3-.8-.5-1.3-.5s-.9.2-1.3.5z"/>',
+  // Kit — medalla finisher: cinta en V sobre medalla circular.
+  medalla: '<path d="M9 3.5 12 10 15 3.5"/><circle cx="12" cy="15" r="5"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/>',
+  // Kit — numeración: cartel de pechera con pines y renglones.
+  numero:
+    '<path d="M6 4h12l-1.4 16H7.4z"/><circle cx="9" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="15" cy="8" r="0.9" fill="currentColor" stroke="none"/><path d="M9 13h6"/><path d="M9.6 16h4.8"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>

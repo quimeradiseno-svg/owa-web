@@ -11,10 +11,11 @@ export const descripcion =
 const WA = 'https://wa.me/5491125543112';
 const MAIL = 'mailto:info@owa.com.ar?subject=OWA%20Travel';
 
-/** WhatsApp con mensaje precargado: los CTA "Quiero recibir información" del
-    cliente piden disparar mail o WhatsApp — se eligió WhatsApp como único
-    canal para no duplicar el mismo pedido en dos botones por card. */
-const waLink = (asunto) => `${WA}?text=${encodeURIComponent(`Hola! Quiero recibir información sobre ${asunto}.`)}`;
+/** Mail con asunto y cuerpo precargados: los CTA "Quiero recibir información"
+    de Travel (salidas, agenda de carreras —incluida Capri-Nápoli— y el banner
+    de Race Travel) piden mail y no WhatsApp como único canal. */
+const mailLink = (asunto) =>
+  `mailto:info@owa.com.ar?subject=${encodeURIComponent(`OWA Travel · ${asunto}`)}&body=${encodeURIComponent(`Hola! Quiero recibir información sobre ${asunto}.`)}`;
 
 /** Pastilla de estado de una salida o carrera. Los tres textos son fijos,
     tal como los pasó OWA (no son estados genéricos del sitio). */
@@ -66,9 +67,7 @@ function tarjetaSalida(t) {
         ${t.cta
           ? html`
               <a
-                href="${waLink(t.salidaTitulo)}"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="${mailLink(t.salidaTitulo)}"
                 class="u-press mt-5 inline-flex items-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-xs font-black tracking-[0.08em] text-white uppercase transition-colors duration-200 ease-out hover:bg-owa-electric"
               >
                 Quiero recibir información
@@ -120,9 +119,7 @@ function tarjetaAgenda(r) {
         ${r.cta
           ? html`
               <a
-                href="${waLink(`${r.destino} · ${r.pais}`)}"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="${mailLink(`${r.destino} · ${r.pais}`)}"
                 class="u-press mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-owa-blue px-5 py-2.5 font-display text-xs font-black tracking-[0.08em] text-white uppercase transition-colors duration-200 ease-out hover:bg-owa-electric"
               >
                 Quiero recibir información
@@ -243,9 +240,7 @@ function modalidad(m, i) {
                     ${COMPETIR_LEJOS.parrafos.map((p) => html`<p>${raw(p)}</p>`)}
                   </div>
                   <a
-                    href="${waLink('OWA Race Travel 2027')}"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="${mailLink('OWA Race Travel 2027')}"
                     class="u-press mt-6 inline-flex items-center gap-2 rounded-full bg-owa-blue px-6 py-3 font-display text-xs font-black tracking-[0.08em] text-white uppercase transition-colors duration-200 ease-out hover:bg-owa-electric"
                   >
                     ${COMPETIR_LEJOS.cta}

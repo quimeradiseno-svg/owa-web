@@ -186,6 +186,17 @@ export const EVENTOS = [
       { slug: 'nhl-galeria-8', alt: 'Grupo de nadadores en pleno cruce, con las montañas de Bariloche de fondo' },
       { slug: 'nhl-galeria-9', alt: 'Tripulantes de una lancha de OWA acompañando el cruce, con la cordillera al frente' },
     ],
+    // Va junto al kit, en la misma tarjeta: video 360° de la remera (gira
+    // sola, sin sonido) con la foto de frente como poster mientras carga.
+    remera: {
+      frente: 'nhl-remera-frente',
+      video: '/video/nhl-remera.mp4',
+      alt: 'Remera oficial del Cruce del Nahuel, con la leyenda "Las Malvinas son argentinas" y el logo del Museo Malvinas',
+      titulo: 'La remera del cruce',
+      // El dorso lleva el nombre del nadador impreso (ver el video): no es
+      // sólo una remera de regalo, así que vale la pena decirlo.
+      bajada: 'Diseñada para llevar el cruce con vos. Personalizada con tu nombre.',
+    },
   },
   {
     slug: 'vuelta-a-la-huemul',
@@ -400,10 +411,10 @@ export const CHALLENGES = [
       { icono: 'documento', t: 'Apto médico vigente', d: 'Certificado médico específico para ultradistancia.' },
       { icono: 'equipo', t: 'Confirmación de la organización', d: 'El cupo se asigna luego de evaluar la postulación.' },
     ],
-    recorridoMapa: {
-      slug: 'mapa-snp',
-      alt: 'Mapa del cruce de San Nicolás de los Arroyos a San Pedro por el río Paraná',
-    },
+    // Sin recorridoMapa a propósito: el archivo que había en Fotos/SNP/mapa.jpg
+    // es el recorrido corto de la Maratón de San Pedro (Cantando → San Pedro,
+    // 4/7 km), no el cruce de 70 km de este Challenge. Sin el mapa correcto la
+    // sección se oculta sola (ver evento.js) en vez de mostrar uno equivocado.
     resena: {
       titulo: 'Raidistas del Paraná',
       bajada: 'Nadadores que completaron el cruce de San Nicolás a San Pedro.',

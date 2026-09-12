@@ -17,7 +17,7 @@ export const FOTOS_NADADOR = {
   'ARJONA Lautaro': 'rk-arjona',
   'TORIANO Frida': 'rk-frida',
   'SALVANO Tamara': 'rk-tamara-salvano',
-  'DIAZ DEBAISIEUX Mariana': 'rk-mariana-diaz',
+  'DIAZ Mariana': 'rk-mariana-diaz',
   'IANNICELLI Leonardo': 'rk-ianicelli',
   'LAMON Iñaki': 'rk-lamon',
   'ELOSEGUI Inés': 'rk-elosegui',

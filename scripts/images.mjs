@@ -172,6 +172,10 @@ const PHOTOS = {
   'mapa-cln-25k': 'Fotos/CLN/MAPA-COLON-25.jpg',
   // Cruce del Nahuel: única distancia, cruzando el lago de punta a punta.
   'mapa-nhl-8k': 'Fotos/NHL/nhl1.jpg',
+  // La remera del cruce, frente y dorso — mismo estudio y fondo, para que el
+  // hover de una a otra no salte de encuadre.
+  'nhl-remera-frente': 'Fotos/NHL/ADELANTE.jpg',
+  'nhl-remera-dorso': 'Fotos/NHL/ATRAS.jpg',
   // mpa3.5.jpg y mpa1.5.jpg: nombres de archivo tal como los pasó OWA — el
   // "3.5" del segundo es un resabio de una versión anterior del mapa, la
   // credencial que trae encima dice 3 KM (así lo confirmó OWA por escrito).

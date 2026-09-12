@@ -102,6 +102,7 @@ const columnaGenero = (panel, sexo) => {
                     ${numeroPos(r.pos)} ${avatar('size-15', false, FOTOS_NADADOR[r.nombre], r.nombre)}
                     <span class="min-w-0 flex-1">
                       <span class="block truncate font-display text-lg font-bold text-owa-navy">${r.nombre}</span>
+                      ${r.club ? html`<span class="block truncate text-[12px] text-owa-slate">${r.club}</span>` : ''}
                       <span data-nums class="mt-0.5 block text-sm font-bold text-owa-blue">${numero(r.puntos)} pts</span>
                     </span>
                   </li>
