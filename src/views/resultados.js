@@ -5,6 +5,7 @@ import { MADRES } from '../data/madres.js';
 import { TEMPORADAS, TEMPORADA_ACTUAL, destacada, restante, fechaCorta } from '../data/resultados-historicos.js';
 import { posicion, numero, eyebrow } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
+import HISTORIAL from '../data/historial.json' with { type: 'json' };
 
 export const titulo = 'Resultados & Rankings';
 export const descripcion =
@@ -18,6 +19,7 @@ const TABS = [
   ['RANKING GRAND PRIX', 'grand-prix'],
   ['RANKING CIRCUITO OWA', 'circuito'],
   ['CAMPEONATO POR EQUIPOS', 'equipos'],
+  ['ESTADÍSTICAS', 'estadisticas'],
 ];
 
 // Sólo separa por género: la categoría ya la elige el selector "Categoría" de
@@ -43,6 +45,9 @@ const s = {
   sel: null,
   pagina: 1,
   temporada: TEMPORADAS[0]?.id,
+  // Filtro de sede de la tabla "Campeones edición por edición" (pestaña
+  // Estadísticas) — 'TODAS' o un código (VHU, SPD...).
+  estadSede: 'TODAS',
 };
 
 const sexoDe = (v) => (v === 'gen-f' ? 'F' : 'M');
@@ -843,9 +848,389 @@ const barraVistas = () => html`
   </div>
 `;
 
+/* --------------------------------------------------- pestaña 5 · estadísticas
+   Todo el historial 2018-2026 que mandó OWA (paquete "owa-historial", armado
+   por Cronometraje Instantáneo): son datos cerrados de temporadas ya
+   corridas, así que esta pestaña no filtra ni pagina como el resto — es un
+   informe fijo, no una tabla para explorar.
+   Títulos, agrupamiento y el filtro de sede de "Campeones edición por
+   edición" siguen el dashboard original que mandó Cronometraje
+   (owa-historial/index.html); acá van con los componentes propios del
+   sitio en vez de su HTML/CSS aparte. */
+
+// Colores propios de cada sede tal como vienen del dashboard que mandó
+// Cronometraje: no son parte de la paleta del sitio, así que van inline y no
+// como clase.
+const SEDE_COLOR = {
+  VHU: '#2a78d6',
+  SPD: '#eb6834',
+  VOB: '#1baf7a',
+  PNR: '#eda100',
+  PAD: '#e87ba4',
+  NHL: '#008300',
+  CLN: '#4a3aa7',
+  ISC: '#e34948',
+};
+
+// Dónde se nada cada sede — no viene en el JSON (era texto fijo del propio
+// dashboard de Cronometraje), así que se repite acá tal cual.
+const SEDE_LUGAR = {
+  VHU: 'Lago Nahuel Huapi · Bariloche',
+  SPD: 'Río Paraná · San Pedro',
+  VOB: 'Río Paraná · San Pedro',
+  PNR: 'Mar Argentino · Pinamar',
+  PAD: 'Delta del Paraná · Villa Paranacito',
+  NHL: 'Lago Nahuel Huapi · Bariloche',
+  CLN: 'Río Uruguay · Colón, Entre Ríos',
+  ISC: 'Río Uruguay · Colón, Entre Ríos',
+};
+
+// Prefijo de la prueba principal (la distancia mayor) de cada sede, para
+// filtrar "mejores_tiempos" — mismo criterio que usaba el dashboard original.
+const PRUEBA_PRINCIPAL = { VHU: '6,5', SPD: '7', VOB: '20', PNR: '3.5', PAD: '5', NHL: '8', CLN: '10', ISC: '18' };
+
+// Mismo orden de sedes que usaba el dashboard original (por antigüedad de
+// ingreso al circuito), para los botones de filtro de "Campeones edición
+// por edición".
+const SEDE_ORDEN = ['VHU', 'SPD', 'VOB', 'PNR', 'PAD', 'CLN', 'ISC', 'NHL'];
+
+// "h:mm:ss" pasada la hora, si no "mm:ss" — el propio criterio que pide
+// meta.nota_tiempos del paquete de datos.
+const tiempoHist = (seg) => {
+  const t = Math.round(seg);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s2 = t % 60;
+  const mm = String(m).padStart(2, '0');
+  const ss = String(s2).padStart(2, '0');
+  return h > 0 ? `${h}:${mm}:${ss}` : `${m}:${ss}`;
+};
+
+const statTile = (ic, valor, etiqueta) => html`
+  <div class="rounded-owa-lg border border-owa-line bg-white p-5 text-center shadow-[var(--shadow-card)]">
+    <span class="mx-auto grid size-11 place-items-center rounded-full bg-owa-sky/20 text-owa-blue">${icono(ic, 'size-5.5')}</span>
+    <p data-nums class="mt-3 font-display text-[1.625rem] leading-none font-black text-owa-navy sm:text-[1.875rem]">${valor}</p>
+    <p class="mt-2 text-[11px] font-bold tracking-[0.06em] text-owa-slate uppercase">${etiqueta}</p>
+  </div>
+`;
+
+const filaBarra = (etiqueta, valor, tope, color = 'bg-owa-blue') => html`
+  <li class="flex items-center gap-4">
+    <span class="w-24 shrink-0 truncate font-display text-[13px] font-black text-owa-navy">${etiqueta}</span>
+    <span class="h-2.5 flex-1 overflow-hidden rounded-full bg-owa-line">
+      <span class="block h-full rounded-full ${color}" style="width:${Math.max(2, (valor / tope) * 100).toFixed(1)}%"></span>
+    </span>
+    <span data-nums class="w-14 shrink-0 text-right text-[13px] font-bold text-owa-navy">${numero(valor)}</span>
+  </li>
+`;
+
+// Tarjeta de "hecho" (facts): un número grande + título + una línea de
+// contexto — mismo molde que usaba el dashboard original para los datos
+// sueltos ("77 en 5 o más sedes", "el 47% son mujeres"...).
+const tarjetaHecho = (n, titulo, texto) => html`
+  <div class="rounded-owa-md border-l-4 border-owa-cyan bg-white p-4.5 shadow-[var(--shadow-card)]">
+    <p data-nums class="font-display text-[1.5rem] leading-none font-black text-owa-navy">${n}</p>
+    <p class="mt-1.5 text-[13px] leading-relaxed text-owa-slate"><strong class="text-owa-navy">${titulo}</strong><br />${texto}</p>
+  </div>
+`;
+
+// Mini sparkline de gente por edición, en barras — reemplaza el SVG del
+// dashboard original con el mismo criterio (una barra por edición, la más
+// alta marca el récord de esa sede).
+const miniSparkline = (porEdicion) => {
+  const entradas = Object.entries(porEdicion).sort(([a], [b]) => a.localeCompare(b));
+  const tope = Math.max(...entradas.map(([, v]) => v));
+  return html`
+    <div class="mt-3 flex h-9 items-end gap-1" role="img" aria-label="Participaciones por edición">
+      ${entradas.map(
+        ([ed, v]) =>
+          html`<span
+            class="min-w-1 flex-1 rounded-t-sm bg-owa-blue/70"
+            style="height:${Math.max(8, (v / tope) * 100).toFixed(0)}%"
+            title="${ed}: ${v}"
+          ></span>`
+      )}
+    </div>
+  `;
+};
+
+const tarjetaSedeHist = (sede, h) => {
+  const entradas = Object.entries(sede.por_edicion);
+  const [edRecord, nRecord] = entradas.reduce((a, b) => (b[1] > a[1] ? b : a));
+  const principal = (h.mejores_tiempos[sede.codigo] || []).filter((f) =>
+    f.prueba.replace(/\s/g, '').toUpperCase().startsWith(PRUEBA_PRINCIPAL[sede.codigo])
+  );
+  const mejorM = principal.filter((f) => f.genero === 'M').sort((a, b) => a.segundos - b.segundos)[0];
+  const mejorF = principal.filter((f) => f.genero === 'F').sort((a, b) => a.segundos - b.segundos)[0];
+
+  return html`
+    <div class="overflow-hidden rounded-owa-lg border border-owa-line bg-white shadow-[var(--shadow-card)]">
+      <div class="h-1.5" style="background:${SEDE_COLOR[sede.codigo] || '#94a3b8'}" aria-hidden="true"></div>
+      <div class="p-5">
+        <p class="font-display text-[1.75rem] leading-none font-black text-owa-navy">${sede.codigo}</p>
+        <p class="mt-1 text-[14px] font-bold text-owa-navy">${sede.nombre}</p>
+        <p class="text-[12px] text-owa-slate">${SEDE_LUGAR[sede.codigo] || ''}</p>
+
+        <dl class="mt-4 grid grid-cols-2 gap-3 border-t border-owa-sand pt-4">
+          <div>
+            <dt class="text-[10px] tracking-[0.06em] text-owa-slate uppercase">Ediciones</dt>
+            <dd data-nums class="mt-0.5 font-display text-[17px] font-black text-owa-navy">
+              ${sede.ediciones}
+              <span class="text-[11px] font-bold text-owa-slate"
+                >${sede.primera.slice(0, 4) === sede.ultima.slice(0, 4) ? sede.primera.slice(0, 4) : `${sede.primera.slice(0, 4)}–${sede.ultima.slice(0, 4)}`}</span
+              >
+            </dd>
+          </div>
+          <div>
+            <dt class="text-[10px] tracking-[0.06em] text-owa-slate uppercase">Nadadores</dt>
+            <dd data-nums class="mt-0.5 font-display text-[17px] font-black text-owa-navy">${numero(sede.nadadores_unicos)}</dd>
+          </div>
+          <div>
+            <dt class="text-[10px] tracking-[0.06em] text-owa-slate uppercase">Participaciones</dt>
+            <dd data-nums class="mt-0.5 font-display text-[17px] font-black text-owa-navy">${numero(sede.participaciones)}</dd>
+          </div>
+          <div>
+            <dt class="text-[10px] tracking-[0.06em] text-owa-slate uppercase">Récord de gente</dt>
+            <dd data-nums class="mt-0.5 font-display text-[17px] font-black text-owa-navy">
+              ${numero(nRecord)} <span class="text-[11px] font-bold text-owa-slate">${edRecord.slice(0, 4)}</span>
+            </dd>
+          </div>
+        </dl>
+
+        ${miniSparkline(sede.por_edicion)}
+
+        ${mejorM || mejorF
+          ? html`
+              <div class="mt-4 grid gap-1.5 border-t border-owa-sand pt-3.5 text-[13px]">
+                <p class="text-[11px] font-bold tracking-[0.06em] text-owa-slate uppercase">Mejor tiempo registrado</p>
+                ${mejorM
+                  ? html`<p class="flex items-baseline justify-between gap-3">
+                      <span class="truncate text-owa-navy">${mejorM.nombre}<span class="text-owa-slate"> · ${mejorM.edicion.slice(0, 4)}</span></span>
+                      <span data-nums class="shrink-0 font-display font-black text-owa-blue">${tiempoHist(mejorM.segundos)}</span>
+                    </p>`
+                  : ''}
+                ${mejorF
+                  ? html`<p class="flex items-baseline justify-between gap-3">
+                      <span class="truncate text-owa-navy">${mejorF.nombre}<span class="text-owa-slate"> · ${mejorF.edicion.slice(0, 4)}</span></span>
+                      <span data-nums class="shrink-0 font-display font-black text-owa-blue">${tiempoHist(mejorF.segundos)}</span>
+                    </p>`
+                  : ''}
+              </div>
+            `
+          : ''}
+      </div>
+    </div>
+  `;
+};
+
+// Fila de un ranking de protagonistas (más victorias / más podios / más
+// participaciones): mismo glifo de posición que usa la tabla de nadadores de
+// la temporada, para que se lea como el mismo tipo de dato.
+const filaProtagonista = (n, i, stat) => html`
+  <li class="flex items-center justify-between gap-3 border-t border-owa-sand py-3 first:border-0">
+    <span class="flex min-w-0 items-center gap-3">
+      ${posicion(i + 1, { cuerpo: true })}
+      <span class="min-w-0">
+        <span class="block truncate font-body text-[14px] font-bold text-owa-navy">${n.nombre}</span>
+        <span class="block truncate text-[11px] text-owa-slate">
+          ${n.localidad ? `${n.localidad} · ` : ''}${n.detalle || (n.sedes ? `${n.sedes} sedes` : '')}${n.periodo ? ` · ${n.periodo}` : ''}
+        </span>
+      </span>
+    </span>
+    <span data-nums class="shrink-0 font-display text-[15px] font-black text-owa-blue">${n[stat]}</span>
+  </li>
+`;
+
+const panelRanking2 = (titulo, nota, lista, stat) => html`
+  <div class="rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
+    <h3 class="font-display text-[13px] font-black tracking-[0.04em] text-owa-navy uppercase">${titulo}</h3>
+    <p class="mt-0.5 text-[12px] text-owa-slate">${nota}</p>
+    <ul class="mt-2.5">${lista.slice(0, 8).map((n, i) => filaProtagonista(n, i, stat))}</ul>
+  </div>
+`;
+
+const panelEstadisticas = () => {
+  const h = HISTORIAL;
+  const anios = h.participaciones_por_anio;
+  const topeAnio = Math.max(...anios.map((a) => a.total));
+  const sedes = Object.values(h.sedes).sort((a, b) => b.participaciones - a.participaciones);
+  const topeLocalidad = h.localidades_top[0]?.nadadores || 1;
+  const topeDist = Math.max(...Object.values(h.distribucion_participaciones));
+  const DIST_LABEL = { '1': '1 vez', '2': '2 veces', '3-5': '3 a 5 veces', '6-10': '6 a 10 veces', '11+': '11 veces o más' };
+
+  // Campeones por edición, filtrados por la pestaña de sede elegida.
+  const campeonesFiltrados = h.campeones_por_edicion.filter((c) => s.estadSede === 'TODAS' || c.sede === s.estadSede);
+  const sedesOrdenCodigo = SEDE_ORDEN.filter((cod) => h.sedes[cod]);
+
+  return html`
+    <div class="grid gap-10">
+      <!-- Intro, igual a la del dashboard original de Cronometraje -->
+      <section>
+        ${eyebrow('2018 – 2026 · Circuito OWA')}
+        <h2 class="mt-2.5 text-[clamp(1.5rem,3vw,2.25rem)] leading-[0.98] text-owa-navy">
+          Nueve años de aguas abiertas, y contando
+        </h2>
+        <p class="mt-3 max-w-[72ch] text-[14px] leading-relaxed text-owa-slate">
+          Todo lo que dicen los resultados oficiales de las ocho sedes del circuito desde la primera Vuelta a la
+          Huemul de 2018 hasta la temporada 2026, todavía en curso: quiénes ganaron más, quiénes nunca faltaron y
+          cuánta gente ya se metió al agua con OWA.
+        </p>
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          ${statTile('nadador', numero(h.totales.nadadores_unicos), 'Nadadores únicos')}
+          ${statTile('ondas', numero(h.totales.participaciones), 'Largadas')}
+          ${statTile('calendario', h.totales.ediciones, 'Ediciones')}
+          ${statTile('ruta', numero(h.totales.km_nadados), 'Km nadados')}
+          ${statTile('pin', numero(h.totales.localidades), 'Localidades')}
+          ${statTile('estrella', h.totales.anios_y_contando, 'Años de historia')}
+        </div>
+      </section>
+
+      <!-- Cada año, más gente en el agua -->
+      <section>
+        ${eyebrow('Temporada a temporada')}
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Cada año, más gente en el agua</h2>
+        <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
+          Participaciones por año calendario (1 de enero a 31 de diciembre) en las ocho sedes. 2026 está en curso:
+          incluye sólo las fechas ya disputadas (VHU, PNR, PAD, Colón y el nuevo Cruce del Nahuel).
+        </p>
+        <ul class="mt-5 grid gap-2.5 rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
+          ${anios.map((a) => filaBarra(a.anio, a.total, topeAnio))}
+        </ul>
+      </section>
+
+      <!-- Los que más ganaron -->
+      <section>
+        ${eyebrow('Victorias y podios')}
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Los que más ganaron</h2>
+        <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
+          Victorias en la clasificación general de su género, en la prueba principal (la distancia más larga) de
+          cada fecha.
+        </p>
+        <div class="mt-5 grid gap-3.5 lg:grid-cols-2">
+          ${panelRanking2('Más victorias en pruebas principales', 'Ganador o ganadora general de la distancia mayor de la fecha.', h.mas_victorias_prueba_principal, 'victorias')}
+          ${panelRanking2('Más podios', 'Top 3 general de su género en la prueba principal.', h.mas_podios, 'podios')}
+        </div>
+      </section>
+
+      <!-- Los más fieles -->
+      <section>
+        ${eyebrow('Presentes en cada fecha')}
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Los más fieles</h2>
+        <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
+          Quienes más veces cruzaron la línea de largada con OWA, sumando todas las sedes y distancias.
+        </p>
+        <div class="mt-5 grid gap-3.5 lg:grid-cols-2">
+          ${panelRanking2('Más participaciones', 'Largadas registradas en resultados oficiales, 2018–2026.', h.mas_participaciones, 'participaciones')}
+          <div class="grid content-start gap-3.5">
+            <div class="grid gap-3 sm:grid-cols-2">
+              ${tarjetaHecho(h.fidelidad.en_6_o_mas_sedes, 'nadaron en 6 o más sedes', `${h.fidelidad.en_5_o_mas_sedes} en al menos cinco y ${h.fidelidad.en_4_o_mas_sedes} en al menos cuatro.`)}
+              ${tarjetaHecho(h.fidelidad.todas_las_ediciones.VOB.cantidad, 'no faltaron a ninguna Vuelta de Obligado', h.fidelidad.todas_las_ediciones.VOB.nombres.join(', ') || '—')}
+            </div>
+            <div class="rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
+              <h3 class="font-display text-[13px] font-black tracking-[0.04em] text-owa-navy uppercase">¿Cuántas veces vuelven?</h3>
+              <p class="mt-0.5 text-[12px] text-owa-slate">Nadadores según cantidad de participaciones.</p>
+              <ul class="mt-3.5 grid gap-2.5">
+                ${Object.entries(h.distribucion_participaciones).map(([k, v]) => filaBarra(DIST_LABEL[k] || k, v, topeDist, 'bg-owa-cyan'))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Las ocho sedes -->
+      <section>
+        ${eyebrow('Historia sede por sede')}
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Las ocho sedes</h2>
+        <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
+          Historia de cada fecha del circuito: ediciones, gente y los mejores tiempos registrados en su prueba
+          principal. Colón suma las fechas CLN y Liebig-Colón (LBC); el Cruce del Nahuel debutó en 2026.
+        </p>
+        <div class="mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">${sedes.map((sede) => tarjetaSedeHist(sede, h))}</div>
+      </section>
+
+      <!-- Campeones edición por edición -->
+      <section>
+        ${eyebrow('Las 40 ediciones, una por una')}
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Campeones edición por edición</h2>
+        <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">Ganadores generales de la prueba principal de cada fecha.</p>
+        <!-- Mismo filtro por sede que traía el dashboard original: "Todas" +
+             un botón por código, todo en el cliente (son 40 filas nomás). -->
+        <div class="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filtrar por sede">
+          ${pastillaFiltro('Todas', s.estadSede === 'TODAS', 'data-estad-sede="TODAS"')}
+          ${sedesOrdenCodigo.map((cod) => pastillaFiltro(cod, s.estadSede === cod, `data-estad-sede="${cod}"`))}
+        </div>
+        <div class="mt-4 overflow-x-auto rounded-owa-lg border border-owa-line bg-white shadow-[var(--shadow-card)]">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              ${cabecera([['SEDE'], ['EDICIÓN'], ['CAMPEÓN'], ['CAMPEONA'], ['LLEGADAS', 'hidden sm:table-cell text-right']])}
+            </thead>
+            <tbody>
+              ${campeonesFiltrados.map(
+                (c) => html`
+                  <tr class="border-t border-owa-line/70">
+                    <td class="px-3 py-3 sm:px-5.5">
+                      <span class="flex items-center gap-2">
+                        <span class="size-2 shrink-0 rounded-full" style="background:${SEDE_COLOR[c.sede] || '#94a3b8'}" aria-hidden="true"></span>
+                        <span class="font-display text-[12px] font-black text-owa-navy">${c.sede}</span>
+                      </span>
+                    </td>
+                    <td data-nums class="px-3 py-3 text-[13px] text-owa-slate sm:px-5.5">${c.edicion}</td>
+                    <td class="px-3 py-3 text-[13px] sm:px-5.5">
+                      ${c.campeon
+                        ? html`<span class="font-bold text-owa-navy">${c.campeon.nombre}</span
+                            ><span data-nums class="ml-1.5 text-owa-slate">${tiempoHist(c.campeon.segundos)}</span>`
+                        : html`<span class="text-owa-slate">—</span>`}
+                    </td>
+                    <td class="px-3 py-3 text-[13px] sm:px-5.5">
+                      ${c.campeona
+                        ? html`<span class="font-bold text-owa-navy">${c.campeona.nombre}</span
+                            ><span data-nums class="ml-1.5 text-owa-slate">${tiempoHist(c.campeona.segundos)}</span>`
+                        : html`<span class="text-owa-slate">—</span>`}
+                    </td>
+                    <td data-nums class="hidden px-3 py-3 text-right text-[13px] font-bold text-owa-navy sm:table-cell sm:px-5.5">${numero(c.llegadas)}</td>
+                  </tr>
+                `
+              )}
+            </tbody>
+          </table>
+          ${campeonesFiltrados.length === 0 ? vacio('No hay ediciones cargadas para esta sede.') : ''}
+        </div>
+      </section>
+
+      <!-- De dónde vienen -->
+      <section class="grid gap-3.5 lg:grid-cols-[1.3fr_1fr]">
+        <div class="rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
+          ${eyebrow('Localidad declarada en la inscripción')}
+          <h2 class="mt-2.5 text-[clamp(1.125rem,2.2vw,1.375rem)] leading-none text-owa-navy">De dónde vienen</h2>
+          <ul class="mt-4 grid gap-2.5">
+            ${h.localidades_top.map((l) => filaBarra(l.localidad, l.nadadores, topeLocalidad, 'bg-owa-cyan'))}
+          </ul>
+        </div>
+        <div class="grid content-start gap-3.5">
+          ${tarjetaHecho(`${Math.round((100 * h.totales.nadadores_por_genero.F) / h.totales.nadadores_unicos)}%`, 'son mujeres', `${numero(h.totales.nadadores_por_genero.F)} nadadoras distintas sobre ${numero(h.totales.nadadores_unicos)} en total.`)}
+          ${tarjetaHecho(numero(h.edicion_mas_grande.llegadas), 'llegadas en una sola fecha', `${h.edicion_mas_grande.sede} ${h.edicion_mas_grande.edicion}: la edición más grande de la historia OWA.`)}
+          <div class="grid grid-cols-2 gap-3">
+            ${tarjetaHecho(numero(h.otros.largadas_neopreno), 'con neopreno', 'Largadas con traje de neopreno.')}
+            ${tarjetaHecho(numero(h.otros.largadas_mayores_60), 'mayores de 60', `y ${numero(h.otros.largadas_menores_20)} de menores de 20: el circuito abarca todas las edades.`)}
+          </div>
+        </div>
+      </section>
+
+      <!-- Nota de fuente, igual a la que traía el dashboard original -->
+      <p class="max-w-[85ch] border-t border-owa-line pt-6 text-[13px] leading-relaxed text-owa-slate">
+        Fuente: resultados oficiales publicados en cronometrajeinstantaneo.com para las 40 ediciones del circuito
+        (VHU 2018–2026, VOB 2021–2025, SPD 2021–2025, PNR 2021–2026, PAD 2019–2026, CLN/LBC 2024–2026, ISC 2025, NHL
+        2026). Cada nadador se identifica por su DNI; cuando el resultado no lo incluye, se lo asocia por nombre
+        completo.
+      </p>
+    </div>
+  `;
+};
+
 const panel = () => {
   if (s.tab === 'temporadas') return panelCarrera();
   if (s.tab === 'equipos') return html`${tablaEquipos()}`;
+  if (s.tab === 'estadisticas') return panelEstadisticas();
   return html`
     <div class="mb-6">${barraVistas()}</div>
     ${tablaNadadores()} ${comoSeCalcula()}
@@ -1038,6 +1423,13 @@ export function mount(root) {
 
     if (e.target.closest('[data-cerrar-ficha]')) {
       s.sel = null;
+      return repintar();
+    }
+
+    const filtroSede = e.target.closest('[data-estad-sede]');
+    if (filtroSede) {
+      if (filtroSede.dataset.estadSede === s.estadSede) return;
+      s.estadSede = filtroSede.dataset.estadSede;
       return repintar();
     }
 

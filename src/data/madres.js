@@ -254,7 +254,6 @@ export const EVENTO_FICHA = {
   kit: [
     { t: 'Gorra oficial', d: 'Incluida' },
     { t: 'Chip de cronometraje', d: 'Incluido' },
-    { t: 'Numeración', d: 'Incluida' },
     { t: 'Medalla finisher', d: 'Incluida' },
     { t: 'Remera del evento', d: 'A confirmar' },
   ],

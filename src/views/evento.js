@@ -336,12 +336,13 @@ const jornadas = (e, f) => {
                   })}
                   <!-- Dos degradés combinados en vez de un solo velo parejo:
                        el vertical sostiene texto/CTA abajo sin tapar la foto
-                       arriba (recién oscurece de verdad después del 45%), y
-                       el horizontal deja "respirar" la esquina superior
-                       derecha. Mismo velo para VOB y SPD — la diferencia de
-                       color va en pills/CTA, no en toda la foto. -->
+                       arriba, oscureciendo progresivo (20% arriba, ~35% a
+                       mitad de card, 70% cerca del pie, 93% abajo del todo),
+                       y el horizontal protege el título desde la izquierda.
+                       Mismo velo para VOB y SPD — la diferencia de color va
+                       en pills/CTA, no en toda la foto. -->
                   <div
-                    class="absolute inset-0 [background-image:linear-gradient(to_bottom,rgb(7_12_40/0.04)_0%,rgb(7_12_40/0.15)_45%,rgb(7_12_40/0.6)_72%,rgb(7_12_40/0.96)_100%),linear-gradient(to_right,rgb(7_12_40/0.45)_0%,rgb(7_12_40/0.15)_55%,rgb(7_12_40/0.05)_100%)]"
+                    class="absolute inset-0 [background-image:linear-gradient(to_bottom,rgb(7_12_40/0.20)_0%,rgb(7_12_40/0.35)_50%,rgb(7_12_40/0.70)_70%,rgb(7_12_40/0.93)_100%),linear-gradient(to_right,rgb(7_12_40/0.45)_0%,rgb(7_12_40/0.15)_55%,rgb(7_12_40/0.05)_100%)]"
                   ></div>
                 </div>
 
@@ -413,7 +414,11 @@ const jornadas = (e, f) => {
                     ${icono('pin', 'size-4 shrink-0 text-owa-sky')}
                     ${f?.sedeBarra || j.desc}
                   </a>
-                  ${f?.sedeBarra && j.desc ? html`<p class="mt-2 text-[13px] leading-relaxed text-owa-line/80">${j.desc}</p>` : ''}
+                  ${f?.sedeBarra && j.desc
+                    ? html`<p class="mt-2 flex items-start gap-2 text-[13px] leading-relaxed text-owa-line/80">
+                        ${icono('trofeo', 'mt-0.5 size-4 shrink-0 text-owa-sky')}<span>${j.desc}</span>
+                      </p>`
+                    : ''}
                   <!-- El aviso es la condición que hay que leer sí o sí (por
                        ejemplo, tener que estar presente para consagrarse
                        campeón): va en recuadro para que no se pierda entre la
@@ -460,8 +465,8 @@ const jornadas = (e, f) => {
                             href="${linkStarting}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="u-press rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[11px] tracking-[0.04em] font-black sm:text-[13px] sm:tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep sm:shrink-0"
-                            >STARTING LIST</a
+                            class="u-press rounded-full border-2 border-white/60 px-6 py-4 text-center font-display text-[10px] tracking-[0.04em] font-black sm:text-[12px] sm:tracking-[0.06em] text-white transition-colors duration-200 ease-out hover:border-white hover:bg-white hover:text-owa-deep sm:shrink-0"
+                            >LISTA DE LARGADA</a
                           >
                         `
                       : ''}
@@ -585,6 +590,12 @@ const kitLista = (f, { compacta = false } = {}) => html`
 // dorso; la foto de frente queda de poster mientras decodifica el primer
 // cuadro y es lo único que se ve con `prefers-reduced-motion`, donde
 // `montarVideoKit` directamente no la activa.
+//
+// PRUEBA — `remera.final` marca el diseño ya cerrado (hoy, sólo Cruce del
+// Nahuel): sin esa marca la foto va esmerilada con un "Próximamente" encima,
+// para no mostrar como definitivo un diseño que todavía puede cambiar. Si
+// convence, esto se vuelve la regla y `final` pasa a ser el default cuando
+// OWA cierre cada diseño.
 const kitMedia = (remera) => html`
   <div class="relative aspect-square overflow-hidden rounded-owa-md bg-owa-mist">
     ${foto({
@@ -592,7 +603,7 @@ const kitMedia = (remera) => html`
       alt: remera.alt,
       sizes: '(min-width: 1024px) 42vw, 100vw',
       className: 'absolute inset-0 block h-full w-full',
-      imgClass: 'h-full w-full object-cover',
+      imgClass: `h-full w-full object-cover ${remera.final ? '' : 'scale-110 blur-md'}`,
     })}
     ${remera.video
       ? html`<video
@@ -607,6 +618,12 @@ const kitMedia = (remera) => html`
           <source data-src="${remera.video}" type="video/mp4" /></video
         >`
       : ''}
+    ${remera.final
+      ? ''
+      : html`
+          <div class="absolute inset-0 bg-owa-navy/30"></div>
+          <div class="absolute inset-0 flex items-center justify-center">${chipEstado('proximamente', { oscuro: true })}</div>
+        `}
   </div>
 `;
 
@@ -676,6 +693,14 @@ const bandera = (iso) =>
         BANDERAS[iso]
       )}</svg>`
     : '';
+
+// Isotipo de OWA (la ola en círculo, sin texto), para las pestañas de torneo
+// del cronograma. Inline y no <img>: currentColor lo tiñe según el estado de
+// la pestaña (activa/inactiva) sin necesitar un segundo archivo en blanco.
+const OWA_ISO =
+  'M52.79,107.81c13.65,0,26.48-5.31,36.13-14.96,9.65-9.65,14.96-22.48,14.96-36.13s-5.31-26.48-14.96-36.13c-9.65-9.65-22.48-14.96-36.13-14.96s-26.48,5.31-36.13,14.96C7.01,30.24,1.7,43.07,1.7,56.72s5.31,26.48,14.96,36.13c9.65,9.65,22.48,14.96,36.13,14.96ZM52.79,16.06c22.42,0,40.66,18.24,40.66,40.66,0,5.66-1.16,11.05-3.26,15.94-20.18-2.39-37.4-17.75-37.4-17.75,0,0-17.36,15.2-37.42,17.71-2.09-4.89-3.24-10.26-3.24-15.91,0-22.42,18.24-40.66,40.66-40.66Z';
+const owaMark = (clase) =>
+  html`<svg viewBox="0 0 105.58 111.51" fill="currentColor" class="${clase}" aria-hidden="true"><path d="${OWA_ISO}" /></svg>`;
 
 /** Reseña histórica de un Challenge: cruces registrados agrupados por fecha,
     con nadador, banderita, uso de neopreno y tiempo. Si el evento define
@@ -1811,7 +1836,7 @@ export function render(ctx) {
                   </div>
                   <span
                     data-nums
-                    class="shrink-0 pt-0.5 font-display font-black ${it.destacado ? 'w-16 text-base text-owa-blue' : 'w-14 text-[13px] text-owa-slate'}"
+                    class="shrink-0 pt-0.5 font-sans font-bold ${it.destacado ? 'w-16 text-base text-owa-blue' : 'w-14 text-[13px] text-owa-slate'}"
                     >${it.hora}</span
                   >
                   <span class="min-w-0 flex-1 pb-0.5">
@@ -1819,8 +1844,8 @@ export function render(ctx) {
                       ? html`<span class="block text-[10px] tracking-[0.12em] text-owa-slate/80 uppercase">${it.zona}</span>`
                       : ''}
                     <span
-                      class="block font-display ${it.destacado
-                        ? 'text-base font-black text-owa-navy'
+                      class="block font-sans ${it.destacado
+                        ? 'text-base font-bold text-owa-navy'
                         : `text-sm font-bold text-owa-navy ${it.zona ? 'mt-0.5' : ''}`}"
                       >${it.t}</span
                     >
@@ -1845,28 +1870,61 @@ export function render(ctx) {
                   role="tablist"
                   aria-label="Torneo"
                 >
-                  ${cronogramas.map(
-                    (c, i) => html`
+                  ${cronogramas.map((c, i) => {
+                    // Mismo color por torneo que el resto de la ficha (sigla y
+                    // chip de modalidad de las jornadas, más abajo): Grand
+                    // Prix en azul eléctrico, Circuito en cian. Antes las dos
+                    // pestañas activas usaban el mismo cian y no se distinguía
+                    // a golpe de vista cuál de las dos competencias era.
+                    const gp = c.torneo === 'GRAND PRIX';
+                    const activo = c === torneoActivo;
+                    return html`
                       <button
                         type="button"
                         data-cron-torneo="${i}"
-                        aria-pressed="${c === torneoActivo ? 'true' : 'false'}"
-                        class="u-press rounded-owa-md border px-4 py-2.5 text-left sm:px-5 sm:py-3.5 transition-colors duration-200 ease-out ${c === torneoActivo
-                          ? 'border-owa-cyan bg-owa-cyan text-owa-deep'
-                          : 'border-owa-line bg-white text-owa-navy hover:bg-owa-sand'}"
+                        aria-pressed="${activo ? 'true' : 'false'}"
+                        class="u-press flex items-center gap-3 rounded-owa-md border-2 px-4 py-2.5 text-left sm:px-5 sm:py-3.5 transition-colors duration-200 ease-out ${activo
+                          ? gp
+                            ? 'border-owa-electric bg-owa-electric text-white shadow-[var(--shadow-card)]'
+                            : 'border-owa-cyan bg-owa-cyan text-owa-deep shadow-[var(--shadow-card)]'
+                          : `border-owa-line bg-white text-owa-navy hover:bg-owa-sand ${gp ? 'hover:border-owa-electric/50' : 'hover:border-owa-cyan/50'}`}"
                       >
-                        <span class="block font-display text-[12px] leading-tight sm:text-[13px] font-black tracking-[0.03em] uppercase"
-                          >${nombreTorneoOWA(c.torneo)}</span
+                        <span class="shrink-0 ${activo ? (gp ? 'text-white' : 'text-owa-deep') : gp ? 'text-owa-electric' : 'text-owa-cyan'}"
+                          >${owaMark('size-6')}</span
                         >
-                        <!-- El detalle de distancias se esconde en mobile: ya
-                             vive en "Distancias y categorías" y acá hacía que
-                             cada pestaña ocupara dos líneas y media. -->
-                        <span data-nums class="mt-0.5 hidden text-[13px] sm:block font-bold leading-tight ${c === torneoActivo ? 'text-owa-deep' : 'text-owa-slate'}"
-                          >${resumenTab(c)}</span
-                        >
+                        <span class="min-w-0 flex-1">
+                          <span class="block font-sans text-[12px] leading-tight sm:text-[13px] font-bold tracking-[0.03em] uppercase"
+                            >${nombreTorneoOWA(c.torneo)}</span
+                          >
+                          <!-- El detalle de distancias se esconde en mobile: ya
+                               vive en "Distancias y categorías" y acá hacía que
+                               cada pestaña ocupara dos líneas y media. -->
+                          <span
+                            data-nums
+                            class="mt-0.5 hidden text-[13px] sm:block font-bold leading-tight ${activo
+                              ? gp
+                                ? 'text-white/85'
+                                : 'text-owa-deep'
+                              : 'text-owa-slate'}"
+                            >${resumenTab(c)}</span
+                          >
+                        </span>
+                        <!-- Visto en la elegida: antes la única diferencia con
+                             la pestaña inactiva era el color de fondo, que a
+                             simple vista no siempre se distinguía del cian de
+                             marca en otras partes de la página. -->
+                        ${activo
+                          ? html`<span
+                              class="grid size-5.5 shrink-0 place-items-center rounded-full bg-white ${gp ? 'text-owa-electric' : 'text-owa-cyan'}"
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true">
+                                <path d="M5 12.5 9.5 17 19 6.5" />
+                              </svg>
+                            </span>`
+                          : ''}
                       </button>
-                    `
-                  )}
+                    `;
+                  })}
                 </div>
 
                 <div class="reveal mt-5 overflow-hidden rounded-owa-lg bg-white text-owa-navy shadow-[var(--shadow-card)]" data-visible>
@@ -1881,7 +1939,7 @@ export function render(ctx) {
                           type="button"
                           data-cron-dia="${i}"
                           aria-pressed="${d === diaActivo ? 'true' : 'false'}"
-                          class="u-press border-b-2 pt-5 pb-3 font-display text-[13px] font-black tracking-[0.03em] uppercase transition-colors duration-200 ease-out ${d ===
+                          class="u-press border-b-2 pt-5 pb-3 font-sans text-[13px] font-bold tracking-[0.03em] uppercase transition-colors duration-200 ease-out ${d ===
                           diaActivo
                             ? 'border-owa-blue text-owa-navy'
                             : 'border-transparent text-owa-slate hover:text-owa-navy'}"
@@ -1892,10 +1950,44 @@ export function render(ctx) {
                     )}
                   </div>
 
-                  <div class="flex flex-wrap items-center gap-3 px-6.5 pt-5">
-                    <p class="font-display text-[13px] font-black text-owa-navy">${diaActivo.lugar}</p>
-                    ${torneoActivo.aviso ? html`<p class="text-[13px] text-owa-slate">${torneoActivo.aviso}</p>` : ''}
-                  </div>
+                  <!-- Destacado del día: primera actividad, largada general y
+                       premiación, de un vistazo — antes acá sólo iba el lugar
+                       (que ya repite lo de arriba) y, a veces, el aviso. -->
+                  ${(() => {
+                    const items = diaActivo.items;
+                    const primera = items[0];
+                    const largada = items.find((it) => it.destacado);
+                    const premiacion = items.find((it) => /premiaci[oó]n/i.test(it.t));
+                    return html`
+                      <div class="mx-6.5 mt-5 flex flex-wrap items-center gap-x-7 gap-y-2.5 rounded-owa-md bg-owa-sky/15 px-5 py-3.5">
+                        <p class="flex items-center gap-2 font-display text-[13px] font-black tracking-[0.02em] text-owa-navy uppercase">
+                          ${icono('calendario', 'size-4 shrink-0 text-owa-blue')}${nombreTorneoOWA(torneoActivo.torneo)} ·
+                          ${diaActivo.fecha}
+                        </p>
+                        ${primera
+                          ? html`<p class="flex items-center gap-1.5 text-[13px] text-owa-slate">
+                              ${icono('reloj', 'size-4 shrink-0 text-owa-blue')}Primera actividad
+                              <span data-nums class="font-bold text-owa-navy">${primera.hora}</span>
+                            </p>`
+                          : ''}
+                        ${largada
+                          ? html`<p class="flex items-center gap-1.5 text-[13px] text-owa-slate">
+                              ${icono('bandera', 'size-4 shrink-0 text-owa-blue')}Largada general
+                              <span data-nums class="font-bold text-owa-navy">${largada.hora}</span>
+                            </p>`
+                          : ''}
+                        ${premiacion
+                          ? html`<p class="flex items-center gap-1.5 text-[13px] text-owa-slate">
+                              ${icono('trofeo', 'size-4 shrink-0 text-owa-blue')}Premiación
+                              <span data-nums class="font-bold text-owa-navy">${premiacion.hora}</span>
+                            </p>`
+                          : ''}
+                      </div>
+                    `;
+                  })()}
+                  ${torneoActivo.aviso
+                    ? html`<p class="px-6.5 pt-3.5 text-[13px] text-owa-slate">${torneoActivo.aviso}</p>`
+                    : ''}
                   ${(() => {
                     const items = diaActivo.items;
                     // Un cronograma largo (12 ítems del Circuito, por ejemplo) se vuelve
@@ -2024,7 +2116,11 @@ export function render(ctx) {
              se sentía disperso. -->
         <div class="reveal grid gap-8 rounded-owa-lg border border-owa-line bg-white p-7 sm:p-8 lg:grid-cols-[42fr_58fr]" data-visible>
           ${kitMedia(e.remera)}
-          <div>
+          <!-- min-w-0: sin esto, los ítems de grid no se achican por debajo de
+               su contenido "natural" — acá, el nombre a ancho completo más el
+               badge sin achicarse empujaban esta columna más ancha que la
+               tarjeta, y el badge quedaba cortado en mobile. -->
+          <div class="min-w-0">
             ${eyebrow('Kit del nadador')}
             <h2 id="h-kit" class="mt-3.5 text-[clamp(1.375rem,2.6vw,1.875rem)] text-owa-navy">Tu kit incluye</h2>
             ${kitLista(f)}

@@ -29,7 +29,7 @@ export function navbar() {
   return html`
     <header class="sticky top-0 z-50 border-b border-white/10 bg-owa-navy/94 backdrop-blur-xl">
       <div class="u-shell flex items-center justify-between gap-4 py-3">
-        <a href="/" class="u-press shrink-0" aria-label="Open Water Argentina — inicio">
+        <a href="/" class="u-press shrink-0" aria-label="Open Water Adventures — inicio">
           <img src="/brand/owa-logo-cyan-white.svg" alt="OWA" width="124" height="30" class="h-[30px] w-auto" />
         </a>
 

@@ -79,7 +79,6 @@ export const FICHAS = {
       { t: 'Remera del evento', d: 'Incluida' },
       { t: 'Gorra oficial', d: 'Incluida' },
       { t: 'Chip de cronometraje', d: 'Incluido' },
-      { t: 'Numeración', d: 'Incluida' },
       { t: 'Medalla finisher', d: 'Incluida' },
     ],
   },
@@ -622,7 +621,6 @@ export const FICHAS = {
     kit: [
       { t: 'Gorra oficial', d: 'Incluida' },
       { t: 'Chip de cronometraje', d: 'Incluido' },
-      { t: 'Numeración', d: 'Incluida' },
       { t: 'Medalla finisher', d: 'Incluida' },
       { t: 'Regalo OWA', d: 'Incluido' },
     ],
@@ -729,7 +727,6 @@ export const FICHAS = {
     // es por app, no por chip físico) y la remera ya está confirmada.
     kit: [
       { t: 'Gorra oficial', d: 'Incluida' },
-      { t: 'Numeración', d: 'Incluida' },
       { t: 'Medalla finisher', d: 'Incluida' },
       { t: 'Remera del evento', d: 'Incluida' },
     ],
@@ -849,7 +846,6 @@ export const FICHAS = {
     kit: [
       { t: 'Gorra oficial', d: 'Incluida' },
       { t: 'Chip de cronometraje', d: 'Incluido' },
-      { t: 'Numeración', d: 'Incluida' },
       { t: 'Medalla finisher', d: 'Incluida' },
       { t: 'Regalo OWA', d: 'Incluido' },
     ],
@@ -944,7 +940,6 @@ export const FICHAS = {
     kit: [
       { t: 'Gorra oficial', d: 'Incluida' },
       { t: 'Chip de cronometraje', d: 'Incluido' },
-      { t: 'Numeración', d: 'Incluida' },
       { t: 'Medalla finisher', d: 'Incluida' },
       { t: 'Regalo OWA', d: 'Incluido' },
     ],

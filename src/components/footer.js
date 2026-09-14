@@ -59,7 +59,7 @@ export const footer = () => html`
         <div>
           <img
             src="/brand/owa-claim-white.svg"
-            alt="Open Water Argentina — el agua nos une"
+            alt="Open Water Adventures — el agua nos une"
             width="190"
             height="66"
             class="h-auto w-[190px] max-w-full"
@@ -101,7 +101,7 @@ export const footer = () => html`
                     href="${href}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="${label} de Open Water Argentina"
+                    aria-label="${label} de Open Water Adventures"
                     class="u-press grid size-10 place-items-center rounded-full border border-white/25 text-owa-line transition-colors hover:border-owa-cyan hover:text-owa-cyan"
                   >
                     <svg
@@ -125,7 +125,7 @@ export const footer = () => html`
       </div>
 
       <div class="flex flex-wrap justify-between gap-3.5 pt-5.5 text-xs text-owa-gray">
-        <p>© 2026 Open Water Argentina · Las inscripciones se procesan en plataforma externa</p>
+        <p>© 2026 Open Water Adventures · Las inscripciones se procesan en plataforma externa</p>
         <p>Cronometraje oficial: Cronometraje Instantáneo</p>
       </div>
     </div>

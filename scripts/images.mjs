@@ -176,6 +176,14 @@ const PHOTOS = {
   // hover de una a otra no salte de encuadre.
   'nhl-remera-frente': 'Fotos/NHL/ADELANTE.jpg',
   'nhl-remera-dorso': 'Fotos/NHL/ATRAS.jpg',
+  // Remeras del resto de las carreras: por ahora sólo la foto de frente
+  // (mismo criterio que NHL hasta tener el video de cada una). La blanca es
+  // la remera default — la comparten las carreras que todavía no tienen un
+  // color propio asignado.
+  'remera-ljn': 'Fotos/Remeras_carreras/remera_negra_frente_LJN.png',
+  'remera-cln': 'Fotos/Remeras_carreras/remera_azul_francia_frente_CLN.png',
+  'remera-pnr': 'Fotos/Remeras_carreras/remera_azul_marino_frente_PNR.png',
+  'remera-blanca': 'Fotos/Remeras_carreras/remera_blanca_frente_SPD.png',
   // mpa3.5.jpg y mpa1.5.jpg: nombres de archivo tal como los pasó OWA — el
   // "3.5" del segundo es un resabio de una versión anterior del mapa, la
   // credencial que trae encima dice 3 KM (así lo confirmó OWA por escrito).

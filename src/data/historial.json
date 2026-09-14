@@ -1,0 +1,1582 @@
+{
+  "meta": {
+    "actualizado": "2026-09-11",
+    "fuente": "cronometrajeinstantaneo.com (resultados oficiales)",
+    "periodo": "2018-2026",
+    "sedes": {
+      "VHU": "Vuelta a la Huemul",
+      "SPD": "San Pedro",
+      "VOB": "Vuelta de Obligado",
+      "PNR": "Pinamar",
+      "PAD": "Puerto Alto Delta",
+      "CLN": "Colón (CLN y Liebig-Colón LBC)",
+      "ISC": "Isla Caraballo",
+      "NHL": "Cruce del Nahuel"
+    },
+    "nota_tiempos": "Los tiempos dependen del recorrido y condiciones de cada edicion; se informan como mejor tiempo registrado, no como record. VHU 2025 y PNR 2025 excluidas de mejores tiempos (posible recorrido acortado).",
+    "nota_ediciones": "CLN 2026-03-LBC = fecha publicada como Isla Caraballo ISC 2026 que se corrio como Liebig-Colon 18 km (21/03/2026). NHL 2026: la fuente no publica la fecha."
+  },
+  "totales": {
+    "nadadores_unicos": 3437,
+    "participaciones": 6801,
+    "llegadas": 6640,
+    "abandonos": 147,
+    "ediciones": 40,
+    "pruebas": 85,
+    "anios": [
+      2018,
+      2026
+    ],
+    "anios_y_contando": 9,
+    "km_nadados": 43135,
+    "localidades": 834,
+    "nadadores_por_genero": {
+      "M": 2168,
+      "F": 1269
+    }
+  },
+  "sedes": {
+    "CLN": {
+      "codigo": "CLN",
+      "nombre": "Colón (CLN y Liebig-Colón LBC)",
+      "ediciones": 6,
+      "participaciones": 904,
+      "nadadores_unicos": 640,
+      "primera": "2024-04",
+      "ultima": "2026-03-LBC",
+      "por_edicion": {
+        "2024-04": 222,
+        "2024-12": 245,
+        "2025-03": 111,
+        "2025-12": 130,
+        "2026-03-CLN": 152,
+        "2026-03-LBC": 44
+      }
+    },
+    "ISC": {
+      "codigo": "ISC",
+      "nombre": "Isla Caraballo",
+      "ediciones": 1,
+      "participaciones": 46,
+      "nadadores_unicos": 46,
+      "primera": "2025",
+      "ultima": "2025",
+      "por_edicion": {
+        "2025": 46
+      }
+    },
+    "NHL": {
+      "codigo": "NHL",
+      "nombre": "Cruce del Nahuel",
+      "ediciones": 1,
+      "participaciones": 36,
+      "nadadores_unicos": 36,
+      "primera": "2026",
+      "ultima": "2026",
+      "por_edicion": {
+        "2026": 36
+      }
+    },
+    "PAD": {
+      "codigo": "PAD",
+      "nombre": "Puerto Alto Delta",
+      "ediciones": 6,
+      "participaciones": 847,
+      "nadadores_unicos": 669,
+      "primera": "2019",
+      "ultima": "2026",
+      "por_edicion": {
+        "2019": 169,
+        "2022": 96,
+        "2023": 166,
+        "2024": 129,
+        "2025": 171,
+        "2026": 116
+      }
+    },
+    "PNR": {
+      "codigo": "PNR",
+      "nombre": "Pinamar",
+      "ediciones": 5,
+      "participaciones": 813,
+      "nadadores_unicos": 614,
+      "primera": "2021",
+      "ultima": "2026",
+      "por_edicion": {
+        "2021": 115,
+        "2022": 150,
+        "2024": 141,
+        "2025": 200,
+        "2026": 207
+      }
+    },
+    "SPD": {
+      "codigo": "SPD",
+      "nombre": "San Pedro",
+      "ediciones": 7,
+      "participaciones": 2202,
+      "nadadores_unicos": 1665,
+      "primera": "2021-11",
+      "ultima": "2025-12",
+      "por_edicion": {
+        "2021-11": 235,
+        "2022-04": 170,
+        "2022-11": 306,
+        "2023-04": 295,
+        "2023-11": 303,
+        "2024-11": 433,
+        "2025-12": 460
+      }
+    },
+    "VHU": {
+      "codigo": "VHU",
+      "nombre": "Vuelta a la Huemul",
+      "ediciones": 9,
+      "participaciones": 1339,
+      "nadadores_unicos": 914,
+      "primera": "2018",
+      "ultima": "2026",
+      "por_edicion": {
+        "2018": 81,
+        "2019": 75,
+        "2020": 166,
+        "2021": 161,
+        "2022": 250,
+        "2023": 165,
+        "2024": 131,
+        "2025": 123,
+        "2026": 187
+      }
+    },
+    "VOB": {
+      "codigo": "VOB",
+      "nombre": "Vuelta de Obligado",
+      "ediciones": 5,
+      "participaciones": 614,
+      "nadadores_unicos": 419,
+      "primera": "2021",
+      "ultima": "2025",
+      "por_edicion": {
+        "2021": 73,
+        "2022": 119,
+        "2023": 143,
+        "2024": 144,
+        "2025": 135
+      }
+    }
+  },
+  "participaciones_por_anio": [
+    {
+      "anio": 2018,
+      "Colón (CLN y Liebig-Colón LBC)": 0,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 0,
+      "Pinamar": 0,
+      "San Pedro": 0,
+      "Vuelta a la Huemul": 81,
+      "Vuelta de Obligado": 0,
+      "total": 81
+    },
+    {
+      "anio": 2019,
+      "Colón (CLN y Liebig-Colón LBC)": 0,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 169,
+      "Pinamar": 0,
+      "San Pedro": 0,
+      "Vuelta a la Huemul": 75,
+      "Vuelta de Obligado": 0,
+      "total": 244
+    },
+    {
+      "anio": 2020,
+      "Colón (CLN y Liebig-Colón LBC)": 0,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 0,
+      "Pinamar": 0,
+      "San Pedro": 0,
+      "Vuelta a la Huemul": 166,
+      "Vuelta de Obligado": 0,
+      "total": 166
+    },
+    {
+      "anio": 2021,
+      "Colón (CLN y Liebig-Colón LBC)": 0,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 0,
+      "Pinamar": 115,
+      "San Pedro": 235,
+      "Vuelta a la Huemul": 161,
+      "Vuelta de Obligado": 73,
+      "total": 584
+    },
+    {
+      "anio": 2022,
+      "Colón (CLN y Liebig-Colón LBC)": 0,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 96,
+      "Pinamar": 150,
+      "San Pedro": 476,
+      "Vuelta a la Huemul": 250,
+      "Vuelta de Obligado": 119,
+      "total": 1091
+    },
+    {
+      "anio": 2023,
+      "Colón (CLN y Liebig-Colón LBC)": 0,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 166,
+      "Pinamar": 0,
+      "San Pedro": 598,
+      "Vuelta a la Huemul": 165,
+      "Vuelta de Obligado": 143,
+      "total": 1072
+    },
+    {
+      "anio": 2024,
+      "Colón (CLN y Liebig-Colón LBC)": 467,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 129,
+      "Pinamar": 141,
+      "San Pedro": 433,
+      "Vuelta a la Huemul": 131,
+      "Vuelta de Obligado": 144,
+      "total": 1445
+    },
+    {
+      "anio": 2025,
+      "Colón (CLN y Liebig-Colón LBC)": 241,
+      "Isla Caraballo": 46,
+      "Cruce del Nahuel": 0,
+      "Puerto Alto Delta": 171,
+      "Pinamar": 200,
+      "San Pedro": 460,
+      "Vuelta a la Huemul": 123,
+      "Vuelta de Obligado": 135,
+      "total": 1376
+    },
+    {
+      "anio": 2026,
+      "Colón (CLN y Liebig-Colón LBC)": 196,
+      "Isla Caraballo": 0,
+      "Cruce del Nahuel": 36,
+      "Puerto Alto Delta": 116,
+      "Pinamar": 207,
+      "San Pedro": 0,
+      "Vuelta a la Huemul": 187,
+      "Vuelta de Obligado": 0,
+      "total": 742
+    }
+  ],
+  "nuevos_vs_recurrentes": [
+    {
+      "anio": 2018,
+      "nuevos": 81,
+      "recurrentes": 0,
+      "total": 81
+    },
+    {
+      "anio": 2019,
+      "nuevos": 229,
+      "recurrentes": 13,
+      "total": 242
+    },
+    {
+      "anio": 2020,
+      "nuevos": 122,
+      "recurrentes": 44,
+      "total": 166
+    },
+    {
+      "anio": 2021,
+      "nuevos": 407,
+      "recurrentes": 94,
+      "total": 501
+    },
+    {
+      "anio": 2022,
+      "nuevos": 648,
+      "recurrentes": 237,
+      "total": 885
+    },
+    {
+      "anio": 2023,
+      "nuevos": 511,
+      "recurrentes": 341,
+      "total": 852
+    },
+    {
+      "anio": 2024,
+      "nuevos": 641,
+      "recurrentes": 408,
+      "total": 1049
+    },
+    {
+      "anio": 2025,
+      "nuevos": 556,
+      "recurrentes": 472,
+      "total": 1028
+    },
+    {
+      "anio": 2026,
+      "nuevos": 242,
+      "recurrentes": 325,
+      "total": 567
+    }
+  ],
+  "distribucion_participaciones": {
+    "1": 2164,
+    "2": 611,
+    "3-5": 468,
+    "6-10": 153,
+    "11+": 41
+  },
+  "mas_victorias_prueba_principal": [
+    {
+      "nombre": "Bastiani Leonardo",
+      "genero": "M",
+      "victorias": 7,
+      "detalle": "CLN 2026-03-CLN, PAD 2022, PNR 2021, PNR 2026, SPD 2022-04, SPD 2023-04, SPD 2025-12"
+    },
+    {
+      "nombre": "Arias Mauricio Ruben",
+      "genero": "M",
+      "victorias": 6,
+      "detalle": "CLN 2025-03, CLN 2025-12, CLN 2026-03-LBC, NHL 2026, PAD 2026, VHU 2026"
+    },
+    {
+      "nombre": "Petti Noelia",
+      "genero": "F",
+      "victorias": 4,
+      "detalle": "PNR 2021, SPD 2023-04, VHU 2023, VOB 2022"
+    },
+    {
+      "nombre": "Daira Marin",
+      "genero": "F",
+      "victorias": 4,
+      "detalle": "PAD 2019, VHU 2018, VHU 2020, VHU 2021"
+    },
+    {
+      "nombre": "Elosegui Ines",
+      "genero": "F",
+      "victorias": 3,
+      "detalle": "ISC 2025, PAD 2026, VHU 2026"
+    },
+    {
+      "nombre": "Puca Mayte Ailen",
+      "genero": "F",
+      "victorias": 3,
+      "detalle": "NHL 2026, VHU 2024, VHU 2025"
+    },
+    {
+      "nombre": "Loyato Mariel",
+      "genero": "F",
+      "victorias": 3,
+      "detalle": "CLN 2024-12, SPD 2024-11, VOB 2024"
+    },
+    {
+      "nombre": "Maselli Camila Magali",
+      "genero": "F",
+      "victorias": 3,
+      "detalle": "PAD 2023, PAD 2024, SPD 2023-11"
+    },
+    {
+      "nombre": "Chaillou Sofy",
+      "genero": "F",
+      "victorias": 2,
+      "detalle": "PNR 2022, PNR 2024"
+    },
+    {
+      "nombre": "Lauro Juan Manuel",
+      "genero": "M",
+      "victorias": 2,
+      "detalle": "VOB 2023, VOB 2024"
+    }
+  ],
+  "mas_victorias_todas_las_distancias": [
+    {
+      "nombre": "Bastiani Leonardo",
+      "genero": "M",
+      "victorias": 8,
+      "sedes": "CLN, PAD, PNR, SPD"
+    },
+    {
+      "nombre": "Arias Mauricio Ruben",
+      "genero": "M",
+      "victorias": 8,
+      "sedes": "CLN, NHL, PAD, VHU"
+    },
+    {
+      "nombre": "Petti Noelia",
+      "genero": "F",
+      "victorias": 4,
+      "sedes": "PNR, SPD, VHU, VOB"
+    },
+    {
+      "nombre": "Maselli Camila Magali",
+      "genero": "F",
+      "victorias": 4,
+      "sedes": "CLN, PAD, SPD"
+    },
+    {
+      "nombre": "Daira Marin",
+      "genero": "F",
+      "victorias": 4,
+      "sedes": "PAD, VHU"
+    },
+    {
+      "nombre": "Elosegui Ines",
+      "genero": "F",
+      "victorias": 3,
+      "sedes": "ISC, PAD, VHU"
+    },
+    {
+      "nombre": "Iannicelli Leonardo",
+      "genero": "M",
+      "victorias": 3,
+      "sedes": "PAD, VHU"
+    },
+    {
+      "nombre": "Loyato Mariel",
+      "genero": "F",
+      "victorias": 3,
+      "sedes": "CLN, SPD, VOB"
+    },
+    {
+      "nombre": "Puca Mayte Ailen",
+      "genero": "F",
+      "victorias": 3,
+      "sedes": "NHL, VHU"
+    },
+    {
+      "nombre": "Roxana Pescader",
+      "genero": "F",
+      "victorias": 3,
+      "sedes": "VHU"
+    },
+    {
+      "nombre": "Fernandez Claudia",
+      "genero": "F",
+      "victorias": 2,
+      "sedes": "CLN"
+    },
+    {
+      "nombre": "Francisco Sarando",
+      "genero": "M",
+      "victorias": 2,
+      "sedes": "VHU"
+    },
+    {
+      "nombre": "Manzi Leandro",
+      "genero": "M",
+      "victorias": 2,
+      "sedes": "PAD, SPD"
+    },
+    {
+      "nombre": "Diaz Ortiz Micaela Ailen",
+      "genero": "F",
+      "victorias": 2,
+      "sedes": "PNR, VHU"
+    },
+    {
+      "nombre": "Chaillou Sofy",
+      "genero": "F",
+      "victorias": 2,
+      "sedes": "PNR"
+    }
+  ],
+  "mas_podios": [
+    {
+      "nombre": "Arias Mauricio Ruben",
+      "genero": "M",
+      "podios": 11
+    },
+    {
+      "nombre": "Bastiani Leonardo",
+      "genero": "M",
+      "podios": 9
+    },
+    {
+      "nombre": "Petti Noelia",
+      "genero": "F",
+      "podios": 7
+    },
+    {
+      "nombre": "Blazquez Mauro Ezequiel",
+      "genero": "M",
+      "podios": 6
+    },
+    {
+      "nombre": "Echeverría Carolina",
+      "genero": "F",
+      "podios": 5
+    },
+    {
+      "nombre": "Elosegui Ines",
+      "genero": "F",
+      "podios": 4
+    },
+    {
+      "nombre": "Ledesma Portillo Iara Agostina",
+      "genero": "F",
+      "podios": 4
+    },
+    {
+      "nombre": "Daira Marin",
+      "genero": "F",
+      "podios": 4
+    },
+    {
+      "nombre": "Maselli Camila Magali",
+      "genero": "F",
+      "podios": 4
+    },
+    {
+      "nombre": "Telleria Pilar",
+      "genero": "F",
+      "podios": 4
+    },
+    {
+      "nombre": "Roxana Pescader",
+      "genero": "F",
+      "podios": 3
+    },
+    {
+      "nombre": "Permikin Konstantin",
+      "genero": "M",
+      "podios": 3
+    }
+  ],
+  "mas_participaciones": [
+    {
+      "nombre": "Diaz Debaisieux Mariana",
+      "localidad": "Pilar",
+      "participaciones": 20,
+      "ediciones": 13,
+      "sedes": 8,
+      "periodo": "2019-2026"
+    },
+    {
+      "nombre": "Solanas Valeria",
+      "localidad": "Rosario",
+      "participaciones": 19,
+      "ediciones": 13,
+      "sedes": 6,
+      "periodo": "2018-2025"
+    },
+    {
+      "nombre": "Oconnor Julieta",
+      "localidad": "Garin",
+      "participaciones": 18,
+      "ediciones": 10,
+      "sedes": 7,
+      "periodo": "2021-2026"
+    },
+    {
+      "nombre": "Parola Luciano",
+      "localidad": "Valentín Alsina",
+      "participaciones": 18,
+      "ediciones": 10,
+      "sedes": 6,
+      "periodo": "2020-2025"
+    },
+    {
+      "nombre": "Vazquez Analia",
+      "localidad": "Ballester",
+      "participaciones": 17,
+      "ediciones": 11,
+      "sedes": 7,
+      "periodo": "2021-2026"
+    },
+    {
+      "nombre": "Iannicelli Leonardo",
+      "localidad": "San Justo",
+      "participaciones": 17,
+      "ediciones": 10,
+      "sedes": 5,
+      "periodo": "2023-2026"
+    },
+    {
+      "nombre": "Arias Mauricio Ruben",
+      "localidad": "Formosa",
+      "participaciones": 17,
+      "ediciones": 9,
+      "sedes": 7,
+      "periodo": "2024-2026"
+    },
+    {
+      "nombre": "Castro Horacio Matias",
+      "localidad": "Azul",
+      "participaciones": 16,
+      "ediciones": 11,
+      "sedes": 6,
+      "periodo": "2023-2026"
+    },
+    {
+      "nombre": "Sadir Juan Manuel",
+      "localidad": "Caba",
+      "participaciones": 16,
+      "ediciones": 12,
+      "sedes": 5,
+      "periodo": "2019-2026"
+    },
+    {
+      "nombre": "Acevedo Santiago Mauricio",
+      "localidad": "Caba",
+      "participaciones": 15,
+      "ediciones": 8,
+      "sedes": 7,
+      "periodo": "2022-2025"
+    },
+    {
+      "nombre": "Balda Patricia Adriana",
+      "localidad": "Neuquen",
+      "participaciones": 15,
+      "ediciones": 10,
+      "sedes": 5,
+      "periodo": "2018-2026"
+    },
+    {
+      "nombre": "Juan Bennazar Fernando",
+      "localidad": "San Pedro",
+      "participaciones": 15,
+      "ediciones": 11,
+      "sedes": 5,
+      "periodo": "2021-2024"
+    },
+    {
+      "nombre": "Pistolesi  Darío",
+      "localidad": "Sarmiento",
+      "participaciones": 14,
+      "ediciones": 9,
+      "sedes": 4,
+      "periodo": "2021-2024"
+    },
+    {
+      "nombre": "Vignale Nestor Daniel",
+      "localidad": "Bernal",
+      "participaciones": 14,
+      "ediciones": 11,
+      "sedes": 6,
+      "periodo": "2021-2025"
+    },
+    {
+      "nombre": "Salvano Tamara",
+      "localidad": "Martinez",
+      "participaciones": 14,
+      "ediciones": 8,
+      "sedes": 7,
+      "periodo": "2021-2026"
+    }
+  ],
+  "fidelidad": {
+    "en_6_o_mas_sedes": 25,
+    "en_5_o_mas_sedes": 77,
+    "en_4_o_mas_sedes": 196,
+    "todas_las_ediciones": {
+      "CLN": {
+        "ediciones": 6,
+        "cantidad": 2,
+        "nombres": [
+          "Bäer Walter Oscar",
+          "Arias Mauricio Ruben"
+        ]
+      },
+      "PAD": {
+        "ediciones": 6,
+        "cantidad": 0,
+        "nombres": []
+      },
+      "PNR": {
+        "ediciones": 5,
+        "cantidad": 4,
+        "nombres": [
+          "Jarak Pablo",
+          "Messori Paulo Domingo",
+          "Lopez Marcos",
+          "Redondo Silvina"
+        ]
+      },
+      "SPD": {
+        "ediciones": 7,
+        "cantidad": 0,
+        "nombres": []
+      },
+      "VHU": {
+        "ediciones": 9,
+        "cantidad": 0,
+        "nombres": []
+      },
+      "VOB": {
+        "ediciones": 5,
+        "cantidad": 1,
+        "nombres": [
+          "Parola Luciano"
+        ]
+      }
+    }
+  },
+  "mejores_tiempos": {
+    "CLN": [
+      {
+        "prueba": "10km",
+        "genero": "F",
+        "nombre": "Loyato Mariel",
+        "edicion": "2024-12",
+        "segundos": 4881.0,
+        "llegadas_en_la_prueba": 93
+      },
+      {
+        "prueba": "18KM",
+        "genero": "F",
+        "nombre": "Toriano Frida",
+        "edicion": "2026-03-LBC",
+        "segundos": 6521.8,
+        "llegadas_en_la_prueba": 24
+      },
+      {
+        "prueba": "5km",
+        "genero": "F",
+        "nombre": "Orbea Constanza",
+        "edicion": "2026-03-CLN",
+        "segundos": 3075.0,
+        "llegadas_en_la_prueba": 80
+      },
+      {
+        "prueba": "10km",
+        "genero": "M",
+        "nombre": "Arjona Lautaro",
+        "edicion": "2024-12",
+        "segundos": 4841.0,
+        "llegadas_en_la_prueba": 221
+      },
+      {
+        "prueba": "18KM",
+        "genero": "M",
+        "nombre": "Arias Mauricio",
+        "edicion": "2026-03-LBC",
+        "segundos": 5711.6,
+        "llegadas_en_la_prueba": 20
+      },
+      {
+        "prueba": "5km",
+        "genero": "M",
+        "nombre": "Bastiani Leonardo",
+        "edicion": "2026-03-CLN",
+        "segundos": 2697.0,
+        "llegadas_en_la_prueba": 110
+      }
+    ],
+    "ISC": [
+      {
+        "prueba": "18KM",
+        "genero": "F",
+        "nombre": "Elosegui Ines",
+        "edicion": "2025",
+        "segundos": 13415.5,
+        "llegadas_en_la_prueba": 12
+      },
+      {
+        "prueba": "18KM",
+        "genero": "M",
+        "nombre": "Vallejo Nestor Ariel",
+        "edicion": "2025",
+        "segundos": 11797.3,
+        "llegadas_en_la_prueba": 31
+      }
+    ],
+    "NHL": [
+      {
+        "prueba": "8km",
+        "genero": "F",
+        "nombre": "Puca Mayte",
+        "edicion": "2026",
+        "segundos": 5770.0,
+        "llegadas_en_la_prueba": 10
+      },
+      {
+        "prueba": "8km",
+        "genero": "M",
+        "nombre": "Arias Mauricio Ruben",
+        "edicion": "2026",
+        "segundos": 6577.0,
+        "llegadas_en_la_prueba": 25
+      }
+    ],
+    "PAD": [
+      {
+        "prueba": "10km",
+        "genero": "F",
+        "nombre": "Diaz Debaisieux Mariana",
+        "edicion": "2025",
+        "segundos": 11973.0,
+        "llegadas_en_la_prueba": 8
+      },
+      {
+        "prueba": "5.6KM",
+        "genero": "F",
+        "nombre": "Daira Marin",
+        "edicion": "2019",
+        "segundos": 4492.0,
+        "llegadas_en_la_prueba": 26
+      },
+      {
+        "prueba": "5km",
+        "genero": "F",
+        "nombre": "Maselli Camila Magali",
+        "edicion": "2024",
+        "segundos": 3894.0,
+        "llegadas_en_la_prueba": 98
+      },
+      {
+        "prueba": "10km",
+        "genero": "M",
+        "nombre": "Cardoso Javier",
+        "edicion": "2025",
+        "segundos": 9541.0,
+        "llegadas_en_la_prueba": 28
+      },
+      {
+        "prueba": "5.6KM",
+        "genero": "M",
+        "nombre": "Juan Martín Pereyra",
+        "edicion": "2019",
+        "segundos": 4326.0,
+        "llegadas_en_la_prueba": 54
+      },
+      {
+        "prueba": "5km",
+        "genero": "M",
+        "nombre": "Avalo Agustín Leonel",
+        "edicion": "2024",
+        "segundos": 3853.0,
+        "llegadas_en_la_prueba": 186
+      }
+    ],
+    "PNR": [
+      {
+        "prueba": "3.5KM",
+        "genero": "F",
+        "nombre": "Noelia Petti",
+        "edicion": "2021",
+        "segundos": 2743.0,
+        "llegadas_en_la_prueba": 125
+      },
+      {
+        "prueba": "3.5KM",
+        "genero": "M",
+        "nombre": "Leonardo Bastiani",
+        "edicion": "2021",
+        "segundos": 2666.0,
+        "llegadas_en_la_prueba": 290
+      }
+    ],
+    "SPD": [
+      {
+        "prueba": "7KM",
+        "genero": "F",
+        "nombre": "Petti Noelia",
+        "edicion": "2023-04",
+        "segundos": 3518.0,
+        "llegadas_en_la_prueba": 437
+      },
+      {
+        "prueba": "7KM",
+        "genero": "M",
+        "nombre": "Bastiani  Leonardo Ezequiel",
+        "edicion": "2023-04",
+        "segundos": 3322.0,
+        "llegadas_en_la_prueba": 906
+      }
+    ],
+    "VHU": [
+      {
+        "prueba": "6,5 km",
+        "genero": "F",
+        "nombre": "Marin , Daira Eluney",
+        "edicion": "2018",
+        "segundos": 5544.0,
+        "llegadas_en_la_prueba": 10
+      },
+      {
+        "prueba": "6,5km",
+        "genero": "F",
+        "nombre": "Serwatka Verónica",
+        "edicion": "2022",
+        "segundos": 4660.754,
+        "llegadas_en_la_prueba": 187
+      },
+      {
+        "prueba": "6,5 km",
+        "genero": "M",
+        "nombre": "Ravagna, Jose Ignacio",
+        "edicion": "2018",
+        "segundos": 5209.0,
+        "llegadas_en_la_prueba": 35
+      },
+      {
+        "prueba": "6,5km",
+        "genero": "M",
+        "nombre": "Budniewski Juan Marcos",
+        "edicion": "2022",
+        "segundos": 4103.829,
+        "llegadas_en_la_prueba": 397
+      }
+    ],
+    "VOB": [
+      {
+        "prueba": "18KM",
+        "genero": "F",
+        "nombre": "Escobio Mariana",
+        "edicion": "2025",
+        "segundos": 9454.3,
+        "llegadas_en_la_prueba": 46
+      },
+      {
+        "prueba": "20KM",
+        "genero": "F",
+        "nombre": "Telleria Pilar",
+        "edicion": "2023",
+        "segundos": 10584.2,
+        "llegadas_en_la_prueba": 121
+      },
+      {
+        "prueba": "18KM",
+        "genero": "M",
+        "nombre": "Bravo Fernando",
+        "edicion": "2025",
+        "segundos": 8635.7,
+        "llegadas_en_la_prueba": 89
+      },
+      {
+        "prueba": "20KM",
+        "genero": "M",
+        "nombre": "Lauro Juan Manuel",
+        "edicion": "2023",
+        "segundos": 10287.8,
+        "llegadas_en_la_prueba": 339
+      }
+    ]
+  },
+  "campeones_por_edicion": [
+    {
+      "sede": "CLN",
+      "edicion": "2024-04",
+      "prueba": "10km",
+      "llegadas": 124,
+      "campeon": {
+        "nombre": "Piaggio Ignacio Raúl",
+        "segundos": 5148.0
+      },
+      "campeona": {
+        "nombre": "Roldan Azul",
+        "segundos": 5239.0
+      }
+    },
+    {
+      "sede": "CLN",
+      "edicion": "2024-12",
+      "prueba": "10km",
+      "llegadas": 118,
+      "campeon": {
+        "nombre": "Arjona Lautaro",
+        "segundos": 4841.0
+      },
+      "campeona": {
+        "nombre": "Loyato Mariel",
+        "segundos": 4881.0
+      }
+    },
+    {
+      "sede": "CLN",
+      "edicion": "2025-03",
+      "prueba": "5km",
+      "llegadas": 80,
+      "campeon": {
+        "nombre": "Arias Mauricio Ruben",
+        "segundos": 3634.0
+      },
+      "campeona": {
+        "nombre": "Ledesma Portillo Iara Agostina",
+        "segundos": 3972.0
+      }
+    },
+    {
+      "sede": "CLN",
+      "edicion": "2025-12",
+      "prueba": "10km",
+      "llegadas": 72,
+      "campeon": {
+        "nombre": "Arias Mauricio Ruben",
+        "segundos": 5719.0
+      },
+      "campeona": {
+        "nombre": "De Nicola Camila",
+        "segundos": 6263.0
+      }
+    },
+    {
+      "sede": "CLN",
+      "edicion": "2026-03-CLN",
+      "prueba": "5km",
+      "llegadas": 110,
+      "campeon": {
+        "nombre": "Bastiani Leonardo",
+        "segundos": 2697.0
+      },
+      "campeona": {
+        "nombre": "Orbea Constanza",
+        "segundos": 3075.0
+      }
+    },
+    {
+      "sede": "CLN",
+      "edicion": "2026-03-LBC",
+      "prueba": "18KM",
+      "llegadas": 44,
+      "campeon": {
+        "nombre": "Arias Mauricio",
+        "segundos": 5711.6
+      },
+      "campeona": {
+        "nombre": "Toriano Frida",
+        "segundos": 6521.8
+      }
+    },
+    {
+      "sede": "ISC",
+      "edicion": "2025",
+      "prueba": "18KM",
+      "llegadas": 43,
+      "campeon": {
+        "nombre": "Vallejo Nestor Ariel",
+        "segundos": 11797.3
+      },
+      "campeona": {
+        "nombre": "Elosegui Ines",
+        "segundos": 13415.5
+      }
+    },
+    {
+      "sede": "NHL",
+      "edicion": "2026",
+      "prueba": "8km",
+      "llegadas": 35,
+      "campeon": {
+        "nombre": "Arias Mauricio Ruben",
+        "segundos": 6577.0
+      },
+      "campeona": {
+        "nombre": "Puca Mayte",
+        "segundos": 5770.0
+      }
+    },
+    {
+      "sede": "PAD",
+      "edicion": "2019",
+      "prueba": "5.6KM",
+      "llegadas": 80,
+      "campeon": {
+        "nombre": "Juan Martín Pereyra",
+        "segundos": 4326.0
+      },
+      "campeona": {
+        "nombre": "Daira Marin",
+        "segundos": 4492.0
+      }
+    },
+    {
+      "sede": "PAD",
+      "edicion": "2022",
+      "prueba": "5km",
+      "llegadas": 52,
+      "campeon": {
+        "nombre": "Bastiani Leonardo Ezequiel",
+        "segundos": 4120.0
+      },
+      "campeona": {
+        "nombre": "Echeverría Carolina",
+        "segundos": 4453.0
+      }
+    },
+    {
+      "sede": "PAD",
+      "edicion": "2023",
+      "prueba": "5km",
+      "llegadas": 105,
+      "campeon": {
+        "nombre": "Alba  Lucas",
+        "segundos": 4054.0
+      },
+      "campeona": {
+        "nombre": "Maselli Camila Magali",
+        "segundos": 4810.0
+      }
+    },
+    {
+      "sede": "PAD",
+      "edicion": "2024",
+      "prueba": "5km",
+      "llegadas": 76,
+      "campeon": {
+        "nombre": "Avalo Agustín Leonel",
+        "segundos": 3853.0
+      },
+      "campeona": {
+        "nombre": "Maselli Camila Magali",
+        "segundos": 3894.0
+      }
+    },
+    {
+      "sede": "PAD",
+      "edicion": "2025",
+      "prueba": "10km",
+      "llegadas": 36,
+      "campeon": {
+        "nombre": "Cardoso Javier",
+        "segundos": 9541.0
+      },
+      "campeona": {
+        "nombre": "Diaz Debaisieux Mariana",
+        "segundos": 11973.0
+      }
+    },
+    {
+      "sede": "PAD",
+      "edicion": "2026",
+      "prueba": "5km",
+      "llegadas": 51,
+      "campeon": {
+        "nombre": "Arias Mauricio",
+        "segundos": 4365.0
+      },
+      "campeona": {
+        "nombre": "Elosegui Ines",
+        "segundos": 5475.0
+      }
+    },
+    {
+      "sede": "PNR",
+      "edicion": "2021",
+      "prueba": "3.5KM",
+      "llegadas": 95,
+      "campeon": {
+        "nombre": "Leonardo Bastiani",
+        "segundos": 2666.0
+      },
+      "campeona": {
+        "nombre": "Noelia Petti",
+        "segundos": 2743.0
+      }
+    },
+    {
+      "sede": "PNR",
+      "edicion": "2022",
+      "prueba": "3.5KM",
+      "llegadas": 111,
+      "campeon": {
+        "nombre": "Cereijo Ignacio",
+        "segundos": 3341.0
+      },
+      "campeona": {
+        "nombre": "Chaillou Sofy",
+        "segundos": 3420.0
+      }
+    },
+    {
+      "sede": "PNR",
+      "edicion": "2024",
+      "prueba": "3.5KM",
+      "llegadas": 81,
+      "campeon": {
+        "nombre": "Chaillou Matias",
+        "segundos": 3161.0
+      },
+      "campeona": {
+        "nombre": "Chaillou Sofy",
+        "segundos": 3432.0
+      }
+    },
+    {
+      "sede": "PNR",
+      "edicion": "2025",
+      "prueba": "3.5KM",
+      "llegadas": 129,
+      "campeon": {
+        "nombre": "Gonzales Rodrigo Sebastian",
+        "segundos": 1815.0
+      },
+      "campeona": {
+        "nombre": "Nieto Cecilia Paula",
+        "segundos": 2145.0
+      }
+    },
+    {
+      "sede": "PNR",
+      "edicion": "2026",
+      "prueba": "3.5KM",
+      "llegadas": 128,
+      "campeon": {
+        "nombre": "Bastiani Leonardo",
+        "segundos": 3680.0
+      },
+      "campeona": {
+        "nombre": "Nestares Victoria Maria",
+        "segundos": 3925.0
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2021-11",
+      "prueba": "7KM",
+      "llegadas": 139,
+      "campeon": {
+        "nombre": "Lautaro Ezequiel Kenig",
+        "segundos": 4015.0
+      },
+      "campeona": {
+        "nombre": "Lucrecia Kenig",
+        "segundos": 4682.0
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2022-04",
+      "prueba": "7KM",
+      "llegadas": 119,
+      "campeon": {
+        "nombre": "Bastiani Leonardo Ezequiel",
+        "segundos": 3928.0
+      },
+      "campeona": {
+        "nombre": "Arijo  Eugenia",
+        "segundos": 4002.0
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2022-11",
+      "prueba": "7KM",
+      "llegadas": 165,
+      "campeon": {
+        "nombre": "Cermesoni Nicolas",
+        "segundos": 3876.0
+      },
+      "campeona": {
+        "nombre": "Gonçalves Lhospice  Manuela",
+        "segundos": 4086.0
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2023-04",
+      "prueba": "7KM",
+      "llegadas": 211,
+      "campeon": {
+        "nombre": "Bastiani  Leonardo Ezequiel",
+        "segundos": 3322.0
+      },
+      "campeona": {
+        "nombre": "Petti Noelia",
+        "segundos": 3518.0
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2023-11",
+      "prueba": "7KM",
+      "llegadas": 136,
+      "campeon": {
+        "nombre": "Galindez Martin Joel",
+        "segundos": 5318.7
+      },
+      "campeona": {
+        "nombre": "Maselli Camila Magali",
+        "segundos": 5401.1
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2024-11",
+      "prueba": "7KM",
+      "llegadas": 279,
+      "campeon": {
+        "nombre": "Gonzalo Guidi",
+        "segundos": 3989.8
+      },
+      "campeona": {
+        "nombre": "Loyato Mariel",
+        "segundos": 3915.0
+      }
+    },
+    {
+      "sede": "SPD",
+      "edicion": "2025-12",
+      "prueba": "7KM",
+      "llegadas": 294,
+      "campeon": {
+        "nombre": "Bastiani Leonardo",
+        "segundos": 3785.0
+      },
+      "campeona": {
+        "nombre": "Orbea Victoria",
+        "segundos": 4148.2
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2018",
+      "prueba": "6,5 km",
+      "llegadas": 45,
+      "campeon": {
+        "nombre": "Ravagna, Jose Ignacio",
+        "segundos": 5209.0
+      },
+      "campeona": {
+        "nombre": "Marin , Daira Eluney",
+        "segundos": 5544.0
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2019",
+      "prueba": "6,5km",
+      "llegadas": 34,
+      "campeon": {
+        "nombre": "Julian Emanuel Rastelli",
+        "segundos": 5744.0
+      },
+      "campeona": {
+        "nombre": "Maria Jose Sanchez",
+        "segundos": 5964.0
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2020",
+      "prueba": "6,5km",
+      "llegadas": 91,
+      "campeon": {
+        "nombre": "Nicolas Segurado",
+        "segundos": 5098.616
+      },
+      "campeona": {
+        "nombre": "Daira Marin",
+        "segundos": 5135.848
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2021",
+      "prueba": "6,5km",
+      "llegadas": 81,
+      "campeon": {
+        "nombre": "Derbiz Ledesma Brian Tomas",
+        "segundos": 5257.621
+      },
+      "campeona": {
+        "nombre": "Daira Marin",
+        "segundos": 5285.962
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2022",
+      "prueba": "6,5km",
+      "llegadas": 133,
+      "campeon": {
+        "nombre": "Budniewski Juan Marcos",
+        "segundos": 4103.829
+      },
+      "campeona": {
+        "nombre": "Serwatka Verónica",
+        "segundos": 4660.754
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2023",
+      "prueba": "6,5km",
+      "llegadas": 92,
+      "campeon": {
+        "nombre": "Ghione Santiago",
+        "segundos": 5728.0
+      },
+      "campeona": {
+        "nombre": "Petti Noelia",
+        "segundos": 6252.0
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2024",
+      "prueba": "6,5km",
+      "llegadas": 69,
+      "campeon": {
+        "nombre": "Blazquez Mauro",
+        "segundos": 5472.0
+      },
+      "campeona": {
+        "nombre": "Puca Mayte Ailen",
+        "segundos": 4834.0
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2025",
+      "prueba": "6,5km",
+      "llegadas": 69,
+      "campeon": {
+        "nombre": "Jouglard Tomás",
+        "segundos": 3119.0
+      },
+      "campeona": {
+        "nombre": "Puca Mayte Ailen",
+        "segundos": 3124.0
+      }
+    },
+    {
+      "sede": "VHU",
+      "edicion": "2026",
+      "prueba": "6,5km",
+      "llegadas": 84,
+      "campeon": {
+        "nombre": "Arias Mauricio",
+        "segundos": 5397.0
+      },
+      "campeona": {
+        "nombre": "Elosegui Ines",
+        "segundos": 6889.0
+      }
+    },
+    {
+      "sede": "VOB",
+      "edicion": "2021",
+      "prueba": "20KM",
+      "llegadas": 73,
+      "campeon": {
+        "nombre": "Diego Boviez",
+        "segundos": 10662.0
+      },
+      "campeona": {
+        "nombre": "Lucía Ferreri Contreras",
+        "segundos": 11142.0
+      }
+    },
+    {
+      "sede": "VOB",
+      "edicion": "2022",
+      "prueba": "20KM",
+      "llegadas": 113,
+      "campeon": {
+        "nombre": "Mortara Hector Mariano",
+        "segundos": 10897.449
+      },
+      "campeona": {
+        "nombre": "Petti Noelia",
+        "segundos": 10974.966
+      }
+    },
+    {
+      "sede": "VOB",
+      "edicion": "2023",
+      "prueba": "20KM",
+      "llegadas": 130,
+      "campeon": {
+        "nombre": "Lauro Juan Manuel",
+        "segundos": 10287.8
+      },
+      "campeona": {
+        "nombre": "Telleria Pilar",
+        "segundos": 10584.2
+      }
+    },
+    {
+      "sede": "VOB",
+      "edicion": "2024",
+      "prueba": "20KM",
+      "llegadas": 144,
+      "campeon": {
+        "nombre": "Juan Manuel Lauro",
+        "segundos": 11135.6
+      },
+      "campeona": {
+        "nombre": "Loyato Mariel",
+        "segundos": 11017.6
+      }
+    },
+    {
+      "sede": "VOB",
+      "edicion": "2025",
+      "prueba": "18KM",
+      "llegadas": 135,
+      "campeon": {
+        "nombre": "Bravo Fernando",
+        "segundos": 8635.7
+      },
+      "campeona": {
+        "nombre": "Escobio Mariana",
+        "segundos": 9454.3
+      }
+    }
+  ],
+  "localidades_top": [
+    {
+      "localidad": "CABA",
+      "nadadores": 625
+    },
+    {
+      "localidad": "Rosario",
+      "nadadores": 168
+    },
+    {
+      "localidad": "Bariloche",
+      "nadadores": 130
+    },
+    {
+      "localidad": "La Plata",
+      "nadadores": 86
+    },
+    {
+      "localidad": "Buenos Aires",
+      "nadadores": 64
+    },
+    {
+      "localidad": "Monte Grande",
+      "nadadores": 50
+    },
+    {
+      "localidad": "Ituzaingo",
+      "nadadores": 48
+    },
+    {
+      "localidad": "San Pedro",
+      "nadadores": 45
+    },
+    {
+      "localidad": "Villa Gesell",
+      "nadadores": 34
+    },
+    {
+      "localidad": "San Isidro",
+      "nadadores": 32
+    }
+  ],
+  "edicion_mas_grande": {
+    "sede": "SPD",
+    "edicion": "2025-12",
+    "llegadas": 460
+  },
+  "otros": {
+    "largadas_neopreno": 571,
+    "largadas_mayores_60": 424,
+    "largadas_menores_20": 323
+  }
+}

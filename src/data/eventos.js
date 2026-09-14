@@ -41,6 +41,15 @@ export const EVENTOS = [
         tagline: 'Única jornada compartida:<br>Grand Prix y Circuito',
       },
     ],
+    // Por ahora sólo la foto de frente (remera negra); cuando OWA mande el
+    // video 360° de esta remera se suma acá mismo, igual que Cruce del
+    // Nahuel (ver `video` en ese evento).
+    remera: {
+      frente: 'remera-ljn',
+      alt: 'Remera oficial negra de Open Water Luján, con el logo de OWA',
+      titulo: 'La remera de Luján',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
   {
     slug: 'san-pedro',
@@ -84,6 +93,14 @@ export const EVENTOS = [
         tagline: 'Un clásico del<br>Circuito OWA.',
       },
     ],
+    // Blanca: es la remera default hasta que cada carrera tenga su propio
+    // color asignado (ver el comentario de Luján sobre sumar el video).
+    remera: {
+      frente: 'remera-blanca',
+      alt: 'Remera oficial blanca de Open Water San Pedro, con el logo de OWA',
+      titulo: 'La remera de San Pedro',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
   {
     slug: 'ramallo',
@@ -106,6 +123,12 @@ export const EVENTOS = [
       { torneo: 'GRAND PRIX', sigla: 'RML', fecha: '12/12/2026', dia: 'Día 1 · Grand Prix', desc: 'Tercera fecha puntuable del Grand Prix.' },
       { torneo: 'CIRCUITO OWA', sigla: 'RML', fecha: '13/12/2026', dia: 'Día 2 · Circuito OWA', desc: 'Tercera fecha puntuable del Circuito.' },
     ],
+    remera: {
+      frente: 'remera-blanca',
+      alt: 'Remera oficial blanca de Open Water Ramallo, con el logo de OWA',
+      titulo: 'La remera de Ramallo',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
   {
     slug: 'pinamar',
@@ -138,6 +161,12 @@ export const EVENTOS = [
       { slug: 'pnr-galeria-8', alt: 'Nadadores metiéndose al mar entre olas grandes' },
       { slug: 'pnr-galeria-9', alt: 'Nadadores cruzando una ola rompiente en el mar de Pinamar' },
     ],
+    remera: {
+      frente: 'remera-pnr',
+      alt: 'Remera oficial azul marino de Open Water Pinamar, con el logo de OWA',
+      titulo: 'La remera de Pinamar',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
   {
     slug: 'cruce-del-nahuel',
@@ -190,6 +219,9 @@ export const EVENTOS = [
     // sola, sin sonido) con la foto de frente como poster mientras carga.
     remera: {
       frente: 'nhl-remera-frente',
+      // Único diseño ya cerrado: sin esmerilar ni "Próximamente" encima (ver
+      // `kitMedia` en evento.js).
+      final: true,
       video: '/video/nhl-remera.mp4',
       alt: 'Remera oficial del Cruce del Nahuel, con la leyenda "Las Malvinas son argentinas" y el logo del Museo Malvinas',
       titulo: 'La remera del cruce',
@@ -242,6 +274,12 @@ export const EVENTOS = [
       { slug: 'vhu-galeria-8', alt: 'Nadador llegando a la meta bajo el arco de OWA' },
       { slug: 'vhu-galeria-9', alt: 'Vista de la isla Huemul desde el lago Nahuel Huapi' },
     ],
+    remera: {
+      frente: 'remera-blanca',
+      alt: 'Remera oficial blanca de la Vuelta a la Huemul, con el logo de OWA',
+      titulo: 'La remera de la Huemul',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
   {
     slug: 'colon',
@@ -286,6 +324,12 @@ export const EVENTOS = [
         tagline: 'Distancias para<br>animarse.',
       },
     ],
+    remera: {
+      frente: 'remera-cln',
+      alt: 'Remera oficial azul de Open Water Colón, con el logo de OWA',
+      titulo: 'La remera de Colón',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
   {
     slug: 'maraton-acuatica-san-pedro',
@@ -314,6 +358,12 @@ export const EVENTOS = [
       alt: 'Cierre de temporada',
     },
     velo: true,
+    remera: {
+      frente: 'remera-blanca',
+      alt: 'Remera oficial blanca de la Maratón Acuática San Pedro, con el logo de OWA',
+      titulo: 'La remera de la Maratón',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
   },
 ];
 

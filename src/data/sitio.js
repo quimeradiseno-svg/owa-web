@@ -20,7 +20,7 @@ export const INDEXABLE = false;
 export const ORIGEN_FINAL = 'https://www.owa.com.ar';
 
 export const SITIO = {
-  nombre: 'Open Water Argentina',
+  nombre: 'Open Water Adventures',
   sigla: 'OWA',
   lema: 'El agua nos une',
   // Fuente: el pie del sitio.
