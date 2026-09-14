@@ -137,7 +137,21 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-dim);
-    margin: 40px 0 14px;
+    margin: 40px 0 16px;
+  }
+  .cta-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .cta-race {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 9px;
   }
   .cta-row {
     display: flex;
@@ -272,9 +286,20 @@
       Grand Prix, y anotarte a cada fecha desde acá.
     </p>
     <p class="cta-label">Seguí inscribiéndote</p>
-    <div class="cta-row">
-      <a class="btn" href="https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627" target="_blank" rel="noopener noreferrer">Grand Prix Luján</a>
-      <a class="btn" href="https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627" target="_blank" rel="noopener noreferrer">Circuito OWA Luján</a>
+    <div class="cta-groups">
+      <div class="cta-group">
+        <p class="cta-race">Open Water Luján</p>
+        <div class="cta-row">
+          <a class="btn" href="https://cronometrajeinstantaneo.com/inscripciones/lujan-ljn-circuito-owa-2627" target="_blank" rel="noopener noreferrer">Grand Prix y Circuito OWA</a>
+        </div>
+      </div>
+      <div class="cta-group">
+        <p class="cta-race">Open Water San Pedro</p>
+        <div class="cta-row">
+          <a class="btn" href="https://cronometrajeinstantaneo.com/inscripciones/vuelta-de-obligado-vob-gp-owa-2627" target="_blank" rel="noopener noreferrer">Grand Prix</a>
+          <a class="btn" href="https://cronometrajeinstantaneo.com/inscripciones/san-pedro-spd-circuito-owa-2627" target="_blank" rel="noopener noreferrer">Circuito OWA</a>
+        </div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="contact">
