@@ -39,6 +39,14 @@ const enlace = (rel, valor) =>
 /** Resuelve un campo de vista que puede ser valor o función del ctx. */
 export const resolver = (campo, ctx) => (typeof campo === 'function' ? campo(ctx) : campo);
 
+// Google corta el snippet cerca de los 155-160 caracteres: más largo que eso
+// no suma, sólo arriesga quedar truncado a mitad de palabra en el buscador.
+const LARGO_DESCRIPCION = 155;
+const truncar = (texto) =>
+  texto.length > LARGO_DESCRIPCION
+    ? texto.slice(0, LARGO_DESCRIPCION).replace(/\s+\S*$/, '') + '…'
+    : texto;
+
 /**
  * Datos SEO de una ruta, en un solo objeto. Sirve tanto para aplicarlos en el
  * cliente como para escribirlos en el HTML durante el prerender.
@@ -48,7 +56,7 @@ export function datosDe(vista, ctx) {
   const ruta = (ctx?.path || '/').split('?')[0].replace(/\/$/, '') || '/';
   return {
     titulo: titulo ? `${titulo} · ${SITIO.sigla}` : `${SITIO.nombre} · ${SITIO.lema}`,
-    descripcion: resolver(vista.descripcion, ctx) || '',
+    descripcion: truncar(resolver(vista.descripcion, ctx) || ''),
     canonical: `${ORIGEN}${ruta === '/' ? '/' : ruta}`,
     // Imagen social propia de la vista si la declara; si no, la del sitio.
     imagen: `${ORIGEN}${resolver(vista.imagen, ctx) || '/img/hero-drone-1250.jpg'}`,
