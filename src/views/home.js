@@ -438,7 +438,7 @@ export function render() {
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
             ${eyebrow('Suman al ranking')}
-            <h2 id="h-puntuables" class="u-h2 mt-3.5">Eventos puntuables</h2>
+            <h2 id="h-puntuables" class="u-h2-chico mt-3.5">Eventos puntuables</h2>
           </div>
           ${linkFuerte('Calendario completo', '/calendario')}
         </div>
@@ -461,7 +461,7 @@ export function render() {
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
             ${eyebrow('Fuera del torneo')}
-            <h2 id="h-especiales" class="u-h2 mt-3.5">Eventos especiales</h2>
+            <h2 id="h-especiales" class="u-h2-chico mt-3.5">Eventos especiales</h2>
           </div>
           ${linkFuerte('Ver todos', '/especiales')}
         </div>
@@ -476,7 +476,7 @@ export function render() {
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
             ${eyebrow('Ultradistancia')}
-            <h2 id="h-challenge" class="u-h2 mt-3.5">OWA Challenge</h2>
+            <h2 id="h-challenge" class="u-h2-chico mt-3.5">OWA Challenge</h2>
           </div>
           ${linkFuerte('Conocer el Challenge', '/challenge')}
         </div>
@@ -493,7 +493,7 @@ export function render() {
         <div class="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
             ${eyebrow('Viajes de nado', 'blue')}
-            <h2 id="h-travel" class="u-h2 mt-3.5">OWA Travel</h2>
+            <h2 id="h-travel" class="u-h2-chico mt-3.5">OWA Travel</h2>
           </div>
           ${linkFuerte('Conocer OWA Travel', '/travel')}
         </div>
@@ -509,7 +509,7 @@ export function render() {
       <div class="u-shell">
         <div>
           ${eyebrow('Modalidades', 'sky')}
-          <h2 id="h-modalidades" class="u-h2 mt-3.5">Cinco formas<br />de entrar al agua</h2>
+          <h2 id="h-modalidades" class="u-h2-chico mt-3.5">Cinco formas<br />de entrar al agua</h2>
         </div>
 
         <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" data-stagger>
@@ -564,7 +564,7 @@ export function render() {
                  se muestra es la temporada anterior ya cerrada. Vuelve a ser en
                  vivo con la primera fecha, el 31 de octubre en Luján. -->
             ${eyebrow(`Ranking ${TEMPORADA} · final`)}
-            <h2 id="h-rankings" class="u-h2 mt-3.5">
+            <h2 id="h-rankings" class="u-h2-chico mt-3.5">
               In aqua veritas<br />aqua autem nos unit
             </h2>
           </div>

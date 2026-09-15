@@ -1128,7 +1128,9 @@ export function render(ctx) {
                 return html`
                   <div class="mt-5 flex flex-wrap gap-3">
                     <span class="${PILL}">
-                      <span data-nums class="text-[15px] text-owa-cyan">${e.fechaCorta} ${e.anio.slice(-2)}</span>
+                      <span data-nums class="text-[15px] text-owa-cyan"
+                        >${e.fechaCorta ? `${e.fechaCorta} ${e.anio.slice(-2)}` : e.anio}</span
+                      >
                       ${ds.length
                         ? html`${sep}<span data-nums class="text-white"
                               >${ds.map((d) => distCorta(d.km)).join(' · ')}</span

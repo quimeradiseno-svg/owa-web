@@ -250,6 +250,12 @@
 @utility u-h2 {
   font-size: clamp(2rem, 4.2vw, 3.375rem);
 }
+/* Un escalón más chico que u-h2: los títulos de sección del home (Eventos
+   puntuables, Eventos especiales, Challenge, Travel...) competían demasiado
+   con el hero de arriba. */
+@utility u-h2-chico {
+  font-size: clamp(1.75rem, 3.6vw, 2.875rem);
+}
 @utility u-h1 {
   font-size: clamp(2.5rem, 6.4vw, 5.75rem);
   line-height: 0.9;

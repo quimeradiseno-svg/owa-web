@@ -3,55 +3,6 @@
 
 export const EVENTOS = [
   {
-    slug: 'lujan',
-    // Lleva el nombre del sponsor en el titular: "... by arena".
-    sponsor: 'arena',
-    distancias: { gp: 8, circuito: [2, 4] },
-    sigla: 'LJN',
-    nombre: 'Open Water Luján',
-    corto: 'LUJÁN',
-    sede: 'Luján · Buenos Aires',
-    sedeCorta: 'LUJÁN',
-    tipo: 'core',
-    fechaCorta: '31 OCT',
-    anio: '2026',
-    fechaLarga: 'Sábado 31 de octubre de 2026',
-    nota: '',
-    estado: 'abierta',
-    img: 'ev-lujan',
-    jornadas: [
-      {
-        torneo: 'GRAND PRIX',
-        sigla: 'LJN',
-        img: 'ljn-sede',
-        nombreLargo: 'Luján',
-        fecha: '31/10/2026',
-        dia: 'Jornada Grand Prix',
-        desc: 'Élite y máster competitivo. Puntúa para el ranking Grand Prix.',
-        tagline: 'Ocho kilómetros en<br>agua sin corriente',
-      },
-      {
-        torneo: 'CIRCUITO OWA',
-        sigla: 'LJN',
-        img: 'ljn-largada',
-        nombreLargo: 'Luján',
-        fecha: '31/10/2026',
-        dia: 'Jornada Circuito · mismo día',
-        desc: 'Única fecha del calendario donde ambas competencias se corren el mismo día.',
-        tagline: 'Única jornada compartida:<br>Grand Prix y Circuito',
-      },
-    ],
-    // Por ahora sólo la foto de frente (remera negra); cuando OWA mande el
-    // video 360° de esta remera se suma acá mismo, igual que Cruce del
-    // Nahuel (ver `video` en ese evento).
-    remera: {
-      frente: 'remera-ljn',
-      alt: 'Remera oficial negra de Open Water Luján, con el logo de OWA',
-      titulo: 'La remera de Luján',
-      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
-    },
-  },
-  {
     slug: 'san-pedro',
     sponsor: 'arena',
     distancias: { gp: 18, circuito: [4, 7] },
@@ -103,30 +54,51 @@ export const EVENTOS = [
     },
   },
   {
-    slug: 'ramallo',
-    distancias: { gp: 12, circuito: [3, 7] },
-    sigla: 'RML',
-    nombre: 'Open Water Ramallo',
-    corto: 'RAMALLO',
-    sede: 'Ramallo · Buenos Aires',
-    sedeCorta: 'RAMALLO',
+    slug: 'lujan',
+    // Lleva el nombre del sponsor en el titular: "... by arena".
+    sponsor: 'arena',
+    distancias: { gp: 8, circuito: [2, 4] },
+    sigla: 'LJN',
+    nombre: 'Open Water Luján',
+    corto: 'LUJÁN',
+    sede: 'Luján · Buenos Aires',
+    sedeCorta: 'LUJÁN',
     tipo: 'core',
-    fechaCorta: '12 Y 13 DIC',
+    fechaCorta: '13 DIC',
     anio: '2026',
-    fechaLarga: '12 y 13 de diciembre de 2026',
+    fechaLarga: 'Domingo 13 de diciembre de 2026',
     nota: '',
-    // Ramallo todavía no confirmó la fecha: hasta que lo haga, la tarjeta
-    // lo dice y no se puede entrar a la ficha (ver `sinIngreso`).
-    estado: 'a-confirmar',
-    img: 'ev-ramallo',
+    estado: 'abierta',
+    img: 'ev-lujan',
     jornadas: [
-      { torneo: 'GRAND PRIX', sigla: 'RML', fecha: '12/12/2026', dia: 'Día 1 · Grand Prix', desc: 'Tercera fecha puntuable del Grand Prix.' },
-      { torneo: 'CIRCUITO OWA', sigla: 'RML', fecha: '13/12/2026', dia: 'Día 2 · Circuito OWA', desc: 'Tercera fecha puntuable del Circuito.' },
+      {
+        torneo: 'GRAND PRIX',
+        sigla: 'LJN',
+        img: 'ljn-sede',
+        nombreLargo: 'Luján',
+        fecha: '13/12/2026',
+        dia: 'Jornada Grand Prix',
+        desc: 'Élite y máster competitivo. Puntúa para el ranking Grand Prix.',
+        tagline: 'Ocho kilómetros en<br>agua sin corriente',
+      },
+      {
+        torneo: 'CIRCUITO OWA',
+        sigla: 'LJN',
+        img: 'ljn-largada',
+        nombreLargo: 'Luján',
+        fecha: '13/12/2026',
+        dia: 'Jornada Circuito · mismo día',
+        desc: 'Única fecha del calendario donde ambas competencias se corren el mismo día.',
+        tagline: 'Única jornada compartida:<br>Grand Prix y Circuito',
+      },
     ],
+    // Por ahora sólo la foto de frente (remera negra); cuando OWA mande el
+    // video 360° de esta remera se suma acá mismo, igual que Cruce del
+    // Nahuel (ver `video` en ese evento).
     remera: {
-      frente: 'remera-blanca',
-      alt: 'Remera oficial blanca de Open Water Ramallo, con el logo de OWA',
-      titulo: 'La remera de Ramallo',
+      frente: 'remera-ljn',
+      alt: 'Remera oficial negra de Open Water Luján, con el logo de OWA',
+      titulo: 'La remera de Luján',
       bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
     },
   },
@@ -332,6 +304,35 @@ export const EVENTOS = [
     },
   },
   {
+    slug: 'ramallo',
+    distancias: { gp: 12, circuito: [3, 7] },
+    sigla: 'RML',
+    nombre: 'Open Water Ramallo',
+    corto: 'RAMALLO',
+    sede: 'Ramallo · Buenos Aires',
+    sedeCorta: 'RAMALLO',
+    tipo: 'core',
+    fechaCorta: 'ABR',
+    anio: '2027',
+    fechaLarga: 'Abril de 2027',
+    nota: '',
+    // Ramallo se corrió de diciembre a abril y todavía no tiene día
+    // puntual: hasta que lo confirmen, la tarjeta lo dice y no se puede
+    // entrar a la ficha (ver `sinIngreso`).
+    estado: 'a-confirmar',
+    img: 'ev-ramallo',
+    jornadas: [
+      { torneo: 'GRAND PRIX', sigla: 'RML', fecha: 'A confirmar', dia: 'Día 1 · Grand Prix', desc: 'Tercera fecha puntuable del Grand Prix.' },
+      { torneo: 'CIRCUITO OWA', sigla: 'RML', fecha: 'A confirmar', dia: 'Día 2 · Circuito OWA', desc: 'Tercera fecha puntuable del Circuito.' },
+    ],
+    remera: {
+      frente: 'remera-blanca',
+      alt: 'Remera oficial blanca de Open Water Ramallo, con el logo de OWA',
+      titulo: 'La remera de Ramallo',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
+  },
+  {
     slug: 'maraton-acuatica-san-pedro',
     escenario: 'RÍO',
     sigla: 'SPD',
@@ -340,11 +341,13 @@ export const EVENTOS = [
     sede: 'San Pedro · Buenos Aires',
     sedeCorta: 'SAN PEDRO',
     tipo: 'especial',
-    fechaCorta: '10 ABR',
+    fechaCorta: '',
     anio: '2027',
-    fechaLarga: 'Sábado 10 de abril de 2027',
+    fechaLarga: '2027',
     nota: '',
-    estado: 'proximamente',
+    // Fecha todavía no confirmada: la tarjeta lo dice y no se puede entrar a
+    // la ficha (ver `sinIngreso`), mismo tratamiento que Ramallo.
+    estado: 'a-confirmar',
     img: 'ev-maraton',
     // "San Pedro" cae junto en el segundo renglón; el corte por defecto
     // (última palabra sola) dejaba "San" colgado arriba con "Pedro" solo.
@@ -378,10 +381,10 @@ export const CHALLENGES = [
     sede: 'Colonia a Punta Lara',
     sedeCorta: 'PUNTA LARA',
     tipo: 'challenge',
-    fechaCorta: 'DIC – ABR',
+    fechaCorta: 'DIC 2026 – ABR 2027',
     anio: '',
-    ventana: 'Diciembre a Abril',
-    fechaLarga: 'Ventanas de cruce: diciembre a abril',
+    ventana: 'Diciembre 2026 a Abril 2027',
+    fechaLarga: 'Ventanas de cruce: diciembre de 2026 a abril de 2027',
     nota: '',
     estado: 'proximamente',
     km: '40 km',

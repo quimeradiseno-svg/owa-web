@@ -54,7 +54,7 @@ export const FICHAS = {
         torneo: 'GRAND PRIX Y CIRCUITO OWA',
         dias: [
           {
-            fecha: 'Sábado 31 de octubre',
+            fecha: 'Domingo 13 de diciembre',
             lugar: 'Awass Beach Club · Surf Village',
             items: [
               { hora: '08:30', t: 'Apertura del predio', d: 'Y acreditaciones.' },
@@ -874,7 +874,7 @@ export const FICHAS = {
         llegada: 'San Pedro',
         mapas: [{ slug: 'mapa-spd-7k', alt: 'Mapa del recorrido de 7 km, desde el apart hasta la llegada' }],
         ficha: [
-          ['Fecha', 'Sábado 10 de abril de 2027'],
+          ['Fecha', 'A confirmar'],
           ['Horario de largada', '10:30 hs'],
           ['Distancia', '7 km · recorrido punto a punto'],
           ['Uso de neopreno', 'Optativo'],
@@ -888,7 +888,7 @@ export const FICHAS = {
         llegada: 'San Pedro',
         mapas: [{ slug: 'mapa-spd-4k', alt: 'Mapa del recorrido de 4 km, desde Cantando hasta la llegada' }],
         ficha: [
-          ['Fecha', 'Sábado 10 de abril de 2027'],
+          ['Fecha', 'A confirmar'],
           ['Horario de largada', '12:30 hs'],
           ['Distancia', '4 km · recorrido punto a punto'],
           ['Uso de neopreno', 'Optativo'],
@@ -905,7 +905,7 @@ export const FICHAS = {
         aviso: 'No se realizan inscripciones presenciales durante el evento.',
         dias: [
           {
-            fecha: 'Viernes 9 de abril',
+            fecha: 'Víspera · fecha a confirmar',
             lugar: 'Camping América · San Pedro',
             items: [
               {
@@ -916,7 +916,7 @@ export const FICHAS = {
             ],
           },
           {
-            fecha: 'Sábado 10 de abril',
+            fecha: 'Día del evento · fecha a confirmar',
             lugar: 'Día del evento',
             items: [
               { hora: '07:45', zona: 'Zona de acreditación', t: 'Entrega de kits · 7 km', d: 'Aptos médicos, deslindes y numeración.' },

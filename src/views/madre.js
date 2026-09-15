@@ -3,7 +3,7 @@ import { foto } from '../lib/img.js';
 import { EVENTOS, CHALLENGES, km, sinIngreso } from '../data/eventos.js';
 import { MADRES } from '../data/madres.js';
 import { tarjetaFecha } from '../components/tarjeta-evento.js';
-import { eyebrow, btnPrimarioChico, olaSuperior } from '../components/ui.js';
+import { eyebrow, btnPrimarioChico, btnAccent, olaSuperior } from '../components/ui.js';
 import { icono } from '../components/iconos.js';
 import { bannerCTA } from '../components/banner-cta.js';
 import { grafo, migas } from '../lib/schema.js';
@@ -224,24 +224,22 @@ const bloquePuntaje = (key, m) => html`
 
 const bloquePremio = (p) => html`
   <section class="u-shell pt-14">
-    <div class="reveal flex flex-col items-start gap-5 rounded-owa-lg bg-owa-navy p-7 sm:flex-row sm:items-center sm:p-8">
-      <span class="grid size-14 shrink-0 place-items-center rounded-full bg-white/10 text-owa-cyan">
-        ${icono(p.icono || 'trofeo', 'size-7')}
-      </span>
-      <div>
-        <p class="font-display text-[11px] font-bold tracking-[0.14em] text-owa-sky uppercase">${p.temporada}</p>
-        <p data-nums class="mt-2 font-display text-[clamp(1.5rem,2.8vw,2rem)] leading-[1.1] font-black text-white">
-          ${p.lead} <span class="text-owa-cyan">${p.destacado}</span> ${p.cierre}
-        </p>
-        <p class="mt-2 max-w-[54ch] text-sm leading-relaxed text-owa-line">${p.detalle}</p>
-        ${p.href
-          ? html`<a
-              href="${p.href}"
-              class="u-nudge mt-3.5 inline-flex items-center gap-2 border-b border-owa-cyan/50 pb-0.5 font-display text-[12px] font-black tracking-[0.08em] text-owa-cyan uppercase transition-colors hover:border-owa-cyan"
-              >${p.hrefLabel} <span class="u-nudge-arrow" aria-hidden="true">→</span></a
-            >`
-          : ''}
+    <div
+      class="reveal flex flex-col items-start gap-6 rounded-owa-lg bg-owa-navy p-7 sm:flex-row sm:items-center sm:justify-between sm:p-8"
+    >
+      <div class="flex items-start gap-5 sm:items-center">
+        <span class="grid size-14 shrink-0 place-items-center rounded-full bg-white/10 text-owa-cyan">
+          ${p.iso ? html`<img src="${p.iso}" alt="" class="size-7" aria-hidden="true" />` : icono(p.icono || 'trofeo', 'size-7')}
+        </span>
+        <div>
+          <p class="font-display text-[11px] font-bold tracking-[0.14em] text-owa-sky uppercase">${p.temporada}</p>
+          <p data-nums class="mt-2 font-display text-[clamp(1.5rem,2.8vw,2rem)] leading-[1.1] font-black text-white">
+            ${p.lead} <span class="text-owa-cyan">${p.destacado}</span> ${p.cierre}
+          </p>
+          <p class="mt-2 max-w-[54ch] text-sm leading-relaxed text-owa-line">${p.detalle}</p>
+        </div>
       </div>
+      ${p.href ? html`<div class="w-full shrink-0 sm:w-auto">${btnAccent(p.hrefLabel, p.href, 'w-full justify-center sm:w-auto')}</div>` : ''}
     </div>
   </section>
 `;

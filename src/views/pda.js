@@ -1,7 +1,7 @@
 import { html, raw, toHTML, stagger } from '../lib/html.js';
 import { foto } from '../lib/img.js';
 import { PDA_INTRO, PDA_BECAS, PDA_CONVOCATORIAS } from '../data/pda.js';
-import { eyebrow, btnPrimario, btnBorde, olaSuperior, pendiente } from '../components/ui.js';
+import { eyebrow, btnPrimario, btnBorde, olaSuperior } from '../components/ui.js';
 
 export const titulo = 'Programa Desarrollo Aguas Abiertas';
 export const descripcion =
@@ -85,8 +85,6 @@ export function render() {
           `
         )}
       </div>
-
-      ${pendiente('Los dos botones abren un mail a la organización. El formulario de postulación queda por definir.')}
     </section>
   `);
 }

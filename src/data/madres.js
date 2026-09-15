@@ -74,7 +74,7 @@ export const MADRES = {
     // en cyan es el destino y no una cifra, y lleva link — Swim GP Portugal ya
     // vive en /travel como Race Travel 2027.
     premio: {
-      icono: 'globo',
+      iso: '/brand/owa-travel-iso.svg',
       temporada: 'DEL CIRCUITO OWA A PORTUGAL',
       lead: 'SWIM GP',
       destacado: 'PORTUGAL',

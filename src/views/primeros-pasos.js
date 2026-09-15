@@ -75,8 +75,8 @@ export function render() {
       ${olaSuperior('#fff')}
       <div class="u-shell relative">
         ${eyebrow(HERO.kicker, 'sky')}
-        <h1 class="mt-4 text-[clamp(2.125rem,4.6vw,4.25rem)] leading-[0.94]">${raw(HERO.titulo)}</h1>
-        <p class="mt-5.5 max-w-[56ch] text-[17px] leading-relaxed text-owa-line">${raw(HERO.subtitulo)}</p>
+        <h1 class="mt-4 text-[clamp(1.75rem,3.4vw,3.25rem)] leading-[1]">${raw(HERO.titulo)}</h1>
+        <p class="mt-5.5 max-w-[72ch] text-[17px] leading-relaxed text-owa-line">${raw(HERO.subtitulo)}</p>
       </div>
     </section>
 
