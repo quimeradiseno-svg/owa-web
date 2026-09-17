@@ -126,7 +126,7 @@ export const footer = () => html`
 
       <div class="flex flex-wrap justify-between gap-3.5 pt-5.5 text-xs text-owa-gray">
         <p>© 2026 Open Water Adventures · Las inscripciones se procesan en plataforma externa</p>
-        <p>Cronometraje oficial: Cronometraje Instantáneo</p>
+        <!-- Términos y condiciones: va acá apenas OWA pase el texto/link. -->
       </div>
     </div>
   </footer>
