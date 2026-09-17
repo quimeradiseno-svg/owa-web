@@ -10,16 +10,15 @@
 // de sponsors de la ficha, sin duplicar.
 import { MARCAS } from './sponsors.js';
 
-/** El 20% OFF de Nexalba es, por ahora, el mismo beneficio para todas las
-    carreras que lo tienen — de ahí la función en vez de un objeto suelto: da
-    un objeto nuevo por carrera (para no compartir referencia entre ellas) y
-    el día que una fecha necesite su propio código o su propio texto, se
-    corta de acá y se escribe aparte sin tocar a las demás.
+/** El 20% OFF de Nexalba es el mismo beneficio para todas las carreras que lo
+    tienen, pero cada una tiene su propio código de cupón — de ahí la función
+    en vez de un objeto suelto: da un objeto nuevo por carrera (para no
+    compartir referencia entre ellas) con el código que corresponda.
 
     Un beneficio con `codigo` en blanco se muestra igual, pero avisando que el
     código todavía no está — nunca con un placeholder tipo "XXXXXXX", que en
     la página en vivo se lee como un error. */
-const nexalba20 = () => ({
+const nexalba20 = (codigo = '') => ({
   id: 'nexalba-20-off',
   etiqueta: 'Beneficio para inscriptos',
   marca: MARCAS.nexalba,
@@ -28,9 +27,7 @@ const nexalba20 = () => ({
   unidad: 'OFF',
   titulo: 'En toda la web de Nexalba',
   detalle: 'Para cualquier persona inscripta a la carrera.',
-  // Pendiente: OWA todavía no pasó el código. Con el valor real acá, la
-  // tarjeta lo muestra en el recuadro con el botón de copiar.
-  codigo: '',
+  codigo,
   href: MARCAS.nexalba.href,
 });
 
@@ -58,9 +55,9 @@ const endorphinKinesio = () => ({
 });
 
 export const BENEFICIOS = {
-  lujan: [nexalba20(), endorphinKinesio()],
+  lujan: [nexalba20('OWALUJAN20'), endorphinKinesio()],
   colon: [nexalba20(), endorphinKinesio()],
-  'san-pedro': [nexalba20(), endorphinKinesio()],
+  'san-pedro': [nexalba20('OWASANPEDRO20'), endorphinKinesio()],
   // Se van sumando el resto de las carreras a medida que OWA cierre cada
   // acuerdo — algunas van a compartir el de Nexalba, otras van a traer el
   // suyo propio.

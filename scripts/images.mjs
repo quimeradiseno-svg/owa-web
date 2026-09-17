@@ -158,18 +158,18 @@ const PHOTOS = {
   // distancia. Son capturas satelitales con trazado: mucho detalle fino, asi
   // que se sirven mas grandes que una foto normal.
   'mapa-ljn': 'Fotos/LJN/mapa2.jpg',
-  'mapa-vob-tramo1': 'Fotos/SPD/mapas/VOB1.jpg',
-  'mapa-vob-tramo2': 'Fotos/SPD/mapas/tramo_2_VOB.jpg',
-  'mapa-vob-llegada': 'Fotos/SPD/mapas/Llegada_VOB.jpg',
+  'mapa-vob-tramo1': 'Fotos/VOB/VOB_Tramo1_sin_badge.jpg',
+  'mapa-vob-tramo2': 'Fotos/VOB/VOB_Tramo2_sin_badge.jpg',
+  'mapa-vob-llegada': 'Fotos/VOB/VOB_llegada_sin_badge.jpg',
   // Pinamar: una lámina por distancia, las dos sobre la misma playa.
   'mapa-pnr-35': 'Fotos/PNR/CIRCUITOPINAMAR35.jpg',
   'mapa-pnr-18': 'Fotos/PNR/CIRCUITOPINAMAR18.jpg',
   'mapa-spd-7k': 'Fotos/SPD/mapas/SPD7.jpg',
   'mapa-spd-4k': 'Fotos/SPD/mapas/SPD4.jpg',
   // Colón: una lámina por distancia, las tres sobre el río Uruguay.
-  'mapa-cln-10k': 'Fotos/CLN/MAPA-COLON-10.jpg',
-  'mapa-cln-5k': 'Fotos/CLN/MAPA-COLON-5.jpg',
-  'mapa-cln-25k': 'Fotos/CLN/MAPA-COLON-25.jpg',
+  'mapa-cln-10k': 'Fotos/CLN/CLN_10KM_sin_badge.jpg',
+  'mapa-cln-5k': 'Fotos/CLN/CLN_5KM_sin_badge.jpg',
+  'mapa-cln-25k': 'Fotos/CLN/CLN_2.5KM_sin_badge.jpg',
   // Cruce del Nahuel: única distancia, cruzando el lago de punta a punta.
   'mapa-nhl-8k': 'Fotos/NHL/nhl1.jpg',
   // La remera del cruce, frente y dorso — mismo estudio y fondo, para que el

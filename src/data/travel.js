@@ -155,9 +155,9 @@ export const MUCHO_MAS_QUE_NADAR = {
 
 /** Agenda 2027 de Race Travel, en el orden en que se muestran (Capri–Nápoli,
     Mykonos, Portugal). Capri–Nápoli ya tiene cupos abiertos para equipos
-    Relay. Mykonos ya tiene fecha confirmada por OWA pero el paquete todavía
-    no está armado; Portugal ni siquiera tiene fecha — las dos quedan
-    "próximamente" hasta que OWA cierre el resto de los datos. */
+    Relay. Mykonos y Portugal ya tienen fecha confirmada por OWA, pero el
+    paquete todavía no está armado, así que las dos quedan "próximamente"
+    hasta que OWA cierre el resto de los datos. */
 export const RACE_TRAVEL_AGENDA = [
   {
     slug: 'capri-napoli',
@@ -193,11 +193,13 @@ export const RACE_TRAVEL_AGENDA = [
     slug: 'swim-gp-portugal',
     destino: 'Swim GP',
     pais: 'Portugal',
-    fecha: 'Julio 2027',
+    // Fecha confirmada por OWA; el paquete (sede, cupos, precio) todavía no
+    // está armado, así que sigue en "próximamente" pese a tener día cierto.
+    fecha: '24 y 25 de julio de 2027',
     estado: 'proximamente',
     chip: 'PRÓXIMAMENTE',
     // Foto de referencia del destino (Lisboa), no de la carrera: todavía no
-    // tiene fecha ni sede confirmadas.
+    // tiene sede confirmada.
     img: 'tv-portugal',
     resumen: 'Una nueva carrera, un nuevo destino y un grupo OWA viajando para competir.',
     nota: 'Próximamente más información.',

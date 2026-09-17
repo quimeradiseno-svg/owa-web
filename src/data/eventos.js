@@ -275,9 +275,6 @@ export const EVENTOS = [
         nombreLargo: 'Liebig a Colón',
         fecha: '20/03/2027',
         dia: 'Día 1 · Grand Prix',
-        // En recuadro y no como descripción suelta: es una condición para
-        // consagrarse campeón, no un dato de color.
-        aviso: 'Última fecha puntuable del Grand Prix 26/27. Para el título general o por categoría hay que estar presente.',
         tagline: 'Un clásico del<br>río Uruguay.',
         // Foto propia de la jornada: sin esto las dos tarjetas de Colón
         // repetían la misma imagen del evento.
@@ -289,7 +286,6 @@ export const EVENTOS = [
         nombreLargo: 'Colón',
         fecha: '21/03/2027',
         dia: 'Día 2 · Circuito OWA',
-        aviso: 'Última fecha puntuable del Circuito 26/27. Para el título general o por categoría hay que estar presente.',
         // Provisoria, a la espera del texto de OWA. Evita "cierre de
         // temporada" (es el sello de la Maratón San Pedro, que cierra el
         // calendario) y no repite el "clásico" de la tarjeta de al lado.
