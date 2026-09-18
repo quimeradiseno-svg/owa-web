@@ -13,8 +13,8 @@
 // que sostener redirecciones. No afecta a nadie que entre por el link, ni a
 // las previsualizaciones de WhatsApp: sólo le pide a los buscadores que no la
 // listen. Al pasar a owa.com.ar hay que ponerlo en true.
-export const ORIGEN = 'https://owa-site.vercel.app';
-export const INDEXABLE = false;
+export const ORIGEN = 'https://www.owa.com.ar';
+export const INDEXABLE = true;
 
 /** Dominio definitivo, para tener el destino a la vista. */
 export const ORIGEN_FINAL = 'https://www.owa.com.ar';
