@@ -17,8 +17,12 @@ export function foto({ slug, alt, sizes = '100vw', className = '', imgClass = ''
   const meta = LQIP[slug];
   if (!meta) throw new Error(`Falta la foto "${slug}" — corré npm run images`);
 
-  // Vertical (833px de ancho): sólo se generó el corte de 480.
-  const disponibles = meta.r < 1 ? [480] : WIDTHS;
+  // `meta.w` es la lista real de anchos que scripts/images.mjs generó para
+  // esta foto (salta los mayores al ancho de origen, para no agrandar). Sin
+  // esto, una foto angosta (~960-1249px) pedía un archivo -1250 que nunca
+  // existió — 404 e imagen rota, sólo visible en pantallas de alta densidad
+  // donde el navegador elegía justo ese candidato del srcset.
+  const disponibles = meta.w || (meta.r < 1 ? [480] : WIDTHS);
   const srcset = (ext) => disponibles.map((w) => `/img/${slug}-${w}.${ext} ${w}w`).join(', ');
 
   return html`

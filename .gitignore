@@ -13,10 +13,12 @@ dist/
 /Fotos/
 /Fonts/
 
-# Planillas de ranking que pasa OWA: traen el DNI de cada nadador y no tienen
-# por qué quedar versionadas. Al repo va sólo el resultado ya anonimizado
-# (src/data/ranking-*.js), que genera scripts/rankings.mjs a partir de acá.
+# Planillas de ranking/historial que pasa OWA: traen el DNI de cada nadador y
+# no tienen por qué quedar versionadas. Al repo va sólo el resultado ya
+# anonimizado (src/data/ranking-*.js, src/data/historial.json), que se copia
+# a mano desde acá.
 /Ranking/
+/Estadisticas/
 
 # Adobe MCP / otros scripts locales
 .env
