@@ -633,7 +633,7 @@ const kitMedia = (remera) => html`
 const waPostulacion = (e) =>
   e.postulacionEmail
     ? `mailto:${e.postulacionEmail}?subject=${encodeURIComponent(`Postulación — ${e.nombre}`)}&body=${encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`)}`
-    : 'https://wa.me/5491125543112?text=' + encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`);
+    : 'https://wa.me/5491156580878?text=' + encodeURIComponent(`Hola OWA, quiero postularme al ${e.nombre}.`);
 
 // Sección "No se inscribe: se postula" de los Challenge. Va sobre blanco: en
 // esas fichas la banda anterior (Distancias) es navy, así que ésta invierte.

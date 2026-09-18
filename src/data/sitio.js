@@ -25,7 +25,7 @@ export const SITIO = {
   lema: 'El agua nos une',
   // Fuente: el pie del sitio.
   email: 'info@owa.com.ar',
-  telefono: '+54 9 11 2554 3112',
+  telefono: '+54 9 11 5658 0878',
   pais: 'AR',
   idioma: 'es-AR',
   redes: [

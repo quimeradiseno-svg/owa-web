@@ -8,7 +8,7 @@ export const titulo = 'OWA Travel';
 export const descripcion =
   'Viajes para nadar en aguas abiertas: Swim & Adventure en Búzios y Race Travel a carreras internacionales como Capri-Nápoli. Nadamos, exploramos y compartimos el destino.';
 
-const WA = 'https://wa.me/5491125543112';
+const WA = 'https://wa.me/5491156580878';
 const MAIL = 'mailto:info@owa.com.ar?subject=OWA%20Travel';
 
 /** Mail con asunto y cuerpo precargados: los CTA "Quiero recibir información"

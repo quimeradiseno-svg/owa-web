@@ -88,8 +88,8 @@ export const footer = () => html`
           <ul class="grid gap-2.5 text-sm text-owa-line">
             <li><a href="mailto:info@owa.com.ar" class="transition-colors hover:text-owa-cyan">info@owa.com.ar</a></li>
             <li>
-              <a href="https://wa.me/5491125543112" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-owa-cyan"
-                >WhatsApp +54 9 11 2554 3112</a
+              <a href="https://wa.me/5491156580878" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-owa-cyan"
+                >WhatsApp +54 9 11 5658 0878</a
               >
             </li>
           </ul>
