@@ -481,7 +481,7 @@ const panelCarrera = () => {
     <div>
       <!-- No va como pestaña nueva del nivel 1, que en móvil ya corre con el
            dedo. -->
-      <div class="flex snap-x gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Temporada" data-scroller>
+      <div class="flex gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Temporada" data-scroller>
         ${visibles.map((t) => pastillaFiltro(t.label, temporadaActiva.id === t.id, `data-temporada="${t.id}"`, { viva: t.enCurso }))}
       </div>
 
@@ -822,7 +822,7 @@ const pastillaFiltro = (label, activo, attrs = '', { corto = '', viva = false } 
     ${raw(attrs)}
     aria-pressed="${activo ? 'true' : 'false'}"
     ${raw(corto ? `aria-label="${label}"` : '')}
-    class="u-press inline-flex shrink-0 snap-start cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${viva
+    class="u-press inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 font-body text-[12px] font-bold tracking-[0.08em] whitespace-nowrap transition-colors duration-200 sm:px-5 ${viva
       ? activo
         ? 'border-owa-cyan bg-owa-cyan text-owa-deep'
         : 'border-owa-cyan bg-white text-owa-deep hover:bg-owa-cyan/12'
@@ -843,7 +843,7 @@ const pastillaFiltro = (label, activo, attrs = '', { corto = '', viva = false } 
 `;
 
 const barraVistas = () => html`
-  <div class="flex snap-x gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Vista del ranking" data-scroller>
+  <div class="flex gap-2 overflow-x-auto sm:gap-2.5" role="group" aria-label="Vista del ranking" data-scroller>
     ${VISTAS.map(([label, v, corto]) => pastillaFiltro(label, s.vista === v, `data-vista="${v}"`, { corto }))}
   </div>
 `;
@@ -1291,10 +1291,12 @@ const barraTabs = () => html`
        "abriéndose" sobre el panel blanco. En pantalla chica no entran las
        cuatro, así que la tira corre con el dedo en una sola fila (apilarlas
        rompe el anclaje: una grilla de dos filas no se puede pegar al panel).
-       El scroll lo acomoda traerAlaVista() en mount: al repintarse la tira
-       vuelve a scrollLeft 0 y la elegida quedaba tapada contra el borde. -->
+       El scroll lo acomoda traerAlaVista() en mount. Sin snap: con scroll-snap
+       el navegador rechazaba el scrollLeft que calculaba traerAlaVista (no
+       caía justo en un punto de snap) y la tira volvía a quedar en 0, con la
+       pestaña elegida tapada contra el borde derecho. -->
   <div
-    class="mt-6 flex snap-x gap-1 overflow-x-auto lg:flex-wrap lg:overflow-visible"
+    class="mt-6 flex gap-1 overflow-x-auto lg:flex-wrap lg:overflow-visible"
     role="tablist"
     aria-label="Secciones de resultados"
     data-scroller
@@ -1306,7 +1308,7 @@ const barraTabs = () => html`
           role="tab"
           data-tab="${v}"
           aria-selected="${s.tab === v ? 'true' : 'false'}"
-          class="u-press shrink-0 snap-start cursor-pointer rounded-t-owa-md px-3 py-3 font-display text-[11px] font-black tracking-[0.03em] whitespace-nowrap transition-colors duration-200 ease-out sm:px-4 ${s.tab ===
+          class="u-press shrink-0 cursor-pointer rounded-t-owa-md px-3 py-3 font-display text-[11px] font-black tracking-[0.03em] whitespace-nowrap transition-colors duration-200 ease-out sm:px-4 ${s.tab ===
           v
             ? 'bg-white text-owa-navy'
             : 'bg-white/10 text-white/75 hover:bg-white/16 hover:text-white'}"
