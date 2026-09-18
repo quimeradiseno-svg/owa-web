@@ -1062,7 +1062,7 @@ const filaProtagonista = (n, i, stat) => html`
 `;
 
 const panelRanking2 = (titulo, nota, lista, stat, limite = 8) => html`
-  <div class="rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
+  <div class="min-w-0 rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
     <h3 class="font-display text-[13px] font-black tracking-[0.04em] text-owa-navy uppercase">${titulo}</h3>
     <p class="mt-0.5 text-[12px] text-owa-slate">${nota}</p>
     <ul class="mt-2.5">${lista.slice(0, limite).map((n, i) => filaProtagonista(n, i, stat))}</ul>
@@ -1092,7 +1092,7 @@ const panelEstadisticas = () => {
   const sedesOrdenCodigo = SEDE_ORDEN.filter((cod) => h.sedes[cod]);
 
   return html`
-    <div class="grid gap-10">
+    <div class="grid grid-cols-1 gap-10">
       <!-- Intro, igual a la del dashboard original de Cronometraje -->
       <section>
         ${eyebrow('2018 – 2026 · Circuito OWA')}
@@ -1135,7 +1135,7 @@ const panelEstadisticas = () => {
           Victorias en la clasificación general de su género, en la prueba principal (la distancia más larga) de
           cada fecha.
         </p>
-        <div class="mt-5 grid gap-3.5 lg:grid-cols-2">
+        <div class="mt-5 grid grid-cols-1 gap-3.5 lg:grid-cols-2">
           ${panelRanking2('Más victorias en pruebas principales', 'Ganador o ganadora general de la distancia mayor de la fecha.', h.mas_victorias_prueba_principal, 'victorias')}
           ${panelRanking2('Más podios', 'Top 3 general de su género en la prueba principal.', h.mas_podios, 'podios')}
         </div>
@@ -1148,7 +1148,7 @@ const panelEstadisticas = () => {
         <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
           Quienes más veces cruzaron la línea de largada con OWA, sumando todas las sedes y distancias.
         </p>
-        <div class="mt-5 grid gap-3.5 lg:grid-cols-2">
+        <div class="mt-5 grid grid-cols-1 gap-3.5 lg:grid-cols-2">
           ${panelRanking2('Más participaciones', 'Largadas registradas en resultados oficiales, 2018–2026.', h.mas_participaciones, 'participaciones')}
           <div class="grid content-start gap-3.5">
             <div class="grid gap-3 sm:grid-cols-2">
