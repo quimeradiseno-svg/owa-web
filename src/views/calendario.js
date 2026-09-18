@@ -391,7 +391,12 @@ function bloqueFecha(e) {
     // escalón más chico y sin el tracking ancho, sólo para ese texto.
     const largo = texto[1].length > 4;
     return html`
-      <p class="font-display leading-tight text-owa-slate">
+      <!-- Mobile: una sola línea, sin el recuadro angosto que la justifica en desktop. -->
+      <p class="flex items-baseline gap-1.5 font-display leading-tight text-owa-slate md:hidden">
+        <span class="text-[11px] font-bold tracking-[0.14em]">${texto[0]}</span>
+        <span class="${largo ? 'text-[10px] tracking-[0.02em]' : 'text-[13px] tracking-[0.06em]'} font-black">${texto[1]}</span>
+      </p>
+      <p class="hidden font-display leading-tight text-owa-slate md:block">
         <span class="block text-[11px] font-bold tracking-[0.14em]">${texto[0]}</span>
         <span class="mt-0.5 block ${largo ? 'text-[10px] tracking-[0.02em]' : 'text-[13px] tracking-[0.06em]'} font-black"
           >${texto[1]}</span
@@ -422,8 +427,19 @@ function bloqueFecha(e) {
   // varios habría que poner dos y el bloque deja de leerse de un vistazo.
   const semana = dias.length === 1 ? DIA_ABR[new Date(anio, mes - 1, dias[0].dia).getDay()] : '';
 
+  // Mismo dato en dos formas: una línea horizontal y compacta para mobile
+  // (sin el recuadro angosto que en desktop justifica apilarlo en 4 líneas),
+  // y varios días van separados por coma en vez de uno debajo del otro.
+  const numeroMobile = dias.length === 1 ? dias[0].dia : dias.map((d) => d.dia).join(', ');
+
   return html`
-    <p class="font-display leading-none text-owa-navy">
+    <p class="flex items-baseline gap-1.5 font-display leading-none text-owa-navy md:hidden">
+      ${semana ? html`<span class="text-[11px] font-bold tracking-[0.14em] text-owa-slate">${semana}</span>` : ''}
+      <span data-nums class="text-[1.125rem] font-black tracking-[-0.02em]">${numeroMobile}</span>
+      <span class="text-[12px] font-black tracking-[0.12em] text-owa-blue">${MES_ABR[mes - 1]}</span>
+      <span data-nums class="text-[11px] font-bold tracking-[0.08em] text-owa-slate">${anio}</span>
+    </p>
+    <p class="hidden font-display leading-none text-owa-navy md:block">
       <!-- Muestra el día de la semana sólo cuando la fecha es un único día.
            Alto fijo para que todos los bloques arranquen a la misma altura. -->
       <span class="block h-3.5 text-[11px] font-bold tracking-[0.14em] text-owa-slate">${semana}</span>

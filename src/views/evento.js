@@ -1868,7 +1868,7 @@ export function render(ctx) {
                      jornada entre Grand Prix y Circuito. Se muestra sólo
                      cuando hay más de uno. -->
                 <div
-                  class="mt-6.5 flex-wrap gap-2.5 ${cronogramas.length > 1 ? 'flex' : 'hidden'}"
+                  class="mt-6.5 grid-cols-2 gap-2.5 sm:flex sm:flex-wrap ${cronogramas.length > 1 ? 'grid' : 'hidden'}"
                   role="tablist"
                   aria-label="Torneo"
                 >
@@ -1885,14 +1885,14 @@ export function render(ctx) {
                         type="button"
                         data-cron-torneo="${i}"
                         aria-pressed="${activo ? 'true' : 'false'}"
-                        class="u-press flex items-center gap-3 rounded-owa-md border-2 px-4 py-2.5 text-left sm:px-5 sm:py-3.5 transition-colors duration-200 ease-out ${activo
+                        class="u-press flex min-w-0 items-center gap-2 rounded-owa-md border-2 px-3 py-2.5 text-left sm:gap-3 sm:px-5 sm:py-3.5 transition-colors duration-200 ease-out ${activo
                           ? gp
                             ? 'border-owa-electric bg-owa-electric text-white shadow-[var(--shadow-card)]'
                             : 'border-owa-cyan bg-owa-cyan text-owa-deep shadow-[var(--shadow-card)]'
                           : `border-owa-line bg-white text-owa-navy hover:bg-owa-sand ${gp ? 'hover:border-owa-electric/50' : 'hover:border-owa-cyan/50'}`}"
                       >
                         <span class="shrink-0 ${activo ? (gp ? 'text-white' : 'text-owa-deep') : gp ? 'text-owa-electric' : 'text-owa-cyan'}"
-                          >${owaMark('size-6')}</span
+                          >${owaMark('size-5 sm:size-6')}</span
                         >
                         <span class="min-w-0 flex-1">
                           <span class="block font-sans text-[12px] leading-tight sm:text-[13px] font-bold tracking-[0.03em] uppercase"
@@ -1917,9 +1917,9 @@ export function render(ctx) {
                              marca en otras partes de la página. -->
                         ${activo
                           ? html`<span
-                              class="grid size-5.5 shrink-0 place-items-center rounded-full bg-white ${gp ? 'text-owa-electric' : 'text-owa-cyan'}"
+                              class="grid size-4.5 shrink-0 place-items-center rounded-full bg-white sm:size-5.5 ${gp ? 'text-owa-electric' : 'text-owa-cyan'}"
                             >
-                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="size-3 sm:size-3.5" aria-hidden="true">
                                 <path d="M5 12.5 9.5 17 19 6.5" />
                               </svg>
                             </span>`

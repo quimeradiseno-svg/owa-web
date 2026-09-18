@@ -80,6 +80,9 @@ const TRAZOS = {
   // Kit — numeración: cartel de pechera con pines y renglones.
   numero:
     '<path d="M6 4h12l-1.4 16H7.4z"/><circle cx="9" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="15" cy="8" r="0.9" fill="currentColor" stroke="none"/><path d="M9 13h6"/><path d="M9.6 16h4.8"/>',
+  // Enlace externo: cuadrado con la esquina abierta y la flecha escapando —
+  // reemplaza al glifo unicode "↗" (se veía fino/inconsistente entre fuentes).
+  externo: '<path d="M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19h11a1.5 1.5 0 0 0 1.5-1.5V14"/><path d="M13.5 5H19v5.5"/><path d="M10.5 13.5 19 5"/>',
 };
 
 export const icono = (nombre, clase = 'size-7') =>

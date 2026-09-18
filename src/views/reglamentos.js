@@ -24,9 +24,9 @@ const anexo = (a) =>
               ${a.carrera}
             </span>
             <span
-              class="shrink-0 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+              class="flex shrink-0 items-center gap-1.5 font-display text-[11px] font-black tracking-[0.06em] text-owa-navy transition-transform duration-200 ease-out group-hover:translate-x-0.5"
             >
-              ABRIR ↗
+              ABRIR ${icono('externo', 'size-3.5')}
             </span>
           </a>
         </li>
@@ -60,7 +60,7 @@ export function render() {
         href="${REGLAMENTO_GENERAL.url}"
         target="_blank"
         rel="noopener noreferrer"
-        class="u-press group flex flex-wrap items-center justify-between gap-5 rounded-owa-lg bg-owa-navy p-8 text-white transition-colors hover:bg-owa-abyss"
+        class="u-press group flex flex-col gap-5 rounded-owa-lg bg-owa-navy p-8 text-white transition-colors hover:bg-owa-abyss sm:flex-row sm:flex-wrap sm:items-center sm:justify-between"
       >
         <div class="flex items-center gap-5">
           <span class="shrink-0 text-owa-cyan">${icono('documento', 'size-9')}</span>
@@ -70,9 +70,9 @@ export function render() {
           </div>
         </div>
         <span
-          class="shrink-0 rounded-full bg-owa-cyan px-6 py-3 font-display text-xs font-black tracking-[0.06em] text-owa-deep transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+          class="ml-14 flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-owa-cyan px-6 py-3 font-display text-xs font-black tracking-[0.06em] text-owa-deep transition-transform duration-200 ease-out group-hover:translate-x-0.5 sm:ml-0"
         >
-          ABRIR ↗
+          ABRIR ${icono('externo', 'size-3.5')}
         </span>
       </a>
 
@@ -95,9 +95,9 @@ export function render() {
               >
                 <span class="font-display text-sm font-black text-owa-navy uppercase">${r.deportivo.t}</span>
                 <span
-                  class="shrink-0 font-display text-[11px] font-black tracking-[0.06em] text-owa-blue transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+                  class="flex shrink-0 items-center gap-1.5 font-display text-[11px] font-black tracking-[0.06em] text-owa-blue transition-transform duration-200 ease-out group-hover:translate-x-0.5"
                 >
-                  ABRIR ↗
+                  ABRIR ${icono('externo', 'size-3.5')}
                 </span>
               </a>
 
