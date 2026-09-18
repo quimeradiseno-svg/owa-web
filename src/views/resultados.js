@@ -870,6 +870,8 @@ const SEDE_COLOR = {
   NHL: '#008300',
   CLN: '#4a3aa7',
   ISC: '#e34948',
+  LDR: '#17a2b8',
+  CDM: '#a0522d',
 };
 
 // Dónde se nada cada sede — no viene en el JSON (era texto fijo del propio
@@ -883,16 +885,34 @@ const SEDE_LUGAR = {
   NHL: 'Lago Nahuel Huapi · Bariloche',
   CLN: 'Río Uruguay · Colón, Entre Ríos',
   ISC: 'Río Uruguay · Colón, Entre Ríos',
+  LDR: 'Lagos del Rocío · Villa Paranacito',
+  // Ubicación no confirmada por la fuente (la mayoría declara Bariloche como
+  // localidad, pero es un indicio, no una confirmación — ver meta.nota_ediciones).
+  CDM: 'Bariloche · Río Negro',
 };
 
 // Prefijo de la prueba principal (la distancia mayor) de cada sede, para
 // filtrar "mejores_tiempos" — mismo criterio que usaba el dashboard original.
-const PRUEBA_PRINCIPAL = { VHU: '6,5', SPD: '7', VOB: '20', PNR: '3.5', PAD: '5', NHL: '8', CLN: '10', ISC: '18' };
+const PRUEBA_PRINCIPAL = {
+  VHU: '6,5',
+  SPD: '7',
+  VOB: '20',
+  PNR: '3.5',
+  PAD: '5',
+  NHL: '8',
+  CLN: '10',
+  ISC: '18',
+  LDR: '4',
+  // CDM ofreció hasta 3,5km en 2022 y sumó 10km desde 2023: el "mejor tiempo"
+  // usa siempre 10km como referencia (ver meta.nota_tiempos).
+  CDM: '10',
+};
 
 // Mismo orden de sedes que usaba el dashboard original (por antigüedad de
 // ingreso al circuito), para los botones de filtro de "Campeones edición
-// por edición".
-const SEDE_ORDEN = ['VHU', 'SPD', 'VOB', 'PNR', 'PAD', 'CLN', 'ISC', 'NHL'];
+// por edición". LDR y CDM se suman agrupadas con la sede de su misma región
+// (LDR con PAD en el Delta; CDM con VHU en Bariloche).
+const SEDE_ORDEN = ['VHU', 'CDM', 'SPD', 'VOB', 'PNR', 'PAD', 'LDR', 'CLN', 'ISC', 'NHL'];
 
 // "h:mm:ss" pasada la hora, si no "mm:ss" — el propio criterio que pide
 // meta.nota_tiempos del paquete de datos.
@@ -1041,11 +1061,11 @@ const filaProtagonista = (n, i, stat) => html`
   </li>
 `;
 
-const panelRanking2 = (titulo, nota, lista, stat) => html`
+const panelRanking2 = (titulo, nota, lista, stat, limite = 8) => html`
   <div class="rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
     <h3 class="font-display text-[13px] font-black tracking-[0.04em] text-owa-navy uppercase">${titulo}</h3>
     <p class="mt-0.5 text-[12px] text-owa-slate">${nota}</p>
-    <ul class="mt-2.5">${lista.slice(0, 8).map((n, i) => filaProtagonista(n, i, stat))}</ul>
+    <ul class="mt-2.5">${lista.slice(0, limite).map((n, i) => filaProtagonista(n, i, stat))}</ul>
   </div>
 `;
 
@@ -1057,6 +1077,15 @@ const panelEstadisticas = () => {
   const topeLocalidad = h.localidades_top[0]?.nadadores || 1;
   const topeDist = Math.max(...Object.values(h.distribucion_participaciones));
   const DIST_LABEL = { '1': '1 vez', '2': '2 veces', '3-5': '3 a 5 veces', '6-10': '6 a 10 veces', '11+': '11 veces o más' };
+
+  // Ranking de clubes/equipos: dataset aparte (columna "club" de la
+  // inscripción), no todas las fechas la publican. Se arma con la misma
+  // forma que usa filaProtagonista para reusar panelRanking2 tal cual.
+  const equipos = h.mas_participaciones_equipos.top10.map((e) => ({
+    nombre: e.nombre,
+    participaciones: e.participaciones,
+    detalle: `${e.nadadores_unicos} nadadores · ${e.sedes} sedes · ${e.ediciones} ediciones`,
+  }));
 
   // Campeones por edición, filtrados por la pestaña de sede elegida.
   const campeonesFiltrados = h.campeones_por_edicion.filter((c) => s.estadSede === 'TODAS' || c.sede === s.estadSede);
@@ -1071,7 +1100,7 @@ const panelEstadisticas = () => {
           Nueve años de aguas abiertas, y contando
         </h2>
         <p class="mt-3 max-w-[72ch] text-[14px] leading-relaxed text-owa-slate">
-          Todo lo que dicen los resultados oficiales de las ocho sedes del circuito desde la primera Vuelta a la
+          Todo lo que dicen los resultados oficiales de las diez sedes del circuito desde la primera Vuelta a la
           Huemul de 2018 hasta la temporada 2026, todavía en curso: quiénes ganaron más, quiénes nunca faltaron y
           cuánta gente ya se metió al agua con OWA.
         </p>
@@ -1090,7 +1119,7 @@ const panelEstadisticas = () => {
         ${eyebrow('Temporada a temporada')}
         <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Cada año, más gente en el agua</h2>
         <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
-          Participaciones por año calendario (1 de enero a 31 de diciembre) en las ocho sedes. 2026 está en curso:
+          Participaciones por año calendario (1 de enero a 31 de diciembre) en las diez sedes. 2026 está en curso:
           incluye sólo las fechas ya disputadas (VHU, PNR, PAD, Colón y el nuevo Cruce del Nahuel).
         </p>
         <ul class="mt-5 grid gap-2.5 rounded-owa-lg border border-owa-line bg-white p-5 shadow-[var(--shadow-card)] sm:p-6">
@@ -1137,10 +1166,30 @@ const panelEstadisticas = () => {
         </div>
       </section>
 
-      <!-- Las ocho sedes -->
+      <!-- Los clubes que más suman -->
+      <section>
+        ${eyebrow('Por equipos')}
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Los clubes que más suman</h2>
+        <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
+          Participaciones bajo el mismo club o equipo declarado al inscribirse. Dataset aparte: sólo cubre
+          ${h.mas_participaciones_equipos.ediciones_con_dato_equipo} de las ${h.totales.ediciones} ediciones, las que
+          publican ese dato en sus planillas de resultados.
+        </p>
+        <div class="mt-5">
+          ${panelRanking2(
+            'Más participaciones por equipo',
+            `${h.mas_participaciones_equipos.equipos_distintos_identificados} equipos distintos identificados.`,
+            equipos,
+            'participaciones',
+            10
+          )}
+        </div>
+      </section>
+
+      <!-- Las diez sedes -->
       <section>
         ${eyebrow('Historia sede por sede')}
-        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Las ocho sedes</h2>
+        <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Las diez sedes</h2>
         <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">
           Historia de cada fecha del circuito: ediciones, gente y los mejores tiempos registrados en su prueba
           principal. Colón suma las fechas CLN y Liebig-Colón (LBC); el Cruce del Nahuel debutó en 2026.
@@ -1150,7 +1199,7 @@ const panelEstadisticas = () => {
 
       <!-- Campeones edición por edición -->
       <section>
-        ${eyebrow('Las 40 ediciones, una por una')}
+        ${eyebrow('Las 47 ediciones, una por una')}
         <h2 class="mt-2.5 text-[clamp(1.25rem,2.4vw,1.5rem)] leading-none text-owa-navy">Campeones edición por edición</h2>
         <p class="mt-2 max-w-[70ch] text-[13px] text-owa-slate">Ganadores generales de la prueba principal de cada fecha.</p>
         <!-- Mismo filtro por sede que traía el dashboard original: "Todas" +
@@ -1218,10 +1267,10 @@ const panelEstadisticas = () => {
 
       <!-- Nota de fuente, igual a la que traía el dashboard original -->
       <p class="max-w-[85ch] border-t border-owa-line pt-6 text-[13px] leading-relaxed text-owa-slate">
-        Fuente: resultados oficiales publicados en cronometrajeinstantaneo.com para las 40 ediciones del circuito
-        (VHU 2018–2026, VOB 2021–2025, SPD 2021–2025, PNR 2021–2026, PAD 2019–2026, CLN/LBC 2024–2026, ISC 2025, NHL
-        2026). Cada nadador se identifica por su DNI; cuando el resultado no lo incluye, se lo asocia por nombre
-        completo.
+        Fuente: resultados oficiales publicados en cronometrajeinstantaneo.com para las 47 ediciones del circuito
+        (VHU 2018–2026, VOB 2021–2025, SPD 2021–2025, PNR 2021–2026, PAD 2019–2026, CLN/LBC 2024–2026, ISC 2025, LDR
+        2019–2023, CDM 2022–2025, NHL 2026). Cada nadador se identifica por su DNI; cuando el resultado no lo
+        incluye, se lo asocia por nombre completo.
       </p>
     </div>
   `;
