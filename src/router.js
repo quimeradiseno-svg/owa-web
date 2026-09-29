@@ -46,7 +46,20 @@ async function pintar(path, { scroll = true } = {}) {
   const hallada = resolver(pathname) || resolver('/404');
   if (!hallada) return;
 
-  const vista = await hallada.cargar();
+  let vista;
+  try {
+    vista = await hallada.cargar();
+  } catch {
+    // El chunk de esa vista no está más donde el bundle ya cargado lo busca:
+    // pasó un deploy nuevo mientras esta pestaña seguía abierta con el viejo.
+    // Sin este catch, `pintar` rechazaba sin que nadie lo atajara (`ir()` no
+    // espera esta promesa) — la URL ya había cambiado por el pushState de
+    // más abajo, pero el contenido se quedaba clavado en la página anterior:
+    // el link "no hacía nada" y sólo un F5 (que carga el HTML nuevo) lo
+    // arreglaba. Una navegación real hace ese mismo F5 sola.
+    location.href = path;
+    return;
+  }
   const ctx = { params: hallada.params, path, query: new URLSearchParams(location.search) };
 
   const aplicar = () => {
@@ -67,14 +80,36 @@ async function pintar(path, { scroll = true } = {}) {
   // La primera pintura no cruza dos estados: no hay nada de dónde transicionar,
   // y arrancarla mientras el documento todavía carga tira InvalidStateError.
   if (!primerPintado && document.startViewTransition && !reduceMotion()) {
-    const vt = document.startViewTransition(aplicar);
-    // Navegar de nuevo antes de que termine aborta la transición: es esperable,
-    // no un error que deba burbujear como unhandled rejection.
-    // `ready` también rechaza —y es la que salta con la pestaña en segundo
-    // plano, donde startViewTransition aborta con InvalidStateError.
-    vt.ready.catch(() => {});
-    vt.finished.catch(() => {});
-    vt.updateCallbackDone.catch(() => {});
+    // Algunos navegadores (in-app de WhatsApp/Instagram, una pestaña que
+    // perdió el foco) arrancan la transición pero nunca llegan a invocar este
+    // callback: la página se queda pegada en la ruta anterior, sin ningún
+    // error — tocar el link "no hacía nada" y sólo un F5 lo arreglaba. Este
+    // aplicarUnaVez()+timeout es la red: si la transición no pintó sola en
+    // 300ms, se fuerza igual. Si la transición sí funciona, el timeout se
+    // cancela y no cambia nada de la animación.
+    let aplicado = false;
+    const aplicarUnaVez = () => {
+      if (aplicado) return;
+      aplicado = true;
+      aplicar();
+    };
+    const redDeSeguridad = setTimeout(aplicarUnaVez, 300);
+    try {
+      const vt = document.startViewTransition(() => {
+        clearTimeout(redDeSeguridad);
+        aplicarUnaVez();
+      });
+      // Navegar de nuevo antes de que termine aborta la transición: es esperable,
+      // no un error que deba burbujear como unhandled rejection.
+      // `ready` también rechaza —y es la que salta con la pestaña en segundo
+      // plano, donde startViewTransition aborta con InvalidStateError.
+      vt.ready.catch(() => {});
+      vt.finished.catch(() => {});
+      vt.updateCallbackDone.catch(() => {});
+    } catch {
+      clearTimeout(redDeSeguridad);
+      aplicarUnaVez();
+    }
   } else aplicar();
   primerPintado = false;
 }
