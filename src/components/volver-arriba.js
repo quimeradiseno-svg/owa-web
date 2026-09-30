@@ -10,7 +10,7 @@ export const volverArriba = () => html`
     aria-label="Volver arriba"
     class="volver-arriba u-press fixed right-5 bottom-5 z-40 grid size-12 place-items-center rounded-full bg-owa-navy text-white shadow-[var(--shadow-elevated)] transition-colors duration-200 ease-out hover:bg-owa-cyan hover:text-owa-deep sm:right-7 sm:bottom-7"
   >
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true">
       <path d="M12 19V5" />
       <path d="M5 12l7-7 7 7" />
     </svg>
