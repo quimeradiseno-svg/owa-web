@@ -44,14 +44,31 @@ export const EVENTOS = [
         tagline: 'Un clásico del<br>Circuito OWA.',
       },
     ],
-    // Blanca: es la remera default hasta que cada carrera tenga su propio
-    // color asignado (ver el comentario de Luján sobre sumar el video).
-    remera: {
-      frente: 'remera-blanca',
-      alt: 'Remera oficial blanca de Open Water San Pedro, con el logo de OWA',
-      titulo: 'La remera de San Pedro',
-      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
-    },
+    // Una remera por jornada (cada una tiene su propio diseño): la ficha las
+    // muestra con un selector VOB / SPD. `final: true` = diseño cerrado, sin
+    // esmerilar ni "Próximamente" encima (ver `kitMedia` en evento.js).
+    remeras: [
+      {
+        tab: 'VOB · Grand Prix',
+        tabCorto: 'VOB',
+        frente: 'vob-remera-poster',
+        final: true,
+        video: '/video/vob-remera.mp4',
+        alt: 'Remera oficial azul marino de la Vuelta de Obligado, con el logo de OWA al frente y el sol de mayo con "Vuelta de Obligado 18 km" en el dorso',
+        titulo: 'La remera de la Vuelta de Obligado',
+        bajada: 'Remera oficial del Grand Prix, incluida en tu kit de inscripción.',
+      },
+      {
+        tab: 'SPD · Circuito OWA',
+        tabCorto: 'SPD',
+        frente: 'spd-remera-poster',
+        final: true,
+        video: '/video/spd-remera.mp4',
+        alt: 'Remera oficial blanca de San Pedro, con el logo de OWA al frente y el diseño del buque con las distancias 7K, 4K y 1.5K en el dorso',
+        titulo: 'La remera de San Pedro',
+        bajada: 'Remera oficial del Circuito OWA, incluida en tu kit de inscripción.',
+      },
+    ],
   },
   {
     slug: 'lujan',
@@ -115,7 +132,8 @@ export const EVENTOS = [
     anio: '2027',
     fechaLarga: 'Sábado 16 de enero de 2027',
     nota: '',
-    estado: 'proximamente',
+    estado: 'abierta',
+    inscripcion: 'https://cronometrajeinstantaneo.com/inscripciones/open-water-pinamar-2027',
     img: 'ev-pinamar',
     // Galería de la ficha, sobre fondo blanco antes del banner de
     // beneficios. Nueve fotos reales de ediciones anteriores en la playa de
@@ -153,7 +171,9 @@ export const EVENTOS = [
     anio: '2027',
     fechaLarga: '16, 17 o 18 de febrero de 2027',
     nota: 'Fecha a confirmar según condiciones',
-    estado: 'proximamente',
+    estado: 'abierta',
+    inscripcion: 'https://cronometrajeinstantaneo.com/inscripciones/cruce-del-nahuel-2027',
+    ctaInscripcion: 'Inscribite al Cruce',
     img: 'ev-nahuel',
     // "Cruce del Nahuel" entra entero en una línea; sin esto el corte por
     // defecto (última palabra sola) lo partía en "Cruce del" / "Nahuel".
@@ -215,7 +235,9 @@ export const EVENTOS = [
     anio: '2027',
     fechaLarga: 'Sábado 20 de febrero de 2027',
     nota: '',
-    estado: 'proximamente',
+    estado: 'abierta',
+    inscripcion: 'https://cronometrajeinstantaneo.com/inscripciones/vuelta-a-la-huemul-10-anos',
+    ctaInscripcion: 'Inscribite a la Huemul',
     img: 'ev-huemul',
     // Décima edición de la travesía. `src` es el original (navy sobre
     // blanco) para la mini-tarjeta del calendario/home, que ya tiene buen

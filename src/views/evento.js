@@ -627,6 +627,59 @@ const kitMedia = (remera) => html`
   </div>
 `;
 
+// Una remera por evento, o varias cuando cada jornada tiene la suya (San Pedro:
+// VOB y SPD, `remeras` en eventos.js).
+const remerasDe = (e) => e.remeras || (e.remera ? [e.remera] : []);
+
+// Columna de la remera en la tarjeta del kit. Con una sola es la foto/video de
+// siempre; con varias suma un selector arriba y deja las demás ocultas: todas
+// están en el HTML (cambiar de una a otra no repinta la ficha), el JS sólo
+// alterna `hidden` y `aria-selected` (ver montarRemeras).
+const kitRemeras = (remeras) =>
+  remeras.length === 1
+    ? kitMedia(remeras[0])
+    : html`
+        <div class="min-w-0">
+          <!-- En mobile dos mitades iguales con la sigla sola (VOB / SPD): con
+               el nombre del torneo no entran en una fila dentro de la tarjeta. -->
+          <div class="mb-3.5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap" role="tablist" aria-label="Remera de cada jornada">
+            ${remeras.map(
+              (r, i) => html`<button
+                type="button"
+                role="tab"
+                data-remera-tab="${i}"
+                aria-selected="${i === 0 ? 'true' : 'false'}"
+                class="u-press cursor-pointer rounded-full border border-owa-line bg-white px-4.5 py-2.5 text-center font-display text-[12px] font-black tracking-[0.08em] text-owa-slate uppercase transition-colors duration-200 hover:border-owa-navy hover:text-owa-navy aria-selected:border-owa-navy aria-selected:bg-owa-navy aria-selected:text-white"
+              >
+                <span class="sm:hidden">${r.tabCorto || r.tab}</span><span class="hidden sm:inline">${r.tab}</span>
+              </button>`
+            )}
+          </div>
+          ${remeras.map((r, i) => html`<div data-remera-panel="${i}" ${raw(i ? 'hidden' : '')}>${kitMedia(r)}</div>`)}
+        </div>
+      `;
+
+// Título y bajada de la remera, en el módulo celeste de la columna de datos.
+// Con varias remeras hay un bloque por cada una y se muestra el de la elegida.
+const kitRemeraInfo = (remeras) =>
+  remeras.map(
+    (r, i) => html`
+      <div ${raw(`data-remera-info="${i}"`)} ${raw(i ? 'hidden' : '')}>
+        <div class="mt-6 flex max-w-[600px] items-start gap-4 rounded-owa-md bg-owa-sky/12 p-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white text-owa-blue">
+            ${icono('remera', 'size-5.5')}
+          </span>
+          <div class="min-w-0">
+            <p class="font-display text-[13px] font-black tracking-[0.06em] text-owa-navy uppercase">
+              ${r.titulo || 'La remera del evento'}
+            </p>
+            <p class="mt-1.5 text-[14px] leading-relaxed text-owa-slate">${r.bajada}</p>
+          </div>
+        </div>
+      </div>
+    `
+  );
+
 // Postulación a un Challenge. Por default va a WhatsApp con el mensaje ya
 // redactado (mismo número que el pie del sitio, ver footer.js); un evento con
 // `postulacionEmail` (hoy sólo RDP) va por mail a esa casilla en cambio.
@@ -1125,8 +1178,12 @@ export function render(ctx) {
                   </div>`;
                 }
                 const ds = (f?.distancias || []).filter((d) => !esArena(d) && !esKids(d) && d.torneo);
+                // Los especiales no tienen tarjetas de jornada (ahí vive el
+                // botón de inscripción de las puntuables), así que cuando la
+                // inscripción está abierta el botón va acá, en el hero.
+                const abierta = e.estado === 'abierta' && raceState === 'proxima' && e.inscripcion;
                 return html`
-                  <div class="mt-5 flex flex-wrap gap-3">
+                  <div class="mt-5 flex flex-wrap items-center gap-3">
                     <span class="${PILL}">
                       <span data-nums class="text-[15px] text-owa-cyan"
                         >${e.fechaCorta ? `${e.fechaCorta} ${e.anio.slice(-2)}` : e.anio}</span
@@ -1137,6 +1194,9 @@ export function render(ctx) {
                             >`
                         : ''}
                     </span>
+                    ${abierta
+                      ? btnAccent(e.ctaInscripcion || `Inscribite a ${e.nombre.replace(/^Open Water /, '')}`, e.inscripcion, '', 'target="_blank" rel="noopener noreferrer"')
+                      : ''}
                   </div>
                 `;
               }
@@ -2110,14 +2170,14 @@ export function render(ctx) {
          cajas lado a lado. -->
     ${esChallenge
       ? ''
-      : e.remera
+      : remerasDe(e).length
         ? html`
       <section class="u-shell pt-12 pb-8" aria-labelledby="h-kit">
         <!-- 42/58: la foto no necesita más de un 42% del ancho de la tarjeta,
              y a la inversa la columna de datos quedaba corta y el contenido
              se sentía disperso. -->
         <div class="reveal grid gap-8 rounded-owa-lg border border-owa-line bg-white p-7 sm:p-8 lg:grid-cols-[42fr_58fr]" data-visible>
-          ${kitMedia(e.remera)}
+          ${kitRemeras(remerasDe(e))}
           <!-- min-w-0: sin esto, los ítems de grid no se achican por debajo de
                su contenido "natural" — acá, el nombre a ancho completo más el
                badge sin achicarse empujaban esta columna más ancha que la
@@ -2129,17 +2189,7 @@ export function render(ctx) {
             <!-- La remera es la protagonista de la foto/video de al lado, así
                  que se separa del listado con su propio módulo en vez de
                  seguir como continuación de la tabla. -->
-            <div class="mt-6 flex max-w-[600px] items-start gap-4 rounded-owa-md bg-owa-sky/12 p-5">
-              <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white text-owa-blue">
-                ${icono('remera', 'size-5.5')}
-              </span>
-              <div class="min-w-0">
-                <p class="font-display text-[13px] font-black tracking-[0.06em] text-owa-navy uppercase">
-                  ${e.remera.titulo || 'La remera del evento'}
-                </p>
-                <p class="mt-1.5 text-[14px] leading-relaxed text-owa-slate">${e.remera.bajada}</p>
-              </div>
-            </div>
+            ${kitRemeraInfo(remerasDe(e))}
           </div>
         </div>
       </section>
@@ -2238,20 +2288,49 @@ export function render(ctx) {
 // Activa el <video> de la tarjeta del kit, salvo reduced-motion — mismo
 // criterio que `montarFondoVideo` en lib/img.js, pero sin el velo de opacidad
 // (acá el video va a la vista, no de fondo).
-function montarVideoKit(root) {
-  const video = root.querySelector('[data-kit-video]');
-  if (!video || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+//
+// Con varias remeras (San Pedro) el video puede estar en una que no es la
+// visible: sólo se carga y reproduce el de la remera a la vista, y se pausa
+// al elegir otra.
+const reproducirVideoKit = (video) => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const source = video.querySelector('source[data-src]');
-  source.src = source.dataset.src;
-  video.addEventListener('canplaythrough', () => video.setAttribute('data-ready', ''), { once: true });
-  video.load();
+  if (!source.src) {
+    source.src = source.dataset.src;
+    video.addEventListener('canplaythrough', () => video.setAttribute('data-ready', ''), { once: true });
+    video.load();
+  }
   video.play().catch(() => {});
+};
+
+function montarVideoKit(root) {
+  root.querySelectorAll('[data-kit-video]').forEach((video) => {
+    if (!video.closest('[hidden]')) reproducirVideoKit(video);
+  });
+}
+
+// Selector de remera (VOB / SPD) de la tarjeta del kit.
+function montarRemeras(root) {
+  root.addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-remera-tab]');
+    if (!tab) return;
+    const i = tab.dataset.remeraTab;
+    root.querySelectorAll('[data-remera-tab]').forEach((b) => b.setAttribute('aria-selected', String(b === tab)));
+    root.querySelectorAll('[data-remera-panel], [data-remera-info]').forEach((el) => {
+      el.hidden = (el.dataset.remeraPanel ?? el.dataset.remeraInfo) !== i;
+    });
+    root.querySelectorAll('[data-kit-video]').forEach((video) => {
+      if (video.closest('[hidden]')) video.pause();
+      else reproducirVideoKit(video);
+    });
+  });
 }
 
 export function mount(root, ctx) {
   root.querySelectorAll('[data-stagger]').forEach((g) => stagger(g));
   montarCarruseles(root);
   montarVideoKit(root);
+  montarRemeras(root);
 
 
   const repintar = () => {

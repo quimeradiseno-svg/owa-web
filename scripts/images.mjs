@@ -184,6 +184,12 @@ const PHOTOS = {
   'remera-cln': 'Fotos/Remeras_carreras/remera_azul_francia_frente_CLN.png',
   'remera-pnr': 'Fotos/Remeras_carreras/remera_azul_marino_frente_PNR.png',
   'remera-blanca': 'Fotos/Remeras_carreras/remera_blanca_frente_SPD.png',
+  // Vuelta de Obligado y San Pedro: cuadro del propio video 360°
+  // (public/video/vob-remera.mp4 y spd-remera.mp4), no la foto de frente: la
+  // remera del video puede diferir de la foto (logo, posición) y al empezar a
+  // reproducir el cambio de una a otra se vería como un salto.
+  'vob-remera-poster': 'Fotos/Remeras_carreras/vob_remera_poster.png',
+  'spd-remera-poster': 'Fotos/Remeras_carreras/spd_remera_poster.png',
   // mpa3.5.jpg y mpa1.5.jpg: nombres de archivo tal como los pasó OWA — el
   // "3.5" del segundo es un resabio de una versión anterior del mapa, la
   // credencial que trae encima dice 3 KM (así lo confirmó OWA por escrito).
@@ -300,7 +306,14 @@ for (const [slug, valor] of entradas) {
   await base().resize({ width: Math.min(1250, sw) }).jpeg({ quality: 78, mozjpeg: true }).toFile(`${OUT}/${slug}.jpg`);
 
   const blur = await base().resize({ width: 20 }).blur(1).webp({ quality: 30 }).toBuffer();
-  lqip[slug] = { d: `data:image/webp;base64,${blur.toString('base64')}`, r: +(sw / sh).toFixed(4) };
+  // `w`: los anchos que de verdad existen en disco (se salta lo mayor al
+  // original). foto() arma el srcset con esto: si pidiera un ancho que no se
+  // generó, el navegador recibía un 404 y la foto salía rota.
+  lqip[slug] = {
+    d: `data:image/webp;base64,${blur.toString('base64')}`,
+    r: +(sw / sh).toFixed(4),
+    w: WIDTHS.filter((w) => w <= sw),
+  };
 
   console.log(`${slug.padEnd(22)} ${sw}x${sh}${recorte ? ' (recortada)' : ''}  ${WIDTHS.filter((w) => w <= sw).join('/')}`);
 }

@@ -463,7 +463,10 @@ function tarjeta(e) {
   // "Todas" la fila combina los dos torneos y no hay un único link válido.
   const torneo = e.jornadaActiva?.torneo;
   const ficha = torneo && !travel && !chal ? fichaDe(e.slug) : null;
-  const inscripcionUrl = ficha?.inscripcion?.[torneo];
+  // Los especiales (Pinamar) no tienen un link por torneo: llevan uno solo,
+  // directo en el evento, y sólo cuando la inscripción ya está abierta.
+  const inscripcionEspecial = e.tipo === 'especial' && e.estado === 'abierta' ? e.inscripcion : null;
+  const inscripcionUrl = ficha?.inscripcion?.[torneo] || inscripcionEspecial;
 
   // Botón sólo cuando hay una acción primaria de verdad. El resto de las
   // tarjetas se abre haciendo click en la tarjeta, sin repetir un "ver
