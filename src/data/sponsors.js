@@ -36,6 +36,17 @@ export const MARCAS = {
     alto: 'h-5',
     href: 'https://nexalba.com/',
   },
+  // Entrenamiento de aguas abiertas en Cariló. Su logo va sólo en la tarjeta
+  // de beneficios de San Pedro, Luján y Pinamar (ver beneficios.js): a pedido
+  // de OWA NO está en el zócalo "Con el apoyo de", por eso no figura en
+  // SPONSORS. Sin web propia a mano: el link es su Instagram.
+  carilo: {
+    nombre: 'Cariló Swimmers',
+    logoClaro: '/brand/carilo-swimmers-logo.svg',
+    logoOscuro: '/brand/carilo-swimmers-logo.svg',
+    alto: 'h-14',
+    href: 'https://www.instagram.com/carilo.swimmers/',
+  },
 };
 
 export const SPONSORS = {

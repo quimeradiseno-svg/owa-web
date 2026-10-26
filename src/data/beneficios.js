@@ -54,10 +54,54 @@ const endorphinKinesio = () => ({
   href: 'https://api.whatsapp.com/send/?phone=5491141658893&text=Hola+Gabriel+%EF%BF%BD+Llegu%C3%A9+desde+tu+perfil+y+me+gustar%C3%ADa+sacar+un+turno.+%C2%BFPodr%C3%ADas+brindarme+informaci%C3%B3n+y+disponibilidad%3F&type=phone_number&app_absent=0',
 });
 
+/** 2x1 en entrenamientos de mar de Cariló Swimmers. Mismo código en todas las
+    carreras; cambia el nombre de la fecha en el título y, sólo en Pinamar, la
+    mención a la propia largada ("en Pinamar"), que en las otras no aplica.
+    Tarjeta "pack": además del código trae los pasos, el contacto y las apps
+    (ver tarjetaPack en views/beneficios.js). */
+const carilo2x1 = (fecha, enLaLargada = false) => ({
+  id: 'carilo-2x1',
+  etiqueta: 'Beneficio para inscriptos',
+  marca: MARCAS.carilo,
+  destacado: '2x1',
+  unidad: 'en Cariló Swimmers',
+  resumen: '2x1 en entrenamientos de mar con Cariló Swimmers',
+  titulo: `Entrená en el mar antes de tu carrera en OWA ${fecha}`,
+  detalle: `Pagás 1 sesión y entrenás 2. Pasar la rompiente, orientarte sin andarivel y nadar con olas y corriente: en Cariló Swimmers te preparan para llegar a la largada${enLaLargada ? ' en Pinamar' : ''} sabiendo lo que es el mar abierto.`,
+  nota: 'Todas las sesiones cuentan con guardavidas y tablas de rescate.',
+  codigo: 'OWASWIMMERS',
+  pasos: [
+    'Descargá la app Cariló Swimmers.',
+    'Elegí el Pack de 1 sesión.',
+    'Enviá el código OWASWIMMERS por WhatsApp a Cariló Swimmers y te asignan un segundo entrenamiento.',
+  ],
+  // El código no se ingresa en la app: se manda por WhatsApp (mismo número que
+  // el teléfono de contacto) y ellos suman la segunda sesión.
+  whatsapp: {
+    etiqueta: 'Enviar código por WhatsApp',
+    href: `https://wa.me/5491144220879?text=${encodeURIComponent('Hola! Vengo de OWA. Mi código es OWASWIMMERS, quiero mi segundo entrenamiento 2x1.')}`,
+  },
+  apps: [
+    { etiqueta: 'App iOS', href: 'https://apps.apple.com/ar/app/caril%C3%B3-swimmers/id6738741458' },
+    {
+      etiqueta: 'App Android',
+      href: 'https://play.google.com/store/apps/details?id=com.midasconsultores.cariloswimmers&pcampaignid=web_share',
+    },
+  ],
+  contacto: {
+    direccion: 'Arce y Playa, Cariló',
+    telefono: '+54 9 11 4422-0879',
+    telefonoHref: 'tel:+5491144220879',
+    instagram: '@carilo.swimmers',
+  },
+  href: MARCAS.carilo.href,
+});
+
 export const BENEFICIOS = {
-  lujan: [nexalba20('OWALUJAN20'), endorphinKinesio()],
+  lujan: [nexalba20('OWALUJAN20'), endorphinKinesio(), carilo2x1('Luján')],
   colon: [nexalba20(), endorphinKinesio()],
-  'san-pedro': [nexalba20('OWASANPEDRO20'), endorphinKinesio()],
+  'san-pedro': [nexalba20('OWASANPEDRO20'), endorphinKinesio(), carilo2x1('San Pedro')],
+  pinamar: [carilo2x1('Pinamar', true)],
   // Se van sumando el resto de las carreras a medida que OWA cierre cada
   // acuerdo — algunas van a compartir el de Nexalba, otras van a traer el
   // suyo propio.

@@ -24,7 +24,9 @@ export const descripcion = (ctx) => {
   // Se arma con los beneficios reales cargados, no con una plantilla. Los de
   // servicio (Endorphin, sin destacado/unidad) van con su título en vez de
   // un número.
-  const lista = bs.map((b) => (b.lista ? `${b.titulo} de ${b.marca.nombre}` : `${b.destacado} ${b.unidad} en ${b.marca.nombre}`)).join('. ');
+  const lista = bs
+    .map((b) => b.resumen || (b.lista ? `${b.titulo} de ${b.marca.nombre}` : `${b.destacado} ${b.unidad} en ${b.marca.nombre}`))
+    .join('. ');
   return `Beneficios para quienes se inscriben a ${e.nombre}: ${lista}.`;
 };
 
@@ -194,6 +196,100 @@ const tarjetaServicio = (b) => {
   `;
 };
 
+/** Beneficio con código y todo lo que hace falta para usarlo (hoy, Cariló
+    Swimmers): a diferencia de Nexalba, no alcanza con copiar el código y
+    pegarlo en una web — hay que bajar una app, elegir un pack y después
+    ir al lugar. Por eso ocupa el ancho completo: a la izquierda el beneficio
+    y el código, a la derecha los pasos, las apps y el contacto. Los pasos van
+    numerados porque sí son una secuencia. */
+const tarjetaPack = (b) => html`
+  <article class="reveal rounded-owa-lg border border-owa-line bg-white p-7 shadow-[var(--shadow-card)] sm:p-9 lg:col-span-2">
+    <div class="grid gap-9 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14">
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-start justify-between gap-5">
+          <p class="text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">${b.etiqueta}</p>
+          <a
+            href="${b.marca.href}"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            class="u-press flex shrink-0 items-center"
+            aria-label="${b.marca.nombre} (se abre en una pestaña nueva)"
+          >
+            <img src="${b.marca.logoClaro}" alt="${b.marca.nombre}" loading="lazy" decoding="async" class="h-14 w-auto object-contain" />
+          </a>
+        </div>
+
+        <p class="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span data-nums class="font-display text-[clamp(3rem,8vw,4.5rem)] leading-[0.85] font-black text-owa-blue">${b.destacado}</span>
+          <span class="font-display text-[clamp(1rem,2.4vw,1.375rem)] leading-none font-black tracking-[0.04em] text-owa-navy uppercase">${b.unidad}</span>
+        </p>
+
+        <h2 class="mt-4 font-display text-[clamp(1.125rem,2.2vw,1.5rem)] leading-tight font-black text-owa-navy">${b.titulo}</h2>
+        <p class="mt-2 max-w-[60ch] text-[15px] leading-relaxed text-owa-slate">${b.detalle}</p>
+        ${b.nota ? html`<p class="mt-3 max-w-[60ch] text-[14px] leading-relaxed font-bold text-owa-navy">${b.nota}</p>` : ''}
+
+        <div class="mt-7">${bloqueCodigo(b)}</div>
+      </div>
+
+      <div class="min-w-0 rounded-owa-md bg-owa-mist/60 p-6 sm:p-7">
+        <h3 class="text-[11px] font-bold tracking-[0.16em] text-owa-blue uppercase">Cómo usarlo</h3>
+        <ol class="mt-4 grid gap-3.5">
+          ${b.pasos.map(
+            (paso, i) => html`
+              <li class="flex items-start gap-3.5 text-[15px] leading-snug text-owa-navy">
+                <span
+                  data-nums
+                  class="grid size-6.5 shrink-0 place-items-center rounded-full bg-owa-navy font-display text-[12px] font-black text-white"
+                  aria-hidden="true"
+                  >${i + 1}</span
+                >
+                <span class="pt-0.5">${paso}</span>
+              </li>
+            `
+          )}
+        </ol>
+
+        <div class="mt-5 flex flex-wrap gap-2.5">
+          <a
+            href="${b.whatsapp.href}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="u-press u-nudge inline-flex basis-full items-center justify-center gap-2 rounded-full bg-owa-navy px-5 py-3 font-display text-[12px] font-black tracking-[0.06em] text-white uppercase transition-colors duration-200 hover:bg-owa-blue"
+            >${b.whatsapp.etiqueta} <span class="u-nudge-arrow" aria-hidden="true">↗</span></a
+          >
+          ${b.apps.map(
+            (a) => html`<a
+              href="${a.href}"
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              class="u-press rounded-full border-2 border-owa-navy px-5 py-2.5 font-display text-[12px] font-black tracking-[0.06em] text-owa-navy uppercase transition-colors duration-200 hover:bg-owa-navy hover:text-white"
+              >${a.etiqueta} <span aria-hidden="true">↗</span></a
+            >`
+          )}
+        </div>
+
+        <ul class="mt-6 grid gap-2.5 border-t border-owa-line pt-5 text-[14px] text-owa-slate">
+          <li class="flex items-start gap-2.5">
+            <span class="mt-0.5 shrink-0 text-owa-cyan">${icono('pin', 'size-4.5')}</span>${b.contacto.direccion}
+          </li>
+          <li class="pl-7">
+            <a href="${b.contacto.telefonoHref}" class="font-bold text-owa-navy hover:underline">${b.contacto.telefono}</a>
+          </li>
+          <li class="pl-7">
+            <a
+              href="${b.marca.href}"
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              class="font-bold text-owa-navy hover:underline"
+              >${b.contacto.instagram}</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </article>
+`;
+
 /* ------------------------------------------------------------------ vista */
 
 export function render(ctx) {
@@ -241,7 +337,7 @@ export function render(ctx) {
     <section class="u-shell py-16" aria-labelledby="h-beneficios">
       <h2 id="h-beneficios" class="sr-only">Beneficios de ${e.nombre}</h2>
       ${bs.length
-        ? html`<div class="grid gap-4.5 lg:grid-cols-2" data-stagger>${bs.map((b) => (b.lista ? tarjetaServicio(b) : tarjeta(b)))}</div>`
+        ? html`<div class="grid gap-4.5 lg:grid-cols-2" data-stagger>${bs.map((b) => (b.pasos ? tarjetaPack(b) : b.lista ? tarjetaServicio(b) : tarjeta(b)))}</div>`
         : html`
             <p class="rounded-owa-lg border border-dashed border-owa-line px-6 py-14 text-center text-owa-slate">
               Cuando OWA cierre un beneficio para esta carrera, aparece acá.
