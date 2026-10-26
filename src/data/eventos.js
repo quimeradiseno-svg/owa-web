@@ -1,7 +1,13 @@
 // Calendario real de la temporada 2026/27, portado del prototipo aprobado.
 // `img` referencia un slug de public/img (ver scripts/images.mjs).
+//
+// Un evento con `oculto: true` está armado pero NO se publica: no figura en el
+// calendario, la home, las páginas madre, el sitemap ni el prerender, y su
+// ficha lleva noindex. Sólo se llega a mano por su URL (`npm run dev`, en
+// local). Para activarlo se borra la línea `oculto` (ver Open Water Pilar, que
+// queda lista por si San Pedro no se corre por la crecida de los ríos).
 
-export const EVENTOS = [
+const EVENTOS_TODOS = [
   {
     slug: 'san-pedro',
     sponsor: 'arena',
@@ -118,6 +124,74 @@ export const EVENTOS = [
       titulo: 'La remera de Luján',
       bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
     },
+  },
+  {
+    // Open Water Pilar: reemplazo de San Pedro (14 de noviembre) por si la
+    // crecida de los ríos impide correrlo. Armada sobre la base de Luján y
+    // OCULTA hasta que OWA lo decida — para publicarla: borrar `oculto`, ocultar
+    // 'san-pedro' (mismo `oculto: true`), pasar `estado` a 'abierta' y cargar el
+    // link de inscripción en fichas.js (todavía no lo pasaron).
+    slug: 'pilar',
+    oculto: true,
+    sponsor: 'arena',
+    distancias: { gp: 8, circuito: [2, 4] },
+    sigla: 'PIL',
+    nombre: 'Open Water Pilar',
+    corto: 'PILAR',
+    sede: 'Pilar · Buenos Aires',
+    sedeCorta: 'PILAR',
+    tipo: 'core',
+    fechaCorta: '14 NOV',
+    anio: '2026',
+    fechaLarga: 'Sábado 14 de noviembre de 2026',
+    nota: '',
+    estado: 'proximamente',
+    // Sin foto propia de Pilar todavía: nadadores en primer plano de otras
+    // fechas (cambiar por las de la sede cuando haya).
+    img: 'modalidad-circuito',
+    jornadas: [
+      {
+        torneo: 'GRAND PRIX',
+        sigla: 'PIL',
+        img: 'gp-contraluz',
+        nombreLargo: 'Pilar',
+        fecha: '14/11/2026',
+        dia: 'Jornada Grand Prix',
+        desc: 'Élite y máster competitivo. Puntúa para el ranking Grand Prix.',
+        tagline: 'Ocho kilómetros<br>de aguas abiertas',
+      },
+      {
+        torneo: 'CIRCUITO OWA',
+        sigla: 'PIL',
+        img: 'lbc-crawl',
+        nombreLargo: 'Pilar',
+        fecha: '14/11/2026',
+        dia: 'Jornada Circuito · mismo día',
+        desc: 'Distancias accesibles y clasificación por categoría de edad.',
+        tagline: 'Grand Prix y Circuito<br>en la misma jornada',
+      },
+    ],
+    // Remera sin diseño cerrado: la foto genérica va esmerilada con el aviso
+    // "Próximamente" (ver kitMedia en evento.js) hasta que OWA mande la suya.
+    remera: {
+      frente: 'remera-blanca',
+      alt: 'Remera oficial de Open Water Pilar, con el logo de OWA',
+      titulo: 'La remera de Pilar',
+      bajada: 'Remera oficial de la carrera, incluida en tu kit de inscripción.',
+    },
+    // Fotos de nadadores en primer plano de otras carreras de OWA, no de Pilar.
+    galeriaEyebrow: 'OWA en el agua',
+    galeria: [
+      { slug: 'lbc-crawl', grande: true, alt: 'Nadador en plena brazada junto a una boya naranja, con el cartel de OWA al fondo' },
+      { slug: 'gp-contraluz', alt: 'Nadador a contraluz, con la boya de seguridad, en pleno crol' },
+      { slug: 'modalidad-circuito', alt: 'Nadadora en primer plano con gorra celeste y boya fucsia detrás' },
+      { slug: 'bvt-galeria-4', alt: 'Nadador de crol con neopreno y boya naranja avanzando por el lago' },
+      { slug: 'ljn-largada', alt: 'Nadadores salpicando en la largada, con boyas naranjas y fucsias' },
+      { slug: 'ev-colon', alt: 'Grupo de nadadores con gorras de colores a punto de largar' },
+      { slug: 'spd-brazada-colores', alt: 'Pelotón de nadadores con gorras y boyas de colores en plena carrera' },
+      { slug: 'bvt-galeria-7', alt: 'Nadador con traje de neopreno y boya naranja entrando al agua' },
+      { slug: 'bvt-galeria-5', alt: 'Nadador de crol con neopreno y boya naranja en el lago' },
+    ],
   },
   {
     slug: 'pinamar',
@@ -388,6 +462,15 @@ export const EVENTOS = [
   },
 ];
 
+/** Lo que se publica: sin los eventos `oculto`. Todo el sitio (calendario,
+    home, madres, sitemap) lee de acá. */
+export const EVENTOS = EVENTOS_TODOS.filter((e) => !e.oculto);
+
+/** Los armados pero sin publicar. Sólo los usa el prerender, para dejar su
+    página en una URL que se puede mandar a revisar (sin links, sin sitemap y
+    con noindex). */
+export const OCULTOS = EVENTOS_TODOS.filter((e) => e.oculto);
+
 // `ventana` es la línea que se muestra en las tarjetas: los Challenge no tienen
 // una fecha cerrada sino un período (o una condición de cupo, como SNP).
 export const CHALLENGES = [
@@ -623,7 +706,9 @@ export const km = (n) => `${String(n).replace('.', ',')} km`;
 
 export const ALL = [...EVENTOS, ...CHALLENGES];
 
-export const porSlug = (slug) => ALL.find((e) => e.slug === slug) || null;
+// Busca también entre los ocultos: la ficha de un evento sin publicar tiene que
+// poder abrirse por su URL para revisarla.
+export const porSlug = (slug) => [...EVENTOS_TODOS, ...CHALLENGES].find((e) => e.slug === slug) || null;
 
 export const MESES = {
   ENE: 'ENERO',

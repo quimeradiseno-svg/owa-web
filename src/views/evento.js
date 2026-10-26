@@ -24,7 +24,11 @@ import { grafo, migas, eventoDeportivo } from '../lib/schema.js';
 // Sin fecha confirmada la ficha existe (el link directo sigue andando) pero
 // no se indexa: no está enlazada desde ningún lado y su contenido puede
 // cambiar entero cuando la sede confirme.
-export const noindex = (ctx) => sinIngreso(porSlug(ctx.params.slug));
+export const noindex = (ctx) => {
+  const e = porSlug(ctx.params.slug);
+  // Un evento oculto (armado pero sin publicar) nunca se indexa.
+  return sinIngreso(e) || !!e?.oculto;
+};
 
 export const titulo = (ctx) => porSlug(ctx.params.slug)?.nombre ?? 'Carrera no encontrada';
 
@@ -920,7 +924,7 @@ function galeriaBloque(e) {
 
   return html`
     <section class="u-shell py-16" aria-labelledby="h-galeria">
-      ${eyebrow('La sede')}
+      ${eyebrow(e.galeriaEyebrow || 'La sede')}
       <h2 id="h-galeria" class="mt-3.5 u-h2 text-owa-navy">Galería</h2>
       <div
         class="mt-7 grid grid-cols-2 gap-3.5 [grid-auto-rows:140px] sm:grid-cols-4 sm:gap-4 sm:[grid-auto-rows:170px] lg:[grid-auto-rows:200px]"
@@ -1241,6 +1245,15 @@ export function render(ctx) {
         <p class="mt-4 flex flex-wrap items-center gap-2 text-[13px] font-bold tracking-[0.02em] text-owa-sky">
           ${icono('pin', 'size-4 shrink-0')}
           ${f?.sedeBarra ? `${f.sedeBarra}, ${f.sedeCiudad.split(', ').slice(1).join(', ')}` : f?.sedeCiudad || e.sede}
+          ${f?.comoLlegar
+            ? html`<a
+                href="${f.comoLlegar}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="u-press ml-1 inline-flex items-center gap-1.5 rounded-full border border-owa-sky/50 px-3 py-1 text-[12px] font-bold text-owa-sky transition-colors duration-200 hover:bg-white/10"
+                >Cómo llegar <span aria-hidden="true">↗</span></a
+              >`
+            : ''}
         </p>
       </div>
     </section>
@@ -1793,7 +1806,41 @@ export function render(ctx) {
                     imgClass: 'w-full',
                   })}
                 </div>`
-              : html`<div class="mt-5.5 grid h-105 place-items-center rounded-owa-lg bg-owa-mist">
+              : f?.mapas?.length
+                ? html`
+                    <!-- Un mapa por distancia (Pilar): selector arriba y todos los
+                         mapas en el HTML, el JS sólo alterna el atributo hidden
+                         (ver montarRemeras). Sin reveal-clip: un panel oculto nunca
+                         entra al observer y quedaría transparente al mostrarse. -->
+                    <div class="mt-5.5">
+                      <div class="flex flex-wrap gap-2.5" role="tablist" aria-label="Distancia">
+                        ${f.mapas.map(
+                          (m, i) => html`<button
+                            type="button"
+                            role="tab"
+                            data-mapa-tab="${i}"
+                            aria-selected="${i === 0 ? 'true' : 'false'}"
+                            class="u-press flex cursor-pointer flex-col items-start gap-0.5 rounded-owa-md border border-owa-line px-3 py-2 text-left text-owa-navy transition-colors duration-200 hover:border-owa-blue/50 aria-selected:border-owa-blue aria-selected:bg-owa-blue aria-selected:text-white sm:px-4.5 sm:py-2.5"
+                          >
+                            <span class="font-display text-sm font-black">${m.titulo}</span>
+                            <span class="text-[11px] font-bold tracking-[0.04em] whitespace-nowrap uppercase opacity-75">${m.subtitulo}</span>
+                          </button>`
+                        )}
+                      </div>
+                      ${f.mapas.map(
+                        (m, i) => html`<div data-mapa-panel="${i}" ${raw(i ? 'hidden' : '')} class="mt-3.5 overflow-hidden rounded-owa-lg bg-owa-mist">
+                          ${foto({
+                            slug: m.slug,
+                            alt: m.alt,
+                            sizes: '(min-width: 1280px) 1216px, 100vw',
+                            className: 'block w-full',
+                            imgClass: 'w-full',
+                          })}
+                        </div>`
+                      )}
+                    </div>
+                  `
+                : html`<div class="mt-5.5 grid h-105 place-items-center rounded-owa-lg bg-owa-mist">
                   <div class="max-w-[34ch] px-6 text-center">
                     <img src="/brand/owa-iso-cyan.svg" alt="" width="44" height="46" class="mx-auto h-11 w-auto opacity-60" />
                     <p class="mt-4 font-display text-base font-black text-owa-navy">Mapa del recorrido</p>
@@ -1802,6 +1849,14 @@ export function render(ctx) {
                     </p>
                   </div>
                 </div>`}
+            ${f?.comoLlegar
+              ? html`<div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3.5">
+                  <p class="flex items-center gap-2 text-[14px] font-bold text-owa-navy">
+                    <span class="shrink-0 text-owa-cyan">${icono('pin', 'size-4.5')}</span>${f.sedeBarra || f.sedeCiudad}
+                  </p>
+                  ${btnPrimario('Cómo llegar', f.comoLlegar, '', 'target="_blank" rel="noopener noreferrer"')}
+                </div>`
+              : ''}
           </section>
         `}
 
@@ -2309,9 +2364,20 @@ function montarVideoKit(root) {
   });
 }
 
-// Selector de remera (VOB / SPD) de la tarjeta del kit.
+// Selector de remera (VOB / SPD) de la tarjeta del kit, y selector de mapa por
+// distancia (Pilar). Los dos alternan `hidden` sobre contenido ya presente.
 function montarRemeras(root) {
   root.addEventListener('click', (e) => {
+    const mapaTab = e.target.closest('[data-mapa-tab]');
+    if (mapaTab) {
+      const i = mapaTab.dataset.mapaTab;
+      root.querySelectorAll('[data-mapa-tab]').forEach((b) => b.setAttribute('aria-selected', String(b === mapaTab)));
+      root.querySelectorAll('[data-mapa-panel]').forEach((el) => {
+        el.hidden = el.dataset.mapaPanel !== i;
+      });
+      return;
+    }
+
     const tab = e.target.closest('[data-remera-tab]');
     if (!tab) return;
     const i = tab.dataset.remeraTab;

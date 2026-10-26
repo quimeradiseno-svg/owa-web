@@ -83,6 +83,76 @@ export const FICHAS = {
     ],
   },
 
+  // Open Water Pilar (oculta, ver eventos.js). Base de Luján: dos jornadas el
+  // mismo día. Todavía sin link de inscripción ni starting list: cuando OWA los
+  // pase se agregan acá, igual que en Luján (`inscripcion` / `startingList`).
+  // Los puntajes son los de Luján (XXL / L / M): confirmar con OWA.
+  pilar: {
+    sedeBarra: 'Puerto Pilar Club, Pilar',
+    sedeCiudad: 'Pilar, Buenos Aires, Argentina',
+    comoLlegar: 'https://maps.app.goo.gl/BCogiqJP7z9jmgW3A?g_st=ic',
+
+    distancias: [
+      { rotulo: 'Larga', torneo: 'GRAND PRIX', km: '8 km', hora: '12:00', puntaje: 'XXL · 1.600 puntos', cats: CATS_COMPLETAS },
+      { rotulo: 'Media', torneo: 'CIRCUITO OWA', km: '4 km', hora: '12:00', puntaje: 'L · 1.200 puntos', cats: CATS_COMPLETAS },
+      { rotulo: 'Corta', torneo: 'CIRCUITO OWA', km: '2 km', hora: '14:30', puntaje: 'M · 1.000 puntos' },
+      { rotulo: 'Kids', km: '200 m', hora: '16:00', cats: 'Participativo · No competitivo' },
+      { rotulo: 'OWA Relay', km: '4 × 50 m', hora: '16:45', nota: 'Por equipos · 1.000 puntos al equipo ganador' },
+    ],
+
+    cronogramas: [
+      {
+        torneo: 'GRAND PRIX Y CIRCUITO OWA',
+        dias: [
+          {
+            fecha: 'Sábado 14 de noviembre',
+            lugar: 'Puerto Pilar Club',
+            items: [
+              { hora: '08:30', t: 'Apertura del predio', d: 'Y acreditaciones.' },
+              { hora: '08:30 a 10:45', t: 'Entrega de kits', d: 'Aptos médicos y documentación.' },
+              { hora: '12:00', t: 'Largada 8K + 4K', d: '', destacado: true },
+              { hora: '14:30', t: 'Largada 2K', d: '', destacado: true },
+              { hora: '16:00', t: 'Largada Kids 200 m', d: '', destacado: true },
+              { hora: '16:45', t: 'Largada OWA Relay 4 × 50 m', d: '', destacado: true },
+              { hora: '17:30', t: 'Premiación general', d: '' },
+            ],
+          },
+        ],
+      },
+    ],
+
+    // Un mapa por distancia, con selector (ver `mapas` en evento.js). El
+    // circuito es el mismo triángulo de tres boyas: el de 2 km da una vuelta, el
+    // de 4 km dos y el de 8 km cuatro.
+    mapas: [
+      {
+        titulo: '8 km',
+        subtitulo: 'Grand Prix · 4 vueltas',
+        slug: 'mapa-pil-8k',
+        alt: 'Mapa aéreo del circuito de 8 km de Pilar: cuatro vueltas de 2 km en sentido horario alrededor de tres boyas, con la largada y la llegada en el extremo este',
+      },
+      {
+        titulo: '4 km',
+        subtitulo: 'Circuito OWA · 2 vueltas',
+        slug: 'mapa-pil-4k',
+        alt: 'Mapa aéreo del circuito de 4 km de Pilar: dos vueltas de 2 km en sentido horario alrededor de tres boyas',
+      },
+      {
+        titulo: '2 km',
+        subtitulo: 'Circuito OWA · 1 vuelta',
+        slug: 'mapa-pil-2k',
+        alt: 'Mapa aéreo del circuito de 2 km de Pilar: una vuelta en sentido horario alrededor de tres boyas',
+      },
+    ],
+
+    kit: [
+      { t: 'Remera del evento', d: 'Incluida' },
+      { t: 'Gorra oficial', d: 'Incluida' },
+      { t: 'Chip de cronometraje', d: 'Incluido' },
+      { t: 'Medalla finisher', d: 'Incluida' },
+    ],
+  },
+
   'san-pedro': {
     // Dos versiones de la sede: la barra de datos necesita el predio (es el
     // punto de encuentro), el subtítulo del hero ya lo dice el propio título

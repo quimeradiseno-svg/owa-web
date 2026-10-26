@@ -54,6 +54,9 @@ export const SPONSORS = {
   lujan: [MARCAS.arena, MARCAS.nexalba, MARCAS.carilo],
   'san-pedro': [MARCAS.arena, MARCAS.nexalba, MARCAS.carilo],
   pinamar: [MARCAS.carilo],
+  // Pilar (oculta, ver eventos.js): mismos sponsors que tenía Luján antes de
+  // sumar a Cariló.
+  pilar: [MARCAS.arena, MARCAS.nexalba],
   ramallo: [MARCAS.arena, MARCAS.nexalba],
   colon: [MARCAS.arena, MARCAS.nexalba],
 };

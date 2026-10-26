@@ -184,6 +184,11 @@ const PHOTOS = {
   'remera-cln': 'Fotos/Remeras_carreras/remera_azul_francia_frente_CLN.png',
   'remera-pnr': 'Fotos/Remeras_carreras/remera_azul_marino_frente_PNR.png',
   'remera-blanca': 'Fotos/Remeras_carreras/remera_blanca_frente_SPD.png',
+  // Open Water Pilar (oculta): un mapa por distancia. mapa01 = 8 km, mapa02 =
+  // 4 km, mapa003 = 2 km (así vienen numerados en la carpeta que pasó OWA).
+  'mapa-pil-8k': 'Fotos/PIL/mapa01.png',
+  'mapa-pil-4k': 'Fotos/PIL/mapa02.png',
+  'mapa-pil-2k': 'Fotos/PIL/mapa003.png',
   // Vuelta de Obligado y San Pedro: cuadro del propio video 360°
   // (public/video/vob-remera.mp4 y spd-remera.mp4), no la foto de frente: la
   // remera del video puede diferir de la foto (logo, posición) y al empezar a

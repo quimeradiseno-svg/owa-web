@@ -19,9 +19,9 @@ import { writeFile, mkdir, readFile } from 'node:fs/promises';
 import { navbar } from '../src/components/navbar.js';
 import { footer } from '../src/components/footer.js';
 import { volverArriba } from '../src/components/volver-arriba.js';
-import { datosDe } from '../src/lib/meta.js';
+import { datosDe, resolver } from '../src/lib/meta.js';
 import { INDEXABLE, SITIO } from '../src/data/sitio.js';
-import { ALL } from '../src/data/eventos.js';
+import { ALL, OCULTOS } from '../src/data/eventos.js';
 import { CON_BENEFICIOS } from '../src/data/beneficios.js';
 
 const OUT = 'dist';
@@ -55,6 +55,10 @@ const RUTAS = [
   ['/reglamentos', 'reglamentos'],
   ['/404', 'noEncontrada'],
   ...ALL.map((e) => [`/carrera/${e.slug}`, 'evento', { slug: e.slug }]),
+  // Eventos armados pero sin publicar (`oculto` en eventos.js): su página se
+  // genera para poder mandar el link a revisar, pero no figura en el sitemap
+  // (seo.mjs usa ALL) ni la linkea nada, y sale con noindex.
+  ...OCULTOS.map((e) => [`/carrera/${e.slug}`, 'evento', { slug: e.slug }]),
   // Sólo las carreras que tienen beneficios cargados: la vista existe para
   // cualquier slug, pero prerenderizar las vacías dejaría en dist/ decenas de
   // páginas sin contenido que WhatsApp igual previsualizaría.
@@ -64,13 +68,16 @@ const RUTAS = [
 const esc = (s) =>
   String(s ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 
-/** Las etiquetas del <head> que dependen de la ruta. */
-function cabeza(d) {
+/** Las etiquetas del <head> que dependen de la ruta. `noindex` es el de la
+    propia vista (ver `export const noindex` en cada una): el HTML estático es lo
+    primero que lee un buscador, así que tiene que decir lo mismo que el router
+    dice después. Antes sólo miraba el interruptor global del dominio. */
+function cabeza(d, noindex) {
   const t = [
     `<title>${esc(d.titulo)}</title>`,
     d.descripcion ? `<meta name="description" content="${esc(d.descripcion)}" />` : '',
     `<link rel="canonical" href="${esc(d.canonical)}" />`,
-    `<meta name="robots" content="${INDEXABLE ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'}" />`,
+    `<meta name="robots" content="${INDEXABLE && !noindex ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'}" />`,
     `<meta property="og:type" content="${esc(d.tipo)}" />`,
     `<meta property="og:title" content="${esc(d.titulo)}" />`,
     `<meta property="og:url" content="${esc(d.canonical)}" />`,
@@ -107,7 +114,7 @@ for (const [ruta, vistaKey, params = {}] of RUTAS) {
     .replace(/<title>[\s\S]*?<\/title>/, '')
     .replace(/<meta\s+name="description"[\s\S]*?\/>/, '')
     .replace(/<meta property="og:[\s\S]*?\/>/g, '')
-    .replace('</head>', `  ${cabeza(d)}\n  </head>`)
+    .replace('</head>', `  ${cabeza(d, !!resolver(vista.noindex, ctx))}\n  </head>`)
     .replace('<div id="shell"></div>', `<div id="shell">${NAV}</div>`)
     .replace(
       '<main id="contenido" class="bg-white text-owa-navy"></main>',
