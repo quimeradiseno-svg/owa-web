@@ -36,10 +36,11 @@ export const MARCAS = {
     alto: 'h-5',
     href: 'https://nexalba.com/',
   },
-  // Entrenamiento de aguas abiertas en Cariló. Su logo va sólo en la tarjeta
-  // de beneficios de San Pedro, Luján y Pinamar (ver beneficios.js): a pedido
-  // de OWA NO está en el zócalo "Con el apoyo de", por eso no figura en
-  // SPONSORS. Sin web propia a mano: el link es su Instagram.
+  // Entrenamiento de aguas abiertas en Cariló: sponsor de San Pedro, Luján y
+  // Pinamar. Va en el zócalo "Con el apoyo de" y en su tarjeta de beneficios
+  // (ver beneficios.js). SVG de 3.1:1 con el isotipo y el nombre en dos
+  // renglones: a la altura de arena se leía chico, por eso va más alto. Sin
+  // web propia a mano: el link es su Instagram.
   carilo: {
     nombre: 'Cariló Swimmers',
     logoClaro: '/brand/carilo-swimmers-logo.svg',
@@ -50,8 +51,9 @@ export const MARCAS = {
 };
 
 export const SPONSORS = {
-  lujan: [MARCAS.arena, MARCAS.nexalba],
-  'san-pedro': [MARCAS.arena, MARCAS.nexalba],
+  lujan: [MARCAS.arena, MARCAS.nexalba, MARCAS.carilo],
+  'san-pedro': [MARCAS.arena, MARCAS.nexalba, MARCAS.carilo],
+  pinamar: [MARCAS.carilo],
   ramallo: [MARCAS.arena, MARCAS.nexalba],
   colon: [MARCAS.arena, MARCAS.nexalba],
 };
