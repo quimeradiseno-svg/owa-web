@@ -196,6 +196,13 @@ const tarjetaServicio = (b) => {
   `;
 };
 
+/** El nombre de la marca resaltado dentro de un texto, con la clase de color
+    que se le pase (Cariló Swimmers va en el naranja de su logo, #e94d23). */
+const marcaResaltada = (texto, nombre, clase) =>
+  texto
+    .split(nombre)
+    .flatMap((parte, i) => (i === 0 ? [parte] : [html`<span class="${clase}">${nombre}</span>`, parte]));
+
 /** Beneficio con código y todo lo que hace falta para usarlo (hoy, Cariló
     Swimmers): a diferencia de Nexalba, no alcanza con copiar el código y
     pegarlo en una web — hay que bajar una app, elegir un pack y después
@@ -221,7 +228,7 @@ const tarjetaPack = (b) => html`
 
         <p class="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span data-nums class="font-display text-[clamp(3rem,8vw,4.5rem)] leading-[0.85] font-black text-owa-blue">${b.destacado}</span>
-          <span class="font-display text-[clamp(1rem,2.4vw,1.375rem)] leading-none font-black tracking-[0.04em] text-owa-navy uppercase">${b.unidad}</span>
+          <span class="font-display text-[clamp(1rem,2.4vw,1.375rem)] leading-none font-black tracking-[0.04em] text-owa-navy uppercase">${marcaResaltada(b.unidad, b.marca.nombre, 'text-[#e94d23]')}</span>
         </p>
 
         <h2 class="mt-4 font-display text-[clamp(1.125rem,2.2vw,1.5rem)] leading-tight font-black text-owa-navy">${b.titulo}</h2>
